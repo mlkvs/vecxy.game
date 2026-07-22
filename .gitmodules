@@ -1,0 +1,3 @@
+[submodule "Engine/Vecxy"]
+	path = Engine/Vecxy
+	url = git@github.com:mlkvs/vecxy.git
