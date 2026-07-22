@@ -1,0 +1,258 @@
+UI {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 30px;
+}
+
+Panel {
+    flex-direction: column;
+}
+
+Label {
+    height: 16px;
+    color: #FF0404FF;
+    font-size: 12px;
+}
+
+.title {
+    color: #FFFFFFFF;
+    font-size: 14px;
+    height: 20px;
+}
+
+.stats {
+    width: 220px;
+    padding: 12px 14px;
+    gap: 5px;
+    background-color: #10151DE6;
+    border-color: #FFFFFF38;
+    border-width: 1px;
+}
+
+.controls-panel {
+    position: absolute;
+    left: 16px;
+    top: 245px;
+    width: 280px;
+    padding: 10px;
+    gap: 6px;
+    background-color: #10151DE6;
+    border-color: #FFFFFF38;
+    border-width: 1px;
+}
+
+.controls-scroll {
+    width: 100%;
+    height: 190px;
+    gap: 7px;
+    padding-right: 4px;
+    background-color: #080C12AA;
+}
+
+Button {
+    width: 100%;
+    height: 30px;
+    background-color: #293746FF;
+    border-color: #71859AFF;
+    border-width: 1px;
+    color: #FFFFFFFF;
+    text-align: center;
+}
+
+Button:hover {
+    background-color: #3A5066FF;
+}
+
+Button:active {
+    background-color: #18232EFF;
+}
+
+Slider {
+    width: 100%;
+    height: 14px;
+    background-color: #26303BFF;
+    fill-color: #62B4FFFF;
+    color: #FFFFFFFF;
+}
+
+ProgressBar {
+    width: 100%;
+    height: 14px;
+    background-color: #291317FF;
+    fill-color: #E04452FF;
+}
+
+TextField {
+    width: 100%;
+    height: 28px;
+    padding: 6px;
+    background-color: #151D26FF;
+    border-color: #526171FF;
+    border-width: 1px;
+    color: #DDE7F2FF;
+}
+
+TextField:focus {
+    border-color: #8CC8FFFF;
+    background-color: #1B2733FF;
+}
+
+Dropdown {
+    width: 100%;
+    height: 28px;
+    padding: 6px;
+    background-color: #151D26FF;
+    border-color: #526171FF;
+    border-width: 1px;
+    color: #DDE7F2FF;
+}
+
+RadioButton {
+    width: 100%;
+    height: 28px;
+    padding: 6px;
+    background-color: #151D26FF;
+    border-color: #526171FF;
+    border-width: 1px;
+    color: #DDE7F2FF;
+    fill-color: #71D6A0FF;
+}
+
+.crosshair {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 26px;
+    height: 26px;
+    margin: -13px 0 0 -13px;
+}
+
+.crosshair-horizontal {
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 26px;
+    height: 2px;
+    background-color: #FFFFFFFF;
+}
+
+.crosshair-vertical {
+    position: absolute;
+    left: 12px;
+    top: 0;
+    width: 2px;
+    height: 26px;
+    background-color: #FFFFFFFF;
+}
+
+.health-panel {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 270px;
+    padding: 12px;
+    gap: 8px;
+    background-color: #111821E8;
+    border-color: #FFFFFF45;
+    border-width: 1px;
+}
+
+.health-header {
+    width: 100%;
+    height: 18px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.right-text {
+    width: 90px;
+    text-align: end;
+}
+
+ProgressBar {
+    width: 100%;
+    height: 20px;
+    background-color: #291317FF;
+    fill-color: #E04452FF;
+    border-color: #FF98A1AA;
+    border-width: 1px;
+}
+
+.demo-slider {
+    width: 100%;
+    height: 12px;
+    margin-top: 4px;
+    background-color: #26303BFF;
+    fill-color: #62B4FFFF;
+    color: #FFFFFFFF;
+}
+
+.inventory {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    width: 440px;
+    margin-left: -220px;
+    padding: 10px 14px;
+    gap: 8px;
+    background-color: #0C1118E8;
+    border-color: #FFFFFF3D;
+    border-width: 1px;
+    align-items: center;
+}
+
+.inventory-title {
+    width: 100%;
+    text-align: center;
+    color: #9ECFFFFF;
+}
+
+.slots {
+    flex-direction: row;
+    gap: 8px;
+}
+
+.slot {
+    width: 52px;
+    height: 52px;
+    background-color: #27313DFF;
+    border-color: #78899AFF;
+    border-width: 1px;
+    color: #FFFFFFFF;
+    text-align: center;
+    font-size: 16px;
+}
+
+.selected {
+    background-color: #3C566EFF;
+    border-color: #B9E1FFFF;
+    border-width: 2px;
+}
+
+.control-row {
+    height: 28px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+Toggle {
+    width: 20px;
+    height: 20px;
+    background-color: #202A35FF;
+    border-color: #8A9BABFF;
+    border-width: 1px;
+    fill-color: #71D6A0FF;
+}
+
+TextField {
+    width: 150px;
+    height: 26px;
+    margin-left: 18px;
+    padding-left: 7px;
+    background-color: #151D26FF;
+    border-color: #526171FF;
+    border-width: 1px;
+    color: #8190A0FF;
+}
