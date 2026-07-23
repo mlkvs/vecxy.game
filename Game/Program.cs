@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using Game;
 using Vecxy.Engine;
 
@@ -8,13 +6,20 @@ var assetsPath = Path.Combine(AppContext.BaseDirectory, "Assets");
 assetsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../Assets"));
 #endif
 
+
 var options = new EngineOptions
 {
     WindowTitle = "Game",
     AssetsPath = assetsPath
 };
 
-var gameLayer = new GameLayer();
+var layers = new List<AppLayer>
+{
+    new GameLayer(),
+    new EditorLayer(),
+    new EngineLayer()
+};
 
-using var engine = new Engine(options, [gameLayer]);
+using var engine = new Engine(options, layers);
+
 engine.Run();
