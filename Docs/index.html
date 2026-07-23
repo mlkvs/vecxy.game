@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Подробный практический курс по современному OpenGL на C# и Silk.NET: от окна до post-processing и render graph.">
+  <title>OpenGL × Silk.NET — полный курс</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #030504;
+      --surface: #070b08;
+      --surface-2: #0a100c;
+      --surface-3: #101a13;
+      --line: #17351f;
+      --line-soft: #0d2013;
+      --text: #d9e8dc;
+      --muted: #799180;
+      --blue: #39ff74;
+      --cyan: #39ff74;
+      --green: #39ff74;
+      --orange: #d6ee77;
+      --red: #ff7b8a;
+      --purple: #bd9cff;
+      --sidebar: 292px;
+      --toc: 230px;
+      --header: 64px;
+      --radius: 12px;
+      --shadow: 0 16px 50px #0008;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header) + 28px); }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.72 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { color: #a7d4ff; }
+    button, input { font: inherit; }
+    #grid-bg { position: fixed; z-index: -1; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .topbar {
+      position: fixed; z-index: 50; inset: 0 0 auto 0; height: var(--header);
+      display: flex; align-items: center; gap: 20px; padding: 0 22px;
+      border-bottom: 1px solid var(--line); background: #030504ed;
+      backdrop-filter: blur(18px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: calc(var(--sidebar) - 22px); color: white; font-weight: 750; letter-spacing: -.02em; }
+    .brand-mark {
+      width: 35px; height: 35px; display: grid; place-items: center; border-radius: 10px;
+      color: #031006; font-weight: 900; background: var(--green);
+      box-shadow: 0 0 28px #57e6d43b;
+    }
+    .brand small { display: block; color: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+    .search-wrap { width: min(620px, 46vw); position: relative; }
+    .search-wrap::before { content: "⌕"; position: absolute; left: 13px; top: 7px; color: var(--muted); font-size: 20px; }
+    #search {
+      width: 100%; height: 40px; padding: 0 42px; color: var(--text); outline: none;
+      background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    }
+    #search:focus { border-color: var(--green); box-shadow: 0 0 0 3px #39ff741a; }
+    .kbd { position: absolute; right: 10px; top: 9px; border: 1px solid var(--line); border-radius: 5px; padding: 0 6px; color: var(--muted); font-size: 11px; }
+    .progress { position: fixed; z-index: 60; left: 0; top: 63px; height: 2px; width: 0; background: var(--green); box-shadow: 0 0 10px var(--green); }
+    .sidebar {
+      position: fixed; z-index: 40; left: 0; top: var(--header); bottom: 0; width: var(--sidebar);
+      overflow: auto; padding: 24px 18px 50px 22px; border-right: 1px solid var(--line);
+      background: #030504f2;
+    }
+    .nav-label { margin: 20px 10px 7px; color: #57705d; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    .nav-label:first-child { margin-top: 0; }
+    .sidebar a {
+      display: flex; align-items: center; gap: 9px; margin: 2px 0; padding: 7px 10px;
+      border-radius: 7px; color: var(--muted); line-height: 1.3; font-size: 13px;
+    }
+    .sidebar a::before { content: ""; width: 5px; height: 5px; flex: none; border-radius: 50%; background: #385540; }
+    .sidebar a:hover { background: var(--surface-2); color: var(--text); }
+    .sidebar a.active { color: white; background: #0d2113; }
+    .sidebar a.active::before { background: var(--cyan); box-shadow: 0 0 9px var(--cyan); }
+    .toc {
+      position: fixed; right: 0; top: var(--header); bottom: 0; width: var(--toc);
+      padding: 34px 24px; border-left: 1px solid var(--line-soft); overflow: auto;
+    }
+    .toc strong { color: #c8d7e8; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+    .toc a { display: block; padding: 5px 0 5px 12px; border-left: 1px solid var(--line); color: #71849b; font-size: 12px; line-height: 1.4; }
+    .toc a.active { color: var(--cyan); border-color: var(--cyan); }
+    main { margin: var(--header) var(--toc) 0 var(--sidebar); min-width: 0; }
+    article { width: min(900px, calc(100vw - var(--sidebar) - var(--toc) - 56px)); margin: 0 auto; padding: 58px 0 120px; }
+    .hero {
+      position: relative; overflow: hidden; margin-bottom: 52px; padding: 48px;
+      border: 1px solid #1d4a29; border-radius: 14px; background: #071009ed;
+      box-shadow: var(--shadow);
+    }
+    .hero::after { content: "GL"; position: absolute; right: 28px; top: 5px; color: #39ff7408; font: 900 180px/1 monospace; }
+    .eyebrow { color: var(--cyan); font-weight: 800; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+    h1, h2, h3, h4 { color: #f4f8fd; line-height: 1.2; letter-spacing: -.025em; }
+    h1 { position: relative; max-width: 680px; margin: 14px 0 18px; font-size: clamp(36px, 5vw, 62px); }
+    h2 { margin: 72px 0 20px; padding-top: 8px; font-size: 32px; }
+    h2::before { content: attr(data-n); display: block; margin-bottom: 8px; color: var(--cyan); font: 800 11px/1 monospace; letter-spacing: .15em; }
+    h3 { margin: 38px 0 12px; font-size: 22px; }
+    h4 { margin: 27px 0 8px; font-size: 17px; }
+    p { margin: 12px 0; }
+    .lead { max-width: 690px; color: #b7c7da; font-size: 18px; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 27px; }
+    .pill { padding: 5px 10px; border: 1px solid #245c32; border-radius: 99px; color: #a9dcb5; background: #08140b; font-size: 12px; }
+    .chapter { border-top: 1px solid var(--line-soft); }
+    code { font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace; }
+    :not(pre) > code { padding: 2px 6px; border: 1px solid #1e4227; border-radius: 5px; color: #a9e8b8; background: #0b160e; font-size: .88em; }
+    .code-block { position: relative; margin: 18px 0 25px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: #070a0f; box-shadow: 0 12px 30px #0004; }
+    .code-head { display: flex; align-items: center; justify-content: space-between; height: 38px; padding: 0 10px 0 15px; border-bottom: 1px solid var(--line); color: #71849b; background: #0e141e; font-size: 11px; }
+    .copy { border: 0; border-radius: 6px; padding: 4px 9px; color: #91a4ba; background: #182231; cursor: pointer; font-size: 11px; }
+    .copy:hover { color: white; background: #23344a; }
+    pre { margin: 0; padding: 19px 21px; overflow: auto; color: #d7e3f0; font-size: 13px; line-height: 1.62; tab-size: 4; }
+    .tok-keyword { color: #57ee82; font-weight: 650; }
+    .tok-type { color: #a4f5b9; }
+    .tok-string { color: #d3ea8c; }
+    .tok-comment { color: #526b58; font-style: italic; }
+    .tok-number { color: #a8d88b; }
+    .tok-preprocessor { color: #7dca91; }
+    .callout { margin: 20px 0; padding: 16px 18px 16px 46px; border: 1px solid #285735; border-radius: 8px; background: #09170d; position: relative; }
+    .callout::before { content: "i"; position: absolute; left: 17px; top: 17px; width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; color: #06121e; background: var(--blue); font-weight: 900; font-size: 12px; }
+    .callout.warning { border-color: #5b442a; background: #21180f; }
+    .callout.warning::before { content: "!"; background: var(--orange); }
+    .callout.success { border-color: #28523d; background: #102419; }
+    .callout.success::before { content: "✓"; background: var(--green); }
+    .callout strong { display: block; margin-bottom: 3px; color: white; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 20px 0; }
+    .card { padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+    .course-path { counter-reset: course; }
+    .course-path a { counter-increment: course; display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: 7px; color: var(--text); background: #050906e8; }
+    .course-path a::before { content: counter(course, decimal-leading-zero); color: var(--green); font: 700 11px monospace; }
+    .course-path a:hover { border-color: var(--green); background: #0a160d; }
+    .card strong { display: block; color: #e9f2fc; }
+    .card p { margin-bottom: 0; color: var(--muted); font-size: 13px; }
+    table { width: 100%; margin: 18px 0 26px; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 11px 13px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: #bcd0e5; background: var(--surface-2); }
+    td { color: #a9b8c9; }
+    .pipeline { display: flex; align-items: stretch; gap: 5px; margin: 24px 0; overflow-x: auto; }
+    .pipeline span { min-width: 110px; padding: 12px 8px; border: 1px solid #244d2f; border-radius: 7px; text-align: center; background: #08120b; font-size: 11px; }
+    .pipeline b { align-self: center; color: var(--cyan); }
+    .checklist { padding-left: 0; list-style: none; }
+    .checklist li { position: relative; padding: 6px 0 6px 28px; }
+    .checklist li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 800; }
+    .mobile-menu { display: none; margin-left: auto; border: 1px solid var(--line); border-radius: 7px; color: white; background: var(--surface-2); }
+    .search-empty { display: none; padding: 18px; color: var(--orange); }
+    @media (max-width: 1180px) {
+      :root { --toc: 0px; }
+      .toc { display: none; }
+      article { width: min(900px, calc(100vw - var(--sidebar) - 50px)); }
+    }
+    @media (max-width: 760px) {
+      :root { --sidebar: 0px; }
+      .brand { min-width: auto; } .brand-text { display: none; }
+      .search-wrap { flex: 1; width: auto; } .kbd { display: none; }
+      .mobile-menu { display: block; }
+      .sidebar { width: min(88vw, 320px); transform: translateX(-105%); transition: transform .2s; box-shadow: var(--shadow); }
+      .sidebar.open { transform: translateX(0); }
+      article { width: calc(100vw - 34px); padding-top: 32px; }
+      .hero { padding: 30px 24px; } .grid { grid-template-columns: 1fr; }
+      h2 { font-size: 27px; }
+    }
+    @media print {
+      .topbar, .sidebar, .toc, .progress, .copy { display: none !important; }
+      main { margin: 0; } article { width: 100%; padding: 0; }
+      body { color: #222; background: white; } h1, h2, h3, h4 { color: #111; }
+      .hero, .card, .callout { box-shadow: none; break-inside: avoid; }
+      .code-block { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="grid-bg" aria-hidden="true"></canvas>
+  <header class="topbar">
+    <a class="brand" href="#start">
+      <span class="brand-mark">GL</span>
+      <span class="brand-text">OpenGL × Silk.NET<small>практическое руководство</small></span>
+    </a>
+    <div class="search-wrap">
+      <input id="search" type="search" placeholder="Поиск по документации…" autocomplete="off" aria-label="Поиск">
+      <span class="kbd">Ctrl K</span>
+    </div>
+    <button class="mobile-menu" type="button" aria-label="Открыть навигацию">☰</button>
+  </header>
+  <div class="progress" aria-hidden="true"></div>
+
+  <nav class="sidebar" aria-label="Основная навигация">
+    <div class="nav-label">Пошаговый курс</div>
+    <a href="#window">01. Window и context</a>
+    <a href="#device">02. GraphicsDevice</a>
+    <a href="#clear-screen">03. Очистка экрана</a>
+    <a href="#shaders">04. ShaderProgram</a>
+    <a href="#vertex-buffer">05. VertexBuffer</a>
+    <a href="#vertex-layout">06. VertexLayout</a>
+    <a href="#vertex-array">07. VertexArray</a>
+    <a href="#triangle">08. Первый треугольник</a>
+    <a href="#index-buffer">09. IndexBuffer</a>
+    <a href="#quad">10. Квадрат</a>
+    <a href="#textures">11. Texture2D</a>
+    <a href="#textured-quad">12. Текстурированный квадрат</a>
+    <a href="#transform">13. Transform</a>
+    <a href="#camera">14. Camera</a>
+    <a href="#mesh">15. Mesh</a>
+    <a href="#material">16. Material</a>
+    <a href="#render-object">17. MeshRenderer</a>
+    <a href="#renderer">18. Renderer</a>
+    <a href="#depth">19. Depth testing</a>
+    <a href="#framebuffers">20. RenderTarget</a>
+    <a href="#render-pass">21. RenderPass</a>
+    <a href="#lighting">22. Освещение</a>
+    <div class="nav-label">Дополнительно</div>
+    <a href="#start">Модель OpenGL</a>
+    <a href="#setup">Проект и пакеты</a>
+    <a href="#debug">Debug output</a>
+    <a href="#uniforms">Uniform и UBO</a>
+    <a href="#instancing">Instancing</a>
+    <div class="nav-label">Продвинутое освещение</div>
+    <a href="#pbr">PBR metallic/roughness</a>
+    <a href="#shadows">Shadow mapping</a>
+    <a href="#ibl">HDR и IBL</a>
+    <div class="nav-label">Продвинутый рендеринг</div>
+    <a href="#deferred">Deferred rendering</a>
+    <a href="#post">Post-processing</a>
+    <a href="#bloom">Bloom и tone mapping</a>
+    <a href="#compute">Compute shaders</a>
+    <a href="#rendergraph">Render graph</a>
+    <div class="nav-label">Production</div>
+    <a href="#architecture">Архитектура renderer</a>
+    <a href="#performance">Производительность</a>
+    <a href="#lifetime">Lifetime и Dispose</a>
+    <a href="#roadmap">План развития</a>
+  </nav>
+
+  <aside class="toc" aria-label="На этой странице">
+    <strong>На странице</strong>
+    <div id="toc-links"></div>
+  </aside>
+
+  <main>
+    <article id="content">
+      <section class="hero" id="start">
+        <div class="eyebrow">От первого пикселя до render graph</div>
+        <h1>Современный OpenGL на C# и Silk.NET</h1>
+        <p class="lead">Практический курс о том, как устроить рендерер, а не только нарисовать треугольник. Мы последовательно соберём окно, ресурсную модель, материалы, PBR, тени, HDR, bloom, deferred pipeline, compute-задачи и систему постобработки.</p>
+        <div class="hero-meta">
+          <span class="pill">C# / .NET 8+</span><span class="pill">Silk.NET 2.x</span>
+          <span class="pill">OpenGL 4.5 Core</span><span class="pill">GLSL 450</span>
+          <span class="pill">Практика + архитектура</span>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 data-n="00 / МЕНТАЛЬНАЯ МОДЕЛЬ">Что именно делает OpenGL</h2>
+        <p>OpenGL — не движок и не библиотека сцены. Это API к <em>машине состояний</em> драйвера. Вы создаёте GPU-ресурсы, связываете их с точками привязки, настраиваете pipeline и отправляете команды рисования. Silk.NET предоставляет быстрые C# bindings: имена и семантика почти один в один соответствуют C API.</p>
+        <div class="pipeline"><span>CPU scene</span><b>→</b><span>command setup</span><b>→</b><span>vertex shader</span><b>→</b><span>rasterizer</span><b>→</b><span>fragment shader</span><b>→</b><span>framebuffer</span></div>
+        <div class="grid">
+          <div class="card"><strong>Объект</strong><p>Имя GPU-ресурса: buffer, texture, shader, program, framebuffer. В C# это обычно <code>uint</code>.</p></div>
+          <div class="card"><strong>Binding</strong><p>Выбор объекта, к которому относятся следующие команды. Современный DSA API часто позволяет обходиться без bind.</p></div>
+          <div class="card"><strong>State</strong><p>Depth test, blending, viewport, culling и текущая программа сохраняются в контексте.</p></div>
+          <div class="card"><strong>Draw call</strong><p>Команда, интерпретирующая текущие состояния и буферы как примитивы.</p></div>
+        </div>
+        <div class="callout"><strong>Выбранный baseline</strong>Примеры ориентированы на OpenGL 4.5 Core и Direct State Access. Для macOS максимум обычно OpenGL 4.1 — DSA-вызовы придётся заменить bind-based эквивалентами.</div>
+      </section>
+
+      <section class="chapter" id="course">
+        <h2 data-n="МАРШРУТ / 22 ШАГА">От окна до освещённой сцены</h2>
+        <p>Главная линия курса состоит из 22 последовательных шагов. На каждом шаге появляется одна законченная абстракция, а к разделу Renderer они складываются в небольшой расширяемый графический движок.</p>
+        <div class="grid course-path">
+          <a href="#window">Window и OpenGL context</a><a href="#device">GraphicsDevice</a>
+          <a href="#clear-screen">Очистка экрана</a><a href="#shaders">ShaderProgram</a>
+          <a href="#vertex-buffer">VertexBuffer</a><a href="#vertex-layout">VertexLayout</a>
+          <a href="#vertex-array">VertexArray</a><a href="#triangle">Первый треугольник</a>
+          <a href="#index-buffer">IndexBuffer</a><a href="#quad">Квадрат</a>
+          <a href="#textures">Texture2D</a><a href="#textured-quad">Текстурированный квадрат</a>
+          <a href="#transform">Transform</a><a href="#camera">Camera</a>
+          <a href="#mesh">Mesh</a><a href="#material">Material</a>
+          <a href="#render-object">MeshRenderer / RenderObject</a><a href="#renderer">Renderer</a>
+          <a href="#depth">Depth testing</a><a href="#framebuffers">RenderTarget / Framebuffer</a>
+          <a href="#render-pass">RenderPass</a><a href="#lighting">Освещение</a>
+        </div>
+      </section>
+
+      <section class="chapter" id="setup">
+        <h2 data-n="01 / СТАРТ">Создание проекта и зависимости</h2>
+        <p>Создайте консольный проект. Оконный backend Silk.NET сам выберет GLFW/SDL-подобную реализацию для платформы, а пакет OpenGL загрузит функции из созданного контекста.</p>
+        <div class="code-block"><div class="code-head">Terminal<button class="copy">Копировать</button></div><pre><code>dotnet new console -n GraphicsLab
+cd GraphicsLab
+dotnet add package Silk.NET.Windowing
+dotnet add package Silk.NET.OpenGL
+dotnet add package Silk.NET.Maths
+dotnet add package StbImageSharp</code></pre></div>
+        <table><thead><tr><th>Пакет</th><th>Назначение</th><th>Замечание</th></tr></thead><tbody>
+          <tr><td>Silk.NET.Windowing</td><td>Окно, события, loop, GL context</td><td>Не смешивайте с ручным GLFW без необходимости.</td></tr>
+          <tr><td>Silk.NET.OpenGL</td><td>Тип <code>GL</code> и native bindings</td><td>Экземпляр валиден только при активном контексте.</td></tr>
+          <tr><td>Silk.NET.Maths</td><td>Размеры и общая математика окна</td><td>Для shader math удобно оставить <code>System.Numerics</code>.</td></tr>
+          <tr><td>StbImageSharp</td><td>Декодирование PNG/JPEG в память</td><td>Загрузка файла и upload в GL — разные операции.</td></tr>
+        </tbody></table>
+      </section>
+
+      <section class="chapter" id="window">
+        <h2 data-n="02 / КОНТЕКСТ">Окно, события и render loop</h2>
+        <p>Контекст должен существовать до вызова <code>GL.GetApi(window)</code>. Поэтому все GL-ресурсы создавайте в обработчике <code>Load</code>, рисуйте в <code>Render</code>, меняйте симуляцию в <code>Update</code>, освобождайте в <code>Closing</code>.</p>
+        <div class="code-block"><div class="code-head">Program.cs<button class="copy">Копировать</button></div><pre><code>using Silk.NET.Maths;
+using Silk.NET.OpenGL;
+using Silk.NET.Windowing;
+
+var options = WindowOptions.Default;
+options.Title = "Graphics Lab";
+options.Size = new Vector2D&lt;int&gt;(1280, 720);
+options.API = new GraphicsAPI(
+    ContextAPI.OpenGL,
+    ContextProfile.Core,
+    ContextFlags.Debug,
+    new APIVersion(4, 5));
+options.VSync = true;
+
+using var window = Window.Create(options);
+GL gl = null!;
+
+window.Load += () =>
+{
+    gl = GL.GetApi(window);
+    gl.Enable(EnableCap.DepthTest);
+    gl.Enable(EnableCap.CullFace);
+    gl.CullFace(TriangleFace.Back);
+};
+
+window.FramebufferResize += size =>
+    gl.Viewport(0, 0, (uint)size.X, (uint)size.Y);
+
+window.Update += dt =>
+{
+    // Fixed-step physics лучше запускать отдельным accumulator.
+};
+
+window.Render += dt =>
+{
+    gl.ClearColor(0.025f, 0.035f, 0.055f, 1f);
+    gl.Clear(ClearBufferMask.ColorBufferBit |
+             ClearBufferMask.DepthBufferBit);
+};
+
+window.Closing += () => gl?.Dispose();
+window.Run();</code></pre></div>
+        <div class="callout warning"><strong>Размер окна ≠ размер framebuffer</strong>На HiDPI-дисплеях framebuffer может быть больше логического окна. Для <code>Viewport</code>, aspect ratio и render targets используйте именно framebuffer size.</div>
+        <h3>Потоки и контекст</h3>
+        <p>OpenGL-контекст активен на одном потоке. Не вызывайте GL из asset-loader task. Фоновый поток может читать и декодировать файлы, но создание texture/buffer следует поставить в очередь команд render thread. Shared contexts возможны, однако усложняют синхронизацию и редко нужны в первом рендерере.</p>
+      </section>
+
+      <section class="chapter" id="device">
+        <h2 data-n="02 / DEVICE">GraphicsDevice как граница OpenGL</h2>
+        <p><code>GraphicsDevice</code> владеет экземпляром <code>GL</code>, знает возможности адаптера и остаётся единственной точкой низкоуровневых вызовов. Он создаётся после <code>window.Load</code> и уничтожается до контекста.</p>
+        <div class="code-block"><div class="code-head">GraphicsDevice.cs · C#<button class="copy">Копировать</button></div><pre><code>public sealed class GraphicsDevice : IDisposable
+{
+    public GL GL { get; }
+    public string Vendor { get; }
+    public string Renderer { get; }
+
+    public GraphicsDevice(IWindow window)
+    {
+        GL = GL.GetApi(window);
+        Vendor = GL.GetStringS(StringName.Vendor);
+        Renderer = GL.GetStringS(StringName.Renderer);
+        GlDebug.Enable(GL);
+    }
+
+    public void SetViewport(int width, int height) =>
+        GL.Viewport(0, 0, (uint)width, (uint)height);
+
+    public void Dispose() => GL.Dispose();
+}</code></pre></div>
+      </section>
+
+      <section class="chapter" id="clear-screen">
+        <h2 data-n="03 / FRAME">Очистка экрана</h2>
+        <p>Color, depth и stencil очищаются независимо. Делайте это после привязки нужного framebuffer и установки viewport.</p>
+        <div class="code-block"><div class="code-head">BeginFrame · C#<button class="copy">Копировать</button></div><pre><code>public void BeginFrame(Vector4 color)
+{
+    GL gl = _device.GL;
+    gl.ClearColor(color.X, color.Y, color.Z, color.W);
+    gl.ClearDepth(1.0);
+    gl.Clear(ClearBufferMask.ColorBufferBit |
+             ClearBufferMask.DepthBufferBit);
+}</code></pre></div>
+      </section>
+
+      <section class="chapter" id="debug">
+        <h2 data-n="03 / ДИАГНОСТИКА">Debug output до первой ошибки</h2>
+        <p><code>gl.GetError()</code> плохо локализует проблему и синхронизирует CPU с драйвером. В debug-сборке подключите callback KHR_debug и ставьте осмысленные labels объектам.</p>
+        <div class="code-block"><div class="code-head">GlDebug.cs<button class="copy">Копировать</button></div><pre><code>using Silk.NET.OpenGL;
+using System.Runtime.InteropServices;
+
+static unsafe class GlDebug
+{
+    private static readonly DebugProc CallbackDelegate = OnMessage;
+
+    public static void Enable(GL gl)
+    {
+        gl.Enable(EnableCap.DebugOutput);
+        gl.Enable(EnableCap.DebugOutputSynchronous);
+        gl.DebugMessageCallback(CallbackDelegate, null);
+        gl.DebugMessageControl(
+            DebugSource.DontCare, DebugType.DontCare,
+            DebugSeverity.DontCare, 0, null, true);
+    }
+
+    private static unsafe void OnMessage(
+        GLEnum source, GLEnum type, int id, GLEnum severity,
+        int length, nint message, nint userParam)
+    {
+        var text = Marshal.PtrToStringAnsi(message, length);
+        if (severity != GLEnum.DebugSeverityNotification)
+            Console.Error.WriteLine($"GL [{severity}] {id}: {text}");
+    }
+}</code></pre></div>
+        <p>Игнорируйте только конкретные известные notification ID, а не целые категории. Маркируйте ресурсы через <code>ObjectLabel</code> и кадры через <code>PushDebugGroup</code>/<code>PopDebugGroup</code> — RenderDoc покажет эти имена.</p>
+      </section>
+
+      <section class="chapter" id="triangle">
+        <h2 data-n="04 / ПЕРВАЯ ГЕОМЕТРИЯ">Треугольник: полный минимальный путь</h2>
+        <p>Для draw нужны программа, vertex array и данные. VAO хранит схему чтения атрибутов и связь с element buffer. VBO хранит байты, но не знает, что они являются позициями.</p>
+        <div class="code-block"><div class="code-head">Triangle setup<button class="copy">Копировать</button></div><pre><code>float[] vertices =
+[
+     0.0f,  0.6f,  1f, 0.25f, 0.20f,
+    -0.6f, -0.5f,  0.2f, 0.85f, 1.00f,
+     0.6f, -0.5f,  0.5f, 1.00f, 0.45f
+];
+
+uint vao = gl.CreateVertexArray();
+uint vbo = gl.CreateBuffer();
+
+unsafe
+{
+    fixed (float* data = vertices)
+        gl.NamedBufferData(vbo,
+            (nuint)(vertices.Length * sizeof(float)),
+            data, BufferUsageARB.StaticDraw);
+}
+
+gl.VertexArrayVertexBuffer(vao, 0, vbo, 0, 5 * sizeof(float));
+
+gl.EnableVertexArrayAttrib(vao, 0); // position
+gl.VertexArrayAttribFormat(vao, 0, 2, VertexAttribType.Float, false, 0);
+gl.VertexArrayAttribBinding(vao, 0, 0);
+
+gl.EnableVertexArrayAttrib(vao, 1); // color
+gl.VertexArrayAttribFormat(vao, 1, 3, VertexAttribType.Float, false, 2 * sizeof(float));
+gl.VertexArrayAttribBinding(vao, 1, 0);
+
+// Каждый кадр:
+gl.UseProgram(program);
+gl.BindVertexArray(vao);
+gl.DrawArrays(PrimitiveType.Triangles, 0, 3);</code></pre></div>
+        <div class="code-block"><div class="code-head">triangle.vert / triangle.frag<button class="copy">Копировать</button></div><pre><code>#version 450 core
+layout(location = 0) in vec2 aPosition;
+layout(location = 1) in vec3 aColor;
+layout(location = 0) out vec3 vColor;
+
+void main() {
+    vColor = aColor;
+    gl_Position = vec4(aPosition, 0.0, 1.0);
+}
+
+// --- fragment shader ---
+#version 450 core
+layout(location = 0) in vec3 vColor;
+layout(location = 0) out vec4 oColor;
+
+void main() {
+    oColor = vec4(vColor, 1.0);
+}</code></pre></div>
+      </section>
+
+      <section class="chapter" id="shaders">
+        <h2 data-n="05 / GLSL">Надёжная шейдерная система</h2>
+        <p>Shader object — компиляция одной стадии. Program — связанный executable из нескольких стадий. Всегда проверяйте и compile status, и link status; warning log полезен даже при успехе.</p>
+        <div class="code-block"><div class="code-head">ShaderProgram.cs — ядро<button class="copy">Копировать</button></div><pre><code>public sealed class ShaderProgram : IDisposable
+{
+    private readonly GL _gl;
+    public uint Handle { get; }
+
+    public ShaderProgram(GL gl, string vertex, string fragment)
+    {
+        _gl = gl;
+        uint vs = Compile(ShaderType.VertexShader, vertex);
+        uint fs = Compile(ShaderType.FragmentShader, fragment);
+        Handle = gl.CreateProgram();
+        gl.AttachShader(Handle, vs);
+        gl.AttachShader(Handle, fs);
+        gl.LinkProgram(Handle);
+        gl.GetProgram(Handle, ProgramPropertyARB.LinkStatus, out int ok);
+        string log = gl.GetProgramInfoLog(Handle);
+        gl.DetachShader(Handle, vs);
+        gl.DetachShader(Handle, fs);
+        gl.DeleteShader(vs);
+        gl.DeleteShader(fs);
+        if (ok == 0) throw new InvalidOperationException($"Link failed:\n{log}");
+    }
+
+    private uint Compile(ShaderType stage, string source)
+    {
+        uint shader = _gl.CreateShader(stage);
+        _gl.ShaderSource(shader, source);
+        _gl.CompileShader(shader);
+        _gl.GetShader(shader, ShaderParameterName.CompileStatus, out int ok);
+        string log = _gl.GetShaderInfoLog(shader);
+        if (ok == 0)
+        {
+            _gl.DeleteShader(shader);
+            throw new InvalidOperationException($"{stage} failed:\n{log}");
+        }
+        return shader;
+    }
+
+    public void Use() => _gl.UseProgram(Handle);
+    public void Dispose() => _gl.DeleteProgram(Handle);
+}</code></pre></div>
+        <h3>Includes, defines и hot reload</h3>
+        <p>GLSL не имеет переносимого <code>#include</code>. Сделайте препроцессор: нормализуйте путь, обнаруживайте циклы, вставляйте <code>#line</code>, собирайте dependency list. При изменении файла компилируйте новую программу целиком и заменяйте старую только после успешного link. Никогда не уничтожайте рабочий shader из-за ошибки hot reload.</p>
+        <div class="callout success"><strong>Стабильный контракт</strong>Закрепляйте locations через <code>layout(location=N)</code>, binding points через <code>layout(binding=N)</code>. Тогда C# и GLSL согласуются без вызовов поиска по строкам в каждом кадре.</div>
+      </section>
+
+      <section class="chapter" id="buffers">
+        <h2 data-n="06 / ПАМЯТЬ GPU">VAO, VBO, EBO и layout</h2>
+        <h3 id="vertex-buffer">05. VertexBuffer</h3>
+        <p>Owning wrapper над GL buffer хранит handle, byte size и usage. Он принимает unmanaged data и удаляет handle через тот же device.</p>
+        <h3 id="vertex-layout">06. VertexLayout</h3>
+        <p>Layout декларативно описывает location, component count, type, normalization, stride и offset каждого атрибута.</p>
+        <h3 id="vertex-array">07. VertexArray</h3>
+        <p>VAO связывает layout с vertex streams. Он хранит конфигурацию чтения, но не владеет самими vertex data.</p>
+        <div class="code-block"><div class="code-head">VertexBuffer + VertexLayout + VertexArray · C#<button class="copy">Копировать</button></div><pre><code>public readonly record struct VertexElement(
+    uint Location, int Count, VertexAttribType Type,
+    bool Normalized, uint Offset);
+
+public sealed record VertexLayout(uint Stride, params VertexElement[] Elements);
+
+public sealed class VertexBuffer : IDisposable
+{
+    private readonly GL _gl;
+    public uint Handle { get; }
+    public nuint Size { get; }
+
+    public unsafe VertexBuffer&lt;T&gt;(GL gl, ReadOnlySpan&lt;T&gt; vertices)
+        where T : unmanaged
+    {
+        _gl = gl;
+        Handle = gl.CreateBuffer();
+        Size = (nuint)(vertices.Length * sizeof(T));
+        fixed (T* data = vertices)
+            gl.NamedBufferStorage(Handle, Size, data, 0);
+    }
+
+    public void Dispose() => _gl.DeleteBuffer(Handle);
+}
+
+public static uint CreateVertexArray(
+    GL gl, uint vertexBuffer, VertexLayout layout)
+{
+    uint vao = gl.CreateVertexArray();
+    gl.VertexArrayVertexBuffer(vao, 0, vertexBuffer, 0, layout.Stride);
+    foreach (VertexElement e in layout.Elements)
+    {
+        gl.EnableVertexArrayAttrib(vao, e.Location);
+        gl.VertexArrayAttribFormat(
+            vao, e.Location, e.Count, e.Type, e.Normalized, e.Offset);
+        gl.VertexArrayAttribBinding(vao, e.Location, 0);
+    }
+    return vao;
+}</code></pre></div>
+        <div class="callout"><strong>Как это читается GPU</strong>При draw GPU берёт номер vertex, прибавляет <code>baseOffset + index × stride + attributeOffset</code> и интерпретирует найденные байты согласно типу элемента. VAO сохраняет именно эту формулу.</div>
+        <table><thead><tr><th>Ресурс</th><th>Хранит</th><th>Типичное обновление</th></tr></thead><tbody>
+          <tr><td>VBO</td><td>Vertices, instances или произвольные байты</td><td>Static mesh: один upload; particles: streaming.</td></tr>
+          <tr><td>EBO</td><td>Индексы вершин</td><td>Обычно immutable.</td></tr>
+          <tr><td>UBO</td><td>Небольшие uniform blocks</td><td>Раз в кадр/камеру/материал.</td></tr>
+          <tr><td>SSBO</td><td>Большие структурированные массивы, read/write</td><td>Lights, GPU particles, indirect data.</td></tr>
+          <tr><td>VAO</td><td>Не данные, а описание vertex input</td><td>Настраивается один раз.</td></tr>
+        </tbody></table>
+        <p>Для indexed mesh используйте <code>DrawElements</code>. Тип индекса обязан совпадать с upload: <code>ushort</code> → <code>UnsignedShort</code>, <code>uint</code> → <code>UnsignedInt</code>. Последний аргумент — byte offset внутри EBO, а не managed pointer.</p>
+        <h3 id="index-buffer">09. IndexBuffer</h3>
+        <p>IndexBuffer должен помнить количество и тип индекса, чтобы renderer не смог неверно интерпретировать GPU-память.</p>
+        <h3 id="quad">10. Квадрат</h3>
+        <p>Квадрат использует четыре вершины и шесть индексов: <code>[0, 1, 2, 2, 3, 0]</code>. Это первая проверка winding и <code>DrawElements</code>.</p>
+        <div class="code-block"><div class="code-head">IndexBuffer и квадрат · C#<button class="copy">Копировать</button></div><pre><code>uint[] indices = [0, 1, 2, 2, 3, 0];
+uint ebo = gl.CreateBuffer();
+unsafe
+{
+    fixed (uint* data = indices)
+        gl.NamedBufferStorage(
+            ebo, (nuint)(indices.Length * sizeof(uint)), data, 0);
+}
+
+// EBO binding является частью состояния VAO.
+gl.VertexArrayElementBuffer(vao, ebo);
+gl.BindVertexArray(vao);
+gl.DrawElements(
+    PrimitiveType.Triangles,
+    (uint)indices.Length,
+    DrawElementsType.UnsignedInt,
+    null);</code></pre></div>
+        <h3>Interleaved или separate</h3>
+        <p>Interleaved layout удобен и кэш-дружественен, когда все атрибуты используются вместе. Separate streams полезны для редкого обновления одного атрибута и для разных shader layouts. Не полагайтесь слепо на размер C# struct: проверьте <code>Unsafe.SizeOf&lt;Vertex&gt;()</code> и используйте sequential layout/unmanaged fields.</p>
+      </section>
+
+      <section class="chapter" id="uniforms">
+        <h2 data-n="07 / ПАРАМЕТРЫ">Uniform, UBO, SSBO и alignment</h2>
+        <p>Одиночные uniform подходят для редких параметров. Камеру и frame data лучше хранить в UBO, чтобы один buffer binding обслуживал множество программ.</p>
+        <div class="code-block"><div class="code-head">GLSL + C# UBO<button class="copy">Копировать</button></div><pre><code>// GLSL
+layout(std140, binding = 0) uniform CameraData {
+    mat4 uView;
+    mat4 uProjection;
+    mat4 uViewProjection;
+    vec4 uCameraPosition; // vec4 упрощает alignment
+};
+
+// C#
+uint cameraUbo = gl.CreateBuffer();
+gl.NamedBufferStorage(cameraUbo, (nuint)Unsafe.SizeOf&lt;GpuCamera&gt;(),
+    null, BufferStorageMask.DynamicStorageBit);
+gl.BindBufferBase(BufferTargetARB.UniformBuffer, 0, cameraUbo);
+
+unsafe
+{
+    GpuCamera data = BuildCamera();
+    gl.NamedBufferSubData(cameraUbo, 0,
+        (nuint)Unsafe.SizeOf&lt;GpuCamera&gt;(), &amp;data);
+}</code></pre></div>
+        <div class="callout warning"><strong>std140 padding</strong><code>vec3</code> часто занимает слот в 16 байт; массивы и структуры имеют дополнительное выравнивание. На CPU предпочитайте vec4 и явно проверяйте offsets reflection-инструментом. Матрицы System.Numerics и GLSL могут требовать transpose в зависимости от принятой конвенции.</div>
+        <p>SSBO использует <code>std430</code>, допускает большие массивы и запись из shader. После compute/write поставьте точный <code>MemoryBarrier</code> перед последующим чтением.</p>
+      </section>
+
+      <section class="chapter" id="textures">
+        <h2 data-n="08 / ИЗОБРАЖЕНИЯ">Текстуры, color space и sampler</h2>
+        <p>Texture storage, pixel upload и sampling — отдельные решения. Allocate immutable storage через <code>TextureStorage2D</code>, загрузите mip 0, сгенерируйте mipmaps и задайте sampler state.</p>
+        <div class="code-block"><div class="code-head">Texture2D upload<button class="copy">Копировать</button></div><pre><code>using var stream = File.OpenRead(path);
+var image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
+
+uint texture = gl.CreateTexture(TextureTarget.Texture2D);
+int levels = 1 + (int)MathF.Floor(MathF.Log2(Math.Max(image.Width, image.Height)));
+gl.TextureStorage2D(texture, (uint)levels, SizedInternalFormat.Srgb8Alpha8,
+    (uint)image.Width, (uint)image.Height);
+
+unsafe
+{
+    fixed (byte* pixels = image.Data)
+        gl.TextureSubImage2D(texture, 0, 0, 0,
+            (uint)image.Width, (uint)image.Height,
+            PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
+}
+
+gl.GenerateTextureMipmap(texture);
+gl.TextureParameter(texture, TextureParameterName.TextureMinFilter,
+    (int)TextureMinFilter.LinearMipmapLinear);
+gl.TextureParameter(texture, TextureParameterName.TextureMagFilter,
+    (int)TextureMagFilter.Linear);
+gl.TextureParameter(texture, TextureParameterName.TextureWrapS,
+    (int)TextureWrapMode.Repeat);</code></pre></div>
+        <h3>Linear workflow</h3>
+        <p>Base color/emissive изображения обычно sRGB: используйте <code>Srgb8</code>/<code>Srgb8Alpha8</code>, чтобы sampling автоматически декодировал их в linear. Normal, roughness, metallic, AO и height — данные, поэтому загружайте в linear formats. Освещение всегда считайте в linear, а кодирование результата выполняйте один раз при выводе.</p>
+        <p>Sampler object отделяет filtering/wrap от texture storage. Это удобно, если одна shadow map читается с разными compare modes или одна texture показывается в UI без mip filtering.</p>
+        <h3 id="textured-quad">12. Текстурированный квадрат</h3>
+        <p>Добавьте UV в layout, привяжите Texture2D к unit, а sampler uniform — к номеру unit. Перевёрнутые UV исправляйте единым соглашением importer, а не случайными инверсиями в шейдерах.</p>
+        <div class="code-block"><div class="code-head">Текстурирование · GLSL<button class="copy">Копировать</button></div><pre><code>#version 450 core
+layout(location = 0) in vec2 vUv;
+layout(binding = 0) uniform sampler2D uTexture;
+layout(location = 0) out vec4 oColor;
+
+void main()
+{
+    vec4 texel = texture(uTexture, vUv);
+    if (texel.a &lt; 0.01) discard;
+    oColor = texel;
+}</code></pre></div>
+        <div class="code-block"><div class="code-head">Texture binding · C#<button class="copy">Копировать</button></div><pre><code>gl.BindTextureUnit(0, texture.Handle);
+gl.BindSampler(0, linearRepeatSampler);
+gl.UseProgram(program.Handle);
+gl.BindVertexArray(quad.VertexArray);
+gl.DrawElements(PrimitiveType.Triangles, 6,
+    DrawElementsType.UnsignedInt, null);</code></pre></div>
+      </section>
+
+      <section class="chapter" id="math">
+        <h2 data-n="09 / ПРОСТРАНСТВА">Матрицы, координаты и камера</h2>
+        <h3 id="transform">13. Transform</h3>
+        <p>Transform хранит position, quaternion rotation и scale. World matrix вычисляется с учётом parent и кэшируется до следующего изменения.</p>
+        <div class="code-block"><div class="code-head">Transform.cs · C#<button class="copy">Копировать</button></div><pre><code>public sealed class Transform
+{
+    public Vector3 Position { get; set; }
+    public Quaternion Rotation { get; set; } = Quaternion.Identity;
+    public Vector3 Scale { get; set; } = Vector3.One;
+    public Transform? Parent { get; set; }
+
+    public Matrix4x4 LocalMatrix =>
+        Matrix4x4.CreateScale(Scale) *
+        Matrix4x4.CreateFromQuaternion(Rotation) *
+        Matrix4x4.CreateTranslation(Position);
+
+    public Matrix4x4 WorldMatrix =>
+        Parent is null ? LocalMatrix : LocalMatrix * Parent.WorldMatrix;
+}</code></pre></div>
+        <div class="callout warning"><strong>Порядок зависит от соглашения</strong>Пример использует row-vector convention System.Numerics. Зафиксируйте один порядок во всём engine и выполняйте transpose только на границе загрузки в GLSL.</div>
+        <div class="pipeline"><span>model/local</span><b>→ M</b><span>world</span><b>→ V</b><span>view</span><b>→ P</b><span>clip</span><b>÷ w</b><span>NDC</span></div>
+        <p>Vertex shader обычно вычисляет <code>gl_Position = projection * view * model * vec4(position,1)</code>. После perspective divide NDC OpenGL имеет Z от −1 до 1, если вы не включили <code>ClipControl</code>. Экранное пространство появляется после viewport transform.</p>
+        <h3 id="camera">14. Camera</h3>
+        <div class="code-block"><div class="code-head">Camera matrices · C#<button class="copy">Копировать</button></div><pre><code>float aspect = framebufferWidth / (float)framebufferHeight;
+Matrix4x4 view = Matrix4x4.CreateLookAt(position, position + forward, Vector3.UnitY);
+Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(
+    MathF.PI / 3f, aspect, 0.1f, 1000f);
+
+// Перед upload зафиксируйте соглашение вашего math layer.
+// Частый вариант для GLSL:
+Matrix4x4 viewProjection = view * projection;
+Matrix4x4 gpuMatrix = Matrix4x4.Transpose(viewProjection);</code></pre></div>
+        <p>Не копируйте порядок из примера без теста. Нарисуйте асимметричную сцену и проверьте translation/rotation. Лучше создать единственный helper загрузки матриц и закрепить соглашение тестами.</p>
+        <h3>Reverse-Z</h3>
+        <p>Для больших миров полезен reverse-Z: <code>ClipControl(LowerLeft, ZeroToOne)</code>, depth clear 0, comparison <code>Greater</code>, бесконечная reversed projection. Точность float depth концентрируется дальше от камеры значительно разумнее.</p>
+      </section>
+
+      <section class="chapter" id="mesh">
+        <h2 data-n="10 / ASSETS">Mesh, material и model</h2>
+        <p>Разделяйте CPU asset и GPU resource. Importer читает glTF и создаёт нейтральные данные; render upload создаёт buffers/textures; scene instance хранит transform и ссылку на asset.</p>
+        <div class="code-block"><div class="code-head">Минимальные контракты<button class="copy">Копировать</button></div><pre><code>public readonly record struct SubMesh(
+    uint FirstIndex, uint IndexCount, int BaseVertex, int MaterialIndex);
+
+public sealed class GpuMesh : IDisposable
+{
+    public uint Vao { get; init; }
+    public uint VertexBuffer { get; init; }
+    public uint IndexBuffer { get; init; }
+    public required SubMesh[] Parts { get; init; }
+    public required BoundingBox Bounds { get; init; }
+    // Dispose удаляет VAO и buffers на render thread.
+}
+
+public readonly record struct DrawItem(
+    Matrix4x4 World, GpuMesh Mesh, int Part, Material Material);</code></pre></div>
+        <p>Не заставляйте scene object непосредственно вызывать GL. Сначала извлеките видимые render items, затем сортируйте и исполняйте. Это открывает путь к culling, batching, shadow pass и нескольким камерам.</p>
+        <h3 id="material">16. Material</h3>
+        <p>Material связывает shader pipeline, textures и параметры, но сам не рисует. Дайте ему стабильный sort key для группировки draw calls.</p>
+        <h3 id="render-object">17. MeshRenderer / RenderObject</h3>
+        <p>Scene-компонент ссылается на mesh/material, а extraction превращает его в плоский RenderObject с world matrix, bounds и GPU handles.</p>
+        <h3 id="renderer">18. Renderer</h3>
+        <p>Renderer принимает camera и render objects, делает culling и sorting, выбирает pipeline state и отправляет команды. Он не загружает файлы и не обновляет gameplay.</p>
+        <div class="code-block"><div class="code-head">Material → RenderObject → Renderer · C#<button class="copy">Копировать</button></div><pre><code>public sealed record Material(
+    ShaderProgram Shader,
+    Texture2D Albedo,
+    Vector4 Tint,
+    bool Transparent = false);
+
+public readonly record struct RenderObject(
+    Mesh Mesh,
+    Material Material,
+    Matrix4x4 World,
+    BoundingBox Bounds);
+
+public void Draw(
+    Camera camera,
+    ReadOnlySpan&lt;RenderObject&gt; objects)
+{
+    foreach (ref readonly RenderObject item in objects)
+    {
+        if (!camera.Frustum.Intersects(item.Bounds, item.World))
+            continue;
+
+        item.Material.Shader.Use();
+        item.Material.Shader.SetMatrix("uWorld", item.World);
+        item.Material.Shader.SetMatrix("uViewProjection", camera.ViewProjection);
+        item.Material.Albedo.Bind(0);
+        item.Mesh.Draw();
+    }
+}</code></pre></div>
+        <p>Следующий уровень — разделить сбор команд и исполнение. Сначала сформируйте render queue, удалите невидимое, разбейте opaque/transparent, отсортируйте opaque по shader/material, а transparent — от дальних к ближним.</p>
+      </section>
+
+      <section class="chapter" id="instancing">
+        <h2 data-n="11 / BATCHING">Instancing и indirect draw</h2>
+        <p>Instancing уменьшает CPU overhead, если много объектов используют один mesh/material. Матрица instance занимает четыре vertex attributes; установите divisor 1. Для тысяч разных meshes переходите к <code>MultiDrawElementsIndirect</code>, SSBO с transforms и <code>gl_DrawID</code>.</p>
+        <div class="code-block"><div class="code-head">Instance binding<button class="copy">Копировать</button></div><pre><code>gl.VertexArrayVertexBuffer(vao, 1, instanceBuffer, 0, 64);
+for (uint column = 0; column &lt; 4; column++)
+{
+    uint location = 4 + column;
+    gl.EnableVertexArrayAttrib(vao, location);
+    gl.VertexArrayAttribFormat(vao, location, 4,
+        VertexAttribType.Float, false, column * 16);
+    gl.VertexArrayAttribBinding(vao, location, 1);
+}
+gl.VertexArrayBindingDivisor(vao, 1, 1);
+
+gl.DrawElementsInstanced(PrimitiveType.Triangles, indexCount,
+    DrawElementsType.UnsignedInt, null, instanceCount);</code></pre></div>
+      </section>
+
+      <section class="chapter" id="depth">
+        <h2 data-n="12 / FIXED FUNCTION">Depth, stencil, culling и blending</h2>
+        <table><thead><tr><th>Система</th><th>Назначение</th><th>Типичная ловушка</th></tr></thead><tbody>
+          <tr><td>Depth</td><td>Оставляет ближайший fragment</td><td>Прозрачные объекты обычно пишут color, но не depth.</td></tr>
+          <tr><td>Culling</td><td>Удаляет обратные грани</td><td>Отрицательный scale меняет winding.</td></tr>
+          <tr><td>Stencil</td><td>8-битная маска областей</td><td>Нужно отдельно управлять read/write masks.</td></tr>
+          <tr><td>Blending</td><td>Смешивает shader output с framebuffer</td><td>Порядок важен для alpha transparency.</td></tr>
+        </tbody></table>
+        <div class="code-block"><div class="code-head">Alpha blending<button class="copy">Копировать</button></div><pre><code>gl.Enable(EnableCap.Blend);
+gl.BlendEquation(BlendEquationModeEXT.FuncAdd);
+gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+// Opaque: front-to-back, depth write ON.
+// Transparent: back-to-front, depth test ON, depth write OFF.
+gl.DepthMask(false);
+DrawTransparent();
+gl.DepthMask(true);</code></pre></div>
+        <p>Для UI и частиц premultiplied alpha часто даёт чище края: texture RGB уже умножен на alpha, blend factors — One и OneMinusSrcAlpha.</p>
+      </section>
+
+      <section class="chapter" id="lighting">
+        <h2 data-n="13 / СВЕТ">Phong, normal matrix и пространство расчёта</h2>
+        <p>Считайте позиции, normals, lights и camera в одном пространстве — обычно world или view. Normal нельзя преобразовывать model matrix напрямую при non-uniform scale: используйте inverse-transpose верхней 3×3 части.</p>
+        <div class="code-block"><div class="code-head">Fragment lighting<button class="copy">Копировать</button></div><pre><code>vec3 N = normalize(vWorldNormal);
+vec3 L = normalize(uLightPosition - vWorldPosition);
+vec3 V = normalize(uCameraPosition - vWorldPosition);
+vec3 H = normalize(L + V);
+
+float NoL = max(dot(N, L), 0.0);
+float specular = pow(max(dot(N, H), 0.0), uShininess);
+float attenuation = 1.0 / max(dot(uAttenuation,
+    vec3(1.0, distance(L), distance(L) * distance(L))), 0.0001);
+
+vec3 color = (uAlbedo * NoL + uSpecularColor * specular)
+           * uLightColor * uIntensity * attenuation;</code></pre></div>
+        <p>Phong полезен для изучения, но его параметры плохо соответствуют физическим материалам. Production-пайплайн обычно переходит к microfacet BRDF.</p>
+      </section>
+
+      <section class="chapter" id="pbr">
+        <h2 data-n="14 / PBR">Metallic-roughness и Cook–Torrance</h2>
+        <p>PBR не означает «фотореализм автоматически». Он означает сохранение энергии и параметры, которые ведут себя устойчиво при разном освещении. glTF workflow использует base color, metallic, perceptual roughness, normal, occlusion и emissive.</p>
+        <div class="code-block"><div class="code-head">PBR BRDF — компактное ядро<button class="copy">Копировать</button></div><pre><code>const float PI = 3.14159265359;
+
+float D_GGX(float NoH, float roughness) {
+    float a = roughness * roughness;
+    float a2 = a * a;
+    float d = NoH * NoH * (a2 - 1.0) + 1.0;
+    return a2 / max(PI * d * d, 1e-6);
+}
+
+float V_SmithGGX(float NoV, float NoL, float roughness) {
+    float a = roughness * roughness;
+    float gv = NoL * sqrt(NoV * NoV * (1.0 - a) + a);
+    float gl = NoV * sqrt(NoL * NoL * (1.0 - a) + a);
+    return 0.5 / max(gv + gl, 1e-6);
+}
+
+vec3 F_Schlick(float VoH, vec3 F0) {
+    return F0 + (1.0 - F0) * pow(1.0 - VoH, 5.0);
+}
+
+vec3 EvaluateBRDF(vec3 N, vec3 V, vec3 L,
+                  vec3 baseColor, float metallic, float roughness) {
+    vec3 H = normalize(V + L);
+    float NoV = max(dot(N, V), 1e-4);
+    float NoL = max(dot(N, L), 0.0);
+    float NoH = max(dot(N, H), 0.0);
+    float VoH = max(dot(V, H), 0.0);
+    roughness = max(roughness, 0.045);
+    vec3 F0 = mix(vec3(0.04), baseColor, metallic);
+    vec3 F = F_Schlick(VoH, F0);
+    vec3 spec = D_GGX(NoH, roughness)
+              * V_SmithGGX(NoV, NoL, roughness) * F;
+    vec3 diffuse = (1.0 - F) * (1.0 - metallic) * baseColor / PI;
+    return (diffuse + spec) * NoL;
+}</code></pre></div>
+        <p>Light intensity и HDR buffer должны позволять значения выше 1.0. Tone mapping выполняется позже. Normal map преобразуется из tangent space через TBN; tangent handedness храните в <code>tangent.w</code>.</p>
+      </section>
+
+      <section class="chapter" id="shadows">
+        <h2 data-n="15 / ТЕНИ">Shadow mapping и cascades</h2>
+        <p>Shadow map — depth сцены с позиции света. В lighting pass world position преобразуется light VP matrix; после perspective divide координаты переводятся в [0,1] и сравниваются с сохранённой глубиной.</p>
+        <div class="code-block"><div class="code-head">PCF shadow sampling<button class="copy">Копировать</button></div><pre><code>float SampleShadow(vec4 lightClip, vec3 normal, vec3 lightDir) {
+    vec3 p = lightClip.xyz / lightClip.w;
+    p = p * 0.5 + 0.5;
+    if (p.z &gt; 1.0) return 1.0;
+
+    float bias = max(0.0005 * (1.0 - dot(normal, lightDir)), 0.00005);
+    vec2 texel = 1.0 / textureSize(uShadowMap, 0);
+    float visibility = 0.0;
+    for (int y = -1; y &lt;= 1; ++y)
+        for (int x = -1; x &lt;= 1; ++x)
+            visibility += texture(uShadowMap,
+                vec3(p.xy + vec2(x,y) * texel, p.z - bias));
+    return visibility / 9.0;
+}</code></pre></div>
+        <p>Directional light для большой камеры требует Cascaded Shadow Maps: разделите view frustum на 3–5 диапазонов, постройте tight orthographic projection для каждого и стабилизируйте её привязкой к shadow texels. Иначе появится shimmering.</p>
+      </section>
+
+      <section class="chapter" id="ibl">
+        <h2 data-n="16 / ОКРУЖЕНИЕ">HDR environment и Image-Based Lighting</h2>
+        <p>Полный IBL pipeline обычно предвычисляет:</p>
+        <ul class="checklist">
+          <li>Equirectangular HDR → cubemap.</li>
+          <li>Diffuse irradiance cubemap — свёртка низких частот.</li>
+          <li>Prefiltered specular cubemap по mip levels roughness.</li>
+          <li>2D BRDF integration LUT для split-sum approximation.</li>
+        </ul>
+        <p>В runtime diffuse берётся из irradiance по normal, specular — из prefiltered environment по reflection direction и mip, затем умножается на BRDF LUT. Ambient occlusion обычно влияет на indirect component, но не должен механически затемнять прямой свет.</p>
+      </section>
+
+      <section class="chapter" id="framebuffers">
+        <h2 data-n="17 / RENDER TARGETS">Framebuffer, attachments и MRT</h2>
+        <p>Framebuffer — набор destinations, а не изображение. Texture attachments удобно читать позже; renderbuffer подходит для transient depth/MSAA, если sampling не нужен.</p>
+        <div class="code-block"><div class="code-head">HDR framebuffer<button class="copy">Копировать</button></div><pre><code>uint fbo = gl.CreateFramebuffer();
+uint hdr = gl.CreateTexture(TextureTarget.Texture2D);
+gl.TextureStorage2D(hdr, 1, SizedInternalFormat.Rgba16f, width, height);
+gl.NamedFramebufferTexture(fbo, FramebufferAttachment.ColorAttachment0, hdr, 0);
+
+uint depth = gl.CreateTexture(TextureTarget.Texture2D);
+gl.TextureStorage2D(depth, 1, SizedInternalFormat.DepthComponent32f, width, height);
+gl.NamedFramebufferTexture(fbo, FramebufferAttachment.DepthAttachment, depth, 0);
+
+Span&lt;GLEnum&gt; targets = [GLEnum.ColorAttachment0];
+unsafe { fixed (GLEnum* p = targets) gl.NamedFramebufferDrawBuffers(fbo, p); }
+
+var status = gl.CheckNamedFramebufferStatus(fbo, FramebufferTarget.Framebuffer);
+if (status != GLEnum.FramebufferComplete)
+    throw new InvalidOperationException($"Incomplete framebuffer: {status}");</code></pre></div>
+        <p>При resize пересоздайте attachments или используйте resource pool. После bind каждого FBO явно задайте viewport. Не забудьте framebuffer completeness и согласованные sample counts.</p>
+        <h3 id="render-pass">21. RenderPass</h3>
+        <p>RenderPass фиксирует target, load/clear operations, viewport и callback команд. Это понятный промежуточный шаг перед полноценным render graph.</p>
+        <div class="code-block"><div class="code-head">RenderPass.cs · C#<button class="copy">Копировать</button></div><pre><code>public sealed record RenderPass(
+    string Name,
+    RenderTarget Target,
+    Vector4? ClearColor,
+    bool ClearDepth,
+    Action&lt;RenderContext&gt; Execute);
+
+public void ExecutePass(RenderPass pass)
+{
+    using var marker = _device.PushDebugGroup(pass.Name);
+    pass.Target.Bind();
+    _device.SetViewport(pass.Target.Width, pass.Target.Height);
+
+    ClearBufferMask mask = 0;
+    if (pass.ClearColor is Vector4 color)
+    {
+        _device.GL.ClearColor(color.X, color.Y, color.Z, color.W);
+        mask |= ClearBufferMask.ColorBufferBit;
+    }
+    if (pass.ClearDepth)
+        mask |= ClearBufferMask.DepthBufferBit;
+    if (mask != 0)
+        _device.GL.Clear(mask);
+
+    pass.Execute(_context);
+}</code></pre></div>
+      </section>
+
+      <section class="chapter" id="deferred">
+        <h2 data-n="18 / DEFERRED">G-buffer и deferred lighting</h2>
+        <p>Geometry pass записывает material attributes в несколько attachments; lighting pass читает их и вычисляет свет на fullscreen triangle. Цена геометрии перестаёт умножаться на количество lights, но растут bandwidth и сложность transparency/MSAA.</p>
+        <table><thead><tr><th>Attachment</th><th>Format</th><th>Содержимое</th></tr></thead><tbody>
+          <tr><td>G0</td><td>RGBA8 sRGB/linear по контракту</td><td>Base color + metallic</td></tr>
+          <tr><td>G1</td><td>RGB10_A2 или RG16</td><td>Octahedral normal + roughness/AO</td></tr>
+          <tr><td>Depth</td><td>D32F</td><td>Depth; world position восстанавливается</td></tr>
+          <tr><td>Optional</td><td>R11G11B10F / RGBA16F</td><td>Emissive, velocity, object ID</td></tr>
+        </tbody></table>
+        <p>Не храните world position в RGBA16F без необходимости: восстановите её из depth и inverse view-projection. Для большого числа lights используйте tiled/clustered light culling с compute shader и SSBO списками.</p>
+      </section>
+
+      <section class="chapter" id="post">
+        <h2 data-n="19 / ЭФФЕКТЫ">Система постобработки</h2>
+        <p>Post effect — pass, который читает textures и пишет новый render target. Не делайте цепочку ручных FBO-переключений в игровом коде. Опишите ресурсы и зависимости декларативно.</p>
+        <div class="pipeline"><span>HDR scene</span><b>→</b><span>SSAO</span><b>→</b><span>Bloom</span><b>→</b><span>TAA</span><b>→</b><span>Tone map</span><b>→</b><span>UI</span></div>
+        <div class="code-block"><div class="code-head">Fullscreen triangle vertex shader<button class="copy">Копировать</button></div><pre><code>#version 450 core
+layout(location = 0) out vec2 vUv;
+
+void main() {
+    vec2 p = vec2((gl_VertexID &lt;&lt; 1) &amp; 2, gl_VertexID &amp; 2);
+    vUv = p;
+    gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
+}
+
+// Draw без VBO:
+// gl.BindVertexArray(emptyVao);
+// gl.DrawArrays(PrimitiveType.Triangles, 0, 3);</code></pre></div>
+        <h3>Ping-pong и hazards</h3>
+        <p>Нельзя одновременно sampling texture и писать в ту же область этой texture без специальных механизмов. Выдавайте каждому pass отдельный output или ping-pong пару. Render graph сможет переиспользовать физическую память, когда lifetimes логических ресурсов не пересекаются.</p>
+      </section>
+
+      <section class="chapter" id="bloom">
+        <h2 data-n="20 / HDR">Bloom, exposure и tone mapping</h2>
+        <p>Хороший bloom — не размытие всего кадра. Извлеките яркость мягким threshold, постройте downsample pyramid с фильтрацией, затем upsample-add. Это быстрее большого Gaussian blur и даёт естественный широкий ореол.</p>
+        <div class="code-block"><div class="code-head">Tone mapping fragment shader<button class="copy">Копировать</button></div><pre><code>vec3 AcesApprox(vec3 x) {
+    const float a = 2.51;
+    const float b = 0.03;
+    const float c = 2.43;
+    const float d = 0.59;
+    const float e = 0.14;
+    return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
+}
+
+void main() {
+    vec3 hdr = texture(uScene, vUv).rgb + texture(uBloom, vUv).rgb;
+    vec3 exposed = hdr * exp2(uExposure);
+    vec3 mapped = AcesApprox(exposed);
+    // Если default framebuffer не выполняет sRGB conversion:
+    vec3 display = pow(mapped, vec3(1.0 / 2.2));
+    oColor = vec4(display, 1.0);
+}</code></pre></div>
+        <div class="callout"><strong>Не применяйте gamma дважды</strong>Либо shader кодирует linear → sRGB, либо включён <code>FramebufferSrgb</code> для sRGB framebuffer. Точно зафиксируйте контракт последнего pass.</div>
+        <p>Auto exposure строится по log luminance: compute reduction или histogram, percentile clipping, затем temporal adaptation с разной скоростью для входа в свет и темноту.</p>
+      </section>
+
+      <section class="chapter" id="compute">
+        <h2 data-n="21 / GPU COMPUTE">Compute shaders и barriers</h2>
+        <p>Compute shader работает work groups без rasterizer. Он подходит для particles, culling, image filters, light lists и mip generation. Размер local group выбирайте с учётом алгоритма и GPU; 8×8 или 16×16 — лишь стартовая точка.</p>
+        <div class="code-block"><div class="code-head">Compute dispatch<button class="copy">Копировать</button></div><pre><code>// GLSL
+layout(local_size_x = 8, local_size_y = 8) in;
+layout(rgba16f, binding = 0) readonly uniform image2D uInput;
+layout(rgba16f, binding = 1) writeonly uniform image2D uOutput;
+
+void main() {
+    ivec2 p = ivec2(gl_GlobalInvocationID.xy);
+    if (any(greaterThanEqual(p, imageSize(uOutput)))) return;
+    imageStore(uOutput, p, imageLoad(uInput, p));
+}
+
+// C#
+gl.UseProgram(computeProgram);
+gl.BindImageTexture(0, input, 0, false, 0, BufferAccessARB.ReadOnly, InternalFormat.Rgba16f);
+gl.BindImageTexture(1, output, 0, false, 0, BufferAccessARB.WriteOnly, InternalFormat.Rgba16f);
+gl.DispatchCompute((width + 7) / 8, (height + 7) / 8, 1);
+gl.MemoryBarrier(MemoryBarrierMask.TextureFetchBarrierBit |
+                 MemoryBarrierMask.ShaderImageAccessBarrierBit);</code></pre></div>
+        <p>Barrier описывает последующее потребление данных, а не «ожидание вообще». Не используйте <code>AllBarrierBits</code> по привычке. Между invocations одной workgroup доступны shared memory и <code>barrier()</code>; между workgroups глобального барьера внутри одного dispatch нет.</p>
+      </section>
+
+      <section class="chapter" id="rendergraph">
+        <h2 data-n="22 / СИСТЕМА">Render graph: зависимости вместо ручного порядка</h2>
+        <p>Render graph получает набор passes. Каждый pass объявляет reads/writes и функцию исполнения. Compiler графа строит порядок, вычисляет lifetime ресурсов, создаёт framebuffer, вставляет barriers и может alias-ить временные textures.</p>
+        <div class="code-block"><div class="code-head">Желаемый API<button class="copy">Копировать</button></div><pre><code>TextureHandle hdr = graph.CreateTexture("HDR",
+    new TextureDesc(Size.Relative(1, 1), Format.Rgba16F));
+TextureHandle depth = graph.CreateTexture("Depth",
+    new TextureDesc(Size.Relative(1, 1), Format.Depth32F));
+
+graph.AddPass&lt;GeometryData&gt;("Geometry", setup =>
+{
+    setup.Data.Color = setup.Write(hdr, LoadOp.Clear);
+    setup.Data.Depth = setup.Write(depth, LoadOp.Clear);
+}, (data, context) =>
+{
+    renderer.DrawOpaque(context, data.Color, data.Depth);
+});
+
+TextureHandle bloom = bloomFeature.Build(graph, hdr);
+graph.AddPass&lt;ToneMapData&gt;("Tone map", setup =>
+{
+    setup.Data.Scene = setup.Read(hdr);
+    setup.Data.Bloom = setup.Read(bloom);
+    setup.Data.Output = setup.Write(graph.Backbuffer);
+}, ExecuteToneMap);</code></pre></div>
+        <h3>Компиляция графа</h3>
+        <ol>
+          <li>Проверить, что каждый read имеет producer или imported resource.</li>
+          <li>Построить directed edges writer → reader и topological sort.</li>
+          <li>Удалить passes, результаты которых не ведут к side effect/backbuffer.</li>
+          <li>Вычислить first/last use каждого transient resource.</li>
+          <li>Выделить совместимые physical allocations из pool.</li>
+          <li>Собрать FBO cache и transition/barrier plan.</li>
+          <li>Исполнить passes с debug groups и GPU timestamps.</li>
+        </ol>
+        <div class="callout warning"><strong>Начните проще</strong>Первый render graph может не делать aliasing и автоматические barriers. Сначала получите корректные handles, validation, resize и pass order. Оптимизация памяти — следующий этап.</div>
+      </section>
+
+      <section class="chapter" id="architecture">
+        <h2 data-n="23 / АРХИТЕКТУРА">Как разложить production renderer</h2>
+        <div class="code-block"><div class="code-head">Предлагаемая структура<button class="copy">Копировать</button></div><pre><code>Rendering/
+├── Device/
+│   ├── GraphicsDevice.cs      // GL API, caps, debug, state cache
+│   ├── Buffer.cs              // owning wrappers
+│   ├── Texture.cs
+│   └── PipelineState.cs
+├── Assets/
+│   ├── ShaderLibrary.cs       // preprocess, variants, hot reload
+│   ├── TextureLoader.cs       // CPU decode → upload queue
+│   └── MeshUploader.cs
+├── Scene/
+│   ├── RenderWorld.cs         // render-only snapshot
+│   ├── RenderExtractor.cs     // game scene → render world
+│   └── Visibility.cs          // frustum/occlusion culling
+├── Graph/
+│   ├── RenderGraph.cs
+│   ├── ResourceRegistry.cs
+│   └── TransientPool.cs
+├── Features/
+│   ├── Shadows/
+│   ├── Deferred/
+│   ├── Bloom/
+│   └── ToneMapping/
+└── Renderer.cs                // orchestration, no asset parsing</code></pre></div>
+        <p><strong>GraphicsDevice</strong> — единственное место низкоуровневых GL-вызовов и capability checks. <strong>RenderWorld</strong> не содержит gameplay objects: только compact handles, transforms, bounds, lights. <strong>Features</strong> добавляют passes в graph, но не управляют главным loop.</p>
+        <h3>State cache</h3>
+        <p>Обёртка device может пропускать повторные <code>UseProgram</code>, <code>BindVertexArray</code>, blend/depth changes. Но cache должен быть единственным владельцем state; произвольные raw GL-вызовы снаружи сделают его ложным. В debug режиме полезно уметь invalidation/validation.</p>
+      </section>
+
+      <section class="chapter" id="performance">
+        <h2 data-n="24 / ПРОФИЛИРОВАНИЕ">Производительность без гадания</h2>
+        <p>CPU frame time и GPU frame time независимы. VSync маскирует bottleneck. Измеряйте passes timestamp queries, а не <code>Stopwatch</code> вокруг draw call: команды асинхронны.</p>
+        <ul class="checklist">
+          <li>Используйте RenderDoc для одного кадра: targets, pipeline state, textures, mesh.</li>
+          <li>Добавьте GPU timestamp query pool с задержкой чтения 2–4 кадра.</li>
+          <li>Считайте draw calls, triangles, state changes, uploaded bytes.</li>
+          <li>Не вызывайте <code>Finish</code>; не читайте query result сразу.</li>
+          <li>Сортируйте opaque draws по pipeline/material и приблизительно front-to-back.</li>
+          <li>Переиспользуйте buffers; избегайте managed allocations в render loop.</li>
+        </ul>
+        <h3>Persistent mapped ring buffer</h3>
+        <p>Для частых uploads выделите большой buffer с persistent/coherent mapping, делите на frame regions и защищайте повторное использование fences. Это снижает driver overhead, но требует строгого allocator. Более простой первый шаг — orphaning или несколько rotating buffers.</p>
+        <table><thead><tr><th>Симптом</th><th>Вероятная причина</th><th>Проверка</th></tr></thead><tbody>
+          <tr><td>CPU 100%, GPU простаивает</td><td>Draw overhead, allocations, scene traversal</td><td>Profiler + количество calls</td></tr>
+          <tr><td>GPU 100%, растёт с разрешением</td><td>Fill-rate, bandwidth, heavy fragment</td><td>Уменьшить resolution</td></tr>
+          <tr><td>GPU 100%, не зависит от resolution</td><td>Vertices, geometry, compute</td><td>Упростить meshes/passes</td></tr>
+          <tr><td>Случайные spikes</td><td>Shader compilation, upload, readback</td><td>GPU/CPU timeline, debug groups</td></tr>
+        </tbody></table>
+      </section>
+
+      <section class="chapter" id="lifetime">
+        <h2 data-n="25 / НАДЁЖНОСТЬ">Lifetime, контекст и IDisposable</h2>
+        <p>GL handle нужно удалить до уничтожения контекста и на потоке, где контекст активен. Финализатор непригоден для прямого <code>Delete*</code>: неизвестны поток, момент и существование контекста.</p>
+        <div class="code-block"><div class="code-head">Owning resource pattern<button class="copy">Копировать</button></div><pre><code>public sealed class GpuBuffer : IDisposable
+{
+    private GL? _gl;
+    public uint Handle { get; private set; }
+
+    public GpuBuffer(GL gl, nuint size)
+    {
+        _gl = gl;
+        Handle = gl.CreateBuffer();
+        gl.NamedBufferStorage(Handle, size, null, BufferStorageMask.DynamicStorageBit);
+    }
+
+    public void Dispose()
+    {
+        GL? gl = Interlocked.Exchange(ref _gl, null);
+        if (gl is null) return;
+        gl.DeleteBuffer(Handle);
+        Handle = 0;
+    }
+}</code></pre></div>
+        <p>Для сложного движка <code>Dispose</code> может помещать handle в deletion queue render thread. Контейнер зависимостей должен уничтожать rendering scope до окна/контекста. Не смешивайте ручное владение и DI ownership одного объекта.</p>
+      </section>
+
+      <section class="chapter" id="roadmap">
+        <h2 data-n="26 / ПЛАН">Порядок разработки собственного renderer</h2>
+        <ol>
+          <li><strong>Foundation:</strong> окно, debug callback, resize, shader compile, owning resources.</li>
+          <li><strong>Geometry:</strong> indexed mesh, camera, depth/culling, texture, glTF import.</li>
+          <li><strong>Scene extraction:</strong> render items, frustum culling, sorting, material contracts.</li>
+          <li><strong>Lighting:</strong> linear HDR, PBR, point/directional lights, shadow map.</li>
+          <li><strong>Frame resources:</strong> UBO/SSBO, transient targets, resize-safe pool.</li>
+          <li><strong>Post:</strong> bloom pyramid, exposure, tone map, FXAA/TAA.</li>
+          <li><strong>Scale:</strong> instancing, indirect draws, clustered lights, compute culling.</li>
+          <li><strong>Graph:</strong> declarative passes, validation, profiling, resource aliasing.</li>
+        </ol>
+        <div class="callout success"><strong>Критерий готовности этапа</strong>Каждый шаг должен иметь debug labels, корректный resize, предсказуемое владение ресурсами, capture в RenderDoc и измерение времени. Красивый кадр без диагностики — ещё не система.</div>
+        <h3>Чек-лист типичного чёрного экрана</h3>
+        <ul class="checklist">
+          <li>Есть активный контекст, callback не сообщает ошибку.</li>
+          <li>Viewport ненулевой и соответствует текущему framebuffer.</li>
+          <li>Program успешно linked и действительно выбран.</li>
+          <li>VAO выбран, attributes enabled, stride/offset верны.</li>
+          <li>Framebuffer complete, draw buffers настроены.</li>
+          <li>Depth/culling не отбрасывают всю геометрию.</li>
+          <li>Матрицы дают clip coordinates с корректным W.</li>
+          <li>Texture completeness, unit и sampler binding согласованы.</li>
+          <li>После compute стоит нужный memory barrier.</li>
+        </ul>
+        <p style="margin-top:50px;color:#657991">Документ спроектирован как практическая карта разработки. API Silk.NET может слегка отличаться между версиями; при расхождении сверяйте сигнатуру generated binding и спецификацию соответствующей функции OpenGL.</p>
+      </section>
+      <div class="search-empty">Ничего не найдено. Попробуйте другой запрос.</div>
+    </article>
+  </main>
+
+  <script>
+    // Небольшой автономный lexer: корректно различает C#, GLSL и shell,
+    // не требует CDN и никогда не исполняет содержимое примеров.
+    const escapeHtml = text => text
+      .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+
+    const languages = {
+      csharp: {
+        keywords: new Set('abstract as async await base break case catch checked class const continue default delegate do else enum event explicit extern false finally fixed for foreach goto if implicit in interface internal is lock namespace new null operator out override params private protected public readonly record ref return sealed sizeof stackalloc static struct switch this throw true try typeof unchecked unsafe using virtual void volatile while yield required init'.split(' ')),
+        types: new Set('bool byte char decimal double float int long nint nuint object sbyte short string uint ulong ushort var dynamic Task Span ReadOnlySpan Matrix4x4 Vector2 Vector3 Vector4 Quaternion GL'.split(' '))
+      },
+      glsl: {
+        keywords: new Set('attribute break buffer case centroid coherent const continue default discard do else false flat for highp if in inout invariant layout lowp mediump out patch precision readonly restrict return sample shared smooth struct subroutine switch true uniform varying volatile while writeonly'.split(' ')),
+        types: new Set('void bool int uint float double vec2 vec3 vec4 dvec2 dvec3 dvec4 ivec2 ivec3 ivec4 uvec2 uvec3 uvec4 bvec2 bvec3 bvec4 mat2 mat3 mat4 sampler2D samplerCube image2D'.split(' '))
+      },
+      shell: { keywords: new Set('cd dotnet new add package export if then fi for do done'.split(' ')), types: new Set() }
+    };
+
+    function detectLanguage(block) {
+      const source = block.textContent;
+      const label = block.closest('.code-block').querySelector('.code-head').textContent.toLowerCase();
+      if (label.includes('terminal') || label.includes('shell')) return 'shell';
+      if (source.includes('#version') || /\bvec[234]\b|\blayout\s*\(/.test(source)) return 'glsl';
+      return 'csharp';
+    }
+
+    function highlight(source, language) {
+      const config = languages[language];
+      const token = /(^\s*#\w+[^\n]*|\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b(?:0x[\da-fA-F]+|\d+(?:\.\d+)?(?:[fFuUlL]+)?)\b|\b[A-Za-z_]\w*\b)/gm;
+      let html = '', cursor = 0;
+      for (const match of source.matchAll(token)) {
+        html += escapeHtml(source.slice(cursor, match.index));
+        const value = match[0];
+        let kind = '';
+        if (/^\s*#/.test(value)) kind = 'preprocessor';
+        else if (/^\/[/*]/.test(value)) kind = 'comment';
+        else if (/^["']/.test(value)) kind = 'string';
+        else if (/^(?:0x|\d)/.test(value)) kind = 'number';
+        else if (config.keywords.has(value)) kind = 'keyword';
+        else if (config.types.has(value) || /^[A-Z]\w*$/.test(value)) kind = 'type';
+        html += kind ? `<span class="tok-${kind}">${escapeHtml(value)}</span>` : escapeHtml(value);
+        cursor = match.index + value.length;
+      }
+      return html + escapeHtml(source.slice(cursor));
+    }
+
+    document.querySelectorAll('.code-block pre code').forEach(code => {
+      const language = detectLanguage(code);
+      code.dataset.language = language;
+      code.innerHTML = highlight(code.textContent, language);
+      const head = code.closest('.code-block').querySelector('.code-head');
+      if (!head.firstChild.textContent.toLowerCase().includes(language))
+        head.firstChild.textContent += ` · ${language === 'csharp' ? 'C#' : language.toUpperCase()}`;
+    });
+
+    const sidebar = document.querySelector('.sidebar');
+    const navLinks = [...sidebar.querySelectorAll('a')];
+    const sections = [...document.querySelectorAll('article section[id]')];
+    const headings = [...document.querySelectorAll('article h2, article h3')];
+    const toc = document.querySelector('#toc-links');
+    const search = document.querySelector('#search');
+
+    headings.forEach((heading, index) => {
+      if (!heading.id) heading.id = `topic-${index + 1}`;
+      const link = document.createElement('a');
+      link.href = `#${heading.id}`;
+      link.textContent = heading.textContent;
+      if (heading.tagName === 'H3') link.style.paddingLeft = '22px';
+      toc.appendChild(link);
+    });
+
+    const tocLinks = [...toc.querySelectorAll('a')];
+    const navTargets = navLinks
+      .map(link => ({ link, target: document.querySelector(link.hash) }))
+      .filter(item => item.target);
+    let activeNavigationId = '';
+
+    function updateNavigation() {
+      const marker = scrollY + 110;
+      let current = navTargets[0];
+      for (const item of navTargets) {
+        if (item.target.offsetParent === null) continue;
+        if (item.target.offsetTop <= marker &&
+            (!current || item.target.offsetTop >= current.target.offsetTop))
+          current = item;
+      }
+      if (!current || current.target.id === activeNavigationId) return;
+      activeNavigationId = current.target.id;
+      navLinks.forEach(link =>
+        link.classList.toggle('active', link.hash === `#${activeNavigationId}`));
+
+      const activeLink = navLinks.find(link =>
+        link.hash === `#${activeNavigationId}`);
+      if (activeLink) {
+        const top = activeLink.offsetTop;
+        const bottom = top + activeLink.offsetHeight;
+        if (top < sidebar.scrollTop + 24)
+          sidebar.scrollTo({ top: Math.max(0, top - 24), behavior: 'smooth' });
+        else if (bottom > sidebar.scrollTop + sidebar.clientHeight - 24)
+          sidebar.scrollTo({
+            top: bottom - sidebar.clientHeight + 24,
+            behavior: 'smooth'
+          });
+      }
+
+      let currentHeading = headings[0];
+      for (const heading of headings)
+        if (heading.offsetParent !== null && heading.offsetTop <= marker)
+          currentHeading = heading;
+      tocLinks.forEach(link =>
+        link.classList.toggle('active',
+          currentHeading && link.hash === `#${currentHeading.id}`));
+    }
+    addEventListener('scroll', updateNavigation, { passive: true });
+    addEventListener('resize', updateNavigation);
+    updateNavigation();
+
+    document.querySelectorAll('.copy').forEach(button => {
+      button.addEventListener('click', async () => {
+        const code = button.closest('.code-block').querySelector('code').innerText;
+        await navigator.clipboard.writeText(code);
+        const old = button.textContent;
+        button.textContent = 'Скопировано';
+        setTimeout(() => button.textContent = old, 1200);
+      });
+    });
+
+    function runSearch() {
+      const query = search.value.trim().toLocaleLowerCase('ru');
+      let visible = 0;
+      document.querySelectorAll('.chapter').forEach(section => {
+        const match = !query || section.innerText.toLocaleLowerCase('ru').includes(query);
+        section.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+      document.querySelector('.hero').style.display = query ? 'none' : '';
+      document.querySelector('.search-empty').style.display = visible ? 'none' : 'block';
+    }
+    search.addEventListener('input', runSearch);
+    document.addEventListener('keydown', event => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        search.focus();
+      }
+      if (event.key === 'Escape') {
+        search.value = '';
+        runSearch();
+        search.blur();
+        sidebar.classList.remove('open');
+      }
+    });
+
+    document.querySelector('.mobile-menu').addEventListener('click', () =>
+      sidebar.classList.toggle('open'));
+    navLinks.forEach(link => link.addEventListener('click', () =>
+      sidebar.classList.remove('open')));
+
+    const progress = document.querySelector('.progress');
+    addEventListener('scroll', () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      progress.style.width = `${max > 0 ? scrollY / max * 100 : 0}%`;
+    }, { passive: true });
+
+    // Интерактивная перспективная сетка: ближайшие узлы мягко тянутся к мыши.
+    const canvas = document.querySelector('#grid-bg');
+    const ctx = canvas.getContext('2d');
+    const pointer = { x: -1000, y: -1000 };
+    let points = [];
+    const gap = 44;
+
+    function resizeGrid() {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      canvas.width = innerWidth * dpr;
+      canvas.height = innerHeight * dpr;
+      canvas.style.width = `${innerWidth}px`;
+      canvas.style.height = `${innerHeight}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      points = [];
+      for (let y = -gap; y <= innerHeight + gap; y += gap)
+        for (let x = -gap; x <= innerWidth + gap; x += gap)
+          points.push({ x, y, dx: 0, dy: 0 });
+    }
+
+    addEventListener('resize', resizeGrid);
+    addEventListener('pointermove', event => { pointer.x = event.clientX; pointer.y = event.clientY; }, { passive: true });
+    addEventListener('pointerleave', () => { pointer.x = pointer.y = -1000; });
+
+    function drawGrid() {
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      for (const p of points) {
+        const vx = pointer.x - p.x;
+        const vy = pointer.y - p.y;
+        const distance = Math.hypot(vx, vy);
+        const force = distance < 170 ? Math.pow(1 - distance / 170, 2) * 25 : 0;
+        const targetX = distance ? vx / distance * force : 0;
+        const targetY = distance ? vy / distance * force : 0;
+        p.dx += (targetX - p.dx) * .12;
+        p.dy += (targetY - p.dy) * .12;
+      }
+      const cols = Math.ceil((innerWidth + gap * 2) / gap);
+      ctx.lineWidth = .55;
+      ctx.strokeStyle = 'rgba(57,255,116,.105)';
+      ctx.beginPath();
+      points.forEach((p, index) => {
+        if (index % cols !== cols - 1 && points[index + 1]) {
+          ctx.moveTo(p.x + p.dx, p.y + p.dy);
+          ctx.lineTo(points[index + 1].x + points[index + 1].dx, points[index + 1].y + points[index + 1].dy);
+        }
+        if (points[index + cols]) {
+          ctx.moveTo(p.x + p.dx, p.y + p.dy);
+          ctx.lineTo(points[index + cols].x + points[index + cols].dx, points[index + cols].y + points[index + cols].dy);
+        }
+      });
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(57,255,116,.32)';
+      for (const p of points) {
+        ctx.beginPath();
+        ctx.arc(p.x + p.dx, p.y + p.dy, 1.15, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      requestAnimationFrame(drawGrid);
+    }
+    resizeGrid();
+    drawGrid();
+  </script>
+</body>
+</html>
