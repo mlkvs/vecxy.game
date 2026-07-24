@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Engine\Vecxy.Engine.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Scene\Vecxy.Scene.csproj" />
   </ItemGroup>
 
   <ItemGroup>
