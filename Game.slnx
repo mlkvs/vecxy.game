@@ -1,14 +1,16 @@
 <Solution>
-  <Configurations>
-    <Platform Name="Any CPU" />
-  </Configurations>
+  <Folder Name="/Editor/">
+    <Project Path="Engine/Vecxy/Code/Vecxy.Editor/Vecxy.Editor.csproj" />
+  </Folder>
   <Folder Name="/Engine/">
     <Project Path="Engine/Vecxy/Code/Vecxy.Assets/Vecxy.Assets.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Diagnostics/Vecxy.Diagnostics.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Engine/Vecxy.Engine.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Input/Vecxy.Input.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Kernel/Vecxy.Kernel.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Physics/Vecxy.Physics.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Rendering/Vecxy.Rendering.csproj" />
-    <Project Path="Engine\Vecxy\Code\Vecxy.Scene\Vecxy.Scene.csproj" Type="Classic C#" />
+    <Project Path="Engine\Vecxy\Code\Vecxy.Scene\Vecxy.Scene.csproj" />
   </Folder>
   <Folder Name="/Game/">
     <Project Path="Game/Game.csproj" />
