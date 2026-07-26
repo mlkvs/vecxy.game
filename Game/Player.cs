@@ -1,5 +1,7 @@
 using System.Numerics;
 using Vecxy.Assets;
+using Vecxy.Diagnostics;
+using Vecxy.Editor;
 using Vecxy.Input;
 using Vecxy.Physics;
 using Vecxy.Rendering;
@@ -11,6 +13,7 @@ public sealed class Player : AComponent
 {
     private readonly IInputManager _inputManager;
     private readonly IPhysicsSystem _physics;
+    private readonly Vecxy.Kernel.IWindow _window;
     private readonly InputMap _input;
 
     private SceneObject? _cameraObject;
@@ -20,18 +23,45 @@ public sealed class Player : AComponent
 
     private float _yaw;
     private float _pitch;
+    private bool _jumpWasPressed;
 
+    [EditorProperty(Label = "Walk Speed", Order = 10)]
     public float WalkSpeed { get; set; } = 3.5f;
+
+    [EditorProperty(Label = "Sprint Multiplier", Order = 11)]
     public float SprintMultiplier { get; set; } = 1.8f;
+
+    [EditorProperty(Label = "Ground Acceleration", Order = 12)]
     public float GroundAcceleration { get; set; } = 24.0f;
-    public float AirAcceleration { get; set; } = 8.0f;
+
+    [EditorProperty(Label = "Ground Deceleration", Order = 13)]
     public float GroundDeceleration { get; set; } = 30.0f;
+
+    [EditorProperty(Label = "Air Acceleration", Order = 14)]
+    public float AirAcceleration { get; set; } = 8.0f;
+
+    [EditorProperty(Label = "Jump Velocity", Order = 15)]
+    public float JumpVelocity { get; set; } = 5.2f;
+
+    [EditorProperty(Label = "Look Sensitivity", Order = 20)]
     public float LookSensitivity { get; set; } = 0.0025f;
+
+    [EditorProperty(Label = "Maximum Pitch", Order = 21)]
     public float MaximumPitch { get; set; } = 1.45f;
+
+    [EditorProperty(Label = "Height", Order = 30)]
     public float Height { get; set; } = 1.8f;
+
+    [EditorProperty(Label = "Radius", Order = 31)]
     public float Radius { get; set; } = 0.35f;
+
+    [EditorProperty(Label = "Eye Height", Order = 32)]
     public float EyeHeight { get; set; } = 1.62f;
+
+    [EditorProperty(Label = "Ground Probe Distance", Order = 33)]
     public float GroundProbeDistance { get; set; } = 0.15f;
+
+    [EditorProperty(Label = "View Ray Distance", Order = 34)]
     public float ViewRayDistance { get; set; } = 3.0f;
 
     public bool IsGrounded { get; private set; }
@@ -59,14 +89,17 @@ public sealed class Player : AComponent
         throw new InvalidOperationException("Player camera is not initialized.");
 
     public Player(
+        Vecxy.Kernel.IWindow window,
         IInputManager inputManager,
         IPhysicsSystem physics,
         AssetRef<InputAsset> inputAsset)
     {
+        ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(inputManager);
         ArgumentNullException.ThrowIfNull(physics);
         ArgumentNullException.ThrowIfNull(inputAsset);
 
+        _window = window;
         _inputManager = inputManager;
         _physics = physics;
         _input = inputManager.Create(inputAsset, "Player");
@@ -103,6 +136,7 @@ public sealed class Player : AComponent
             Radius + cylinderHeight * 0.5f,
             0.0f);
     }
+    
 
     protected override void Start()
     {
@@ -125,6 +159,7 @@ public sealed class Player : AComponent
 
         ApplyBodyRotation();
         SyncView();
+        _window.SetCursorCaptured(true);
     }
 
     protected override void OnEnable()
@@ -135,6 +170,7 @@ public sealed class Player : AComponent
     protected override void OnDisable()
     {
         _input.Disable();
+        _window.SetCursorCaptured(false);
     }
 
     protected override void Update(float deltaTime)
@@ -206,7 +242,7 @@ public sealed class Player : AComponent
 
     private void UpdateLook()
     {
-        if (!_input.GetAction("Look").IsPressed)
+        if (!_window.IsCursorCaptured)
             return;
 
         var mouseDelta = _inputManager.MouseDelta;
@@ -271,6 +307,8 @@ public sealed class Player : AComponent
         if (_input.GetAction("Sprint").IsPressed)
             speed *= SprintMultiplier;
 
+        var jumpPressed = _input.GetAction("Jump").IsPressed;
+
         var targetHorizontalVelocity = direction * speed;
         var currentVelocity = _body.Velocity;
         var currentHorizontalVelocity =
@@ -302,11 +340,20 @@ public sealed class Player : AComponent
         if (IsGrounded && nextVerticalVelocity < -1.0f)
             nextVerticalVelocity = -1.0f;
 
+        if (IsGrounded &&
+            jumpPressed &&
+            !_jumpWasPressed)
+        {
+            nextVerticalVelocity = JumpVelocity;
+            IsGrounded = false;
+        }
+
         _body.Velocity = new Vector3(
             nextHorizontalVelocity.X,
             nextVerticalVelocity,
             nextHorizontalVelocity.Z);
         _body.AngularVelocity = Vector3.Zero;
+        _jumpWasPressed = jumpPressed;
     }
 
     private void ApplyBodyRotation()

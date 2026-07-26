@@ -18,11 +18,11 @@ maps:
           - type: Composite
             composite: WASD
             
-      - name: Look
+      - name: Jump
         type: Button
         bindings:
-          - type: Mouse
-            mouse: Right
+          - type: Keyboard
+            key: Space
 
       - name: Sprint
         type: Button

@@ -17,6 +17,7 @@ public sealed class GameLayer(
     IAssetsManager assets,
     IConfigProvider configs,
     IInputManager input,
+    Vecxy.Kernel.IWindow window,
     IEditorGui editorGui,
     ISceneInstantiator sceneInstantiator,
     IPhysicsSystem physics,
@@ -160,6 +161,7 @@ public sealed class GameLayer(
 
         _player = playerObject.AddComponent(
             new Player(
+                window,
                 input,
                 physics,
                 _inputAsset));
