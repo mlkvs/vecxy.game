@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Editor\Vecxy.Editor.csproj" />
     <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Engine\Vecxy.Engine.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Input\Vecxy.Input.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Physics\Vecxy.Physics.csproj" />
     <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Scene\Vecxy.Scene.csproj" />
   </ItemGroup>
 
@@ -15,5 +18,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>Assets\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\Models\" />
   </ItemGroup>
 </Project>

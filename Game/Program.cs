@@ -1,4 +1,5 @@
-using Vecxy.Diagnostics;
+using Vecxy.Assets;
+using Vecxy.Editor;
 using Vecxy.Engine;
 using Vecxy.Kernel;
 
@@ -10,16 +11,19 @@ internal static class Program
     {
         var options = new Engine.Options
         {
-            Window = new WindowOptions("Game", 800, 600),
-            AssetsPath = Env.IsDev
-                ? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../Assets"))
-                : Path.Combine(AppContext.BaseDirectory, "Assets")
+            Window = new IWindow.Options("Game", 800, 600),
+            TargetFrameRate = 60
         };
 
-        var layers = new List<AppLayer.IDefinition>
+        var layers = new List<AAppLayer.IDefinition>
         {
-            new EngineLayer.Definition(),
-            new GameLayer.Definition(),
+            new EngineLayer.Definition(
+                new AssetsModule.Options
+                {
+                    AssetsDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Assets"))
+                }),
+            new EditorLayer.Definition(),
+            new GameLayer.Definition()
         };
 
         using var engine = new Engine(options, layers);
