@@ -1,0 +1,31 @@
+namespace: Game
+className: GameInput
+
+maps:
+  - name: Engine
+    actions:
+      - name: ToggleFullscreen
+        type: Button
+        bindings:
+          - type: Keyboard
+            key: F11
+
+  - name: Player
+    actions:
+      - name: Move
+        type: Vector2
+        bindings:
+          - type: Composite
+            composite: WASD
+            
+      - name: Look
+        type: Button
+        bindings:
+          - type: Mouse
+            mouse: Right
+
+      - name: Sprint
+        type: Button
+        bindings:
+          - type: Keyboard
+            key: LeftShift
