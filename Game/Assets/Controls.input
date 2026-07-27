@@ -9,6 +9,11 @@ maps:
         bindings:
           - type: Keyboard
             key: F11
+      - name: ToggleConsole
+        type: Button
+        bindings:
+          - type: Keyboard
+            key: GraveAccent
 
   - name: Player
     actions:

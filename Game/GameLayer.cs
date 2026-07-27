@@ -1,14 +1,13 @@
 using System.Numerics;
-using ImGuiNET;
 using JetBrains.Annotations;
 using Vecxy.Assets;
-using Vecxy.Editor;
 using Vecxy.Engine;
 using Vecxy.Input;
 using Vecxy.Physics;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 using Vecxy.Diagnostics;
+using Vecxy.Diagnostics.Console;
 
 namespace Game;
 
@@ -18,10 +17,10 @@ public sealed class GameLayer(
     IConfigProvider configs,
     IInputManager input,
     Vecxy.Kernel.IWindow window,
-    IEditorGui editorGui,
     ISceneInstantiator sceneInstantiator,
     IPhysicsSystem physics,
-    ISceneManager scenes
+    ISceneManager scenes,
+    IConsoleRegistry consoleRegistry
 ) : AAppLayer
 {
     public sealed class Definition :
@@ -37,6 +36,7 @@ public sealed class GameLayer(
     private PostProcessing? _postProcessing;
     private SceneObject? _sceneModelRoot;
     private Player? _player;
+    private PlayerDebugTarget? _playerDebugTarget;
     private Scene? _scene;
 
     public override void OnInitialize()
@@ -89,6 +89,7 @@ public sealed class GameLayer(
             CreatePostProcessing();
 
             CreatePlayer(roomObject);
+            RegisterConsoleTargets();
             
             scenes.SetActiveScene(_scene);
         }
@@ -104,6 +105,9 @@ public sealed class GameLayer(
     {
         _sceneModelRoot = null;
         _player = null;
+        if (_playerDebugTarget is not null)
+            consoleRegistry.Unregister(_playerDebugTarget);
+        _playerDebugTarget = null;
         _postProcessing = null;
         scenes.UnloadActiveScene();
         DestroyScene();
@@ -168,6 +172,15 @@ public sealed class GameLayer(
         _player.WalkSpeed = 3.25f;
         _player.SprintMultiplier = 1.9f;
         _player.EyeHeight = 1.62f;
+    }
+
+    private void RegisterConsoleTargets()
+    {
+        if (_player is null)
+            return;
+
+        _playerDebugTarget = new PlayerDebugTarget(_player);
+        consoleRegistry.Register(_playerDebugTarget);
     }
 
     private void OnFogConfigChanged(FogSettingsConfig config)

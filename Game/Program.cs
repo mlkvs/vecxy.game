@@ -11,7 +11,7 @@ internal static class Program
     {
         var options = new Engine.Options
         {
-            Window = new IWindow.Options("Game", 800, 600),
+            Window = new IWindow.Options("Game", 800, 600, 1),
             TargetFrameRate = 60
         };
 
