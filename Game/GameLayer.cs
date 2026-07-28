@@ -1,7 +1,7 @@
 using System.Numerics;
 using JetBrains.Annotations;
 using Vecxy.Assets;
-using Vecxy.Audio;
+//using Vecxy.Audio;
 using Vecxy.Engine;
 using Vecxy.Input;
 using Vecxy.Physics;
@@ -22,7 +22,7 @@ public sealed class GameLayer(
     IPhysicsSystem physics,
     ISceneManager scenes,
     IConsoleRegistry consoleRegistry,
-    IAudioManager audioManager,
+   // IAudioManager audioManager,
     ISceneFactory sceneFactory
 ) : AAppLayer
 {
@@ -171,8 +171,7 @@ public sealed class GameLayer(
                 window,
                 input,
                 physics,
-                _inputAsset,
-                audioManager));
+                _inputAsset));
         _player.WalkSpeed = 3.25f;
         _player.SprintMultiplier = 1.9f;
         _player.EyeHeight = 1.62f;
@@ -325,24 +324,33 @@ public sealed class GameLayer(
             FitColliderToRenderer(collider, renderer);
 
             var body =
-                sceneObject.GetComponent<RigidBody>()
-                ?? sceneObject.AddComponent<RigidBody>();
+                sceneObject.GetComponent<RigidBody>();
 
             if (IsDynamicPhysicsObject(sceneObject.Name))
             {
+                sceneObject.IsStatic = false;
+                body ??= sceneObject.AddComponent<RigidBody>();
                 body.MotionType = EPhysicsMotionType.Dynamic;
                 body.AffectedByGravity = true;
                 body.Mass = 25.0f;
-                body.Friction = 0.8f;
-                body.Restitution = 0.0f;
                 body.EnableSpeculativeContacts = true;
             }
             else
             {
-                body.MotionType = EPhysicsMotionType.Static;
-                body.AffectedByGravity = false;
-                body.Friction = 0.8f;
-                body.Restitution = 0.0f;
+                sceneObject.IsStatic = true;
+
+                if (body is not null)
+                    sceneObject.RemoveComponent(body);
+            }
+
+            collider.CollisionLayer =
+                sceneObject.IsStatic ? "world" : "default";
+            collider.Material.Friction = 0.8f;
+            collider.Material.Restitution = 0.0f;
+
+            if (collider.SceneObject.Name == "Cube")
+            {
+                collider.CollisionLayer = "box";
             }
         }
     }

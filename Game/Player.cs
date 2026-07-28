@@ -1,6 +1,6 @@
 using System.Numerics;
 using Vecxy.Assets;
-using Vecxy.Audio;
+//using Vecxy.Audio;
 using Vecxy.Diagnostics;
 using Vecxy.Editor;
 using Vecxy.Input;
@@ -16,7 +16,7 @@ public sealed class Player : AComponent
     private readonly IPhysicsSystem _physics;
     private readonly Vecxy.Kernel.IWindow _window;
     private readonly InputMap _input;
-    private readonly IAudioManager _audioManager;
+   // private readonly IAudioManager _audioManager;
 
     private SceneObject? _cameraObject;
     private Camera? _camera;
@@ -94,8 +94,7 @@ public sealed class Player : AComponent
         Vecxy.Kernel.IWindow window,
         IInputManager inputManager,
         IPhysicsSystem physics,
-        AssetRef<InputAsset> inputAsset,
-        IAudioManager audioManager)
+        AssetRef<InputAsset> inputAsset)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(inputManager);
@@ -106,7 +105,6 @@ public sealed class Player : AComponent
         _inputManager = inputManager;
         _physics = physics;
         _input = inputManager.Create(inputAsset, "Player");
-        _audioManager = audioManager;
     }
 
     public override void Awake()
@@ -128,13 +126,14 @@ public sealed class Player : AComponent
         _body.MotionType = EPhysicsMotionType.Dynamic;
         _body.AffectedByGravity = true;
         _body.Mass = 80.0f;
-        _body.Friction = 0.0f;
-        _body.Restitution = 0.0f;
         _body.EnableSpeculativeContacts = true;
 
         var cylinderHeight = Math.Max(0.0f, Height - Radius * 2.0f);
         _collider.Radius = Radius;
         _collider.Height = cylinderHeight;
+        _collider.CollisionLayer = "player";
+        _collider.Material.Friction = 0.0f;
+        _collider.Material.Restitution = 0.0f;
         _collider.Center = new Vector3(
             0.0f,
             Radius + cylinderHeight * 0.5f,
@@ -182,11 +181,13 @@ public sealed class Player : AComponent
     public override void Update(float deltaTime)
     {
         UpdateLook();
+    }
+
+    public override void FixedUpdate(float deltaTime)
+    {
         UpdateGroundedState();
         UpdateMovement(deltaTime);
         ApplyBodyRotation();
-        
-        
     }
 
     public override void OnDestroy()
