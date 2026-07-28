@@ -33,7 +33,7 @@ public sealed class FlyCamera : AComponent
         _input = input.Create(inputAsset, mapName);
     }
 
-    protected override void Awake()
+    public override void Awake()
     {
         if (SceneObject?.GetComponent<Camera>() is null)
         {
@@ -42,7 +42,7 @@ public sealed class FlyCamera : AComponent
         }
     }
 
-    protected override void Start()
+    public override void Start()
     {
         var forward = Transform.Forward;
 
@@ -55,23 +55,23 @@ public sealed class FlyCamera : AComponent
         ApplyRotation();
     }
 
-    protected override void OnEnable()
+    public override void OnEnable()
     {
         _input.Enable();
     }
 
-    protected override void OnDisable()
+    public override void OnDisable()
     {
         _input.Disable();
     }
 
-    protected override void Update(float deltaTime)
+    public override void Update(float deltaTime)
     {
         UpdateLook();
         UpdateMovement(deltaTime);
     }
 
-    protected override void OnDestroy()
+    public override void OnDestroy()
     {
         _input.Dispose();
     }

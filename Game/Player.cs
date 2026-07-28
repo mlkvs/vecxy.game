@@ -1,5 +1,6 @@
 using System.Numerics;
 using Vecxy.Assets;
+using Vecxy.Audio;
 using Vecxy.Diagnostics;
 using Vecxy.Editor;
 using Vecxy.Input;
@@ -15,6 +16,7 @@ public sealed class Player : AComponent
     private readonly IPhysicsSystem _physics;
     private readonly Vecxy.Kernel.IWindow _window;
     private readonly InputMap _input;
+    private readonly IAudioManager _audioManager;
 
     private SceneObject? _cameraObject;
     private Camera? _camera;
@@ -92,7 +94,8 @@ public sealed class Player : AComponent
         Vecxy.Kernel.IWindow window,
         IInputManager inputManager,
         IPhysicsSystem physics,
-        AssetRef<InputAsset> inputAsset)
+        AssetRef<InputAsset> inputAsset,
+        IAudioManager audioManager)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(inputManager);
@@ -103,9 +106,10 @@ public sealed class Player : AComponent
         _inputManager = inputManager;
         _physics = physics;
         _input = inputManager.Create(inputAsset, "Player");
+        _audioManager = audioManager;
     }
 
-    protected override void Awake()
+    public override void Awake()
     {
         _body =
             SceneObject?.GetComponent<RigidBody>()
@@ -136,9 +140,9 @@ public sealed class Player : AComponent
             Radius + cylinderHeight * 0.5f,
             0.0f);
     }
-    
 
-    protected override void Start()
+
+    public override void Start()
     {
         _cameraObject = Scene.CreateObject("Player Camera");
         _camera = _cameraObject.AddComponent<Camera>();
@@ -160,28 +164,32 @@ public sealed class Player : AComponent
         ApplyBodyRotation();
         SyncView();
         _window.SetCursorCaptured(true);
+        
+       
     }
 
-    protected override void OnEnable()
+    public override void OnEnable()
     {
         _input.Enable();
     }
 
-    protected override void OnDisable()
+    public override void OnDisable()
     {
         _input.Disable();
         _window.SetCursorCaptured(false);
     }
 
-    protected override void Update(float deltaTime)
+    public override void Update(float deltaTime)
     {
         UpdateLook();
         UpdateGroundedState();
         UpdateMovement(deltaTime);
         ApplyBodyRotation();
+        
+        
     }
 
-    protected override void OnDestroy()
+    public override void OnDestroy()
     {
         _input.Dispose();
 
@@ -198,7 +206,7 @@ public sealed class Player : AComponent
         ViewHit = null;
     }
 
-    protected override void OnGizmos(ISceneGizmoDrawer gizmos)
+    public override void OnGizmos(ISceneGizmoDrawer gizmos)
     {
         var origin = ViewPosition;
         var target = origin + ViewForward * ViewRayDistance;

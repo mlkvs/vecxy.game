@@ -4,6 +4,7 @@
   </Folder>
   <Folder Name="/Engine/">
     <Project Path="Engine/Vecxy/Code/Vecxy.Assets/Vecxy.Assets.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Audio/Vecxy.Audio.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Diagnostics/Vecxy.Diagnostics.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Engine/Vecxy.Engine.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Input/Vecxy.Input.csproj" />

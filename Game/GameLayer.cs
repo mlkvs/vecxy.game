@@ -1,6 +1,7 @@
 using System.Numerics;
 using JetBrains.Annotations;
 using Vecxy.Assets;
+using Vecxy.Audio;
 using Vecxy.Engine;
 using Vecxy.Input;
 using Vecxy.Physics;
@@ -20,7 +21,9 @@ public sealed class GameLayer(
     ISceneInstantiator sceneInstantiator,
     IPhysicsSystem physics,
     ISceneManager scenes,
-    IConsoleRegistry consoleRegistry
+    IConsoleRegistry consoleRegistry,
+    IAudioManager audioManager,
+    ISceneFactory sceneFactory
 ) : AAppLayer
 {
     public sealed class Definition :
@@ -50,7 +53,7 @@ public sealed class GameLayer(
         
         try
         {
-            _scene = new Scene("Main");
+            _scene = sceneFactory.Create();
 
             var roomObject = sceneInstantiator.InstantiateModel(
                 _scene,
@@ -168,7 +171,8 @@ public sealed class GameLayer(
                 window,
                 input,
                 physics,
-                _inputAsset));
+                _inputAsset,
+                audioManager));
         _player.WalkSpeed = 3.25f;
         _player.SprintMultiplier = 1.9f;
         _player.EyeHeight = 1.62f;
