@@ -38,7 +38,9 @@ uniform vec2 uTextureOffset;
 uniform vec4 uColor;
 uniform vec4 uTint;
 uniform float uAlphaCutoff;
-uniform vec3 uAmbientColor;
+uniform vec3 uAmbientSkyColor;
+uniform vec3 uAmbientGroundColor;
+uniform float uSpecularStrength;
 uniform vec3 uCameraPosition;
 uniform float uExposure;
 uniform int uFogEnabled;
@@ -71,10 +73,19 @@ struct SpotLight
     float outerConeCos;
 };
 
+struct DirectionalLight
+{
+    vec3 direction;
+    vec3 color;
+    float intensity;
+};
+
 uniform int uPointLightCount;
 uniform int uSpotLightCount;
+uniform int uDirectionalLightCount;
 uniform PointLight uPointLights[8];
 uniform SpotLight uSpotLights[8];
+uniform DirectionalLight uDirectionalLights[4];
 
 out vec4 oColor;
 
@@ -125,11 +136,33 @@ void main()
 
     vec3 baseColor = (textureColor * uColor * uTint).rgb;
     vec3 normal = normalize(vNormal);
+    if (!gl_FrontFacing)
+        normal = -normal;
+
     vec3 viewVector = uCameraPosition - vWorldPosition;
     vec3 viewDirection = length(viewVector) > 0.0
         ? normalize(viewVector)
         : vec3(0.0, 0.0, 1.0);
-    vec3 lighting = uAmbientColor;
+    float upFactor = clamp(normal.y * 0.5 + 0.5, 0.0, 1.0);
+    vec3 lighting = mix(
+        uAmbientGroundColor,
+        uAmbientSkyColor,
+        upFactor);
+
+    for (int i = 0; i < uDirectionalLightCount; ++i)
+    {
+        vec3 lightDirection = normalize(-uDirectionalLights[i].direction);
+        float diffuse = max(dot(normal, lightDirection), 0.0);
+        vec3 halfVector = normalize(lightDirection + viewDirection);
+        float specular = diffuse > 0.0
+            ? pow(max(dot(normal, halfVector), 0.0), 32.0) * uSpecularStrength
+            : 0.0;
+
+        lighting +=
+            uDirectionalLights[i].color *
+            uDirectionalLights[i].intensity *
+            (diffuse + specular);
+    }
 
     for (int i = 0; i < uPointLightCount; ++i)
     {
@@ -142,7 +175,7 @@ void main()
         float diffuse = max(dot(normal, lightDirection), 0.0);
         vec3 halfVector = normalize(lightDirection + viewDirection);
         float specular = diffuse > 0.0
-            ? pow(max(dot(normal, halfVector), 0.0), 32.0) * 0.08
+            ? pow(max(dot(normal, halfVector), 0.0), 32.0) * uSpecularStrength
             : 0.0;
         float attenuation = computeRangeFalloff(distanceToLight, uPointLights[i].range);
 
@@ -173,7 +206,7 @@ void main()
         float diffuse = max(dot(normal, lightDirection), 0.0);
         vec3 halfVector = normalize(lightDirection + viewDirection);
         float specular = diffuse > 0.0
-            ? pow(max(dot(normal, halfVector), 0.0), 32.0) * 0.08
+            ? pow(max(dot(normal, halfVector), 0.0), 32.0) * uSpecularStrength
             : 0.0;
         float attenuation =
             computeRangeFalloff(distanceToLight, uSpotLights[i].range) * cone;
@@ -201,6 +234,13 @@ void main()
         if (uFogVolumetricStrength > 0.0)
         {
             vec3 inScattering = vec3(0.0);
+
+            for (int i = 0; i < uDirectionalLightCount; ++i)
+            {
+                inScattering +=
+                    uDirectionalLights[i].color *
+                    uDirectionalLights[i].intensity;
+            }
 
             for (int i = 0; i < uPointLightCount; ++i)
             {

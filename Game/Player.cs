@@ -66,6 +66,10 @@ public sealed class Player : AComponent
     [EditorProperty(Label = "View Ray Distance", Order = 34)]
     public float ViewRayDistance { get; set; } = 3.0f;
 
+    public float MaxHealth { get; private set; } = 8.0f;
+
+    public float Health { get; private set; } = 6.0f;
+
     public bool IsGrounded { get; private set; }
 
     public Vector3 Velocity =>
@@ -247,6 +251,25 @@ public sealed class Player : AComponent
                 0.0f);
 
         UpdateViewRaycast();
+    }
+
+    public void SetMaxHealth(float value, bool clampCurrent = true)
+    {
+        MaxHealth = Math.Max(1.0f, value);
+
+        if (clampCurrent)
+            Health = Math.Clamp(Health, 0.0f, MaxHealth);
+    }
+
+    public void SetHealth(float value)
+    {
+        Health = Math.Clamp(value, 0.0f, MaxHealth);
+    }
+
+    public float ApplyDamage(float amount)
+    {
+        SetHealth(Health - Math.Max(0.0f, amount));
+        return Health;
     }
 
     private void UpdateLook()

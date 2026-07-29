@@ -15,7 +15,18 @@ public enum PlayerState
 public sealed class PlayerDebugTarget(Player player)
 {
     [ConsoleMember("health", Description = "Current player health")]
-    private float _health = 100.0f;
+    public float Health
+    {
+        get => player.Health;
+        set => player.SetHealth(value);
+    }
+
+    [ConsoleMember("maxHealth", Description = "Maximum player health")]
+    public float MaxHealth
+    {
+        get => player.MaxHealth;
+        set => player.SetMaxHealth(value);
+    }
 
     [ConsoleMember("speed", Description = "Player movement speed")]
     public float Speed
@@ -44,8 +55,8 @@ public sealed class PlayerDebugTarget(Player player)
     private float Damage(float amount)
     {
         if (!IsGodMode)
-            _health = Math.Max(0.0f, _health - amount);
+            player.ApplyDamage(amount);
 
-        return _health;
+        return player.Health;
     }
 }

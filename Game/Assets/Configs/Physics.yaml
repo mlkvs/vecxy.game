@@ -1,12 +1,12 @@
 fixedUpdateRate: 60
 maxSubSteps: 8
 maxFrameDelta: 0.25
-gravity: [0, -9.81, 0]
+gravity:
+- 0
+- -9.81
+- 0
 allowSleeping: true
 interpolationEnabled: true
-solverIterations: 6
-solverRelaxationIterations: 2
-
 collisionLayers:
   default:
     index: 0
@@ -18,17 +18,19 @@ collisionLayers:
   world:
     index: 1
     collidesWith:
+    - box
     - default
     - player
-    - box
   player:
     index: 2
     collidesWith:
     - default
-    - world
     - player
+    - world
   box:
     index: 3
     collidesWith:
-      - default
-      - world
+    - default
+    - world
+solverIterations: 6
+solverRelaxationIterations: 2

@@ -4,11 +4,13 @@ using Vecxy.Assets;
 //using Vecxy.Audio;
 using Vecxy.Engine;
 using Vecxy.Input;
+using Vecxy.Kernel;
 using Vecxy.Physics;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 using Vecxy.Diagnostics;
 using Vecxy.Diagnostics.Console;
+using Vecxy.UI;
 
 namespace Game;
 
@@ -23,11 +25,15 @@ public sealed class GameLayer(
     ISceneManager scenes,
     IConsoleRegistry consoleRegistry,
    // IAudioManager audioManager,
-    ISceneFactory sceneFactory
+    ISceneFactory sceneFactory,
+    IUiManager ui
 ) : AAppLayer
 {
-    public sealed class Definition :
-        ADefinition<GameLayer>;
+    public sealed class Definition : ADefinition<GameLayer>
+    {
+        public override IReadOnlyList<Vecxy.Kernel.IDefinition> Children =>
+            [new UiModule.Definition()];
+    }
 
     private AssetRef<Model>? _roomModel;
     private AssetRef<InputAsset>? _inputAsset;
@@ -38,18 +44,24 @@ public sealed class GameLayer(
     private int _appliedSkyboxConfigVersion = -1;
     private PostProcessing? _postProcessing;
     private SceneObject? _sceneModelRoot;
+    private SceneObject? _sunLightObject;
     private Player? _player;
     private PlayerDebugTarget? _playerDebugTarget;
     private Scene? _scene;
+    private UiDocumentHandle? _hudDocument;
+    private readonly IModule? _uiModule = ui as IModule;
 
     public override void OnInitialize()
     {
+        _uiModule?.OnInitialize();
         configs.Register<FogSettingsConfig>();
         configs.Register<SkyboxSettingsConfig>();
         _inputAsset = assets.Load<InputAsset>("Controls.input");
 
-        _roomModel = assets.Load<Model>("Models/Scene.glb");
+        _roomModel = assets.Load<Model>("Models/Trees.glb");
         _sceneMaterial = assets.Load<Material>("Materials/Test.material");
+        
+        var avocado = assets.Load<Model>("Models/Duck.glb");
         
         try
         {
@@ -58,9 +70,18 @@ public sealed class GameLayer(
             var roomObject = sceneInstantiator.InstantiateModel(
                 _scene,
                 _roomModel.Value,
-                "Scene",
+                "Trees",
                 _sceneMaterial.Value);
             _sceneModelRoot = roomObject;
+            _sunLightObject = CreateSunLight(roomObject);
+
+            var avocadoModel = sceneInstantiator.InstantiateModel(_scene, avocado.Value, "Avocado");
+            
+            avocadoModel.SetParent(roomObject);
+            
+            avocadoModel.Transform.Position = FindPlayerSpawn(roomObject);
+            avocadoModel.Transform.Scale = new Vector3(5, 5, 5);
+            
 
             BuildScenePhysics(roomObject);
             _fogConfig = configs.LoadConfig<FogSettingsConfig>("Configs/Fog.yaml");
@@ -93,6 +114,11 @@ public sealed class GameLayer(
 
             CreatePlayer(roomObject);
             RegisterConsoleTargets();
+            _hudDocument = ui.ShowDocument(
+                "UI/MinimalHud.rml",
+                "UI/MinimalHud.rcss",
+                "Minimal HUD");
+            SyncHud();
             
             scenes.SetActiveScene(_scene);
         }
@@ -107,14 +133,18 @@ public sealed class GameLayer(
     public override void OnUnload()
     {
         _sceneModelRoot = null;
+        _sunLightObject = null;
         _player = null;
         if (_playerDebugTarget is not null)
             consoleRegistry.Unregister(_playerDebugTarget);
         _playerDebugTarget = null;
         _postProcessing = null;
+        _hudDocument?.Dispose();
+        _hudDocument = null;
         scenes.UnloadActiveScene();
         DestroyScene();
         ReleaseAssets();
+        _uiModule?.OnShutdown();
     }
 
     public override void OnUpdate(float deltaTime)
@@ -122,6 +152,7 @@ public sealed class GameLayer(
         RefreshFogConfig();
         RefreshSkyboxConfig();
         _player?.SyncView();
+        SyncHud();
     }
 
     private void DestroyScene()
@@ -155,6 +186,15 @@ public sealed class GameLayer(
         _sceneMaterial = null;
         _fogConfig = null;
         _skyboxConfig = null;
+    }
+
+    private void SyncHud()
+    {
+        if (_hudDocument is null || _player is null)
+            return;
+
+        _hudDocument.SetNumber("player-health:value", _player.Health);
+        _hudDocument.SetNumber("player-health:max", _player.MaxHealth);
     }
 
     private void CreatePlayer(SceneObject sceneRoot)
@@ -295,7 +335,8 @@ public sealed class GameLayer(
         var floor =
             sceneRoot.FindChild("Floor")
             ?? sceneRoot.FindChild("Floor_01")
-            ?? sceneRoot.FindChild("floor");
+            ?? sceneRoot.FindChild("floor")
+            ?? sceneRoot.FindChild("Plane");
 
         if (floor?.GetComponentInChildren<MeshRenderer>() is not { } renderer)
             return new Vector3(0.0f, 0.05f, 3.0f);
@@ -308,6 +349,41 @@ public sealed class GameLayer(
                 renderer.LocalBoundsSize.Z * 0.25f);
 
         return Vector3.Transform(localSpawn, floor.Transform.WorldMatrix);
+    }
+
+    private SceneObject? CreateSunLight(SceneObject sceneRoot)
+    {
+        if (_scene is null)
+            return null;
+
+        var sunObject =
+            sceneRoot.FindChild("Sun")
+            ?? _scene.CreateObject("Sun");
+
+        if (sunObject.Parent is null &&
+            !ReferenceEquals(sunObject, sceneRoot))
+        {
+            sunObject.SetParent(sceneRoot, worldPositionStays: false);
+        }
+
+        if (sunObject.GetComponent<DirectionalLight>() is not { } sunLight)
+        {
+            sunLight = sunObject.AddComponent<DirectionalLight>();
+            sunLight.Color = Vector3.One;
+            sunLight.Intensity = 683.0f;
+        }
+
+        if (sunObject.Name == "Sun" &&
+            sunObject.Transform.LocalRotation == Quaternion.Identity)
+        {
+            sunObject.Transform.LocalRotation = new Quaternion(
+                -0.8189004f,
+                -0.28070855f,
+                0.42471026f,
+                0.26500204f);
+        }
+
+        return sunObject;
     }
 
     private static void BuildScenePhysics(SceneObject root)
