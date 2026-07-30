@@ -2,7 +2,7 @@ using System.Numerics;
 using Vecxy.Assets;
 using Vecxy.Scene;
 
-namespace Game;
+namespace Sandbox;
 
 public sealed class FogSettingsConfig : IYamlConfig
 {

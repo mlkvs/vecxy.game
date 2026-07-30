@@ -4,7 +4,7 @@ using Vecxy.Input;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 
-namespace Game;
+namespace Sandbox;
 
 public sealed class FlyCamera : AComponent
 {

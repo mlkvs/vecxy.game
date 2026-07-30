@@ -1,7 +1,7 @@
 using System.Numerics;
 using Vecxy.Diagnostics.Console;
 
-namespace Game;
+namespace Sandbox;
 
 public enum PlayerState
 {

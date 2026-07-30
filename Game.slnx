@@ -17,6 +17,7 @@
     <Project Path="Engine/Vecxy/Tests/Vecxy.Physics.Tests/Vecxy.Physics.Tests.csproj" />
   </Folder>
   <Folder Name="/Game/">
-    <Project Path="Game/Game.csproj" />
+    <Project Path="Game.Elevator/Game.Elevator.csproj" />
+    <Project Path="Sandbox/Sandbox.csproj" />
   </Folder>
 </Solution>

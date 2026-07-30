@@ -18,7 +18,7 @@ using Vecxy.Physics;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 
-namespace Game;
+namespace Sandbox;
 
 [UsedImplicitly]
 public sealed class MultiplayerLayer(

@@ -11,7 +11,7 @@ using Vecxy.Scene;
 using Vecxy.Diagnostics;
 using Vecxy.Diagnostics.Console;
 
-namespace Game;
+namespace Sandbox;
 
 [UsedImplicitly]
 public sealed class GameLayer(

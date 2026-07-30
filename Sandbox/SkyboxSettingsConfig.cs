@@ -1,7 +1,7 @@
 using System.Numerics;
 using Vecxy.Assets;
 
-namespace Game;
+namespace Sandbox;
 
 public sealed class SkyboxSettingsConfig : IYamlConfig
 {

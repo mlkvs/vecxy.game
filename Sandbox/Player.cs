@@ -8,7 +8,7 @@ using Vecxy.Physics;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 
-namespace Game;
+namespace Sandbox;
 
 public sealed class Player : AComponent
 {
