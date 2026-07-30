@@ -23,7 +23,7 @@ internal static class Program
                     AssetsDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Assets"))
                 }),
             new EditorLayer.Definition(),
-            new GameLayer.Definition()
+            new MultiplayerLayer.Definition()
         };
 
         using var engine = new Engine(options, layers);
