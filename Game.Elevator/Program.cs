@@ -22,7 +22,6 @@ public static class Program
                 {
                     AssetsDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "./Assets"))
                 }),
-            new EditorLayer.Definition(),
             new GameLayer.Definition()
         };
 

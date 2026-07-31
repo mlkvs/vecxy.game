@@ -221,7 +221,7 @@ internal sealed class MultiplayerClientWorld(
     ISceneInstantiator sceneInstantiator,
     IWindow window) : IDisposable
 {
-    private Scene? _scene;
+    private SceneInstance? _scene;
     private AssetRef<InputAsset>? _inputAsset;
     private AssetRef<Model>? _planeModel;
     private AssetRef<Model>? _boxModel;
@@ -496,7 +496,7 @@ internal sealed class MultiplayerServerLayer(
 {
     public sealed class Definition : ADefinition<MultiplayerServerLayer>;
 
-    private Scene? _scene;
+    private SceneInstance? _scene;
     private SceneObject? _cube;
     private RigidBody? _cubeBody;
     private readonly Dictionary<string, PlayerStateMessage> _players =

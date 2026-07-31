@@ -15,16 +15,17 @@ public class GameLayer
 (
     ISceneManager scenes, 
     IAssetsManager assets, 
-    IInputManager input, 
-    ISceneFactory sceneFactory, 
-    ISceneInstantiator instantiator, 
+    IInputManager input,
     IWindow window
 ) : AAppLayer
 {
     public class Definition : ADefinition<GameLayer>
     {
-        public override void RegisterLocal(ContainerBuilder builder)
+        public override void RegisterGlobal(ContainerBuilder builder)
         {
+            builder
+                .RegisterType<GameScene>()
+                .AsSelf();
         }
     }
     
@@ -32,18 +33,21 @@ public class GameLayer
     {
         base.OnInitialize();
 
+        var scene = scenes.LoadScene<GameScene>();
+
+        /*
         var scene = sceneFactory.Create();
         scene.Lighting.AmbientIntensity = 0.0f;
 
         var camera = scene.CreateObject("Main Camera").AddComponent<Camera>();
-        
+
         var inputConfig = assets.Load<InputAsset>("Controls.input");
         var fly = camera.SceneObject!.AddComponent(new FlyCamera(input, inputConfig, window));
-        
+
         scenes.SetActiveScene(scene);
 
         var sceneModel = assets.Load<ModelAsset>("Models/Scene.glb");
-        
+
         var sceneObject = instantiator.InstantiateModel(scene,  new Model(sceneModel));
 
         foreach (var light in sceneObject.GetComponentsInChildren<ALight>())
@@ -54,6 +58,6 @@ public class GameLayer
         flashlight.Intensity = 5000.0f;
         flashlight.Range = 20.0f;
         flashlight.InnerConeAngle = MathF.PI / 9.0f;
-        flashlight.OuterConeAngle = MathF.PI / 6.0f;
+        flashlight.OuterConeAngle = MathF.PI / 6.0f;*/
     }
 }

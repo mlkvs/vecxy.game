@@ -147,7 +147,7 @@ public sealed class Player : AComponent
 
     public override void Start()
     {
-        _cameraObject = Scene.CreateObject("Player Camera");
+        _cameraObject = SceneInstance.CreateObject("Player Camera");
         _camera = _cameraObject.AddComponent<Camera>();
 
         _camera.FieldOfView = 70.0f;

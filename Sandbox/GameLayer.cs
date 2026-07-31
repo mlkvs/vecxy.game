@@ -40,7 +40,7 @@ public sealed class GameLayer(
     private SceneObject? _sunLightObject;
     private Player? _player;
     private PlayerDebugTarget? _playerDebugTarget;
-    private Scene? _scene;
+    private SceneInstance? _scene;
 
     public override void OnInitialize()
     {
