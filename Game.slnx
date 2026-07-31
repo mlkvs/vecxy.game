@@ -13,9 +13,6 @@
     <Project Path="Engine/Vecxy/Code/Vecxy.Rendering/Vecxy.Rendering.csproj" />
     <Project Path="Engine\Vecxy\Code\Vecxy.Scene\Vecxy.Scene.csproj" />
   </Folder>
-  <Folder Name="/Tests/">
-    <Project Path="Engine/Vecxy/Tests/Vecxy.Physics.Tests/Vecxy.Physics.Tests.csproj" />
-  </Folder>
   <Folder Name="/Game/">
     <Project Path="Game.Elevator/Game.Elevator.csproj" />
     <Project Path="Sandbox/Sandbox.csproj" />

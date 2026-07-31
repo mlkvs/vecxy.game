@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Editor\Vecxy.Editor.csproj" />
       <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Engine\Vecxy.Engine.csproj" />
     </ItemGroup>
 </Project>

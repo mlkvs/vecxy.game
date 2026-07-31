@@ -1,13 +1,25 @@
-﻿using Autofac;
+﻿using System.Numerics;
+using Autofac;
 using JetBrains.Annotations;
-using Vecxy.Diagnostics;
+using Vecxy.Assets;
 using Vecxy.Engine;
-using Vecxy.Physics;
+using Vecxy.Input;
+using Vecxy.Kernel;
+using Vecxy.Rendering;
+using Vecxy.Scene;
 
 namespace Game.Elevator;
 
 [UsedImplicitly]
-public class GameLayer(IPhysicsSystem physics) : AAppLayer
+public class GameLayer
+(
+    ISceneManager scenes, 
+    IAssetsManager assets, 
+    IInputManager input, 
+    ISceneFactory sceneFactory, 
+    ISceneInstantiator instantiator, 
+    IWindow window
+) : AAppLayer
 {
     public class Definition : ADefinition<GameLayer>
     {
@@ -19,7 +31,29 @@ public class GameLayer(IPhysicsSystem physics) : AAppLayer
     public override void OnInitialize()
     {
         base.OnInitialize();
+
+        var scene = sceneFactory.Create();
+        scene.Lighting.AmbientIntensity = 0.0f;
+
+        var camera = scene.CreateObject("Main Camera").AddComponent<Camera>();
         
-        Logger.Info(physics.Settings.Gravity.Y.ToString());
+        var inputConfig = assets.Load<InputAsset>("Controls.input");
+        var fly = camera.SceneObject!.AddComponent(new FlyCamera(input, inputConfig, window));
+        
+        scenes.SetActiveScene(scene);
+
+        var sceneModel = assets.Load<ModelAsset>("Models/Scene.glb");
+        
+        var sceneObject = instantiator.InstantiateModel(scene,  new Model(sceneModel));
+
+        foreach (var light in sceneObject.GetComponentsInChildren<ALight>())
+            light.Enabled = false;
+
+        var flashlight = camera.SceneObject.AddComponent<SpotLight>();
+        flashlight.Color = new Vector3(1.0f, 0.92f, 0.78f);
+        flashlight.Intensity = 5000.0f;
+        flashlight.Range = 20.0f;
+        flashlight.InnerConeAngle = MathF.PI / 9.0f;
+        flashlight.OuterConeAngle = MathF.PI / 6.0f;
     }
 }

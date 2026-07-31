@@ -32,7 +32,7 @@ public sealed class GameLayer(
     private AssetRef<InputAsset>? _inputAsset;
     private AssetRef<Material>? _sceneMaterial;
     private ConfigRef<FogSettingsConfig>? _fogConfig;
-    private ConfigRef<SkyboxSettingsConfig>? _skyboxConfig;
+    private ConfigRef<SkyboxConfig>? _skyboxConfig;
     private int _appliedFogConfigVersion = -1;
     private int _appliedSkyboxConfigVersion = -1;
     private PostProcessing? _postProcessing;
@@ -45,7 +45,7 @@ public sealed class GameLayer(
     public override void OnInitialize()
     {
         configs.Register<FogSettingsConfig>();
-        configs.Register<SkyboxSettingsConfig>();
+        configs.Register<SkyboxConfig>();
         _inputAsset = assets.Load<InputAsset>("Controls.input");
 
         _roomModel = assets.Load<Model>("Models/Trees.glb");
@@ -76,7 +76,7 @@ public sealed class GameLayer(
             BuildScenePhysics(roomObject);
             _fogConfig = configs.LoadConfig<FogSettingsConfig>("Configs/Fog.yaml");
             _fogConfig.Changed += OnFogConfigChanged;
-            _skyboxConfig = configs.LoadConfig<SkyboxSettingsConfig>("Configs/Skybox2.yaml");
+            _skyboxConfig = configs.LoadConfig<SkyboxConfig>("Configs/Skybox2.yaml");
             _skyboxConfig.Changed += OnSkyboxConfigChanged;
             if (_fogConfig.TryGetValue(out var fogConfig) && fogConfig is not null)
             {
@@ -203,7 +203,7 @@ public sealed class GameLayer(
         ApplyFogConfig(config);
     }
 
-    private void OnSkyboxConfigChanged(SkyboxSettingsConfig config)
+    private void OnSkyboxConfigChanged(SkyboxConfig config)
     {
         ApplySkyboxConfig(config);
     }
@@ -237,7 +237,7 @@ public sealed class GameLayer(
         var fog = _scene.Lighting.Fog;
         fog.Enabled = config.Enabled;
         fog.Mode = config.Mode;
-        fog.Color = config.GetColor(_fogConfig?.Path ?? "Configs/Fog.yaml");
+        fog.Color = config.GetColor();
         fog.StartDistance = config.StartDistance;
         fog.EndDistance = config.EndDistance;
         fog.Density = config.Density;
@@ -270,7 +270,7 @@ public sealed class GameLayer(
         }
     }
 
-    private void ApplySkyboxConfig(SkyboxSettingsConfig config)
+    private void ApplySkyboxConfig(SkyboxConfig config)
     {
         if (_scene is null)
             return;
@@ -283,8 +283,8 @@ public sealed class GameLayer(
         skybox.NegativeY = config.NegativeY;
         skybox.PositiveZ = config.PositiveZ;
         skybox.NegativeZ = config.NegativeZ;
-        skybox.Tint = config.GetTint(_skyboxConfig?.Path ?? "Configs/Skybox.yaml");
-        skybox.Rotation = config.GetRotation(_skyboxConfig?.Path ?? "Configs/Skybox.yaml");
+        skybox.Tint = config.GetTint();
+        skybox.Rotation = config.GetRotation();
         skybox.Exposure = config.Exposure;
 
         if (_skyboxConfig is not null)

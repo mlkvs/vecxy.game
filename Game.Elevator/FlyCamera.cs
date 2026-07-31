@@ -1,10 +1,11 @@
 using System.Numerics;
 using Vecxy.Assets;
 using Vecxy.Input;
+using Vecxy.Kernel;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 
-namespace Sandbox;
+namespace Game.Elevator;
 
 public sealed class FlyCamera : AComponent
 {
@@ -20,9 +21,12 @@ public sealed class FlyCamera : AComponent
     public float MaximumPitch { get; set; } = 1.45f;
     public bool RequireLookButton { get; set; } = true;
 
+    private IWindow _window;
+
     public FlyCamera(
         IInputManager input,
         AssetRef<InputAsset> inputAsset,
+        IWindow window,
         string mapName = "Player")
     {
         ArgumentNullException.ThrowIfNull(input);
@@ -31,6 +35,14 @@ public sealed class FlyCamera : AComponent
 
         _inputManager = input;
         _input = input.Create(inputAsset, mapName);
+        _window = window;
+        
+        window.SetCursorCaptured(true);
+
+        _input.GetAction("Pause").Performed += (ctx) =>
+        {
+            window.SetCursorCaptured(!window.IsCursorCaptured);
+        };
     }
 
     public override void Awake()
@@ -67,6 +79,11 @@ public sealed class FlyCamera : AComponent
 
     public override void Update(float deltaTime)
     {
+        if (_window.IsCursorCaptured == false)
+        {
+            return;
+        }
+        
         UpdateLook();
         UpdateMovement(deltaTime);
     }
@@ -78,12 +95,6 @@ public sealed class FlyCamera : AComponent
 
     private void UpdateLook()
     {
-        if (RequireLookButton &&
-            !_input.GetAction("Look").IsPressed)
-        {
-            return;
-        }
-
         var mouseDelta = _inputManager.MouseDelta;
         if (mouseDelta.LengthSquared() <= float.Epsilon)
             return;
