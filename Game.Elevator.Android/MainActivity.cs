@@ -163,6 +163,17 @@ public sealed class MainActivity : SilkActivity
         base.OnDestroy();
     }
 
+    public override bool DispatchKeyEvent(KeyEvent? eventData)
+    {
+        if (eventData?.KeyCode != Keycode.VolumeDown)
+            return base.DispatchKeyEvent(eventData);
+
+        if (eventData.Action == KeyEventActions.Down && eventData.RepeatCount == 0)
+            MobileInput.RequestMapToggle();
+
+        return true;
+    }
+
 #pragma warning disable CS0672
     public override void OnBackPressed()
     {

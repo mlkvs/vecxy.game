@@ -3,6 +3,8 @@
 set -euo pipefail
 
 readonly sdk_root="${ANDROID_SDK_ROOT:-$HOME/.local/share/android-sdk}"
+readonly dotnet_root="${VECXY_DOTNET_ROOT:-$HOME/.dotnet}"
+readonly dotnet="$dotnet_root/dotnet"
 readonly adb="$sdk_root/platform-tools/adb"
 readonly emulator="$sdk_root/emulator/emulator"
 readonly serial="emulator-5554"
@@ -21,6 +23,11 @@ cleanup()
 }
 
 trap cleanup EXIT INT TERM
+
+if [[ ! -x "$dotnet" ]]; then
+    echo ".NET 10 SDK was not found in: $dotnet_root" >&2
+    exit 1
+fi
 
 if [[ ! -x "$adb" || ! -x "$emulator" ]]; then
     echo "Android SDK tools were not found in: $sdk_root" >&2
@@ -58,7 +65,7 @@ if [[ "$boot_completed" != 1 ]]; then
 fi
 
 echo "Building the x86_64 emulator APK..."
-dotnet publish "$android_project" \
+DOTNET_ROOT="$dotnet_root" "$dotnet" publish "$android_project" \
     -c Release \
     -r android-x64 \
     --nologo \
@@ -87,7 +94,7 @@ fi
 
 echo
 echo "Elevator is running (PID $pid)."
-echo "Use Android Back to open or close the map. Stop this configuration to close the emulator."
+echo "Use Volume Down or Android Back to open or close the map. Stop this configuration to close the emulator."
 echo
 
 "$adb" -s "$serial" logcat \

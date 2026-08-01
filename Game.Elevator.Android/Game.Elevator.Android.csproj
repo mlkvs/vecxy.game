@@ -7,8 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationId>game.vecxy.elevator</ApplicationId>
     <ApplicationTitle>Elevator</ApplicationTitle>
-    <ApplicationVersion>3</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0.2</ApplicationDisplayVersion>
+    <ApplicationVersion>4</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
     <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <PublishTrimmed>false</PublishTrimmed>
