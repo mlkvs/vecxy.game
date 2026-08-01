@@ -1,11 +1,10 @@
-﻿using System.Numerics;
 using Autofac;
-using JetBrains.Annotations;
 using Vecxy.Assets;
+using Game.Elevator.InteractiveMap;
+using JetBrains.Annotations;
+using Vecxy.Diagnostics;
 using Vecxy.Engine;
-using Vecxy.Input;
 using Vecxy.Kernel;
-using Vecxy.Rendering;
 using Vecxy.Scene;
 
 namespace Game.Elevator;
@@ -13,12 +12,18 @@ namespace Game.Elevator;
 [UsedImplicitly]
 public class GameLayer
 (
-    ISceneManager scenes, 
-    IAssetsManager assets, 
-    IInputManager input,
+    ISceneManager scenes,
     IWindow window
 ) : AAppLayer
 {
+    private SceneInstance? _mainScene;
+    private SceneInstance? _gameplayScene;
+    private IInteractiveMap? _map;
+    private int? _pendingRegionId;
+    private bool _toggleMapRequested;
+    private bool _mapOpen;
+    private bool _mKeyDown;
+
     public class Definition : ADefinition<GameLayer>
     {
         public override void RegisterGlobal(ContainerBuilder builder)
@@ -26,6 +31,17 @@ public class GameLayer
             builder
                 .RegisterType<GameScene>()
                 .AsSelf();
+
+            builder.RegisterType<ApartmentScene>().AsSelf();
+            builder.RegisterType<BusStationScene>().AsSelf();
+            builder.RegisterType<FactoryScene>().AsSelf();
+            builder.RegisterType<HouseScene>().AsSelf();
+            builder.RegisterType<LakeScene>().AsSelf();
+            builder.RegisterType<BridgeScene>().AsSelf();
+            builder.RegisterType<ParkScene>().AsSelf();
+            builder.RegisterType<WarehouseScene>().AsSelf();
+            builder.RegisterType<TowerScene>().AsSelf();
+
         }
     }
     
@@ -33,31 +49,143 @@ public class GameLayer
     {
         base.OnInitialize();
 
-        var scene = scenes.LoadScene<GameScene>();
+        window.SetCursorCaptured(false);
+        window.KeyChanged += OnKeyChanged;
 
-        /*
-        var scene = sceneFactory.Create();
-        scene.Lighting.AmbientIntensity = 0.0f;
+        _mainScene = scenes.LoadScene<GameScene>();
+        _map = ((GameScene)_mainScene.Scene).Map ??
+            throw new InvalidOperationException("Interactive map was not created.");
+        _map.RegionClicked += OnRegionClicked;
+        _map.IsVisible = false;
 
-        var camera = scene.CreateObject("Main Camera").AddComponent<Camera>();
+        // The region is loaded in addition to the persistent main scene.
+        _gameplayScene = scenes.LoadSceneAdditive<ApartmentScene>();
+        scenes.SetActiveScene(_gameplayScene);
+        Logger.Info("Initial region scene loaded: 1 / Apartment. Press M to open the map.");
+    }
 
-        var inputConfig = assets.Load<InputAsset>("Controls.input");
-        var fly = camera.SceneObject!.AddComponent(new FlyCamera(input, inputConfig, window));
+    public override void OnUpdate(float deltaTime)
+    {
+#if ANDROID
+        if (MobileInput.ConsumeMapToggle())
+            _toggleMapRequested = true;
+#endif
 
-        scenes.SetActiveScene(scene);
+        if (_pendingRegionId is { } regionId)
+        {
+            _pendingRegionId = null;
+            _toggleMapRequested = false;
+            SwitchToRegion(regionId);
+            return;
+        }
 
-        var sceneModel = assets.Load<ModelAsset>("Models/Scene.glb");
+        if (!_toggleMapRequested)
+            return;
 
-        var sceneObject = instantiator.InstantiateModel(scene,  new Model(sceneModel));
+        _toggleMapRequested = false;
 
-        foreach (var light in sceneObject.GetComponentsInChildren<ALight>())
-            light.Enabled = false;
+        if (_mapOpen)
+            CloseMap();
+        else
+            OpenMap();
+    }
 
-        var flashlight = camera.SceneObject.AddComponent<SpotLight>();
-        flashlight.Color = new Vector3(1.0f, 0.92f, 0.78f);
-        flashlight.Intensity = 5000.0f;
-        flashlight.Range = 20.0f;
-        flashlight.InnerConeAngle = MathF.PI / 9.0f;
-        flashlight.OuterConeAngle = MathF.PI / 6.0f;*/
+    public override void OnUnload()
+    {
+        window.KeyChanged -= OnKeyChanged;
+
+        if (_map is not null)
+            _map.RegionClicked -= OnRegionClicked;
+
+        if (_gameplayScene is not null && scenes.LoadedScenes.Contains(_gameplayScene))
+            scenes.UnloadScene(_gameplayScene);
+
+        if (_mainScene is not null && scenes.LoadedScenes.Contains(_mainScene))
+            scenes.UnloadScene(_mainScene);
+
+        _mainScene = null;
+        _gameplayScene = null;
+        _map = null;
+        _mapOpen = false;
+    }
+
+    private void OnKeyChanged(IWindow.KeyEvent eventData)
+    {
+        if (eventData.Key != (int)EKeyboardKey.M)
+            return;
+
+        if (!eventData.IsPressed)
+        {
+            _mKeyDown = false;
+            return;
+        }
+
+        if (_mKeyDown)
+            return;
+
+        _mKeyDown = true;
+        _toggleMapRequested = true;
+    }
+
+    private void OpenMap()
+    {
+        if (_mainScene is null || _map is null)
+            throw new InvalidOperationException("Persistent main scene is not loaded.");
+
+        scenes.SetActiveScene(_mainScene);
+        _map.IsVisible = true;
+        _mapOpen = true;
+        window.SetCursorCaptured(false);
+        Logger.Info("Interactive map enabled from the persistent main scene.");
+    }
+
+    private void CloseMap()
+    {
+        if (_map is not null)
+            _map.IsVisible = false;
+
+        _mapOpen = false;
+
+        if (_gameplayScene is not null && scenes.LoadedScenes.Contains(_gameplayScene))
+            scenes.SetActiveScene(_gameplayScene);
+
+        Logger.Info("Interactive map disabled; additive region scene restored.");
+    }
+
+    private void OnRegionClicked(MapRegion region)
+    {
+        _pendingRegionId = region.Id;
+    }
+
+    private void SwitchToRegion(int regionId)
+    {
+        if (_map is not null)
+            _map.IsVisible = false;
+
+        _mapOpen = false;
+
+        if (_gameplayScene is not null && scenes.LoadedScenes.Contains(_gameplayScene))
+            scenes.UnloadScene(_gameplayScene);
+
+        _gameplayScene = regionId switch
+        {
+            1 => scenes.LoadSceneAdditive<ApartmentScene>(),
+            2 => scenes.LoadSceneAdditive<BusStationScene>(),
+            3 => scenes.LoadSceneAdditive<FactoryScene>(),
+            4 => scenes.LoadSceneAdditive<HouseScene>(),
+            5 => scenes.LoadSceneAdditive<LakeScene>(),
+            6 => scenes.LoadSceneAdditive<BridgeScene>(),
+            7 => scenes.LoadSceneAdditive<ParkScene>(),
+            8 => scenes.LoadSceneAdditive<WarehouseScene>(),
+            9 => scenes.LoadSceneAdditive<TowerScene>(),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(regionId),
+                regionId,
+                "Unknown interactive map region.")
+        };
+
+        scenes.SetActiveScene(_gameplayScene);
+        window.SetCursorCaptured(false);
+        Logger.Info($"Region scene switched: {regionId} / {_gameplayScene.Scene.GetType().Name}.");
     }
 }

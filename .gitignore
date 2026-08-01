@@ -5,3 +5,4 @@ Build/
 .idea/
 .vs/
 *.user
+imgui.ini

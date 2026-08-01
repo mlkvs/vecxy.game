@@ -1,0 +1,9 @@
+shader: Shaders/MapMarker.glsl
+surface: Transparent
+parameters:
+  uTexture:
+    texture: Textures/Cross.png
+    filter: Linear
+    wrap: Clamp
+  uTint:
+    color: [0, 1, 0, 1]

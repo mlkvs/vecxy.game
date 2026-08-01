@@ -1,26 +1,33 @@
-﻿using System.Numerics;
+﻿using Game.Elevator.InteractiveMap;
+using Vecxy.Assets;
+using Vecxy.Input;
+using Vecxy.Kernel;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 
 namespace Game.Elevator;
 
-public class Test : AComponent
+public sealed class GameScene(
+    IAssetsManager assets,
+    IRenderer renderer,
+    IInputManager input,
+    IWindow window) : IScene
 {
-    public override void Update(float deltaTime)
-    {
-     Transform.LocalRotation = Quaternion.Normalize(
-         Quaternion.CreateFromAxisAngle(Vector3.UnitY, 0.5f * deltaTime) *
-         Transform.LocalRotation);
-    }
-}
+    public IInteractiveMap? Map { get; private set; }
 
-public class GameScene : IScene
-{
     public void OnLoad(SceneInstance scene)
     {
-        var cameraObject = scene.CreateObject("Camera");
-        
-        var camera = cameraObject.AddComponent<Camera>();
-        var test = cameraObject.AddComponent<Test>();
+        var mapObject = scene.CreateObject("Interactive Map");
+        Map = mapObject.AddComponent(
+            new InteractiveMap.InteractiveMap(
+                assets,
+                renderer,
+                input,
+                window));
+    }
+
+    public void OnUnload(SceneInstance scene)
+    {
+        Map = null;
     }
 }

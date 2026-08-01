@@ -11,7 +11,7 @@ public static class Program
     {
         var options = new Engine.Options
         {
-            Window = new IWindow.Options("Sandbox", 1280, 720, 1),
+            Window = new IWindow.Options("Elevator — Interactive Map", 1280, 720, 1),
             TargetFrameRate = 60
         };
 
@@ -22,6 +22,7 @@ public static class Program
                 {
                     AssetsDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "./Assets"))
                 }),
+            new EditorLayer.Definition(),
             new GameLayer.Definition()
         };
 
