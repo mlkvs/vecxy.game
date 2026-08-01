@@ -7,12 +7,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationId>game.vecxy.elevator</ApplicationId>
     <ApplicationTitle>Elevator</ApplicationTitle>
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+    <ApplicationVersion>2</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0.1</ApplicationDisplayVersion>
     <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <PublishTrimmed>false</PublishTrimmed>
     <RunAOTCompilation>false</RunAOTCompilation>
+    <AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == '' and Exists('$(HOME)/.local/share/android-sdk')">$(HOME)/.local/share/android-sdk</AndroidSdkDirectory>
     <JavaSdkDirectory Condition="'$(JavaSdkDirectory)' == '' and Exists('$(HOME)/.local/share/android-jdk')">$(HOME)/.local/share/android-jdk</JavaSdkDirectory>
