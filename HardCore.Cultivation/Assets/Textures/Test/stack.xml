@@ -1,0 +1,8 @@
+<image w="941" h="1672">
+    <stack>
+        <layer src="data/000.png" name="Dropped Buffer" x="56" y="526" opacity="1.0" visibility="visible"
+               composite-op="svg:src-over" selected="true"/>
+        <layer src="data/001.png" name="Background.png" x="0" y="0" opacity="1.0" visibility="visible"
+               composite-op="svg:src-over"/>
+    </stack>
+</image>
