@@ -1,0 +1,43 @@
+items:
+  - id: spirit-blade
+    name: SPIRIT BLADE
+    description: A BLADE TEMPERED WITH SPIRIT QI
+    icon: /Textures/Items/rpg_items.atlas#spirit-blade
+    quality: rare
+    sellPrice: 180
+    maxStack: 10
+  - id: flame-blade
+    name: FLAME BLADE
+    description: ITS EDGE CARRIES A RESTLESS FLAME
+    icon: /Textures/Items/rpg_items.atlas#flame-blade
+    quality: epic
+    sellPrice: 320
+    maxStack: 10
+  - id: azure-dagger
+    name: AZURE DAGGER
+    description: A LIGHT DAGGER FOR SWIFT CULTIVATORS
+    icon: /Textures/Items/rpg_items.atlas#azure-dagger
+    quality: uncommon
+    sellPrice: 95
+    maxStack: 20
+  - id: blood-elixir
+    name: BLOOD ELIXIR
+    description: RESTORES VITALITY AFTER BODY REFINING
+    icon: /Textures/Items/rpg_items.atlas#blood-elixir
+    quality: uncommon
+    sellPrice: 45
+    maxStack: 99
+  - id: jade-elixir
+    name: JADE ELIXIR
+    description: CALMS THE MERIDIANS AND RESTORES QI
+    icon: /Textures/Items/rpg_items.atlas#jade-elixir
+    quality: rare
+    sellPrice: 80
+    maxStack: 99
+  - id: spirit-ring
+    name: SPIRIT RING
+    description: A SIMPLE RING WITH A SMALL QI RESERVE
+    icon: /Textures/Items/rpg_items.atlas#spirit-ring
+    quality: common
+    sellPrice: 60
+    maxStack: 20

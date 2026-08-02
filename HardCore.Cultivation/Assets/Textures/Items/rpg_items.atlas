@@ -1,0 +1,11 @@
+{
+  "texture": "rpg_items_cc0.png",
+  "sprites": {
+    "flame-blade":  { "x": 46,  "y": 2,   "width": 44, "height": 44 },
+    "spirit-blade": { "x": 90,  "y": 2,   "width": 44, "height": 44 },
+    "azure-dagger": { "x": 90,  "y": 46,  "width": 44, "height": 44 },
+    "spirit-ring":  { "x": 90,  "y": 90,  "width": 44, "height": 44 },
+    "blood-elixir": { "x": 46,  "y": 134, "width": 44, "height": 44 },
+    "jade-elixir":  { "x": 90,  "y": 134, "width": 44, "height": 44 }
+  }
+}
