@@ -15,6 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HardCore.Cultivation\HardCore.Cultivation.csproj" />
+    <ProjectReference Include="..\HardCore.Cultivation\HardCore.Cultivation.Game.csproj" />
   </ItemGroup>
 </Project>
