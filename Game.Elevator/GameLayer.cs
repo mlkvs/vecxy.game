@@ -6,6 +6,7 @@ using Vecxy.Diagnostics;
 using Vecxy.Engine;
 using Vecxy.Kernel;
 using Vecxy.Scene;
+using Vecxy.UI;
 
 namespace Game.Elevator;
 
@@ -13,7 +14,8 @@ namespace Game.Elevator;
 public class GameLayer
 (
     ISceneManager scenes,
-    IWindow window
+    IWindow window,
+    IUiManager ui
 ) : AAppLayer
 {
     private SceneInstance? _mainScene;
@@ -23,6 +25,7 @@ public class GameLayer
     private bool _toggleMapRequested;
     private bool _mapOpen;
     private bool _mKeyDown;
+    private UiDocument? _uiDocument;
 
     public class Definition : ADefinition<GameLayer>
     {
@@ -62,6 +65,10 @@ public class GameLayer
         _gameplayScene = scenes.LoadSceneAdditive<ApartmentScene>();
         scenes.SetActiveScene(_gameplayScene);
         Logger.Info("Initial region scene loaded: 1 / Apartment. Press M to open the map.");
+
+        _uiDocument = ui.Load("UI/window.xml");
+        _uiDocument.Reloaded += BindUiCallbacks;
+        BindUiCallbacks(_uiDocument);
     }
 
     public override void OnUpdate(float deltaTime)
@@ -94,6 +101,13 @@ public class GameLayer
     {
         window.KeyChanged -= OnKeyChanged;
 
+        if (_uiDocument is not null)
+        {
+            _uiDocument.Reloaded -= BindUiCallbacks;
+            ui.Unload(_uiDocument);
+            _uiDocument = null;
+        }
+
         if (_map is not null)
             _map.RegionClicked -= OnRegionClicked;
 
@@ -107,6 +121,14 @@ public class GameLayer
         _gameplayScene = null;
         _map = null;
         _mapOpen = false;
+    }
+
+    private void BindUiCallbacks(UiDocument document)
+    {
+        if (document.Query("#toggle-map") is { } toggleMap)
+            toggleMap.Clicked += OnToggleMapClicked;
+        if (document.Query("#close-ui") is { } closeUi)
+            closeUi.Clicked += OnCloseUiClicked;
     }
 
     private void OnKeyChanged(IWindow.KeyEvent eventData)
@@ -125,6 +147,17 @@ public class GameLayer
 
         _mKeyDown = true;
         _toggleMapRequested = true;
+    }
+
+    private void OnToggleMapClicked(UiElement _)
+    {
+        _toggleMapRequested = true;
+    }
+
+    private void OnCloseUiClicked(UiElement _)
+    {
+        if (_uiDocument is not null)
+            _uiDocument.IsVisible = false;
     }
 
     private void OpenMap()

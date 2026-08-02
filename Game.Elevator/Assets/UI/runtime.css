@@ -1,0 +1,97 @@
+:root {
+    --surface: rgba(10, 16, 27, 0.94);
+    --surface-raised: #162338;
+    --border: #456386;
+    --text: #edf8ff;
+    --muted: #8fa7bd;
+    --primary: #58d6ff;
+    --danger: #ff5d73;
+}
+
+.ui-root {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.demo-window {
+    width: 560px;
+    padding: 30px;
+    gap: 22px;
+    background-color: var(--surface);
+    border: 2px solid var(--border);
+    pointer-events: auto;
+}
+
+.brand-row,
+.button-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+}
+
+.brand-copy {
+    gap: 8px;
+}
+
+.brand-icon {
+    width: 64px;
+    height: 64px;
+}
+
+.title {
+    color: var(--primary);
+    font-size: 34px;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.description {
+    color: var(--text);
+    font-size: 15px;
+}
+
+.button-row {
+    align-items: stretch;
+}
+
+.button {
+    min-width: 190px;
+    min-height: 48px;
+    padding: 14px 20px;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--surface-raised);
+    border: 2px solid var(--border);
+    color: var(--text);
+    pointer-events: auto;
+}
+
+.button:hover {
+    background-color: #243b57;
+    border-color: var(--primary);
+}
+
+.button:active {
+    background-color: #0b111d;
+}
+
+.primary {
+    border-color: var(--primary);
+}
+
+.danger {
+    border-color: var(--danger);
+}
+
+.hint {
+    color: var(--muted);
+    font-size: 11px;
+}
