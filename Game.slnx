@@ -12,9 +12,16 @@
     <Project Path="Engine/Vecxy/Code/Vecxy.Physics/Vecxy.Physics.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Rendering/Vecxy.Rendering.csproj" />
     <Project Path="Engine\Vecxy\Code\Vecxy.Scene\Vecxy.Scene.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.UI/Vecxy.UI.csproj" />
   </Folder>
   <Folder Name="/Game/">
     <Project Path="Game.Elevator/Game.Elevator.csproj" />
+    <Project Path="Game.Elevator.Android/Game.Elevator.Android.csproj" />
+    <Project Path="HardCore.Cultivation/HardCore.Cultivation.csproj" />
     <Project Path="Sandbox/Sandbox.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="HardCore.Cultivation.Tests/HardCore.Cultivation.Tests.csproj" />
+    <Project Path="Engine/Vecxy/Tests/Vecxy.UI.Tests/Vecxy.UI.Tests.csproj" />
   </Folder>
 </Solution>
