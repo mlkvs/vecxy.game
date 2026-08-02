@@ -82,31 +82,27 @@
 }
 
 .inventory-grid {
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, minmax(64ui, 78ui));
+    gap: 8ui;
     flex-grow: 1;
 }
 
-.slot-row {
-    height: 78px;
-    min-height: 78px;
-    flex-direction: row;
-    gap: 8px;
-}
-
 .item-slot {
-    width: 78px;
-    height: 78px;
     align-items: center;
     justify-content: center;
     background-color: rgba(213, 205, 164, 0.72);
     border: 3px solid #8a6a34;
     pointer-events: auto;
+    transition: background-color 0.12s ease-out, transform 0.12s ease-out;
 }
 
 .item-slot:hover,
 .item-slot:active {
     background-color: #efe2a9;
     border-color: var(--jade);
+    transform: scale(1.04);
 }
 
 .slot-icon {
