@@ -84,9 +84,15 @@
 .inventory-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, minmax(64ui, 78ui));
+    grid-auto-rows: 78ui;
+    height: 350ui;
+    min-height: 350ui;
+    max-height: 350ui;
     gap: 8ui;
-    flex-grow: 1;
+    padding-right: 7ui;
+    overflow-y: scroll;
+    scrollbar-width: 5ui;
+    scrollbar-color: var(--jade) rgba(78, 48, 33, 0.22);
 }
 
 .item-slot {
@@ -103,6 +109,17 @@
     background-color: #efe2a9;
     border-color: var(--jade);
     transform: scale(1.04);
+}
+
+.scroll-demo-slot:disabled {
+    background-color: rgba(185, 174, 135, 0.48);
+    border-color: rgba(104, 77, 44, 0.62);
+    color: rgba(59, 38, 23, 0.62);
+}
+
+.scroll-index {
+    align-self: center;
+    font-size: 11ui;
 }
 
 .slot-icon {

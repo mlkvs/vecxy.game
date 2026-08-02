@@ -32,6 +32,22 @@
             <button id="slot-13" class="item-slot"><image id="slot-13-icon" class="slot-icon"/><text id="slot-13-quantity" class="slot-quantity"/></button>
             <button id="slot-14" class="item-slot"><image id="slot-14-icon" class="slot-icon"/><text id="slot-14-quantity" class="slot-quantity"/></button>
             <button id="slot-15" class="item-slot"><image id="slot-15-icon" class="slot-icon"/><text id="slot-15-quantity" class="slot-quantity"/></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 17</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 18</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 19</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 20</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 21</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 22</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 23</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 24</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 25</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 26</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 27</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 28</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 29</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 30</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 31</text></button>
+            <button class="item-slot scroll-demo-slot" disabled="true"><text class="scroll-index">SCROLL 32</text></button>
         </panel>
 
         <panel class="inventory-footer">
