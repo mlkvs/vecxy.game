@@ -46,6 +46,6 @@
             <panel class="qi-fill" />
             <text id="qi-value" class="qi-value">22.3 / 30 QI</text>
         </panel>
-        <text id="toast" class="toast">TAP THE CULTIVATOR</text>
+        <text id="toast" class="toast">Привет!</text>
     </panel>
 </ui>
