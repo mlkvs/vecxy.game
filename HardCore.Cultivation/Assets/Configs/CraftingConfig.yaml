@@ -1,0 +1,26 @@
+Recipes:
+  - Id: craft_qi_pill
+    Name: Создание пилюли ци
+    RequiredAlchemyLevel: 1
+    DurationTicks: 5
+    ExperienceReward: 5
+    Ingredients:
+      - ItemId: spirit_herb
+        Amount: 2
+    Results:
+      - ItemId: qi_pill
+        Amount: 1
+
+  - Id: craft_body_pill
+    Name: Создание пилюли укрепления тела
+    RequiredAlchemyLevel: 2
+    DurationTicks: 10
+    ExperienceReward: 15
+    Ingredients:
+      - ItemId: spirit_herb
+        Amount: 3
+      - ItemId: beast_core_red
+        Amount: 1
+    Results:
+      - ItemId: body_pill
+        Amount: 1

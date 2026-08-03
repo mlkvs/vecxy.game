@@ -1,7 +1,0 @@
-name: Retro Horror
-enabled: true
-order: 100
-pixelWidth: 1200
-jitterStrength: 0.0
-warpStrength: 0.001
-driftStrength: 0.001

@@ -10,4 +10,15 @@
   <ItemGroup Condition="'$(VecxyPlatform)' == 'Desktop'">
     <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Editor\Vecxy.Editor.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Engine\Vecxy.Engine.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Rendering\Vecxy.Rendering.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Scene\Vecxy.Scene.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Assets\Vecxy.Assets.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Kernel\Vecxy.Kernel.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Diagnostics\Vecxy.Diagnostics.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Physics\Vecxy.Physics.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.UI\Vecxy.UI.csproj" />
+  </ItemGroup>
 </Project>

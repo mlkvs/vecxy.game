@@ -1,0 +1,32 @@
+Missions:
+  - Id: gather_herbs
+    Name: Сбор духовных трав
+    Description: Отправиться в лес и собрать травы.
+    DurationTicks: 10
+    RequiredCombatPower: 0
+    RequiredStage: BodyTempering
+    RequiredRealmLevel: 1
+    RequiredReputation: 0
+    Rewards:
+      - ItemId: spirit_herb
+        Amount: 3
+    StatRewards:
+      - Stat: Money
+        Value: 10
+
+  - Id: hunt_spirit_beast
+    Name: Охота на духовного зверя
+    Description: Победить слабого зверя и забрать его ядро.
+    DurationTicks: 30
+    RequiredCombatPower: 50
+    RequiredStage: BodyTempering
+    RequiredRealmLevel: 3
+    RequiredReputation: 0
+    Rewards:
+      - ItemId: beast_core_red
+        Amount: 1
+    StatRewards:
+      - Stat: Money
+        Value: 50
+      - Stat: CombatPower
+        Value: 2

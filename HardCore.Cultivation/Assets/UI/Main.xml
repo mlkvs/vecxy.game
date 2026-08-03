@@ -1,0 +1,643 @@
+<ui
+        class="screen"
+        styles="Main.css"
+        scale-mode="fit"
+        reference-width="1080"
+        reference-height="1920"
+>
+    <panel id="hud">
+        <panel id="header">
+            <button id="character-button" class="main-button">
+                <image class="button-icon character-icon"/>
+            </button>
+
+            <panel id="combat-power-bar" class="power-bar">
+                <panel id="combat-power-fill" class="power-fill combat-fill"/>
+
+                <panel class="power-content">
+                    <text class="power-title">БОЕВАЯ СИЛА</text>
+                    <text id="combat-power-text" class="power-value">1</text>
+                </panel>
+            </panel>
+
+            <button id="settings-button" class="main-button">
+                <image class="button-icon settings-icon"/>
+            </button>
+        </panel>
+
+        <panel id="resource-panel">
+            <panel class="resource-card">
+                <image class="resource-icon money-icon"/>
+                <text id="money-text" class="resource-value">0</text>
+            </panel>
+
+            <panel class="resource-card">
+                <image class="resource-icon time-icon"/>
+                <text id="age-text" class="resource-value">0 дней</text>
+            </panel>
+
+            <panel class="resource-card">
+                <image class="resource-icon spiritual-icon"/>
+                <text id="spiritual-power-text" class="resource-value">0</text>
+            </panel>
+        </panel>
+
+        <panel id="side-buttons">
+            <panel id="left-buttons" class="side-column">
+                <button id="cultivation-button" class="main-button labeled-button">
+                    <image class="button-icon cultivation-icon"/>
+                    <text class="button-label">Культивация</text>
+                </button>
+
+                <button id="missions-button" class="main-button labeled-button">
+                    <image class="button-icon missions-icon"/>
+                    <text class="button-label">Миссии</text>
+                </button>
+
+                <button id="inventory-button" class="main-button labeled-button">
+                    <image class="button-icon inventory-icon"/>
+                    <text class="button-label">Инвентарь</text>
+                </button>
+            </panel>
+
+            <panel id="right-buttons" class="side-column">
+                <button id="crafting-button" class="main-button labeled-button">
+                    <image class="button-icon crafting-icon"/>
+                    <text class="button-label">Алхимия</text>
+                </button>
+
+                <button id="meditation-button" class="main-button labeled-button active-toggle">
+                    <image class="button-icon meditation-icon"/>
+                    <text class="button-label">Медитация</text>
+                </button>
+
+                <button id="training-button" class="main-button labeled-button">
+                    <image class="button-icon training-icon"/>
+                    <text class="button-label">Тренировка</text>
+                </button>
+            </panel>
+        </panel>
+
+        <panel id="bottom-status">
+            <panel class="status-card">
+                <text class="status-label">СТАДИЯ</text>
+                <text id="realm-text" class="status-value">Закалка тела I</text>
+            </panel>
+
+            <panel class="status-card">
+                <text class="status-label">ДУХОВНАЯ СИЛА</text>
+                <text id="spiritual-rate-text" class="status-value">+1 / сек</text>
+            </panel>
+        </panel>
+    </panel>
+
+    <panel id="window-layer">
+        <panel id="cultivation-window" class="window hidden">
+            <panel class="window-header">
+                <text class="window-title">КУЛЬТИВАЦИЯ</text>
+
+                <button
+                        id="cultivation-window-close"
+                        class="window-close"
+                >
+                    ×
+                </button>
+            </panel>
+
+            <panel class="window-content">
+                <panel class="hero-card">
+                    <text class="section-title">Текущая ступень</text>
+
+                    <text
+                            id="cultivation-stage-name"
+                            class="hero-title"
+                    >
+                        Закалка тела I
+                    </text>
+
+                    <text
+                            id="cultivation-description"
+                            class="description"
+                    >
+                        Укрепляйте тело и накапливайте духовную силу.
+                    </text>
+                </panel>
+
+                <panel class="large-progress">
+                    <panel
+                            id="cultivation-progress-fill"
+                            class="large-progress-fill"
+                    />
+
+                    <text
+                            id="cultivation-progress-text"
+                            class="large-progress-text"
+                    >
+                        0 / 25
+                    </text>
+                </panel>
+
+                <button
+                        id="advance-level-button"
+                        class="action-button"
+                >
+                    <text>ПОВЫСИТЬ УРОВЕНЬ</text>
+                </button>
+
+                <button
+                        id="breakthrough-button"
+                        class="action-button secondary-action"
+                >
+                    <text>СОВЕРШИТЬ ПРОРЫВ</text>
+                </button>
+
+                <panel class="info-grid">
+                    <panel class="info-cell">
+                        <text class="info-label">Уровень</text>
+
+                        <text
+                                id="realm-level-text"
+                                class="info-value"
+                        >
+                            1 / 9
+                        </text>
+                    </panel>
+
+                    <panel class="info-cell">
+                        <text class="info-label">Бонус медитации</text>
+
+                        <text
+                                id="meditation-bonus-text"
+                                class="info-value"
+                        >
+                            +0
+                        </text>
+                    </panel>
+
+                    <panel class="info-cell">
+                        <text class="info-label">Срок жизни</text>
+
+                        <text
+                                id="lifespan-text"
+                                class="info-value"
+                        >
+                            3650 дней
+                        </text>
+                    </panel>
+
+                    <panel class="info-cell">
+                        <text class="info-label">Возраст</text>
+
+                        <text
+                                id="character-age-text"
+                                class="info-value"
+                        >
+                            0 дней
+                        </text>
+                    </panel>
+                </panel>
+            </panel>
+        </panel>
+
+        <panel id="character-window" class="window hidden">
+            <panel class="window-header">
+                <text class="window-title">ПЕРСОНАЖ</text>
+
+                <button
+                        id="character-window-close"
+                        class="window-close"
+                >
+                    ×
+                </button>
+            </panel>
+
+            <panel class="window-content">
+                <panel class="hero-card">
+                    <text class="section-title">Текущая ступень</text>
+
+                    <text
+                            id="character-realm-text"
+                            class="hero-title"
+                    >
+                        Закалка тела I
+                    </text>
+
+                    <text class="description">
+                        Странствующий культиватор
+                    </text>
+                </panel>
+
+                <panel class="stats-list">
+                    <panel class="stat-row">
+                        <text class="stat-name">Духовная сила</text>
+
+                        <text
+                                id="character-spiritual-text"
+                                class="stat-value"
+                        >
+                            0
+                        </text>
+                    </panel>
+
+                    <panel class="stat-row">
+                        <text class="stat-name">Боевая сила</text>
+
+                        <text
+                                id="character-combat-text"
+                                class="stat-value"
+                        >
+                            1
+                        </text>
+                    </panel>
+
+                    <panel class="stat-row">
+                        <text class="stat-name">Здоровье</text>
+
+                        <text
+                                id="character-health-text"
+                                class="stat-value"
+                        >
+                            100 / 100
+                        </text>
+                    </panel>
+
+                    <panel class="stat-row">
+                        <text class="stat-name">Срок жизни</text>
+
+                        <text
+                                id="character-lifespan-text"
+                                class="stat-value"
+                        >
+                            3650 дней
+                        </text>
+                    </panel>
+
+                    <panel class="stat-row">
+                        <text class="stat-name">Репутация секты</text>
+
+                        <text
+                                id="character-reputation-text"
+                                class="stat-value"
+                        >
+                            0
+                        </text>
+                    </panel>
+
+                    <panel class="stat-row">
+                        <text class="stat-name">Алхимия</text>
+
+                        <text
+                                id="character-alchemy-text"
+                                class="stat-value"
+                        >
+                            1 уровень
+                        </text>
+                    </panel>
+                </panel>
+            </panel>
+        </panel>
+
+        <panel id="missions-window" class="window hidden">
+            <panel class="window-header">
+                <text class="window-title">МИССИИ</text>
+
+                <button
+                        id="missions-window-close"
+                        class="window-close"
+                >
+                    ×
+                </button>
+            </panel>
+
+            <panel class="window-content">
+                <panel class="tabs">
+                    <button
+                            id="missions-available-tab"
+                            class="tab-button selected"
+                    >
+                        <text>Доступные</text>
+                    </button>
+
+                    <button
+                            id="missions-running-tab"
+                            class="tab-button"
+                    >
+                        <text>Выполняются</text>
+                    </button>
+
+                    <button
+                            id="missions-completed-tab"
+                            class="tab-button"
+                    >
+                        <text>Завершённые</text>
+                    </button>
+                </panel>
+
+                <scroll id="mission-list" class="card-list">
+                </scroll>
+
+                <panel class="selection-footer">
+                    <text
+                            id="selected-mission-name"
+                            class="card-title"
+                    >
+                        Миссия не выбрана
+                    </text>
+
+                    <text
+                            id="selected-mission-description"
+                            class="description"
+                    >
+                        Выберите миссию из списка.
+                    </text>
+
+                    <text
+                            id="selected-mission-requirements"
+                            class="card-meta"
+                    >
+                    </text>
+
+                    <text
+                            id="selected-mission-rewards"
+                            class="card-reward"
+                    >
+                    </text>
+
+                    <button
+                            id="mission-action-button"
+                            class="action-button"
+                    >
+                        <text id="mission-action-text">
+                            НАЧАТЬ МИССИЮ
+                        </text>
+                    </button>
+                </panel>
+            </panel>
+        </panel>
+
+        <panel id="inventory-window" class="window hidden">
+            <panel class="window-header">
+                <text class="window-title">ИНВЕНТАРЬ</text>
+
+                <button
+                        id="inventory-window-close"
+                        class="window-close"
+                >
+                    ×
+                </button>
+            </panel>
+
+            <panel class="window-content">
+                <panel class="tabs">
+                    <button
+                            id="inventory-all-tab"
+                            class="tab-button selected"
+                    >
+                        <text>Все</text>
+                    </button>
+
+                    <button
+                            id="inventory-pills-tab"
+                            class="tab-button"
+                    >
+                        <text>Пилюли</text>
+                    </button>
+
+                    <button
+                            id="inventory-herbs-tab"
+                            class="tab-button"
+                    >
+                        <text>Травы</text>
+                    </button>
+
+                    <button
+                            id="inventory-materials-tab"
+                            class="tab-button"
+                    >
+                        <text>Материалы</text>
+                    </button>
+                </panel>
+
+                <scroll
+                        id="inventory-grid"
+                        class="inventory-grid"
+                >
+                </scroll>
+            </panel>
+        </panel>
+
+        <panel id="crafting-window" class="window hidden">
+            <panel class="window-header">
+                <text class="window-title">АЛХИМИЯ</text>
+
+                <button
+                        id="crafting-window-close"
+                        class="window-close"
+                >
+                    ×
+                </button>
+            </panel>
+
+            <panel class="window-content">
+                <panel class="alchemy-level-card">
+                    <text class="section-title">
+                        Уровень алхимии
+                    </text>
+
+                    <text
+                            id="alchemy-level-text"
+                            class="hero-title"
+                    >
+                        1
+                    </text>
+
+                    <panel class="small-progress">
+                        <panel
+                                id="alchemy-progress-fill"
+                                class="small-progress-fill"
+                        />
+                    </panel>
+
+                    <text
+                            id="alchemy-experience-text"
+                            class="description"
+                    >
+                        0 / 25 опыта
+                    </text>
+                </panel>
+
+                <scroll id="recipe-list" class="card-list">
+                </scroll>
+
+                <panel id="selected-recipe-card" class="hero-card">
+                    <text
+                            id="selected-recipe-name"
+                            class="card-title"
+                    >
+                        Рецепт не выбран
+                    </text>
+
+                    <text
+                            id="selected-recipe-description"
+                            class="description"
+                    >
+                        Выберите рецепт из списка.
+                    </text>
+
+                    <text
+                            id="selected-recipe-ingredients"
+                            class="card-meta"
+                    >
+                    </text>
+                </panel>
+
+                <panel id="crafting-queue" class="queue-card">
+                    <text class="section-title">Очередь</text>
+
+                    <text
+                            id="crafting-queue-text"
+                            class="description"
+                    >
+                        Очередь пуста
+                    </text>
+                </panel>
+
+                <button
+                        id="craft-button"
+                        class="action-button"
+                >
+                    <text>СОЗДАТЬ</text>
+                </button>
+            </panel>
+        </panel>
+
+        <panel id="item-details-window" class="window compact-window hidden">
+            <panel class="window-header">
+                <text class="window-title">ПРЕДМЕТ</text>
+
+                <button
+                        id="item-details-window-close"
+                        class="window-close"
+                >
+                    ×
+                </button>
+            </panel>
+
+            <panel class="window-content">
+                <image
+                        id="item-details-icon"
+                        class="details-icon"
+                />
+
+                <text
+                        id="item-details-name"
+                        class="hero-title"
+                >
+                    Предмет
+                </text>
+
+                <text
+                        id="item-details-rarity"
+                        class="rarity-text"
+                >
+                    Обычный
+                </text>
+
+                <text
+                        id="item-details-description"
+                        class="description"
+                >
+                </text>
+
+                <panel class="stat-row">
+                    <text class="stat-name">Количество</text>
+
+                    <text
+                            id="item-details-amount"
+                            class="stat-value"
+                    >
+                        0
+                    </text>
+                </panel>
+
+                <panel class="stat-row">
+                    <text class="stat-name">Тип</text>
+
+                    <text
+                            id="item-details-type"
+                            class="stat-value"
+                    >
+                    </text>
+                </panel>
+
+                <text
+                        id="item-details-effects"
+                        class="description"
+                >
+                </text>
+
+                <button
+                        id="use-item-button"
+                        class="action-button"
+                >
+                    <text>ИСПОЛЬЗОВАТЬ</text>
+                </button>
+            </panel>
+        </panel>
+
+        <panel id="settings-window" class="window compact-window hidden">
+            <panel class="window-header">
+                <text class="window-title">НАСТРОЙКИ</text>
+
+                <button
+                        id="settings-window-close"
+                        class="window-close"
+                >
+                    ×
+                </button>
+            </panel>
+
+            <panel class="window-content">
+                <panel class="setting-row">
+                    <text class="setting-name">Музыка</text>
+
+                    <button
+                            id="music-toggle"
+                            class="toggle-button enabled"
+                    >
+                        <text>ВКЛ</text>
+                    </button>
+                </panel>
+
+                <panel class="setting-row">
+                    <text class="setting-name">Звуки</text>
+
+                    <button
+                            id="sound-toggle"
+                            class="toggle-button enabled"
+                    >
+                        <text>ВКЛ</text>
+                    </button>
+                </panel>
+
+                <panel class="setting-row">
+                    <text class="setting-name">Вибрация</text>
+
+                    <button
+                            id="vibration-toggle"
+                            class="toggle-button"
+                    >
+                        <text>ВЫКЛ</text>
+                    </button>
+                </panel>
+
+                <button
+                        id="save-button"
+                        class="action-button"
+                >
+                    <text>СОХРАНИТЬ ИГРУ</text>
+                </button>
+            </panel>
+        </panel>
+    </panel>
+</ui>

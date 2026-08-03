@@ -8,6 +8,7 @@ using Vecxy.Platforms;
 
 namespace HardCore.Cultivation;
 
+[VecxyApplication]
 public sealed class CultivationApplication : IVecxyApplication
 {
     public Engine.Options CreateEngineOptions(PlatformContext context) => new()
