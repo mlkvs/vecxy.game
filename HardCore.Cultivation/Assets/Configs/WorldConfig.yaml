@@ -1,5 +1,0 @@
-DefaultTickIntervalMs: 1000
-AgeDaysPerTick: 0.01
-BaseSpiritualPowerPerTick: 1
-BaseCombatPowerPerTrainingTick: 1
-AutoSaveEveryTicks: 30

@@ -1,0 +1,167 @@
+items:
+  - id: focus_pill
+    name: Пилюля сосредоточения
+    description: Обостряет восприятие и помогает извлечь больше пользы из каждого такта.
+    icon: Assets/Textures/Items/focus-pill.png
+    category: Pill
+    durationType: Temporary
+    temporaryDurationTicks: 24
+    basePrice: 120
+    shopWeight: 18
+    effects:
+      - type: TickEfficiency
+        operation: AdditivePercent
+        value: 25
+  - id: still_age_pill
+    name: Пилюля тихих лет
+    description: Сдерживает течение жизненной силы и замедляет старение тела.
+    icon: Assets/Textures/Items/still-age-pill.png
+    category: Pill
+    durationType: Temporary
+    temporaryDurationTicks: 48
+    basePrice: 240
+    shopWeight: 10
+    effects:
+      - type: AgingSpeed
+        operation: AdditivePercent
+        value: -30
+  - id: insight_core
+    name: Ядро прозрения
+    description: Укрепляет основание культивации перед будущими прорывами.
+    icon: Assets/Textures/Items/insight-core.png
+    category: Core
+    durationType: Permanent
+    basePrice: 700
+    shopWeight: 5
+    effects:
+      - type: BreakthroughChance
+        operation: Flat
+        value: 3
+  - id: spirit_dew
+    name: Роса духовной силы
+    description: Высвобождает накопленный внутри запас духовной силы.
+    icon: Assets/Textures/Items/spirit-dew.png
+    category: Pill
+    durationType: Instant
+    basePrice: 90
+    shopWeight: 24
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 80
+  - id: mission_talisman
+    name: Талисман странника
+    description: Помогает быстрее находить путь и выполнять поручения секты.
+    icon: Assets/Textures/Items/mission-talisman.png
+    category: Core
+    durationType: Temporary
+    temporaryDurationTicks: 36
+    basePrice: 180
+    shopWeight: 12
+    effects:
+      - type: MissionProgress
+        operation: AdditivePercent
+        value: 35
+  - id: crimson_beast_core
+    name: Багровое ядро зверя
+    description: Ценный материал для будущей алхимии.
+    icon: Assets/Textures/Items/crimson-beast-core.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 75
+    shopWeight: 20
+  - id: azure_spirit_core
+    name: Лазурное духовное ядро
+    description: Редкий материал, насыщенный ци.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+  - id: celestial_orb
+    name: Небесная сфера
+    description: Запредельно редкий ингредиент.
+    icon: Assets/Textures/Items/celestial-orb.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 1200
+    shopWeight: 2
+  - id: jade_lotus
+    name: Нефритовый лотос
+    description: Свежий алхимический ингредиент, выращенный в источнике духовной силы.
+    icon: Assets/Textures/Items/jade-lotus.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 110
+    shopWeight: 17
+  - id: phoenix_feather
+    name: Перо огненной птицы
+    description: Редкий жаростойкий материал для пилюль и талисманов высшего порядка.
+    icon: Assets/Textures/Items/phoenix-feather.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 330
+    shopWeight: 7
+  - id: marrow_elixir
+    name: Эликсир костного мозга
+    description: Мгновенно наполняет меридианы большим запасом духовной силы.
+    icon: Assets/Textures/Items/marrow-elixir.png
+    category: Pill
+    durationType: Instant
+    basePrice: 210
+    shopWeight: 13
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 160
+  - id: time_incense
+    name: Благовоние тихого времени
+    description: Успокаивает жизненный огонь и заметно замедляет старение на короткий срок.
+    icon: Assets/Textures/Items/time-incense.png
+    category: Pill
+    durationType: Temporary
+    temporaryDurationTicks: 24
+    basePrice: 310
+    shopWeight: 8
+    effects:
+      - type: AgingSpeed
+        operation: AdditivePercent
+        value: -45
+  - id: breakthrough_seal
+    name: Печать небесного прорыва
+    description: Временно стабилизирует духовное основание перед попыткой перейти на новую стадию.
+    icon: Assets/Textures/Items/breakthrough-seal.png
+    category: Core
+    durationType: Temporary
+    temporaryDurationTicks: 18
+    basePrice: 560
+    shopWeight: 5
+    effects:
+      - type: BreakthroughChance
+        operation: Flat
+        value: 7
+  - id: swift_scroll
+    name: Свиток быстрого пути
+    description: Открывает короткие духовные тропы и ускоряет выполнение поручений секты.
+    icon: Assets/Textures/Items/swift-scroll.png
+    category: Core
+    durationType: Temporary
+    temporaryDurationTicks: 18
+    basePrice: 280
+    shopWeight: 9
+    effects:
+      - type: MissionProgress
+        operation: AdditivePercent
+        value: 60
+  - id: spirit_seed
+    name: Семя вечного духа
+    description: Навсегда укрепляет восприятие мира и немного повышает результат каждого такта.
+    icon: Assets/Textures/Items/spirit-seed.png
+    category: Core
+    durationType: Permanent
+    basePrice: 980
+    shopWeight: 3
+    effects:
+      - type: TickEfficiency
+        operation: AdditivePercent
+        value: 3

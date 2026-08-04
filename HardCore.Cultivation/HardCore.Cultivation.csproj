@@ -7,10 +7,6 @@
 
   <Import Project="..\Engine\Vecxy\Code\Vecxy.Platforms\build\Vecxy.Platforms.props" />
 
-  <ItemGroup Condition="'$(VecxyPlatform)' == 'Desktop'">
-    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Editor\Vecxy.Editor.csproj" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Engine\Vecxy.Engine.csproj" />
     <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Rendering\Vecxy.Rendering.csproj" />
@@ -20,5 +16,13 @@
     <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Diagnostics\Vecxy.Diagnostics.csproj" />
     <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Physics\Vecxy.Physics.csproj" />
     <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.UI\Vecxy.UI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(VecxyPlatform)' == 'Desktop'">
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Editor\Vecxy.Editor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Progression/GameProgress.cs" />
   </ItemGroup>
 </Project>

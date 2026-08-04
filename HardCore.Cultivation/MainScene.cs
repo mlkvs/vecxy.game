@@ -57,8 +57,9 @@ public sealed class MainScene
             assets.Load<TextureAsset>("Textures/Character.png");
 
         var characterObject = scene.CreateObject("Character");
-        characterObject.Transform.Position = new Vector3(-27.5f, -450.0f, 0.0f);
-        characterObject.Transform.Scale = new Vector3(0.675f, 0.675f, 1.0f);
+        characterObject.Transform.Position = new Vector3(0.0f, -450.0f, 0.0f);
+        characterObject.Transform.Scale = new Vector3(0.70f, 0.70f, 1.0f);
+        characterObject.AddComponent<CharacterLevitation>();
 
         var character = characterObject.AddComponent<SpriteRenderer>();
         character.SetTexture(characterTexture);

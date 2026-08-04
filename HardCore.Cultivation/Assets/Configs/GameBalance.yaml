@@ -1,0 +1,31 @@
+ticksPerYear: 48
+realMillisecondsPerTick: 1000
+autoSaveEveryTicks: 12
+baseSpiritualPowerPerTick: 1.0
+minimumTickEfficiency: 0.1
+minimumAgingMultiplier: 0.0
+maximumBreakthroughChance: 100.0
+effectQualityBase: 0.5
+effectQualityPerPoint: 0.2
+startingMoney: 1000
+startingAgeYears: 16.0
+maximumAgeYears: 80.0
+maximumMissionQueueSize: 6
+qualityBands:
+  - index: 1
+    weight: 40
+  - index: 2
+    weight: 30
+  - index: 3
+    weight: 18
+  - index: 4
+    weight: 9
+  - index: 5
+    weight: 3
+qualityPriceCurve:
+  - quality: 0.1
+    multiplier: 0.25
+  - quality: 2.5
+    multiplier: 1.0
+  - quality: 5.0
+    multiplier: 3.0

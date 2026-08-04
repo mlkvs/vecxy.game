@@ -1,0 +1,86 @@
+.item-card {
+    height: 500px; padding: 22px; background-color: #203128; border: 3px solid #8d8979;
+    border-radius: 28px; box-shadow: 0 8px 14px 0 #020805cc; overflow: hidden;
+}
+.item-top-row { min-height: 185px; flex-direction: row; align-items: center; gap: 18px; }
+.item-icon-well {
+    flex-shrink: 0; width: 126px; height: 126px; align-items: center; justify-content: center;
+    pointer-events: auto;
+    background-color: #0f1813; border: 2px solid #ffffff24; border-radius: 28px;
+    box-shadow: 0 6px 12px 0 #000000aa;
+}
+.item-icon { width: 106px; height: 106px; object-fit: contain; }
+.item-heading { flex: 1; min-width: 0; justify-content: center; }
+.item-rarity { font-size: 18px; }
+.rarity-badge {
+    align-self: flex-start; min-height: 32px; padding: 5px 11px; color: #102017;
+    background-color: #d8d2bf; border-radius: 11px; text-align: center;
+}
+.item-name { min-height: 64px; margin-top: 6px; font-size: 29px; vertical-align: middle; }
+.item-meta { width: 100%; height: 28px; margin-top: 7px; color: #f1c86e; font-size: 22px; white-space: nowrap; }
+.item-quality { min-height: 30px; margin-top: 6px; }
+.quality-stars { flex-direction: row; align-items: center; gap: 4px; }
+.quality-star { position: relative; flex-shrink: 0; width: 27px; height: 27px; }
+.quality-star-empty { position: absolute; inset: 0; width: 27px; height: 27px; object-fit: contain; }
+.quality-star-fill { position: absolute; left: 0; top: 0; width: 0%; height: 27px; overflow: hidden; }
+.quality-star-fill image { flex-shrink: 0; width: 27px; height: 27px; object-fit: contain; }
+.item-description { min-height: 62px; margin-top: 14px; color: #e5dfcf; font-size: 22px; }
+.item-effect {
+    min-height: 82px; margin-top: 11px; padding: 11px 13px; color: #c8ffe7; background-color: #103126;
+    border: 2px solid #56d5a055; border-left: 6px solid #56d5a0; border-radius: 13px; font-size: 22px;
+}
+.card-action-row { margin-top: auto; flex-direction: row; gap: 10px; }
+.card-action {
+    pointer-events: auto; flex: 1; min-height: 62px; padding: 10px; color: #0c1912; background-color: #56d5a0;
+    border-radius: 18px; box-shadow: 0 6px 12px 0 #00000088;
+    font-family: "Rubik UI"; font-size: 22px; align-items: center; justify-content: center; text-align: center;
+}
+.card-action:hover { background-color: #86edc5; }
+.card-action.secondary { color: #fff3d6; background-color: #343e36; border: 2px solid #f1bd59; }
+
+.mission-card {
+    min-height: 560px; gap: 15px; padding: 22px;
+    background-color: #203128; border: 3px solid #56d5a080; border-left: 8px solid #56d5a0;
+    border-radius: 28px; box-shadow: 0 8px 14px 0 #020805cc;
+}
+.mission-card-copy { flex: 1; min-width: 0; }
+.mission-card-kicker { color: #56d5a0; font-size: 19px; }
+.mission-card-title { min-height: 76px; margin-top: 5px; color: #fff3d6; font-size: 32px; }
+.mission-card-description { min-height: 70px; margin-top: 9px; color: #e2dccb; font-size: 22px; }
+.mission-duration-row {
+    min-height: 94px; margin-top: 14px; padding: 12px 14px; flex-direction: row; align-items: center; gap: 13px;
+    background-color: #17251d; border: 1px solid #56d5a044; border-radius: 19px;
+}
+.mission-duration-icon {
+    flex-shrink: 0; width: 62px; height: 62px; align-items: center; justify-content: center;
+    background-color: #254637; border-radius: 17px;
+}
+.mission-duration-icon image { width: 43px; height: 43px; object-fit: contain; }
+.mission-duration-copy { flex: 1; min-width: 0; justify-content: center; }
+.mission-duration-label { color: #9cbaa8; font-size: 15px; }
+.mission-duration-value { margin-top: 2px; color: #c8ffe7; font-size: 24px; }
+.mission-duration-years { margin-top: 2px; color: #d1cbb8; font-size: 17px; }
+.mission-reward-row {
+    min-height: 106px; margin-top: 14px; flex-direction: row; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 13px 15px; background-color: #111a15; border: 1px solid #f1bd5944; border-radius: 20px;
+}
+.reward-label { color: #f1bd59; font-size: 18px; }
+.mission-reward-icons { margin-top: 8px; flex-direction: row; gap: 8px; }
+.reward-icon-tile {
+    position: relative; width: 64px; height: 64px; align-items: center; justify-content: center;
+    pointer-events: auto;
+    background-color: #26352b; border: 1px solid #ffffff30; border-radius: 16px;
+}
+.reward-item-icon { width: 52px; height: 52px; object-fit: contain; }
+.reward-icon-badge {
+    position: absolute; right: -4px; bottom: -4px; min-width: 33px; padding: 3px 6px;
+    color: #101914; background-color: #f1bd59; border: 2px solid #111a15;
+    border-radius: 10px; font-size: 15px; text-align: center;
+}
+.mission-start {
+    pointer-events: auto; width: 100%; min-height: 66px; flex-direction: row; align-items: center; justify-content: center; gap: 10px;
+    color: #0d1b14; background-color: #56d5a0; border-radius: 22px;
+    box-shadow: 0 7px 13px 0 #00000099; font-family: "Rubik UI"; font-size: 22px; text-align: center;
+}
+.mission-start image { width: 40px; height: 40px; object-fit: contain; }
+.mission-start:hover { background-color: #89efc8; }

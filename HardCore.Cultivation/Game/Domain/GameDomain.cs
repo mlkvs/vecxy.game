@@ -1,0 +1,472 @@
+namespace HardCore.Cultivation.Game.Domain;
+
+public enum EffectType
+{
+    TickEfficiency,
+    AgingSpeed,
+    BreakthroughChance,
+    SpiritualPowerGain,
+    MissionProgress
+}
+
+public enum ModifierOperation
+{
+    Flat,
+    AdditivePercent,
+    MultiplicativePercent
+}
+
+public enum ItemCategory
+{
+    Pill,
+    Core,
+    Ingredient
+}
+
+public enum ItemDurationType
+{
+    Instant,
+    Temporary,
+    Permanent
+}
+
+public enum ItemRarity
+{
+    Common,
+    Uncommon,
+    Rare,
+    Epic,
+    Legendary,
+    Mythic,
+    Divine,
+    Transcendent
+}
+
+public sealed class GameCalendar
+{
+    public int TicksPerYear { get; }
+    public long TotalTicks { get; private set; }
+    public int CurrentYear => checked((int)(TotalTicks / TicksPerYear) + 1);
+    public int TickInYear => (int)(TotalTicks % TicksPerYear);
+
+    public GameCalendar(int ticksPerYear)
+    {
+        if (ticksPerYear <= 0)
+            throw new ArgumentOutOfRangeException(nameof(ticksPerYear));
+        TicksPerYear = ticksPerYear;
+    }
+
+    public bool AdvanceTick()
+    {
+        TotalTicks = checked(TotalTicks + 1);
+        return TotalTicks % TicksPerYear == 0;
+    }
+
+    public void Restore(long totalTicks)
+    {
+        if (totalTicks < 0)
+            throw new ArgumentOutOfRangeException(nameof(totalTicks));
+        TotalTicks = totalTicks;
+    }
+}
+
+public sealed class CharacterAge
+{
+    public decimal TotalYears { get; private set; }
+
+    public CharacterAge(decimal initialYears = 0m) => Restore(initialYears);
+
+    public void Advance(decimal agingMultiplier, int ticksPerYear)
+    {
+        if (agingMultiplier < 0m)
+            throw new ArgumentOutOfRangeException(nameof(agingMultiplier));
+        if (ticksPerYear <= 0)
+            throw new ArgumentOutOfRangeException(nameof(ticksPerYear));
+        TotalYears += agingMultiplier / ticksPerYear;
+    }
+
+    public void Restore(decimal totalYears)
+    {
+        if (totalYears < 0m)
+            throw new ArgumentOutOfRangeException(nameof(totalYears));
+        TotalYears = totalYears;
+    }
+}
+
+public sealed class CultivationProgress
+{
+    public int StageIndex { get; private set; }
+    public int Level { get; private set; } = 1;
+    public bool CanAttemptBreakthrough => Level == 10;
+
+    public void IncreaseLevel()
+    {
+        if (Level >= 10)
+            throw new InvalidOperationException("Breakthrough is required.");
+        Level++;
+    }
+
+    public void BreakthroughSucceeded(int stageCount)
+    {
+        if (!CanAttemptBreakthrough || StageIndex >= stageCount - 1)
+            throw new InvalidOperationException("Breakthrough is not available.");
+        StageIndex++;
+        Level = 1;
+    }
+
+    public void BreakthroughFailed(int fallbackLevel)
+    {
+        if (!CanAttemptBreakthrough)
+            throw new InvalidOperationException("Character is not ready.");
+        Level = Math.Clamp(fallbackLevel, 1, 9);
+    }
+
+    public void Restore(int stageIndex, int level, int stageCount)
+    {
+        if (stageIndex < 0 || stageIndex >= stageCount)
+            throw new ArgumentOutOfRangeException(nameof(stageIndex));
+        if (level is < 1 or > 10)
+            throw new ArgumentOutOfRangeException(nameof(level));
+        StageIndex = stageIndex;
+        Level = level;
+    }
+}
+
+public sealed class CharacterState
+{
+    public decimal SpiritualPower { get; private set; }
+    public long Money { get; private set; }
+    public CharacterAge Age { get; } = new(16m);
+    public CultivationProgress Cultivation { get; } = new();
+
+    public void AddSpiritualPower(decimal amount)
+    {
+        if (amount < 0m)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        SpiritualPower += amount;
+    }
+
+    public bool TrySpendSpiritualPower(decimal amount)
+    {
+        if (amount < 0m)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        if (SpiritualPower < amount)
+            return false;
+        SpiritualPower -= amount;
+        return true;
+    }
+
+    public bool TrySpendMoney(long amount)
+    {
+        if (amount < 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        if (Money < amount)
+            return false;
+        Money -= amount;
+        return true;
+    }
+
+    public void AddMoney(long amount) => Money = checked(Money + amount);
+
+    public void Restore(decimal spiritualPower, long money, decimal totalYears)
+    {
+        if (spiritualPower < 0m || money < 0)
+            throw new InvalidDataException("Character resources cannot be negative.");
+        SpiritualPower = spiritualPower;
+        Money = money;
+        Age.Restore(totalYears);
+    }
+}
+
+public sealed record ItemEffectDefinition
+{
+    public EffectType Type { get; init; }
+    public ModifierOperation Operation { get; init; }
+    public decimal Value { get; init; }
+}
+
+public sealed class ActiveEffect
+{
+    public string SourceItemId { get; init; } = string.Empty;
+    public EffectType Type { get; init; }
+    public ModifierOperation Operation { get; init; }
+    public decimal Value { get; init; }
+    public ItemRarity SourceRarity { get; init; }
+    public decimal SourceQuality { get; init; } = 2.5m;
+    public int? RemainingTicks { get; private set; }
+    public bool IsPermanent => RemainingTicks is null;
+    public bool IsExpired => RemainingTicks is <= 0;
+
+    public ActiveEffect()
+    {
+    }
+
+    public ActiveEffect(
+        string sourceItemId,
+        ItemEffectDefinition definition,
+        decimal scaledValue,
+        int? remainingTicks,
+        ItemRarity sourceRarity,
+        decimal sourceQuality)
+    {
+        SourceItemId = sourceItemId;
+        Type = definition.Type;
+        Operation = definition.Operation;
+        Value = scaledValue;
+        RemainingTicks = remainingTicks;
+        SourceRarity = sourceRarity;
+        SourceQuality = sourceQuality;
+    }
+
+    public void AdvanceTick()
+    {
+        if (RemainingTicks is not null)
+            RemainingTicks--;
+    }
+
+    public void RestoreDuration(int? remainingTicks) => RemainingTicks = remainingTicks;
+}
+
+public sealed class ItemInstance
+{
+    public required Guid InstanceId { get; init; }
+    public required string ConfigId { get; init; }
+    public ItemRarity Rarity { get; init; }
+    public decimal Quality { get; init; }
+    public int Quantity { get; private set; } = 1;
+
+    public void AddQuantity(int amount)
+    {
+        if (amount <= 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        Quantity = checked(Quantity + amount);
+    }
+
+    public void RemoveQuantity(int amount)
+    {
+        if (amount <= 0 || amount > Quantity)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        Quantity -= amount;
+    }
+
+    public void RestoreQuantity(int quantity) =>
+        Quantity = quantity > 0 ? quantity : throw new ArgumentOutOfRangeException(nameof(quantity));
+
+    public ItemInstance Copy(int quantity = 1)
+    {
+        if (quantity <= 0)
+            throw new ArgumentOutOfRangeException(nameof(quantity));
+        var copy = new ItemInstance
+        {
+            InstanceId = Guid.NewGuid(),
+            ConfigId = ConfigId,
+            Rarity = Rarity,
+            Quality = Quality
+        };
+        if (quantity > 1)
+            copy.AddQuantity(quantity - 1);
+        return copy;
+    }
+}
+
+public sealed class Inventory
+{
+    private readonly List<ItemInstance> _items = [];
+    public IReadOnlyList<ItemInstance> Items => _items;
+
+    public void Add(ItemInstance item)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        var stack = _items.FirstOrDefault(candidate =>
+            candidate.ConfigId == item.ConfigId &&
+            candidate.Rarity == item.Rarity &&
+            candidate.Quality == item.Quality);
+        if (stack is null)
+            _items.Add(item);
+        else
+            stack.AddQuantity(item.Quantity);
+    }
+
+    public bool Remove(Guid instanceId, int quantity)
+    {
+        var item = _items.FirstOrDefault(candidate => candidate.InstanceId == instanceId);
+        if (item is null || quantity <= 0 || item.Quantity < quantity)
+            return false;
+        item.RemoveQuantity(quantity);
+        if (item.Quantity == 0)
+            _items.Remove(item);
+        return true;
+    }
+
+    public ItemInstance? Find(Guid instanceId) =>
+        _items.FirstOrDefault(item => item.InstanceId == instanceId);
+
+    public void ReplaceWith(IEnumerable<ItemInstance> items)
+    {
+        _items.Clear();
+        foreach (var item in items)
+            Add(item);
+    }
+}
+
+public sealed class ActiveMission
+{
+    public Guid InstanceId { get; init; } = Guid.NewGuid();
+    public required string MissionConfigId { get; init; }
+    public decimal RequiredProgress { get; init; }
+    public decimal CurrentProgress { get; private set; }
+    public bool RewardGranted { get; private set; }
+    public bool IsCompleted => CurrentProgress >= RequiredProgress;
+
+    public void AddProgress(decimal amount)
+    {
+        if (amount < 0m)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        CurrentProgress = Math.Min(RequiredProgress, CurrentProgress + amount);
+    }
+
+    public void MarkRewardGranted()
+    {
+        if (!IsCompleted)
+            throw new InvalidOperationException("Mission is not completed.");
+        RewardGranted = true;
+    }
+
+    public void Restore(decimal progress, bool rewardGranted)
+    {
+        CurrentProgress = Math.Clamp(progress, 0m, RequiredProgress);
+        RewardGranted = rewardGranted;
+    }
+}
+
+public sealed class ShopSlot
+{
+    public Guid SlotId { get; init; }
+    public ItemInstance Item { get; init; } = null!;
+    public int AvailableQuantity { get; private set; }
+
+    public ShopSlot()
+    {
+    }
+
+    public ShopSlot(ItemInstance item, int quantity)
+    {
+        SlotId = Guid.NewGuid();
+        Item = item;
+        AvailableQuantity = quantity > 0 ? quantity : throw new ArgumentOutOfRangeException(nameof(quantity));
+    }
+
+    public void Remove(int amount)
+    {
+        if (amount <= 0 || amount > AvailableQuantity)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        AvailableQuantity -= amount;
+    }
+
+    public void RestoreQuantity(int quantity) =>
+        AvailableQuantity = quantity >= 0 ? quantity : throw new ArgumentOutOfRangeException(nameof(quantity));
+}
+
+public sealed class ShopState
+{
+    private readonly List<ShopSlot> _slots = [];
+    public int BuyMarkupPercent { get; private set; }
+    public int SellAdjustmentPercent { get; private set; }
+    public IReadOnlyList<ShopSlot> Slots => _slots;
+
+    public void ReplaceStock(IEnumerable<ShopSlot> slots, int buyMarkup, int sellAdjustment)
+    {
+        _slots.Clear();
+        _slots.AddRange(slots);
+        BuyMarkupPercent = buyMarkup;
+        SellAdjustmentPercent = sellAdjustment;
+    }
+}
+
+public sealed class MissionBoardState
+{
+    private readonly List<string> _missionIds = [];
+
+    public IReadOnlyList<string> MissionIds => _missionIds;
+
+    public bool Contains(string missionId) => _missionIds.Contains(missionId);
+
+    public bool Take(string missionId) => _missionIds.Remove(missionId);
+
+    public void ReplaceWith(IEnumerable<string> missionIds)
+    {
+        ArgumentNullException.ThrowIfNull(missionIds);
+        _missionIds.Clear();
+        _missionIds.AddRange(missionIds.Distinct(StringComparer.Ordinal));
+    }
+}
+
+public sealed class GameState
+{
+    private readonly List<ActiveMission> _missionQueue = [];
+
+    public GameCalendar Calendar { get; }
+    public CharacterState Character { get; } = new();
+    public Inventory Inventory { get; } = new();
+    public ShopState Shop { get; } = new();
+    public MissionBoardState MissionBoard { get; } = new();
+    public IReadOnlyList<ActiveMission> MissionQueue => _missionQueue;
+    public ActiveMission? CurrentMission => _missionQueue.FirstOrDefault();
+    public List<ActiveEffect> ActiveEffects { get; } = [];
+
+    public GameState(int ticksPerYear) => Calendar = new GameCalendar(ticksPerYear);
+
+    public void EnqueueMission(ActiveMission mission)
+    {
+        ArgumentNullException.ThrowIfNull(mission);
+        _missionQueue.Add(mission);
+    }
+
+    public bool RemoveMission(Guid instanceId)
+    {
+        var mission = _missionQueue.FirstOrDefault(candidate => candidate.InstanceId == instanceId);
+        return mission is not null && _missionQueue.Remove(mission);
+    }
+
+    public bool MoveMission(Guid instanceId, int offset)
+    {
+        if (offset is not (-1 or 1))
+            throw new ArgumentOutOfRangeException(nameof(offset));
+        var currentIndex = _missionQueue.FindIndex(mission => mission.InstanceId == instanceId);
+        var targetIndex = currentIndex + offset;
+        if (currentIndex < 0 || targetIndex < 0 || targetIndex >= _missionQueue.Count)
+            return false;
+        (_missionQueue[currentIndex], _missionQueue[targetIndex]) =
+            (_missionQueue[targetIndex], _missionQueue[currentIndex]);
+        return true;
+    }
+}
+
+public readonly record struct TickModifiers(
+    decimal TickEfficiency,
+    decimal AgingMultiplier,
+    decimal SpiritualPowerMultiplier,
+    decimal MissionProgressMultiplier,
+    decimal BreakthroughChanceBonus);
+
+public sealed record TickResult(
+    long TickNumber,
+    int Year,
+    decimal SpiritualPowerGained,
+    decimal MissionProgressAdded,
+    bool MissionCompleted,
+    bool NewYearStarted,
+    bool CharacterDied);
+
+public sealed record BreakthroughResult(
+    bool Success,
+    decimal FinalChance,
+    int StageIndex,
+    int Level,
+    string Message);
+
+public sealed record TransactionResult(bool Success, string Message, long TotalPrice = 0)
+{
+    public static TransactionResult Fail(string message) => new(false, message);
+    public static TransactionResult Ok(long price, string message) => new(true, message, price);
+}

@@ -1,0 +1,9 @@
+<panel id="missions-window" class="window" hidden="true">
+    <panel class="window-header"><panel><text class="window-title">Миссии секты</text><text class="window-subtitle">Одно поручение выполняется, остальные ждут в очереди</text></panel><button class="window-close"><image src="../Textures/UIIcons/close.png" /></button></panel>
+    <panel class="mission-queue-panel">
+        <panel class="queue-heading"><text>ОЧЕРЕДЬ ЗАДАЧ</text><text id="mission-queue-count" class="toolbar-value">0 / 6</text></panel>
+        <panel id="mission-queue" class="mission-queue-strip" />
+    </panel>
+    <panel class="mission-board-heading"><text class="mission-board-title">ДОСТУПНЫЕ ПОРУЧЕНИЯ</text><text id="mission-refresh" class="toolbar-value">Новые поручения через 48 такт.</text></panel>
+    <panel class="window-content" virtualize="true"><panel id="missions-list" class="mission-list" /></panel>
+</panel>

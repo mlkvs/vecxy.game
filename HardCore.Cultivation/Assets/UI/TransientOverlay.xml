@@ -1,0 +1,7 @@
+<ui class="screen" styles="Main.css"
+    scale-mode="fit" reference-width="720" reference-height="1280">
+    <panel id="action-toast" class="action-toast toast-success" hidden="true" aria-hidden="true">
+        <panel class="action-toast-icon-shell"><image id="action-toast-icon" src="../Textures/UIIcons/spirit.png" /></panel>
+        <text id="action-toast-text">Действие выполнено</text>
+    </panel>
+</ui>

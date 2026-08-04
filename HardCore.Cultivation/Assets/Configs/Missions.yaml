@@ -1,0 +1,112 @@
+boardSlotCount: 6
+missions:
+  - id: gather_mist_herbs
+    name: Сад туманной долины
+    description: Соберите ингредиенты до рассеивания утреннего тумана.
+    minimumDurationTicks: 8
+    maximumDurationTicks: 18
+    boardWeight: 18
+    reward:
+      requiredItemCategory: Ingredient
+      minimumQuantity: 1
+      maximumQuantity: 3
+      money: 35
+  - id: hunt_crimson_beast
+    name: След багрового зверя
+    description: Выследите духовного зверя и извлеките его ядро.
+    minimumDurationTicks: 24
+    maximumDurationTicks: 48
+    boardWeight: 11
+    reward:
+      requiredItemCategory: Core
+      minimumQuantity: 1
+      maximumQuantity: 2
+      money: 120
+  - id: guard_mountain_pass
+    name: Страж горного прохода
+    description: Защитите караван секты на опасном перевале.
+    minimumDurationTicks: 40
+    maximumDurationTicks: 72
+    boardWeight: 8
+    reward:
+      requiredItemCategory: Pill
+      minimumQuantity: 1
+      maximumQuantity: 2
+      money: 260
+  - id: collect_jade_lotus
+    name: Цветение нефритового лотоса
+    description: Доберитесь до горного источника и соберите лотосы до закрытия бутонов.
+    minimumDurationTicks: 10
+    maximumDurationTicks: 22
+    boardWeight: 16
+    reward:
+      requiredItemCategory: Ingredient
+      minimumQuantity: 2
+      maximumQuantity: 4
+      money: 55
+  - id: cleanse_spirit_cave
+    name: Очищение пещеры духов
+    description: Развейте скверну в заброшенной пещере и восстановите защитные печати.
+    minimumDurationTicks: 18
+    maximumDurationTicks: 34
+    boardWeight: 13
+    reward:
+      requiredItemCategory: Pill
+      minimumQuantity: 1
+      maximumQuantity: 2
+      money: 95
+  - id: escort_alchemy_caravan
+    name: Караван алхимиков
+    description: Проведите повозки с редкими реагентами через земли горных разбойников.
+    minimumDurationTicks: 28
+    maximumDurationTicks: 46
+    boardWeight: 10
+    reward:
+      requiredItemCategory: Core
+      minimumQuantity: 1
+      maximumQuantity: 2
+      money: 175
+  - id: map_ancient_ruins
+    name: Карта древних руин
+    description: Исследуйте разрушенный дворец и отметьте безопасные проходы для секты.
+    minimumDurationTicks: 46
+    maximumDurationTicks: 80
+    boardWeight: 7
+    reward:
+      requiredItemCategory: Ingredient
+      minimumQuantity: 2
+      maximumQuantity: 5
+      money: 310
+  - id: hunt_thunder_bird
+    name: Охота на громовую птицу
+    description: Найдите гнездо небесного хищника и добудьте материал, пережив грозу.
+    minimumDurationTicks: 32
+    maximumDurationTicks: 58
+    boardWeight: 9
+    reward:
+      requiredItemCategory: Ingredient
+      minimumQuantity: 1
+      maximumQuantity: 3
+      money: 220
+  - id: meditate_waterfall
+    name: Медитация у водопада
+    description: Сохраните концентрацию под ледяным потоком и принесите записи наставнику.
+    minimumDurationTicks: 6
+    maximumDurationTicks: 14
+    boardWeight: 20
+    reward:
+      requiredItemCategory: Pill
+      minimumQuantity: 1
+      maximumQuantity: 2
+      money: 30
+  - id: defend_sect_trial
+    name: Испытание внешней секты
+    description: Возглавьте учеников на долгом испытании и защитите их от духовных зверей.
+    minimumDurationTicks: 64
+    maximumDurationTicks: 108
+    boardWeight: 5
+    reward:
+      requiredItemCategory: Core
+      minimumQuantity: 2
+      maximumQuantity: 3
+      money: 480

@@ -1,0 +1,14 @@
+<panel id="death-window" class="death-overlay" hidden="true">
+    <panel class="death-dialog">
+        <panel class="death-icon-shell"><image src="../Textures/UIIcons/death.png" /></panel>
+        <text class="death-kicker">ПУТЬ ЗАВЕРШЁН</text>
+        <text class="death-title">Отведённое время истекло</text>
+        <text class="death-description">Тело достигло предела смертной жизни. Накопленные предметы и прогресс будут утрачены.</text>
+        <panel class="death-stats">
+            <panel><text class="death-stat-label">ПРОЖИТО</text><text id="death-age" class="death-stat-value">80 лет</text></panel>
+            <panel><text class="death-stat-label">ДОСТИГНУТО</text><text id="death-stage" class="death-stat-value">Закалка тела</text></panel>
+            <panel><text class="death-stat-label">ГОД</text><text id="death-year" class="death-stat-value">65</text></panel>
+        </panel>
+        <button id="restart-button" class="restart-button">НАЧАТЬ НОВЫЙ ПУТЬ</button>
+    </panel>
+</panel>

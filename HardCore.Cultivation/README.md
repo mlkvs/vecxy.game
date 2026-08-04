@@ -1,32 +1,38 @@
 # HardCore.Cultivation
 
-## Содержимое
+Игра построена вокруг независимого календарного тика. Реальная секунда только
+запускает `TickProcessor`, эффективность повышает духовную силу и прогресс миссии,
+но не ускоряет календарь, старение, длительность эффектов или обновление магазина.
 
-- YAML-конфиги предметов, миссий, рецептов, мира и стадий культивации
-- GameDatabase с проверкой ссылок между конфигами
-- Inventory
-- ItemSystem
-- CultivationSystem
-- MissionSystem
-- CraftingSystem
-- GameSaveSystem
-- CultivationManager
-- GameLayer
-- MainScene
+## Структура
 
-## Основные вызовы из UI
-
-```csharp
-cultivation.Cultivation.SetMeditating(true);
-cultivation.Cultivation.SetTraining(true);
-
-cultivation.Cultivation.TryAdvanceLevel();
-cultivation.Cultivation.TryBreakthrough();
-
-cultivation.Missions.TryStart("gather_herbs");
-cultivation.Missions.TryClaim("gather_herbs");
-
-cultivation.Crafting.TryCraft("craft_qi_pill", 1);
+```text
+Game/
+├── Domain/          состояние и правила сущностей
+├── Application/     игровые сервисы и TickProcessor
+├── Infrastructure/  YAML-конфиги, random source и JSON-сохранение
+└── Presentation/    GameController и привязка Vecxy.UI
 ```
 
-`CultivationManager` специально не обращается к конкретным UI-элементам, потому что API поиска элементов и подписки на события `UiDocument` в предоставленном коде не показан. Подписки можно добавить в `Initialize()` после загрузки `Main.xml`.
+Данные баланса находятся в `Assets/Configs`. Текущее состояние сохраняется в
+`cultivation-save-v2.json`; полные конфиги в сохранение не копируются.
+
+## Игровой цикл
+
+За тик последовательно выполняются эффекты, миссия, прирост духовной силы,
+старение, уменьшение длительности эффектов и календарь. Каждый 48-й календарный
+тик начинает новый год и полностью обновляет лавку.
+
+Стартовый сценарий: 16 лет, 1000 монет, первая ступень и активная стартовая
+миссия. Кнопка `+ 1 ТАКТ` использует тот же процессор, что и секундный цикл.
+
+## UI
+
+`Main.xml` содержит только HUD. Окна и карточки расположены в
+`Assets/UI/Components`, общие стили разделены между `Main.css`, `Windows.css` и
+`Cards.css`. Карточки магазина, инвентаря и миссий создаются через
+`UiDocument.Instantiate()` и получают параметры `{{name}}`.
+
+`Vecxy.UI` расширен runtime API для изменения текста, атрибутов, классов,
+видимости, enabled-состояния и отдельных inline-стилей, а также методами
+`QueryAll`, `CreateElement`, `Clear` и загрузкой XML-компонентов.

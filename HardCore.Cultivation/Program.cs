@@ -1,10 +1,10 @@
 using Vecxy.Assets;
-#if !ANDROID
-using Vecxy.Editor;
-#endif
 using Vecxy.Engine;
 using Vecxy.Kernel;
 using Vecxy.Platforms;
+#if !ANDROID
+using Vecxy.Editor;
+#endif
 
 namespace HardCore.Cultivation;
 
@@ -14,6 +14,8 @@ public sealed class CultivationApplication : IVecxyApplication
     public Engine.Options CreateEngineOptions(PlatformContext context) => new()
     {
         Headless = false,
+        TargetFrameRate = 60,
+        ShowSplashScreen = true,
         Window = new IWindow.Options("HardCore Cultivation", 450, 900)
     };
 

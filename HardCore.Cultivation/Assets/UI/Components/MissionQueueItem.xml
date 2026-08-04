@@ -1,0 +1,10 @@
+<panel class="queue-item" data-key="{{key}}">
+    <text class="queue-position">{{position}}</text>
+    <text class="queue-item-name">{{name}}</text>
+    <text class="queue-progress">{{progress}}</text>
+    <panel class="queue-controls">
+        <button class="queue-control queue-left"><image src="../Textures/UIIcons/queue-left.png" /></button>
+        <button class="queue-control queue-right"><image src="../Textures/UIIcons/queue-right.png" /></button>
+        <button class="queue-control queue-remove"><image src="../Textures/UIIcons/remove.png" /></button>
+    </panel>
+</panel>

@@ -1,6 +1,10 @@
 using Autofac;
+using HardCore.Cultivation.Game.Application;
+using HardCore.Cultivation.Game.Infrastructure;
+using HardCore.Cultivation.Game.Presentation;
 using JetBrains.Annotations;
 using Vecxy.Assets;
+using Vecxy.Audio;
 using Vecxy.Engine;
 using Vecxy.Scene;
 
@@ -11,9 +15,9 @@ public sealed class GameLayer
 (
     ISceneManager scenes,
     IConfigProvider configs,
-    WorldStats worldStats,
     GameDatabase database,
-    CultivationManager cultivation
+    GameController game,
+    IAudioManager audio
 ) : AAppLayer
 {
     public sealed class Definition : ADefinition<GameLayer>
@@ -25,44 +29,57 @@ public sealed class GameLayer
 
         public override void RegisterLocal(ContainerBuilder builder)
         {
-            builder.RegisterType<WorldStats>().SingleInstance();
             builder.RegisterType<GameDatabase>().SingleInstance();
-            builder.RegisterType<CharacterStats>().SingleInstance();
-            builder.RegisterType<PlayerProgress>().SingleInstance();
-            builder.RegisterType<Inventory>().SingleInstance();
-
-            builder.RegisterType<ItemSystem>().SingleInstance();
-            builder.RegisterType<CultivationSystem>().SingleInstance();
-            builder.RegisterType<MissionSystem>().SingleInstance();
-            builder.RegisterType<CraftingSystem>().SingleInstance();
+            builder.RegisterType<SystemRandomSource>().As<IRandomSource>().SingleInstance();
+            builder.RegisterType<ItemGenerator>().SingleInstance();
+            builder.RegisterType<ItemEffectService>().SingleInstance();
+            builder.RegisterType<ItemPriceCalculator>().SingleInstance();
+            builder.RegisterType<MissionService>().SingleInstance();
+            builder.RegisterType<ShopService>().SingleInstance();
+            builder.RegisterType<ShopTransactionService>().SingleInstance();
+            builder.RegisterType<CultivationService>().SingleInstance();
+            builder.RegisterType<TickProcessor>().SingleInstance();
             builder.RegisterType<GameSaveSystem>().SingleInstance();
-            builder.RegisterType<CultivationManager>().SingleInstance();
+            builder.RegisterType<GameController>().SingleInstance();
         }
     }
 
     public override void OnInitialize()
     {
-        using var world = configs.LoadConfig<WorldStats.Config>("Configs/WorldConfig.yaml");
-        using var items = configs.LoadConfig<ItemsConfig>("Configs/ItemsConfig.yaml");
-        using var missions = configs.LoadConfig<MissionsConfig>("Configs/MissionsConfig.yaml");
-        using var crafting = configs.LoadConfig<CraftingConfig>("Configs/CraftingConfig.yaml");
-        using var cultivationConfig =
-            configs.LoadConfig<CultivationConfig>("Configs/CultivationConfig.yaml");
+        using var balance = configs.LoadConfig<GameBalanceConfig>("Configs/GameBalance.yaml");
+        using var rarities = configs.LoadConfig<RaritiesConfig>("Configs/Rarities.yaml");
+        using var items = configs.LoadConfig<ItemsConfig>("Configs/Items.yaml");
+        using var missions = configs.LoadConfig<MissionsConfig>("Configs/Missions.yaml");
+        using var cultivation = configs.LoadConfig<CultivationConfig>("Configs/Cultivation.yaml");
+        using var shop = configs.LoadConfig<ShopConfig>("Configs/Shop.yaml");
 
-        worldStats.Initialize(world);
-        database.Initialize(items, missions, crafting, cultivationConfig);
+        database.Initialize(balance, rarities, items, missions, cultivation, shop);
+
+        foreach (var sound in new[]
+                 {
+                     "Sounds/ui-click.wav",
+                     "Sounds/item.wav",
+                     "Sounds/cultivate.wav",
+                     "Sounds/breakthrough.wav",
+                     "Sounds/mission-complete.wav",
+                     "Sounds/death.wav"
+                 })
+            audio.Preload(sound);
+        audio.Preload("Musics/Main.mp3", loop: true);
 
         scenes.LoadScene<MainScene>();
-        cultivation.Initialize();
+        audio.Play("Musics/Main.mp3", loop: true, volume: 0.3f);
+        game.Initialize();
     }
 
     public override void OnUpdate(float deltaTime)
     {
-        cultivation.Update(deltaTime);
+        game.Update(deltaTime);
     }
 
     public override void OnUnload()
     {
-        cultivation.Save();
+        game.Save();
+        game.Dispose();
     }
 }
