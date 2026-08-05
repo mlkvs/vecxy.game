@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Tools/">
+    <Project Path="Engine/Vecxy/Code/Vecxy.CLI/Vecxy.CLI.csproj" />
+  </Folder>
   <Folder Name="/Editor/">
     <Project Path="Engine/Vecxy/Code/Vecxy.Editor/Vecxy.Editor.csproj" />
   </Folder>
@@ -11,6 +14,7 @@
     <Project Path="Engine/Vecxy/Code/Vecxy.Kernel/Vecxy.Kernel.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Platforms/Vecxy.Platforms.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Platforms.Android/Vecxy.Platforms.Android.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Messaging/Vecxy.Messaging.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Physics/Vecxy.Physics.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Rendering/Vecxy.Rendering.csproj" />
     <Project Path="Engine\Vecxy\Code\Vecxy.Scene\Vecxy.Scene.csproj" />

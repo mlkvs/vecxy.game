@@ -445,6 +445,9 @@ public sealed class GameController(
                     ["meta"] = string.Empty,
                     ["price"] = unitPrice.ToString(CultureInfo.InvariantCulture)
                 });
+                
+                //var carTmp = _document.Instantiate<ShopCardView(grid, )
+                
                 var cardView = new ShopCardView(card);
                 card.SetStyle("border-color", rarity.Color);
                 cardView.Rarity.Style.BackgroundColor = rarity.Color;

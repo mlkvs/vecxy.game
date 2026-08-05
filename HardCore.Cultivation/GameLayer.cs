@@ -1,4 +1,5 @@
 using Autofac;
+using HardCore.Cultivation.Game;
 using HardCore.Cultivation.Game.Application;
 using HardCore.Cultivation.Game.Infrastructure;
 using HardCore.Cultivation.Game.Presentation;
@@ -17,7 +18,8 @@ public sealed class GameLayer
     IConfigProvider configs,
     GameDatabase database,
     GameController game,
-    IAudioManager audio
+    IAudioManager audio,
+    ILifetimeScope scope
 ) : AAppLayer
 {
     public sealed class Definition : ADefinition<GameLayer>

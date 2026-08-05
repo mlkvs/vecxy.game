@@ -1,4 +1,5 @@
 using System.Numerics;
+using HardCore.Cultivation.Game;
 using JetBrains.Annotations;
 using Vecxy.Assets;
 using Vecxy.Rendering;
@@ -9,13 +10,25 @@ namespace HardCore.Cultivation;
 [UsedImplicitly]
 public sealed class MainScene
 (
-    IAssetsManager assets
+    IAssetsManager assets,
+    IComponentInstantiator instantiator
 ) : IScene
 {
     public void OnLoad(SceneInstance scene)
     {
         var background = CreateBackground(scene);
-        CreateCharacter(scene);
+
+        var character = instantiator.Instantiate<Character>
+        (
+            new Character.Prototype.Context
+            {
+                Name = "Cultivator",
+                Scene = scene, 
+                Position = new Vector3(0.0f, -450.0f, 0.0f), 
+                Scale = new Vector3(0.70f, 0.70f, 1.0f),
+            }
+        );
+        
         CreateCamera(scene, background);
     }
 
@@ -49,24 +62,5 @@ public sealed class MainScene
         background.SortingLayer = 0;
 
         return background;
-    }
-
-    private SpriteRenderer CreateCharacter(SceneInstance scene)
-    {
-        using var characterTexture =
-            assets.Load<TextureAsset>("Textures/Character.png");
-
-        var characterObject = scene.CreateObject("Character");
-        characterObject.Transform.Position = new Vector3(0.0f, -450.0f, 0.0f);
-        characterObject.Transform.Scale = new Vector3(0.70f, 0.70f, 1.0f);
-        characterObject.AddComponent<CharacterLevitation>();
-
-        var character = characterObject.AddComponent<SpriteRenderer>();
-        character.SetTexture(characterTexture);
-        character.PixelsPerUnit = 1.0f;
-        character.Pivot = new Vector2(0.5f, 0.0f);
-        character.SortingLayer = 1;
-
-        return character;
     }
 }

@@ -1,10 +1,11 @@
+using Vecxy.Assets;
 using Vecxy.UI;
 
 namespace HardCore.Cultivation.Game.Presentation;
 
-internal abstract class ItemCardView : UiComponent
+internal abstract class AItemCardView : AUiComponent
 {
-    protected ItemCardView(UiElement root) : base(root)
+    protected AItemCardView(UiElement root) : base(root)
     {
         Rarity = Element<UiText>(".item-rarity");
         Quality = Element<UiPanel>(".item-quality");
@@ -19,7 +20,8 @@ internal abstract class ItemCardView : UiComponent
     public UiText Meta { get; }
 }
 
-internal sealed class ShopCardView : ItemCardView
+[AssetPath("UI/Components/ShopCard.xml")]
+internal sealed class ShopCardView : AItemCardView
 {
     public ShopCardView(UiElement root) : base(root) =>
         Buy = Element<UiButton>(".buy-button");
@@ -27,7 +29,7 @@ internal sealed class ShopCardView : ItemCardView
     public UiButton Buy { get; }
 }
 
-internal sealed class InventoryCardView : ItemCardView
+internal sealed class InventoryCardView : AItemCardView
 {
     public InventoryCardView(UiElement root) : base(root)
     {
@@ -39,7 +41,7 @@ internal sealed class InventoryCardView : ItemCardView
     public UiButton Sell { get; }
 }
 
-internal sealed class MissionCardView : UiComponent
+internal sealed class MissionCardView : AUiComponent
 {
     public MissionCardView(UiElement root) : base(root)
     {
@@ -52,7 +54,7 @@ internal sealed class MissionCardView : UiComponent
     public UiButton Start { get; }
 }
 
-internal sealed class MissionQueueItemView : UiComponent
+internal sealed class MissionQueueItemView : AUiComponent
 {
     public MissionQueueItemView(UiElement root) : base(root)
     {
@@ -68,7 +70,7 @@ internal sealed class MissionQueueItemView : UiComponent
     public UiButton Remove { get; }
 }
 
-internal sealed class QualityStarsView : UiComponent
+internal sealed class QualityStarsView : AUiComponent
 {
     private readonly IReadOnlyList<UiPanel> _fills;
 
