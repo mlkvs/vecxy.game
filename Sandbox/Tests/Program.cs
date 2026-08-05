@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using JetBrains.Annotations;
 using Vecxy.Engine;
-using Vecxy.Kernel;
 using Vecxy.Platforms;
 using Vecxy.Rendering;
 using Vecxy.Scene;
@@ -9,26 +8,17 @@ using Vecxy.Scene;
 PlatformRunner.RunDesktop<Application>();
 
 [UsedImplicitly]
-internal class Application : IVecxyApplication
+internal class Application : IEntryPoint
 {
-    public Engine.Options CreateEngineOptions(PlatformContext context)
+    public void OnConfigureEngine(PlatformContext context, Engine.Options options)
     {
-        return new Engine.Options
-        {
-            Headless = false,
-            ShowSplashScreen = false,
-            TargetFrameRate = 60,
-            Window = new IWindow.Options("Sandbox.Tests", 800, 600, 1)
-        };
+        options.TargetFrameRate = 60;
     }
 
-    public IReadOnlyList<AAppLayer.IDefinition> CreateLayers(PlatformContext context)
+    public void OnConfigureLayers(PlatformContext context, List<AAppLayer.IDefinition> layers)
     {
-        return new List<AAppLayer.IDefinition>
-        {
-            new EngineLayer.Definition(),
-            new Layer.Definition()
-        };
+        layers.Add(new EngineLayer.Definition());
+        layers.Add(new Layer.Definition());
     }
     
     [UsedImplicitly]
@@ -47,14 +37,15 @@ internal class Application : IVecxyApplication
             scenes.LoadScene<Boot>();
         }
     }
+}
 
-    public class Boot(IComponentInstantiator instantiator) : IScene
+[UsedImplicitly]
+public class Boot(IComponentInstantiator instantiator) : IScene
+{
+    public void OnLoad(SceneInstance scene)
     {
-        public void OnLoad(SceneInstance scene)
-        {
-            scene.Lighting.Skybox.Enabled = true;
+        scene.Lighting.Skybox.Enabled = true;
 
-            instantiator.Instantiate<Camera>(scene);
-        }
+        instantiator.Instantiate<Camera>(scene);
     }
 }

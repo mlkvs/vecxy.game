@@ -2,37 +2,31 @@ using Vecxy.Assets;
 using Vecxy.Engine;
 using Vecxy.Kernel;
 using Vecxy.Platforms;
-#if !ANDROID
-using Vecxy.Editor;
-#endif
 
 namespace HardCore.Cultivation;
 
 [VecxyApplication]
-public sealed class CultivationApplication : IVecxyApplication
+public sealed class Application : IEntryPoint
 {
-    public Engine.Options CreateEngineOptions(PlatformContext context) => new()
+    public void OnConfigureEngine(PlatformContext context, Engine.Options options)
     {
-        Headless = false,
-        TargetFrameRate = 60,
-        ShowSplashScreen = true,
-        Window = new IWindow.Options("HardCore Cultivation", 450, 900)
-    };
+        options.ShowSplashScreen = true;
+        options.Window = new IWindow.Options("HardCore Cultivation", 450, 900);
+        options.TargetFrameRate = 60;
+    }
 
-    public IReadOnlyList<AAppLayer.IDefinition> CreateLayers(PlatformContext context)
+    public void OnConfigureLayers(PlatformContext context, List<AAppLayer.IDefinition> layers)
     {
-        var layers = new List<AAppLayer.IDefinition>
+        layers.Add(new EngineLayer.Definition(new AssetsModule.Options
         {
-            new EngineLayer.Definition(new AssetsModule.Options
-            {
-                AssetsDirectory = context.AssetsDirectory
-            })
-        };
+            AssetsDirectory = context.AssetsDirectory
+        }));
+        
 #if !ANDROID
-        layers.Add(new EditorLayer.Definition());
+        layers.Add(new Vecxy.Editor.EditorLayer.Definition());
 #endif
+        
         layers.Add(new GameLayer.Definition());
-        return layers;
     }
 }
 
@@ -41,7 +35,7 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        PlatformRunner.RunDesktop<CultivationApplication>();
+        PlatformRunner.RunDesktop<Application>();
     }
 }
 #endif
