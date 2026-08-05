@@ -1,9 +1,10 @@
-﻿using JetBrains.Annotations;
-using Mediator.Net;
-using Vecxy.Diagnostics;
+﻿using Autofac;
+using JetBrains.Annotations;
 using Vecxy.Engine;
 using Vecxy.Kernel;
 using Vecxy.Platforms;
+using Vecxy.Rendering;
+using Vecxy.Scene;
 
 PlatformRunner.RunDesktop<Application>();
 
@@ -31,13 +32,29 @@ internal class Application : IVecxyApplication
     }
     
     [UsedImplicitly]
-    public class Layer(IMediator mediator) : AAppLayer
+    public class Layer(ISceneManager scenes) : AAppLayer
     {
-        public class Definition : ADefinition<Layer>;
+        public class Definition : ADefinition<Layer>
+        {
+            public override void RegisterGlobal(ContainerBuilder builder)
+            {
+                builder.RegisterType<Boot>().AsSelf();
+            }
+        }
 
         public override void OnInitialize()
         {
-            
+            scenes.LoadScene<Boot>();
+        }
+    }
+
+    public class Boot(IComponentInstantiator instantiator) : IScene
+    {
+        public void OnLoad(SceneInstance scene)
+        {
+            scene.Lighting.Skybox.Enabled = true;
+
+            instantiator.Instantiate<Camera>(scene);
         }
     }
 }

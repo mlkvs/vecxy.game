@@ -9,7 +9,7 @@ namespace HardCore.Cultivation.Game;
 public class Character : AComponent
 {
     [UsedImplicitly]
-    public class Prototype(IAssetsManager assets) : APrototype<Character, Prototype.Options, Prototype.Context>
+    public class Prototype(IAssetsManager assets) : APrototype<Character, Prototype.Options>
     {
         public class Options : IPrototype.IOptions
         {
@@ -17,20 +17,22 @@ public class Character : AComponent
             public float PeriodSeconds { get; init; } = 3.6f;
         }
     
-        public class Context : IPrototype.Context
+        public class Context : InstantiateContext
         {
             public string Name { get; init; } = "Character";
         }
         
-        protected override Character Instantiate(Context ctx)
+        protected override Character Instantiate(InstantiateContext ctx)
         {
             if (ctx.Scene == null)
             {
                 throw new NotImplementedException();
             }
+
+            var ctxCast = (Context)ctx;
             
             // Scene Object
-            var characterObject = ctx.Scene.CreateObject(ctx.Name);
+            var characterObject = ctx.Scene.CreateObject(ctxCast.Name);
             if (ctx.Parent != null)
             {
                 characterObject.SetParent(ctx.Parent);
