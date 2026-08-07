@@ -336,6 +336,7 @@
 .shop-card {
     min-width: 0;
     min-height: 0;
+    height: 380px;
     padding: 12px;
     align-items: center;
     background-color: #1b2b23;
@@ -358,16 +359,16 @@
 }
 
 .shop-card .item-name {
-    min-height: 49px;
+    min-height: 56px;
     margin-top: 5px;
-    font-size: 18px;
+    font-size: 19px;
     text-align: center;
 }
 
 .shop-card .item-meta {
-    min-height: 22px;
+    min-height: 24px;
     margin-top: 2px;
-    font-size: 15px;
+    font-size: 16px;
     text-align: center;
 }
 
@@ -376,46 +377,47 @@
     min-height: 0;
     width: 100%;
     margin-top: 5px;
-    padding: 7px;
-    font-size: 14px;
+    padding: 9px 8px;
+    font-size: 15px;
     overflow: hidden;
 }
 
 .shop-card .card-action {
     flex: 0;
     width: 100%;
-    min-height: 48px;
+    min-height: 52px;
     margin-top: 7px;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .mission-card {
     min-width: 0;
     min-height: 0;
     height: 100%;
-    padding: 10px 12px;
-    gap: 3px;
+    padding: 12px 14px;
+    gap: 5px;
     border-width: 2px;
     border-left-width: 5px;
     border-radius: 17px;
+    overflow: hidden;
 }
 
 .mission-card-title {
-    min-height: 31px;
+    min-height: 44px;
     margin: 0;
-    font-size: 18px;
+    font-size: 22px;
 }
 
 .mission-card-description {
     flex: 1;
     min-height: 0;
-    margin: 1px 0 0;
-    font-size: 13px;
+    margin: 2px 0 0;
+    font-size: 16px;
     overflow: hidden;
 }
 
 .mission-card-footer {
-    min-height: 48px;
+    min-height: 54px;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -423,40 +425,40 @@
 }
 
 .mission-duration-value {
-    font-size: 13px;
+    font-size: 16px;
     color: #c8ffe7;
 }
 
 .mission-reward-icons {
     margin-top: 2px;
-    gap: 4px;
+    gap: 6px;
 }
 
 .reward-icon-tile {
-    width: 35px;
-    height: 35px;
+    width: 50px;
+    height: 50px;
     border-radius: 9px;
 }
 
 .reward-item-icon {
-    width: 29px;
-    height: 29px;
+    width: 40px;
+    height: 40px;
 }
 
 .reward-icon-badge {
     right: -4px;
     bottom: -4px;
-    min-width: 20px;
-    padding: 1px 3px;
-    font-size: 9px;
+    min-width: 24px;
+    padding: 2px 4px;
+    font-size: 11px;
     border-width: 1px;
 }
 
 .mission-start {
-    width: 92px;
-    min-height: 42px;
+    width: 116px;
+    min-height: 48px;
     border-radius: 13px;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .queue-item {
@@ -466,7 +468,7 @@
     padding: 14px;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     background-color: #1b2b23;
     border: 2px solid #56d5a055;
     border-radius: 20px;
@@ -496,19 +498,19 @@
 }
 
 .queue-item-name {
-    font-size: 18px;
+    font-size: 19px;
 }
 
 .queue-progress {
     margin-top: 5px;
     color: #c8ffe7;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .queue-controls {
     flex-shrink: 0;
-    width: 42px;
-    gap: 5px;
+    width: 44px;
+    gap: 6px;
 }
 
 .queue-control {
@@ -537,6 +539,22 @@
     background-color: #18271f;
     border: 2px solid #ffffff22;
     border-radius: 19px;
+}
+
+.inventory-icon-well {
+    width: 88px;
+    height: 88px;
+    border-radius: 18px;
+}
+
+.inventory-icon {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+}
+
+.inventory-quantity {
+    font-size: 18px;
 }
 
 .inventory-icon-card:hover {

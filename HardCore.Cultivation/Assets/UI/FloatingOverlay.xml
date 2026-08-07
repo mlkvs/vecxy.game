@@ -1,5 +1,5 @@
 <ui class="screen" styles="Main.css"
-    scale-mode="fit" reference-width="720" reference-height="1280">
+    scale-mode="fit" reference-width="620" reference-height="1180">
     <panel id="tap-feedback" class="tap-feedback" animation-trigger="manual" />
     <panel id="tick-float-layer" class="tick-float-layer floating-overlay" />
     <panel id="achievement-effect" class="achievement-effect" animation-trigger="manual"><text id="achievement-text">СВЕРШЕНИЕ</text></panel>

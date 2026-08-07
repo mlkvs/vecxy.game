@@ -16,8 +16,7 @@ public sealed class GameSaveSystem(GameDatabase database)
         Converters = { new JsonStringEnumConverter() }
     };
 
-    public string SavePath { get; set; } =
-        Path.Combine(AppContext.BaseDirectory, "cultivation-save-v2.json");
+    public string SavePath { get; set; } = GetDefaultSavePath();
 
     public void Save(GameState state)
     {
@@ -80,12 +79,13 @@ public sealed class GameSaveSystem(GameDatabase database)
     public bool TryLoad(out GameState state)
     {
         state = new GameState(database.Balance.TicksPerYear);
-        if (!File.Exists(SavePath))
+        var loadPath = ResolveLoadPath();
+        if (loadPath is null)
             return false;
         try
         {
             var data = JsonSerializer.Deserialize<SaveData>(
-                File.ReadAllText(SavePath),
+                File.ReadAllText(loadPath),
                 JsonOptions);
             if (data is null || data.Version is < 2 or > CurrentVersion)
                 return false;
@@ -161,10 +161,28 @@ public sealed class GameSaveSystem(GameDatabase database)
         }
         catch (Exception exception)
         {
-            Logger.Error(exception, $"Could not load save: {SavePath}");
+            Logger.Error(exception, $"Could not load save: {loadPath}");
             state = new GameState(database.Balance.TicksPerYear);
             return false;
         }
+    }
+
+    private static string GetDefaultSavePath()
+    {
+        var baseDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Vecxy",
+            "HardCore.Cultivation");
+        return Path.Combine(baseDirectory, "cultivation-save-v2.json");
+    }
+
+    private string? ResolveLoadPath()
+    {
+        if (File.Exists(SavePath))
+            return SavePath;
+
+        var legacyPath = Path.Combine(AppContext.BaseDirectory, "cultivation-save-v2.json");
+        return File.Exists(legacyPath) ? legacyPath : null;
     }
 
     private ItemInstance FromItemData(ItemSaveData data)

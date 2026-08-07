@@ -490,6 +490,10 @@ public sealed record TickResult(
     bool NewYearStarted,
     bool CharacterDied);
 
+public sealed record TapResult(
+    decimal SpiritualPowerGained,
+    int LevelsGained);
+
 public sealed record BreakthroughResult(
     bool Success,
     decimal FinalChance,

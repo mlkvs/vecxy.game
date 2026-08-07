@@ -1,5 +1,34 @@
+# ============================================================
+# МИССИИ
+# ============================================================
+# Этот файл описывает:
+# - сколько миссий одновременно показывать на доске
+# - список всех возможных миссий
+# - диапазон длительности миссий
+# - частоту появления
+# - тип и объём награды
+#
+# Как это работает:
+# - boardSlotCount определяет размер доски доступных миссий.
+# - Каждый новый "год" миссии обновляются.
+# - Для каждой миссии случайно выбирается длительность в диапазоне
+#   minimumDurationTicks..maximumDurationTicks.
+# - Награда состоит из рублей и/или предметов указанной категории.
+
+# Сколько миссий одновременно видно на доске.
+# Не должно быть больше общего числа mission entries.
 boardSlotCount: 6
+
 missions:
+  # id — уникальный технический идентификатор
+  # name — название в UI
+  # description — описание в карточке миссии
+  # minimumDurationTicks / maximumDurationTicks — диапазон длительности
+  # boardWeight — шанс появления на доске
+  # reward.requiredItemCategory — какая категория предметов может выпасть
+  # reward.minimumQuantity / maximumQuantity — желаемый диапазон количества
+  # reward.money — денежная награда
+
   - id: gather_mist_herbs
     name: Сад туманной долины
     description: Соберите ингредиенты до рассеивания утреннего тумана.
@@ -11,6 +40,7 @@ missions:
       minimumQuantity: 1
       maximumQuantity: 3
       money: 35
+
   - id: hunt_crimson_beast
     name: След багрового зверя
     description: Выследите духовного зверя и извлеките его ядро.
@@ -22,6 +52,7 @@ missions:
       minimumQuantity: 1
       maximumQuantity: 2
       money: 120
+
   - id: guard_mountain_pass
     name: Страж горного прохода
     description: Защитите караван секты на опасном перевале.
@@ -33,6 +64,7 @@ missions:
       minimumQuantity: 1
       maximumQuantity: 2
       money: 260
+
   - id: collect_jade_lotus
     name: Цветение нефритового лотоса
     description: Доберитесь до горного источника и соберите лотосы до закрытия бутонов.
@@ -44,6 +76,7 @@ missions:
       minimumQuantity: 2
       maximumQuantity: 4
       money: 55
+
   - id: cleanse_spirit_cave
     name: Очищение пещеры духов
     description: Развейте скверну в заброшенной пещере и восстановите защитные печати.
@@ -55,6 +88,7 @@ missions:
       minimumQuantity: 1
       maximumQuantity: 2
       money: 95
+
   - id: escort_alchemy_caravan
     name: Караван алхимиков
     description: Проведите повозки с редкими реагентами через земли горных разбойников.
@@ -66,6 +100,7 @@ missions:
       minimumQuantity: 1
       maximumQuantity: 2
       money: 175
+
   - id: map_ancient_ruins
     name: Карта древних руин
     description: Исследуйте разрушенный дворец и отметьте безопасные проходы для секты.
@@ -77,6 +112,7 @@ missions:
       minimumQuantity: 2
       maximumQuantity: 5
       money: 310
+
   - id: hunt_thunder_bird
     name: Охота на громовую птицу
     description: Найдите гнездо небесного хищника и добудьте материал, пережив грозу.
@@ -88,6 +124,7 @@ missions:
       minimumQuantity: 1
       maximumQuantity: 3
       money: 220
+
   - id: meditate_waterfall
     name: Медитация у водопада
     description: Сохраните концентрацию под ледяным потоком и принесите записи наставнику.
@@ -99,6 +136,7 @@ missions:
       minimumQuantity: 1
       maximumQuantity: 2
       money: 30
+
   - id: defend_sect_trial
     name: Испытание внешней секты
     description: Возглавьте учеников на долгом испытании и защитите их от духовных зверей.

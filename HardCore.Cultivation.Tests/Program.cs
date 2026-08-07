@@ -60,6 +60,24 @@ failedCharacter.AddSpiritualPower(1000);
 var failedResult = failedCultivation.AttemptBreakthrough(failedCharacter, []);
 Check(!failedResult.Success && failedResult.LevelsLost > 0 && failedResult.Message.Contains("получили травму"), "Failed breakthrough must report injury and lost levels.");
 
+var tapState = new GameState(database.Balance.TicksPerYear);
+tapState.SetActivityMode(ActivityMode.Missions);
+tapState.EnqueueMission(new ActiveMission { MissionConfigId = "mission", RequiredProgress = 10 });
+tapState.ActiveEffects.Add(new ActiveEffect("tap", new ItemEffectDefinition
+{
+    Type = EffectType.SpiritualPowerGain,
+    Operation = ModifierOperation.Flat,
+    Value = 1
+}, 1, null, ItemDurationType.Permanent, ItemRarity.Common, 1));
+var tapResult = processor.ProcessTap(tapState);
+Check(tapResult.SpiritualPowerGained > 1m, "Tap must grant spiritual power with flat bonuses applied.");
+Check(tapState.CurrentMission!.CurrentProgress == 0m, "Tap must not advance mission progress.");
+Check(tapState.Calendar.TotalTicks == 0, "Tap must not advance calendar.");
+
+var longevityCharacter = new CharacterState();
+longevityCharacter.Cultivation.Restore(2, 1, database.Cultivation.Stages.Count);
+Check(cultivation.GetMaximumAge(longevityCharacter) == 140m, "Stage-based longevity bonus is incorrect.");
+
 var shopState = new ShopState();
 shopService.Refresh(shopState);
 Check(shopState.SellAdjustmentPercent == -33, "Sell adjustment must stay fixed at -33%.");

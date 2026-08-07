@@ -1,4 +1,4 @@
 [submodule "Engine/Vecxy"]
 	path = Engine/Vecxy
-	url = git@github.com:mlkvs/vecxy.git
+	url = https://github.com/mlkvs/vecxy.git
 	branch = develop

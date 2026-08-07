@@ -1,17 +1,68 @@
+# ============================================================
+# ПРЕДМЕТЫ
+# ============================================================
+# Это главный контентный файл предметов.
+# Здесь задаются:
+# - список всех предметов
+# - их названия и описания
+# - иконки
+# - категории
+# - тип длительности
+# - базовая цена
+# - частота появления в генерации
+# - игровые эффекты
+#
+# Важные правила:
+# - id должен быть уникальным
+# - icon должен указывать на существующую картинку
+# - category влияет на вкладку в инвентаре и на некоторые миссии
+# - durationType определяет, как работает предмет:
+#   Instant                — эффект применяется сразу
+#   Temporary              — эффект действует ограниченное число тиков
+#   Permanent              — эффект остаётся навсегда
+#   UntilBreakthroughAttempt — действует до ближайшей попытки прорыва
+#
+# По эффектам:
+# type:
+# - TickEfficiency      — множитель эффективности тика / общей продуктивности
+# - AgingSpeed          — изменение скорости старения
+# - BreakthroughChance  — бонус к шансу прорыва
+# - SpiritualPowerGain  — бонус к духовной силе
+# - MissionProgress     — ускорение миссий
+#
+# operation:
+# - Flat                  — плоское добавление
+# - AdditivePercent       — прибавка в процентах
+# - MultiplicativePercent — отдельный мультипликатор
+#
+# Практический совет:
+# - Для "прямой силы" и разовых банок обычно удобнее Flat
+# - Для долгих бафов темпа чаще подходят AdditivePercent
+
 items:
+  # ------------------------------------------------------------
+  # ВРЕМЕННЫЕ ПИЛЮЛИ ТЕМПА
+  # ------------------------------------------------------------
   - id: focus_pill
     name: Пилюля сосредоточения
     description: Обостряет восприятие и помогает извлечь больше пользы из каждой недели.
     icon: Assets/Textures/Items/focus-pill.png
+    # Pill = пилюля, отображается во вкладке пилюль.
     category: Pill
+    # Временный баф.
     durationType: Temporary
+    # Длительность действия в тиках.
     temporaryDurationTicks: 24
+    # Базовая цена ДО модификаторов качества, редкости и магазинной наценки.
     basePrice: 120
+    # Вес выбора предмета в генерации магазина / наградных пулов.
     shopWeight: 18
     effects:
+      # +25% к общей эффективности тика.
       - type: TickEfficiency
         operation: AdditivePercent
         value: 25
+
   - id: still_age_pill
     name: Пилюля тихих лет
     description: Сдерживает течение жизненной силы и замедляет старение тела.
@@ -22,111 +73,29 @@ items:
     basePrice: 240
     shopWeight: 10
     effects:
+      # Отрицательный процент = замедление старения.
       - type: AgingSpeed
         operation: AdditivePercent
         value: -30
+
+  # ------------------------------------------------------------
+  # ПРЕДМЕТЫ ДЛЯ ПРОРЫВА
+  # ------------------------------------------------------------
   - id: insight_core
     name: Ядро прозрения
     description: Укрепляет основание культивации перед будущими прорывами.
     icon: Assets/Textures/Items/insight-core.png
     category: Core
+    # Эффект живёт до следующей попытки прорыва.
     durationType: UntilBreakthroughAttempt
     basePrice: 700
     shopWeight: 5
     effects:
+      # Плоский бонус к шансу прорыва.
       - type: BreakthroughChance
         operation: Flat
         value: 3
-  - id: spirit_dew
-    name: Роса духовной силы
-    description: Высвобождает накопленный внутри запас духовной силы.
-    icon: Assets/Textures/Items/spirit-dew.png
-    category: Pill
-    durationType: Instant
-    basePrice: 90
-    shopWeight: 24
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 80
-  - id: mission_talisman
-    name: Талисман странника
-    description: Помогает быстрее находить путь и выполнять поручения секты.
-    icon: Assets/Textures/Items/mission-talisman.png
-    category: Core
-    durationType: Temporary
-    temporaryDurationTicks: 36
-    basePrice: 180
-    shopWeight: 12
-    effects:
-      - type: MissionProgress
-        operation: AdditivePercent
-        value: 35
-  - id: crimson_beast_core
-    name: Багровое ядро зверя
-    description: Ценный материал для будущей алхимии.
-    icon: Assets/Textures/Items/crimson-beast-core.png
-    category: Ingredient
-    durationType: Instant
-    basePrice: 75
-    shopWeight: 20
-  - id: azure_spirit_core
-    name: Лазурное духовное ядро
-    description: Редкий материал, насыщенный ци.
-    icon: Assets/Textures/Items/azure-spirit-core.png
-    category: Ingredient
-    durationType: Instant
-    basePrice: 160
-    shopWeight: 9
-  - id: celestial_orb
-    name: Небесная сфера
-    description: Запредельно редкий ингредиент.
-    icon: Assets/Textures/Items/celestial-orb.png
-    category: Ingredient
-    durationType: Instant
-    basePrice: 1200
-    shopWeight: 2
-  - id: jade_lotus
-    name: Нефритовый лотос
-    description: Свежий алхимический ингредиент, выращенный в источнике духовной силы.
-    icon: Assets/Textures/Items/jade-lotus.png
-    category: Ingredient
-    durationType: Instant
-    basePrice: 110
-    shopWeight: 17
-  - id: phoenix_feather
-    name: Перо огненной птицы
-    description: Редкий жаростойкий материал для пилюль и талисманов высшего порядка.
-    icon: Assets/Textures/Items/phoenix-feather.png
-    category: Ingredient
-    durationType: Instant
-    basePrice: 330
-    shopWeight: 7
-  - id: marrow_elixir
-    name: Эликсир костного мозга
-    description: Мгновенно наполняет меридианы большим запасом духовной силы.
-    icon: Assets/Textures/Items/marrow-elixir.png
-    category: Pill
-    durationType: Instant
-    basePrice: 210
-    shopWeight: 13
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 160
-  - id: time_incense
-    name: Благовоние тихого времени
-    description: Успокаивает жизненный огонь и заметно замедляет старение на короткий срок.
-    icon: Assets/Textures/Items/time-incense.png
-    category: Pill
-    durationType: Temporary
-    temporaryDurationTicks: 24
-    basePrice: 310
-    shopWeight: 8
-    effects:
-      - type: AgingSpeed
-        operation: AdditivePercent
-        value: -45
+
   - id: breakthrough_seal
     name: Печать небесного прорыва
     description: Временно стабилизирует духовное основание перед попыткой перейти на новую стадию.
@@ -140,6 +109,55 @@ items:
       - type: BreakthroughChance
         operation: Flat
         value: 7
+
+  # ------------------------------------------------------------
+  # МГНОВЕННЫЕ ПРЕДМЕТЫ ДУХОВНОЙ СИЛЫ
+  # ------------------------------------------------------------
+  - id: spirit_dew
+    name: Роса духовной силы
+    description: Высвобождает накопленный внутри запас духовной силы.
+    icon: Assets/Textures/Items/spirit-dew.png
+    category: Pill
+    # Instant = расходник с немедленным эффектом.
+    durationType: Instant
+    basePrice: 90
+    shopWeight: 24
+    effects:
+      # Плоское мгновенное добавление духовной силы.
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 80
+
+  - id: marrow_elixir
+    name: Эликсир костного мозга
+    description: Мгновенно наполняет меридианы большим запасом духовной силы.
+    icon: Assets/Textures/Items/marrow-elixir.png
+    category: Pill
+    durationType: Instant
+    basePrice: 210
+    shopWeight: 13
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 160
+
+  # ------------------------------------------------------------
+  # УСКОРЕНИЕ МИССИЙ
+  # ------------------------------------------------------------
+  - id: mission_talisman
+    name: Талисман странника
+    description: Помогает быстрее находить путь и выполнять поручения секты.
+    icon: Assets/Textures/Items/mission-talisman.png
+    category: Core
+    durationType: Temporary
+    temporaryDurationTicks: 36
+    basePrice: 180
+    shopWeight: 12
+    effects:
+      - type: MissionProgress
+        operation: AdditivePercent
+        value: 35
+
   - id: swift_scroll
     name: Свиток быстрого пути
     description: Открывает короткие духовные тропы и ускоряет выполнение поручений секты.
@@ -153,6 +171,27 @@ items:
       - type: MissionProgress
         operation: AdditivePercent
         value: 60
+
+  # ------------------------------------------------------------
+  # ВРЕМЕННЫЕ ПРЕДМЕТЫ СТАРЕНИЯ
+  # ------------------------------------------------------------
+  - id: time_incense
+    name: Благовоние тихого времени
+    description: Успокаивает жизненный огонь и заметно замедляет старение на короткий срок.
+    icon: Assets/Textures/Items/time-incense.png
+    category: Pill
+    durationType: Temporary
+    temporaryDurationTicks: 24
+    basePrice: 310
+    shopWeight: 8
+    effects:
+      - type: AgingSpeed
+        operation: AdditivePercent
+        value: -45
+
+  # ------------------------------------------------------------
+  # ПОСТОЯННЫЕ ПРЕДМЕТЫ ПРОГРЕССИИ
+  # ------------------------------------------------------------
   - id: spirit_seed
     name: Семя вечного духа
     description: Навсегда укрепляет восприятие мира и немного повышает результат каждой недели.
@@ -162,6 +201,174 @@ items:
     basePrice: 980
     shopWeight: 3
     effects:
+      # Постоянный бонус к эффективности тика.
       - type: TickEfficiency
         operation: AdditivePercent
         value: 3
+
+  # ------------------------------------------------------------
+  # ПОСТОЯННЫЕ НЕБЕСНЫЕ ПИЛЮЛИ
+  # ------------------------------------------------------------
+  # Эти предметы усиливают базовый доход духовной силы за тик и за тап.
+  # Они хороши как вертикальная прогрессия для idle/clicker-части игры.
+  #
+  # Если хотите усилить late game:
+  # - повышайте value у верхних tier
+  # - повышайте shopWeight у mid-tier, чтобы они чаще попадались
+  #
+  # Если хотите ослабить snowball:
+  # - снижайте value
+  # - снижайте вероятность high-tier предметов
+  - id: heavenly_pill_speck
+    name: Небесная пилюля искры
+    description: Навсегда добавляет немного духовной силы к каждому тику и каждому тапу.
+    icon: Assets/Textures/Items/spirit-dew.png
+    category: Pill
+    durationType: Permanent
+    basePrice: 1
+    shopWeight: 12
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 0.01
+
+  - id: heavenly_pill_drop
+    name: Небесная пилюля капли
+    description: Навсегда добавляет больше духовной силы к каждому тику и каждому тапу.
+    icon: Assets/Textures/Items/spirit-dew.png
+    category: Pill
+    durationType: Permanent
+    basePrice: 5
+    shopWeight: 10
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 0.05
+
+  - id: heavenly_pill_trace
+    name: Небесная пилюля следа
+    description: Навсегда усиливает все ручные и пассивные притоки духовной силы.
+    icon: Assets/Textures/Items/focus-pill.png
+    category: Pill
+    durationType: Permanent
+    basePrice: 20
+    shopWeight: 9
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 0.1
+
+  - id: heavenly_pill_stream
+    name: Небесная пилюля потока
+    description: Навсегда заметно усиливает приток духовной силы за тик и тап.
+    icon: Assets/Textures/Items/focus-pill.png
+    category: Pill
+    durationType: Permanent
+    basePrice: 100
+    shopWeight: 7
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 0.5
+
+  - id: heavenly_pill_spring
+    name: Небесная пилюля источника
+    description: Навсегда повышает базовую духовную силу на 1 за каждый тик и тап.
+    icon: Assets/Textures/Items/focus-pill.png
+    category: Pill
+    durationType: Permanent
+    basePrice: 1000
+    shopWeight: 5
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 1
+
+  - id: heavenly_pill_sea
+    name: Небесная пилюля моря
+    description: Навсегда открывает мощный прирост духовной силы для ручной и пассивной игры.
+    icon: Assets/Textures/Items/marrow-elixir.png
+    category: Pill
+    durationType: Permanent
+    basePrice: 10000
+    shopWeight: 3
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 3
+
+  - id: heavenly_pill_mountain
+    name: Небесная пилюля горы
+    description: Навсегда добавляет 10 духовной силы к каждому тику и тапу.
+    icon: Assets/Textures/Items/marrow-elixir.png
+    category: Pill
+    durationType: Permanent
+    basePrice: 100000
+    shopWeight: 2
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 10
+
+  - id: heavenly_pill_firmament
+    name: Небесная пилюля небосвода
+    description: Навсегда добавляет 30 духовной силы к каждому тику и тапу.
+    icon: Assets/Textures/Items/marrow-elixir.png
+    category: Pill
+    durationType: Permanent
+    basePrice: 1000000
+    shopWeight: 1
+    effects:
+      - type: SpiritualPowerGain
+        operation: Flat
+        value: 30
+
+  # ------------------------------------------------------------
+  # КОНТЕНТНЫЕ ИНГРЕДИЕНТЫ / ЛУТ
+  # ------------------------------------------------------------
+  # Эти предметы сами по себе не дают эффекта,
+  # но используются как лут и как визуально разные награды.
+  - id: crimson_beast_core
+    name: Багровое ядро зверя
+    description: Ценный материал для будущей алхимии.
+    icon: Assets/Textures/Items/crimson-beast-core.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 75
+    shopWeight: 20
+
+  - id: azure_spirit_core
+    name: Лазурное духовное ядро
+    description: Редкий материал, насыщенный ци.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+
+  - id: celestial_orb
+    name: Небесная сфера
+    description: Запредельно редкий ингредиент.
+    icon: Assets/Textures/Items/celestial-orb.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 1200
+    shopWeight: 2
+
+  - id: jade_lotus
+    name: Нефритовый лотос
+    description: Свежий алхимический ингредиент, выращенный в источнике духовной силы.
+    icon: Assets/Textures/Items/jade-lotus.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 110
+    shopWeight: 17
+
+  - id: phoenix_feather
+    name: Перо огненной птицы
+    description: Редкий жаростойкий материал для пилюль и талисманов высшего порядка.
+    icon: Assets/Textures/Items/phoenix-feather.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 330
+    shopWeight: 7

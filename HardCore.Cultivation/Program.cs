@@ -11,7 +11,7 @@ public sealed class Application : IEntryPoint
     public void OnConfigureEngine(PlatformContext context, Engine.Options options)
     {
         options.ShowSplashScreen = true;
-        options.Window = new IWindow.Options("HardCore Cultivation", 450/3, 900/3);
+        options.Window = new IWindow.Options("HardCore Cultivation", 500, 900);
         options.TargetFrameRate = 60;
     }
 

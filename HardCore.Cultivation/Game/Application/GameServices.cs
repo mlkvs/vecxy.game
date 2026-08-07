@@ -393,6 +393,8 @@ public sealed class ShopTransactionService(ItemPriceCalculator prices)
 
 public sealed class CultivationService(GameDatabase database, IRandomSource random)
 {
+    private static readonly decimal[] LongevityStageBonuses = [20m, 40m, 80m, 150m, 250m, 400m, 600m, 1000m];
+
     public decimal GetRequiredPower(int stageIndex, int level)
     {
         if (level is < 1 or > 10)
@@ -401,6 +403,14 @@ public sealed class CultivationService(GameDatabase database, IRandomSource rand
         return database.Cultivation.BaseRequiredPower *
                database.Cultivation.LevelMultipliers[level - 1] *
                stage.StageMultiplier;
+    }
+
+    public decimal GetMaximumAge(CharacterState character)
+    {
+        ArgumentNullException.ThrowIfNull(character);
+        var unlockedStages = Math.Clamp(character.Cultivation.StageIndex, 0, LongevityStageBonuses.Length);
+        var bonus = LongevityStageBonuses.Take(unlockedStages).Sum();
+        return database.Balance.MaximumAgeYears + bonus;
     }
 
     public TransactionResult TryAdvanceLevel(CharacterState character)
@@ -497,7 +507,7 @@ public sealed class TickProcessor(
             levelsGained = cultivation.AdvanceLevelsAutomatically(state.Character);
         }
         state.Character.Age.Advance(modifiers.AgingMultiplier, state.Calendar.TicksPerYear);
-        var characterDied = state.Character.Age.TotalYears >= database.Balance.MaximumAgeYears;
+        var characterDied = state.Character.Age.TotalYears >= cultivation.GetMaximumAge(state.Character);
         effects.AdvanceTemporaryEffects(state);
         var newYear = state.Calendar.AdvanceTick();
         if (newYear)
@@ -514,5 +524,16 @@ public sealed class TickProcessor(
             levelsGained,
             newYear,
             characterDied);
+    }
+
+    public TapResult ProcessTap(GameState state)
+    {
+        var modifiers = effects.CalculateModifiers(state);
+        var spiritualPower = database.Balance.BaseSpiritualPowerPerTick *
+                             modifiers.TickEfficiency *
+                             modifiers.SpiritualPowerMultiplier;
+        state.Character.AddSpiritualPower(spiritualPower);
+        var levelsGained = cultivation.AdvanceLevelsAutomatically(state.Character);
+        return new TapResult(spiritualPower, levelsGained);
     }
 }

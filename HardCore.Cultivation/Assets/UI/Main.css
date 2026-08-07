@@ -29,8 +29,8 @@ text {
 }
 
 .action-toast {
-    pointer-events: none; position: absolute; z-index: 2500; left: 50%; top: 42px;
-    width: 600px; min-height: 88px; margin-left: -300px; padding: 13px 20px;
+    pointer-events: none; position: absolute; z-index: 2500; left: 50%; top: 18px;
+    width: 520px; min-height: 76px; margin-left: -260px; padding: 12px 18px;
     flex-direction: row; align-items: center; gap: 15px; color: #f5fff9;
     background-color: #183b2ced; border: 2px solid #66e3ad; border-radius: 25px;
     box-shadow: 0 11px 25px 0 #000000c9;
@@ -38,11 +38,11 @@ text {
 .action-toast.toast-error { color: #fff0ed; background-color: #4a211ded; border-color: #ff8c7b; }
 .action-toast.toast-info { color: #fff5d8; background-color: #44351bed; border-color: #f1bd59; }
 .action-toast-icon-shell {
-    flex-shrink: 0; width: 58px; height: 58px; align-items: center; justify-content: center;
+    flex-shrink: 0; width: 50px; height: 50px; align-items: center; justify-content: center;
     background-color: #0d2119; border-radius: 18px;
 }
-.action-toast-icon-shell image { width: 43px; height: 43px; object-fit: contain; }
-.action-toast text { flex: 1; min-width: 0; font-size: 23px; text-align: left; }
+.action-toast-icon-shell image { width: 36px; height: 36px; object-fit: contain; }
+.action-toast text { flex: 1; min-width: 0; font-size: 20px; text-align: left; }
 .action-toast.toast-a { animation: action-toast-a 1.75s ease-out; }
 .action-toast.toast-b { animation: action-toast-b 1.75s ease-out; }
 @keyframes action-toast-a {
@@ -134,7 +134,7 @@ text {
     background-color: #111b16df; border: 2px solid var(--line); border-radius: 24px;
     box-shadow: 0 8px 14px 0 var(--shadow);
 }
-.mission-float { position: absolute; right: 104px; top: 18px; width: 350px; padding: 16px 18px; }
+.mission-float { position: absolute; right: 96px; top: 28px; width: 322px; padding: 15px 16px; }
 .float-heading { flex-direction: row; align-items: center; gap: 8px; color: var(--gold); font-size: 17px; }
 .float-heading image { width: 25px; height: 25px; object-fit: contain; }
 .float-title { margin-top: 7px; font-size: 25px; }
@@ -147,16 +147,16 @@ text {
     font-size: 18px; text-align: right; white-space: nowrap;
 }
 
-.side-tools { position: absolute; right: 0; top: 18px; bottom: 18px; width: 92px; align-items: stretch; }
+.side-tools { position: absolute; right: 0; top: 28px; bottom: 28px; width: 88px; align-items: stretch; }
 .effects-float { flex: 1; min-height: 0; align-items: center; overflow: hidden; }
 .small-heading {
-    width: 92px; min-height: 31px; color: #ffe39a; background-color: #111b16dd;
-    border: 1px solid #f1bd5977; border-radius: 12px; font-size: 15px; text-align: center;
+    width: 88px; min-height: 31px; color: #ffe39a; background-color: #111b16dd;
+    border: 1px solid #f1bd5977; border-radius: 12px; font-size: 14px; text-align: center;
     box-shadow: 0 4px 9px 0 #00000099;
 }
 .effects-list {
-    width: 88px; flex: 1; min-height: 0; margin-top: 8px; display: grid; grid-template-columns: 1fr;
-    grid-auto-rows: 86px; gap: 8px; overflow-y: scroll; pointer-events: auto;
+    width: 84px; flex: 1; min-height: 0; margin-top: 8px; display: grid; grid-template-columns: 1fr;
+    grid-auto-rows: 80px; gap: 8px; overflow-y: scroll; pointer-events: auto;
     scrollbar-width: 0px; scrollbar-color: transparent transparent;
 }
 .effects-list > .detail-text { padding-top: 18px; text-align: center; }
@@ -228,27 +228,33 @@ button:disabled { opacity: 0.38; }
 #window-layer { position: absolute; inset: 0; align-items: center; justify-content: center; pointer-events: none; }
 
 /* Compact main HUD */
-#hud { gap: 9px; }
-.top-card { height: 88px; }
+#hud { gap: 10px; }
+.top-card { height: 96px; }
 .calendar-dial { position: relative; flex-shrink: 0; width: 66px; height: 66px; align-items: center; justify-content: center; }
 .calendar-ring { position: absolute; inset: 0; color: var(--gold); border: 7px solid #4a4537; border-radius: 50%; }
 .calendar-dial image { width: 38px; height: 38px; object-fit: contain; }
-.resource-row { height: 78px; }
-.resource-card { padding: 9px 14px; }
+.resource-row { height: 86px; }
+.resource-card { padding: 10px 14px; }
 .resource-label { height: 23px; font-size: 16px; }
-.resource-value { height: 31px; font-size: 26px; }
-.activity-switch { height: 60px; flex-direction: row; gap: 9px; padding: 7px; background-color: #0e1712e8; border-radius: 20px; }
-.activity-button { pointer-events: auto; flex: 1; min-width: 0; flex-direction: row; align-items: center; justify-content: center; gap: 8px; color: var(--muted); background-color: #1a2821; border: 2px solid #ffffff22; border-radius: 15px; font-family: "Rubik UI"; font-size: 17px; }
+.resource-value { height: 33px; font-size: 28px; }
+.activity-switch { height: 64px; flex-direction: row; gap: 9px; padding: 7px; background-color: #0e1712e8; border-radius: 20px; }
+.activity-button { pointer-events: auto; flex: 1; min-width: 0; flex-direction: row; align-items: center; justify-content: center; gap: 8px; color: var(--muted); background-color: #1a2821; border: 2px solid #ffffff22; border-radius: 15px; font-family: "Rubik UI"; font-size: 18px; }
 .activity-button image { width: 28px; height: 28px; object-fit: contain; }
 .activity-button.active { color: #102017; background-color: var(--jade); border-color: #bdffe2; box-shadow: 0 0 12px 2px #56d5a055; }
 .mission-float { pointer-events: auto; align-items: stretch; color: var(--cream); font-family: "Rubik UI"; text-align: left; }
 .mission-float:hover { border-color: var(--jade); background-color: #17271fea; }
-.cultivation-bar { min-height: 108px; }
+.float-title { font-size: 24px; }
+.float-description { font-size: 18px; }
+.progress-caption { font-size: 17px; }
+.cultivation-bar { min-height: 118px; }
 .cultivation-title { margin-top: 0; }
 .cultivation-track { position: relative; height: 30px; margin-top: 10px; border-radius: 11px; }
 .cultivation-progress-text { pointer-events: none; position: absolute; inset: 0; height: 30px; color: #fff9e8; font-size: 16px; text-align: center; text-shadow: 0 2px 3px #000000dd; }
-.cultivation-bar > .secondary-button { flex-shrink: 0; width: 190px; min-height: 58px; }
-.bottom-nav { height: 102px; }
+.cultivation-bar > .secondary-button { flex-shrink: 0; width: 190px; min-height: 62px; font-size: 20px; }
+.bottom-nav { height: 106px; }
+.nav-button { font-size: 18px; }
+.nav-icon-shell { width: 48px; height: 48px; }
+.nav-icon-shell image { width: 34px; height: 34px; object-fit: contain; }
 .tap-feedback { width: 92px; height: 92px; margin-left: -46px; margin-top: -46px; background-color: #62caff28; border-color: #91dcff; }
 .achievement-effect { pointer-events: none; position: absolute; z-index: 1400; inset: 0; align-items: center; justify-content: center; opacity: 0; background-color: #56d5a00a; animation: achievement-flash 1.45s ease-out; }
 .achievement-effect text { width: 620px; min-height: 92px; padding: 22px; color: #fff2b5; background-color: #173126e8; border: 3px solid var(--gold); border-radius: 30px; box-shadow: 0 0 45px 14px #56d5a077; font-size: 34px; text-align: center; }

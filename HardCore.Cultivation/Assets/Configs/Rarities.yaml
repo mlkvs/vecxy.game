@@ -1,39 +1,68 @@
+# ============================================================
+# РЕДКОСТИ ПРЕДМЕТОВ
+# ============================================================
+# Этот файл определяет:
+# - названия редкостей
+# - их цвет в UI
+# - влияние на цену
+# - частоту выпадения при генерации предметов
+#
+# Важно:
+# - В проекте ожидаются ВСЕ значения enum ItemRarity.
+# - Если удалить одну редкость, загрузка базы сломается.
+#
+# Параметры:
+# rarity          — техническое имя редкости, менять осторожно
+# displayName     — имя, которое видит игрок
+# priceMultiplier — множитель цены предмета этой редкости
+# shopWeight      — шанс выбора редкости при генерации
+# color           — цвет рамок/акцентов в UI
+
 rarities:
   - rarity: Common
     displayName: Обычная
+    # Базовая цена без дополнительного множителя.
     priceMultiplier: 1
+    # Самая частая редкость.
     shopWeight: 50
     color: "#d8d2c4"
+
   - rarity: Uncommon
     displayName: Необычная
     priceMultiplier: 2
     shopWeight: 25
     color: "#7ed59a"
+
   - rarity: Rare
     displayName: Редкая
     priceMultiplier: 4
     shopWeight: 12
     color: "#72b9ee"
+
   - rarity: Epic
     displayName: Эпическая
     priceMultiplier: 7
     shopWeight: 7
     color: "#c68bea"
+
   - rarity: Legendary
     displayName: Легендарная
     priceMultiplier: 12
     shopWeight: 3
     color: "#f3ad4e"
+
   - rarity: Mythic
     displayName: Мифическая
     priceMultiplier: 20
     shopWeight: 1.5
     color: "#ef5b50"
+
   - rarity: Divine
     displayName: Божественная
     priceMultiplier: 30
     shopWeight: 0.4
     color: "#f5e99c"
+
   - rarity: Transcendent
     displayName: Запредельная
     priceMultiplier: 50

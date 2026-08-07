@@ -30,6 +30,7 @@ public sealed class GameController(
     private UiPanel? _actionToast;
     private UiImage? _actionToastIcon;
     private UiText? _actionToastText;
+    private float _actionToastRemaining;
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
     private UiText? _achievementText;
@@ -61,7 +62,7 @@ public sealed class GameController(
             shop.Refresh(_state.Shop);
         if (_state.MissionBoard.MissionIds.Count == 0)
             missions.Refresh(_state);
-        _gameOver = _state.Character.Age.TotalYears >= database.Balance.MaximumAgeYears;
+        _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character);
 
         _floatingDocument = ui.Load("UI/FloatingOverlay.xml");
         _floatingDocument.Reloaded += BuildFloatingUi;
@@ -76,6 +77,13 @@ public sealed class GameController(
 
     public void Update(float deltaTime)
     {
+        if (_actionToast is not null && _actionToast.IsVisible)
+        {
+            _actionToastRemaining -= deltaTime;
+            if (_actionToastRemaining <= 0f)
+                _actionToast.IsVisible = false;
+        }
+
         if (_gameOver)
             return;
         _elapsedMilliseconds += deltaTime * 1000f;
@@ -247,13 +255,24 @@ public sealed class GameController(
     private void TapCharacter(Vector2 position)
     {
         PlaySound("Sounds/cultivate.wav", 0.35f);
-        if (_state.ActivityMode == ActivityMode.Cultivation && _tapFeedback is not null)
+        if (_tapFeedback is not null)
         {
             _tapFeedback.SetStyle("left", $"{position.X:0}px");
             _tapFeedback.SetStyle("top", $"{position.Y:0}px");
             _floatingDocument?.RestartAnimation(_tapFeedback);
         }
-        ProcessWeek();
+        var result = ticks.ProcessTap(_state);
+        if (result.SpiritualPowerGained != 0m)
+            SpawnFloatingValue(result.SpiritualPowerGained, string.Empty, "spirit-value");
+        if (result.LevelsGained > 0)
+        {
+            ShowAchievement(result.LevelsGained == 1 ? "НОВЫЙ УРОВЕНЬ" : $"+{result.LevelsGained} УРОВНЯ");
+            ApplyStateToView();
+        }
+        else
+        {
+            UpdateHud();
+        }
     }
 
     private void SetActivity(ActivityMode mode)
@@ -282,7 +301,7 @@ public sealed class GameController(
         _view!.StageName.Value = stage.Name;
         _view.YearDial.Progress = 1f - _state.Calendar.TickInYear / (float)_state.Calendar.TicksPerYear;
         _view.Money.Value = character.Money.ToString("N0", CultureInfo.InvariantCulture);
-        _view.Age.Value = $"{character.Age.TotalYears:0.0} / {database.Balance.MaximumAgeYears:0}";
+        _view.Age.Value = $"{character.Age.TotalYears:0.0} / {cultivation.GetMaximumAge(character):0}";
         _view.Realm.Value = $"{stage.Name} · ур. {progress.Level}";
         _view.CultivationProgressText.Value = $"{Format(character.SpiritualPower)} / {Format(required)}";
         _view.CultivationProgress.Progress = (float)fraction;
@@ -611,6 +630,7 @@ public sealed class GameController(
         if (result.Success)
             SyncMissions();
         UpdateMissionSummary();
+        Save();
     }
 
     private void SyncMissionQueue()
@@ -703,6 +723,8 @@ public sealed class GameController(
         {
             PlaySound("Sounds/breakthrough.wav", 0.7f);
             ShowAchievement("УСПЕШНЫЙ ПРОРЫВ");
+            ShowActionFeedback($"Предел жизни увеличен до {cultivation.GetMaximumAge(_state.Character):0} лет.",
+                "Assets/Textures/UIIcons/age.png", true, info: true);
         }
         ApplyStateToView();
         Save();
@@ -791,7 +813,7 @@ public sealed class GameController(
     {
         CloseWindows();
         var stage = database.Cultivation.Stages[_state.Character.Cultivation.StageIndex];
-        _view!.DeathAge.Value = $"{_state.Character.Age.TotalYears:0.0} лет";
+        _view!.DeathAge.Value = $"{_state.Character.Age.TotalYears:0.0} / {cultivation.GetMaximumAge(_state.Character):0} лет";
         _view.DeathStage.Value = $"{stage.Name} · ур. {_state.Character.Cultivation.Level}";
         _view.DeathYear.Value = _state.Calendar.CurrentYear.ToString(CultureInfo.InvariantCulture);
         OpenWindow(_view.DeathWindow);
@@ -862,7 +884,7 @@ public sealed class GameController(
         _actionToast = document.GetElementById<UiPanel>("action-toast");
         _actionToastIcon = document.GetElementById<UiImage>("action-toast-icon");
         _actionToastText = document.GetElementById<UiText>("action-toast-text");
-        _actionToast.AnimationEnded += (sender, _) => sender.IsVisible = false;
+        _actionToastRemaining = 0f;
     }
 
     private void ShowActionFeedback(string message, string icon, bool success, bool info = false)
@@ -874,7 +896,9 @@ public sealed class GameController(
         _actionToast.SetAttribute("class", $"action-toast {(info ? "toast-info" : success ? "toast-success" : "toast-error")} {(_alternateActionToast ? "toast-a" : "toast-b")}");
         _actionToastIcon.Source = icon;
         _actionToastText.Value = message;
+        _actionToastRemaining = 1.85f;
         _actionToast.IsVisible = true;
+        _transientDocument?.RestartAnimation(_actionToast);
     }
 
     private void ShowItemPopup(ItemConfig config, ItemInstance? item, string quantity, string context)
@@ -956,7 +980,7 @@ public sealed class GameController(
             EffectType.AgingSpeed => $"Скорость старения {Signed(value)}%",
             EffectType.BreakthroughChance when pluralBreakthroughChance => $"Шансы прорыва {Signed(value)}%",
             EffectType.BreakthroughChance => $"Шанс прорыва {Signed(value)}%",
-            EffectType.SpiritualPowerGain when effect.Operation == ModifierOperation.Flat => $"Увеличивает духовную силу на {Format(value)}",
+            EffectType.SpiritualPowerGain when effect.Operation == ModifierOperation.Flat => $"Добавляет {Format(value)} духовной силы за тик и тап",
             EffectType.SpiritualPowerGain => $"Получение духовной силы {Signed(value)}%",
             EffectType.MissionProgress => $"Скорость выполнения миссий {Signed(value)}%",
             _ => $"Эффект {Signed(value)}%"
