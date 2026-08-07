@@ -221,7 +221,7 @@ items:
   # - снижайте вероятность high-tier предметов
   - id: heavenly_pill_speck
     name: Небесная пилюля искры
-    description: Навсегда добавляет немного духовной силы к каждому тику и каждому тапу.
+    description: Незначительно увеличивает рост духовной силы.
     icon: Assets/Textures/Items/spirit-dew.png
     category: Pill
     durationType: Permanent
@@ -234,7 +234,7 @@ items:
 
   - id: heavenly_pill_drop
     name: Небесная пилюля капли
-    description: Навсегда добавляет больше духовной силы к каждому тику и каждому тапу.
+    description: Увеличивает рост духовной силы.
     icon: Assets/Textures/Items/spirit-dew.png
     category: Pill
     durationType: Permanent
@@ -247,7 +247,7 @@ items:
 
   - id: heavenly_pill_trace
     name: Небесная пилюля следа
-    description: Навсегда усиливает все ручные и пассивные притоки духовной силы.
+    description: Увеличивает рост духовной силы.
     icon: Assets/Textures/Items/focus-pill.png
     category: Pill
     durationType: Permanent
@@ -260,7 +260,7 @@ items:
 
   - id: heavenly_pill_stream
     name: Небесная пилюля потока
-    description: Навсегда заметно усиливает приток духовной силы за тик и тап.
+    description: Заметно величивает рост духовной силы.
     icon: Assets/Textures/Items/focus-pill.png
     category: Pill
     durationType: Permanent
@@ -273,7 +273,7 @@ items:
 
   - id: heavenly_pill_spring
     name: Небесная пилюля источника
-    description: Навсегда повышает базовую духовную силу на 1 за каждый тик и тап.
+    description: Заметно увеличивает рост духовной силы.
     icon: Assets/Textures/Items/focus-pill.png
     category: Pill
     durationType: Permanent
@@ -286,7 +286,7 @@ items:
 
   - id: heavenly_pill_sea
     name: Небесная пилюля моря
-    description: Навсегда открывает мощный прирост духовной силы для ручной и пассивной игры.
+    description: Навсегда мощно увеличивает рост духовной силы.
     icon: Assets/Textures/Items/marrow-elixir.png
     category: Pill
     durationType: Permanent
@@ -299,7 +299,7 @@ items:
 
   - id: heavenly_pill_mountain
     name: Небесная пилюля горы
-    description: Навсегда добавляет 10 духовной силы к каждому тику и тапу.
+    description: Неописуемо увеличивает рост духовной силы.
     icon: Assets/Textures/Items/marrow-elixir.png
     category: Pill
     durationType: Permanent
@@ -312,7 +312,7 @@ items:
 
   - id: heavenly_pill_firmament
     name: Небесная пилюля небосвода
-    description: Навсегда добавляет 30 духовной силы к каждому тику и тапу.
+    description: Нет слов, насколько эта пилюля увеличивает рост духовной силы.
     icon: Assets/Textures/Items/marrow-elixir.png
     category: Pill
     durationType: Permanent
@@ -329,7 +329,7 @@ items:
   # Эти предметы сами по себе не дают эффекта,
   # но используются как лут и как визуально разные награды.
   - id: crimson_beast_core
-    name: Багровое ядро зверя
+    name: Багровое яйцо кота
     description: Ценный материал для будущей алхимии.
     icon: Assets/Textures/Items/crimson-beast-core.png
     category: Ingredient
@@ -338,7 +338,7 @@ items:
     shopWeight: 20
 
   - id: azure_spirit_core
-    name: Лазурное духовное ядро
+    name: Лазурное духовное яйцо
     description: Редкий материал, насыщенный ци.
     icon: Assets/Textures/Items/azure-spirit-core.png
     category: Ingredient
@@ -347,7 +347,7 @@ items:
     shopWeight: 9
 
   - id: celestial_orb
-    name: Небесная сфера
+    name: Большая ляпка
     description: Запредельно редкий ингредиент.
     icon: Assets/Textures/Items/celestial-orb.png
     category: Ingredient
@@ -356,7 +356,7 @@ items:
     shopWeight: 2
 
   - id: jade_lotus
-    name: Нефритовый лотос
+    name: Нефритовый лоток
     description: Свежий алхимический ингредиент, выращенный в источнике духовной силы.
     icon: Assets/Textures/Items/jade-lotus.png
     category: Ingredient
@@ -365,7 +365,7 @@ items:
     shopWeight: 17
 
   - id: phoenix_feather
-    name: Перо огненной птицы
+    name: Перо огненного голубя
     description: Редкий жаростойкий материал для пилюль и талисманов высшего порядка.
     icon: Assets/Textures/Items/phoenix-feather.png
     category: Ingredient
