@@ -127,9 +127,9 @@ public sealed class ItemEffectService(GameDatabase database)
         }
         else
         {
-            int? duration = config.DurationType == ItemDurationType.Permanent
-                ? null
-                : config.TemporaryDurationTicks;
+            int? duration = config.DurationType == ItemDurationType.Temporary
+                ? config.TemporaryDurationTicks
+                : null;
             foreach (var definition in config.Effects)
             {
                 state.ActiveEffects.Add(new ActiveEffect(
@@ -137,6 +137,7 @@ public sealed class ItemEffectService(GameDatabase database)
                     definition,
                     definition.Value * strength,
                     duration,
+                    config.DurationType,
                     item.Rarity,
                     item.Quality));
             }
@@ -152,6 +153,9 @@ public sealed class ItemEffectService(GameDatabase database)
             effect.AdvanceTick();
         state.ActiveEffects.RemoveAll(effect => effect.IsExpired);
     }
+
+    public void ConsumeBreakthroughAttemptEffects(GameState state) =>
+        state.ActiveEffects.RemoveAll(effect => effect.IsUntilBreakthroughAttempt);
 }
 
 public static class QualityPriceCurve
@@ -229,7 +233,8 @@ public sealed class MissionService(
         state.EnqueueMission(new ActiveMission
         {
             MissionConfigId = missionId,
-            RequiredProgress = required
+            RequiredProgress = required,
+            Rewards = GenerateRewards(config)
         });
         state.MissionBoard.Take(missionId);
         return TransactionResult.Ok(0, $"Добавлено в очередь: {config.Name}");
@@ -255,21 +260,65 @@ public sealed class MissionService(
             return false;
 
         var config = database.GetMission(mission.MissionConfigId);
-        var candidates = database.Items.Values
-            .Where(item => config.Reward.RequiredItemCategory is null ||
-                           item.Category == config.Reward.RequiredItemCategory)
-            .ToArray();
-        if (candidates.Length == 0)
-            throw new InvalidOperationException($"Mission reward pool is empty: {config.Id}");
-        var rewardConfig = WeightedRandom.Select(candidates, item => item.ShopWeight, random);
-        var quantity = random.NextInt(
-            config.Reward.MinimumQuantity,
-            config.Reward.MaximumQuantity + 1);
-        state.Inventory.Add(itemGenerator.Generate(rewardConfig.Id, quantity));
-        state.Character.AddMoney(config.Reward.Money);
+        foreach (var reward in mission.Rewards)
+        {
+            if (reward.Type == MissionRewardType.Money)
+            {
+                state.Character.AddMoney(reward.Money);
+                continue;
+            }
+            var item = new ItemInstance
+            {
+                InstanceId = Guid.NewGuid(),
+                ConfigId = reward.ItemConfigId!,
+                Rarity = reward.ItemRarity,
+                Quality = reward.ItemQuality
+            };
+            if (reward.Quantity > 1)
+                item.AddQuantity(reward.Quantity - 1);
+            state.Inventory.Add(item);
+        }
         mission.MarkRewardGranted();
         state.RemoveMission(mission.InstanceId);
         return true;
+    }
+
+    private List<MissionReward> GenerateRewards(MissionConfig mission)
+    {
+        var result = new List<MissionReward>(2);
+        var rewardCount = random.NextInt(1, 3);
+        var includeMoney = mission.Reward.Money > 0 && random.NextInt(0, 2) == 0;
+        if (includeMoney)
+        {
+            result.Add(new MissionReward
+            {
+                Type = MissionRewardType.Money,
+                Money = mission.Reward.Money
+            });
+        }
+
+        while (result.Count < rewardCount)
+        {
+            var candidates = database.Items.Values
+                .Where(item => mission.Reward.RequiredItemCategory is null ||
+                               item.Category == mission.Reward.RequiredItemCategory)
+                .ToArray();
+            if (candidates.Length == 0)
+                throw new InvalidOperationException($"Mission reward pool is empty: {mission.Id}");
+            var config = WeightedRandom.Select(candidates, item => item.ShopWeight, random);
+            var generated = itemGenerator.Generate(config.Id);
+            var maximum = config.Category == ItemCategory.Ingredient ? 15 : 3;
+            result.Add(new MissionReward
+            {
+                Type = MissionRewardType.Item,
+                ItemConfigId = config.Id,
+                ItemRarity = generated.Rarity,
+                ItemQuality = generated.Quality,
+                Quantity = random.NextInt(1, maximum + 1)
+            });
+        }
+
+        return result;
     }
 }
 
@@ -293,7 +342,7 @@ public sealed class ShopService(
         shop.ReplaceStock(
             slots,
             random.NextInt(database.Shop.MinimumBuyMarkup, database.Shop.MaximumBuyMarkup + 1),
-            random.NextInt(database.Shop.MinimumSellAdjustment, database.Shop.MaximumSellAdjustment + 1));
+            database.Shop.SellAdjustmentPercent);
     }
 }
 
@@ -316,7 +365,7 @@ public sealed class ShopTransactionService(ItemPriceCalculator prices)
             return TransactionResult.Fail("Цена слишком велика.");
         }
         if (!state.Character.TrySpendMoney(total))
-            return TransactionResult.Fail("Недостаточно монет.");
+            return TransactionResult.Fail("Недостаточно рублей.");
         slot.Remove(quantity);
         state.Inventory.Add(slot.Item.Copy(quantity));
         return TransactionResult.Ok(total, "Покупка завершена.");
@@ -367,31 +416,56 @@ public sealed class CultivationService(GameDatabase database, IRandomSource rand
         return TransactionResult.Ok(0, "Уровень культивации повышен.");
     }
 
-    public BreakthroughResult AttemptBreakthrough(
-        CharacterState character,
-        IReadOnlyCollection<ActiveEffect> effects)
+    public int AdvanceLevelsAutomatically(CharacterState character)
+    {
+        var gained = 0;
+        while (character.Cultivation.Level < 10)
+        {
+            var result = TryAdvanceLevel(character);
+            if (!result.Success)
+                break;
+            gained++;
+        }
+        return gained;
+    }
+
+    public decimal GetBreakthroughChance(CharacterState character, IReadOnlyCollection<ActiveEffect> effects)
     {
         var progress = character.Cultivation;
-        if (!progress.CanAttemptBreakthrough)
-            return new(false, 0m, progress.StageIndex, progress.Level, "Прорыв доступен только на 10 уровне.");
-        if (progress.StageIndex >= database.Cultivation.Stages.Count - 1)
-            return new(false, 100m, progress.StageIndex, progress.Level, "Достигнута высшая ступень.");
-        var cost = GetRequiredPower(progress.StageIndex, 10);
-        if (!character.TrySpendSpiritualPower(cost))
-            return new(false, 0m, progress.StageIndex, progress.Level, "Недостаточно духовной силы.");
-
+        if (!progress.CanAttemptBreakthrough || progress.StageIndex >= database.Cultivation.Stages.Count - 1)
+            return 0m;
         var baseChance = database.Cultivation.Stages[progress.StageIndex].BaseBreakthroughChance;
-        var chance = Math.Clamp(
+        return Math.Clamp(
             ModifierCalculator.Calculate(baseChance, effects, EffectType.BreakthroughChance),
             0m,
             database.Balance.MaximumBreakthroughChance);
+    }
+
+    public BreakthroughResult AttemptBreakthrough(
+        CharacterState character,
+        List<ActiveEffect> effects)
+    {
+        var progress = character.Cultivation;
+        if (!progress.CanAttemptBreakthrough)
+            return new(false, 0m, progress.StageIndex, progress.Level, 0, "Прорыв доступен только на 10 уровне.");
+        if (progress.StageIndex >= database.Cultivation.Stages.Count - 1)
+            return new(false, 100m, progress.StageIndex, progress.Level, 0, "Достигнута высшая ступень.");
+        var cost = GetRequiredPower(progress.StageIndex, 10);
+        if (!character.TrySpendSpiritualPower(cost))
+            return new(false, 0m, progress.StageIndex, progress.Level, 0, "Недостаточно духовной силы.");
+
+        var chance = GetBreakthroughChance(character, effects);
+        effects.RemoveAll(effect => effect.IsUntilBreakthroughAttempt);
         if (random.NextDecimal(0m, 100m) < chance)
         {
             progress.BreakthroughSucceeded(database.Cultivation.Stages.Count);
-            return new(true, chance, progress.StageIndex, progress.Level, "Прорыв успешен.");
+            return new(true, chance, progress.StageIndex, progress.Level, 0, "Прорыв успешен.");
         }
-        progress.BreakthroughFailed(random.NextInt(1, 10));
-        return new(false, chance, progress.StageIndex, progress.Level, "Прорыв не удался.");
+        var fallback = random.NextInt(1, 10);
+        progress.BreakthroughFailed(fallback);
+        var lost = 10 - fallback;
+        return new(false, chance, progress.StageIndex, progress.Level, lost,
+            $"Прорыв не удался, вы получили травму и потеряли {lost} уровней");
     }
 }
 
@@ -399,17 +473,29 @@ public sealed class TickProcessor(
     GameDatabase database,
     ItemEffectService effects,
     MissionService missions,
-    ShopService shop)
+    ShopService shop,
+    CultivationService cultivation)
 {
     public TickResult ProcessTick(GameState state)
     {
         var modifiers = effects.CalculateModifiers(state);
-        var missionProgress = modifiers.TickEfficiency * modifiers.MissionProgressMultiplier;
-        var missionCompleted = missions.AdvanceCurrentMission(state, missionProgress);
-        var spiritualPower = database.Balance.BaseSpiritualPowerPerTick *
+        var missionProgress = 0m;
+        var missionCompleted = false;
+        var spiritualPower = 0m;
+        var levelsGained = 0;
+        if (state.ActivityMode == ActivityMode.Missions)
+        {
+            missionProgress = modifiers.TickEfficiency * modifiers.MissionProgressMultiplier;
+            missionCompleted = missions.AdvanceCurrentMission(state, missionProgress);
+        }
+        else
+        {
+            spiritualPower = database.Balance.BaseSpiritualPowerPerTick *
                              modifiers.TickEfficiency *
                              modifiers.SpiritualPowerMultiplier;
-        state.Character.AddSpiritualPower(spiritualPower);
+            state.Character.AddSpiritualPower(spiritualPower);
+            levelsGained = cultivation.AdvanceLevelsAutomatically(state.Character);
+        }
         state.Character.Age.Advance(modifiers.AgingMultiplier, state.Calendar.TicksPerYear);
         var characterDied = state.Character.Age.TotalYears >= database.Balance.MaximumAgeYears;
         effects.AdvanceTemporaryEffects(state);
@@ -425,6 +511,7 @@ public sealed class TickProcessor(
             spiritualPower,
             missionProgress,
             missionCompleted,
+            levelsGained,
             newYear,
             characterDied);
     }

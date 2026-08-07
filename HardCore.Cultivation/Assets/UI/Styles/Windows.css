@@ -103,61 +103,6 @@
     font-family: "Rubik UI"; font-size: 24px; text-align: center;
 }
 .restart-button:hover { background-color: #ffd778; }
-.path-summary {
-    flex-shrink: 0; min-height: 94px; margin-top: 12px; padding: 12px 16px;
-    flex-direction: row; align-items: center; gap: 15px; background-color: #173328;
-    border: 2px solid #56d5a088; border-radius: 23px; box-shadow: 0 7px 14px 0 #00000088;
-}
-.path-current-level {
-    flex-shrink: 0; width: 66px; height: 66px; align-items: center; justify-content: center;
-    color: #281c08; background-color: #f1bd59; border: 3px solid #fff0b6; border-radius: 50%;
-    box-shadow: 0 0 14px 4px #f1bd5966;
-}
-.path-current-level text { width: 100%; height: 100%; font-size: 29px; text-align: center; }
-.path-summary-copy { flex: 1; min-width: 0; justify-content: center; }
-.path-status-kicker { color: #56d5a0; font-size: 16px; }
-.path-status-stage { width: 100%; height: 34px; margin-top: 1px; color: #fff3d6; font-size: 27px; white-space: nowrap; }
-.path-status-level { width: 100%; height: 22px; margin-top: 1px; color: #d1cbb8; font-size: 17px; white-space: nowrap; }
-.path-progress-row { flex-shrink: 0; height: 30px; margin: 5px 8px 0; flex-direction: row; align-items: center; gap: 10px; }
-.path-progress { flex: 1; margin: 0; }
-.path-progress-end { flex-shrink: 0; width: 25px; color: #f1bd59; font-size: 16px; text-align: center; }
-.cultivation-path-scroll {
-    flex: 1; flex-shrink: 1; flex-basis: 0px; min-height: 0; margin-top: 8px;
-    padding: 10px 24px 52px 10px; gap: 10px;
-    overflow-y: scroll; pointer-events: auto;
-    background-color: #0c1510; border: 2px solid #ffffff2e; border-radius: 22px;
-    scrollbar-width: 13px; scrollbar-color: #f1bd59 #26342b;
-}
-.path-stage {
-    height: 132px; flex-shrink: 0; padding: 13px 15px;
-    background-color: #17231c; border: 2px solid #ffffff24; border-radius: 21px;
-    box-shadow: 0 5px 11px 0 #00000077;
-}
-.path-stage.completed-stage { background-color: #142c22; border-color: #56d5a05c; }
-.path-stage.current-stage { background-color: #352a17; border-color: #f1bd59; box-shadow: 0 5px 15px 1px #6b471977; }
-.path-stage-heading {
-    height: 42px; flex-direction: row; align-items: center; justify-content: space-between;
-}
-.path-stage-index { color: #7fdcb3; font-size: 15px; }
-.path-stage-name { flex: 1; min-width: 0; margin-left: 12px; color: #fff3d6; font-size: 22px; text-align: right; }
-.path-nodes { flex: 1; min-height: 0; margin-top: 7px; flex-direction: row; align-items: center; justify-content: space-between; }
-.path-connector {
-    flex: 1; height: 4px; background-color: #48554c; border-radius: 2px;
-}
-.path-connector.completed { background-color: #56d5a0; box-shadow: 0 0 8px 2px #56d5a066; }
-.path-node {
-    flex-shrink: 0; width: 35px; height: 35px; align-items: center; justify-content: center;
-    color: #aeb8af; background-color: #2a352e; border: 2px solid #59635c; border-radius: 50%;
-}
-.path-node text { width: 100%; height: 100%; font-size: 14px; text-align: center; }
-.path-node.completed { color: #0b1811; background-color: #56d5a0; border-color: #b9ffe1; box-shadow: 0 0 13px 4px #56d5a077; }
-.path-node.current {
-    width: 43px; height: 43px; color: #281c08; background-color: #f1bd59;
-    border: 3px solid #fff0b6; box-shadow: 0 0 13px 4px #f1bd5988;
-}
-.path-node.current text { font-size: 18px; }
-.path-actions { flex-shrink: 0; min-height: 74px; margin-top: 9px; flex-direction: row; gap: 12px; }
-.path-actions .wide-action { flex: 1; min-width: 0; margin: 0; }
 .wide-action {
     pointer-events: auto; min-height: 78px; padding: 16px; color: #111914; background-color: #f1bd59;
     border-radius: 22px; box-shadow: 0 10px 22px 0 #00000099;
@@ -212,3 +157,40 @@
 .info-popup-card .wide-action { margin-top: 20px; }
 #effect-popup-item { margin-top: 18px; }
 #effect-popup-ok { margin-top: 10px; }
+
+/* Dense, non-scrolling data windows */
+.window { padding: 18px; }
+.window-header { min-height: 84px; padding-bottom: 12px; }
+.window-title { font-size: 34px; }
+.window-subtitle { font-size: 18px; }
+.window-toolbar { min-height: 60px; margin-top: 10px; padding: 10px 15px; font-size: 20px; }
+.window-tabs, .category-tabs { flex-shrink: 0; min-height: 58px; margin-top: 10px; flex-direction: row; gap: 9px; }
+.window-tab, .category-tab { pointer-events: auto; flex: 1; min-width: 0; align-items: center; justify-content: center; color: #d6d0be; background-color: #1d2a23; border: 2px solid #ffffff24; border-radius: 16px; font-family: "Rubik UI"; font-size: 18px; text-align: center; }
+.window-tab.active, .category-tab.active { color: #102017; background-color: #56d5a0; border-color: #baffdf; }
+.mission-page { flex: 1; min-height: 0; }
+.mission-board-heading { flex-shrink: 0; min-height: 45px; flex-direction: row; align-items: center; justify-content: space-between; }
+.mission-board-title { font-size: 17px; color: #56d5a0; }
+.mission-board-heading .toolbar-value { font-size: 16px; }
+.mission-list { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(5, 1fr); gap: 8px; padding: 0; overflow: hidden; }
+.accepted-mission-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 12px; overflow: hidden; }
+.shop-content { flex: 1; min-height: 0; margin-top: 10px; padding: 10px; background-color: #111b16; border: 2px solid #ffffff1f; border-radius: 22px; overflow: hidden; }
+.shop-grid { width: 100%; height: 100%; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; }
+.inventory-grid { flex: 1; min-height: 0; margin-top: 10px; padding: 14px; display: grid; grid-template-columns: repeat(5, 1fr); grid-auto-rows: 112px; gap: 12px; overflow-y: auto; pointer-events: auto; background-color: #101a15; border: 2px solid #ffffff20; border-radius: 20px; }
+.inventory-details { flex-shrink: 0; min-height: 185px; margin-top: 10px; padding: 14px; flex-direction: row; align-items: center; gap: 14px; background-color: #17271f; border: 2px solid #56d5a055; border-radius: 22px; }
+.inventory-detail-icon-well { flex-shrink: 0; width: 108px; height: 108px; align-items: center; justify-content: center; border: 4px solid #56d5a0; border-radius: 24px; background-color: #0c1510; }
+.inventory-detail-icon-well image { width: 92px; height: 92px; object-fit: contain; }
+.inventory-detail-copy { flex: 1; min-width: 0; }
+.inventory-detail-name { font-size: 23px; color: #fff3d6; }
+.inventory-detail-effect { margin-top: 6px; font-size: 17px; color: #c8ffe7; }
+.inventory-detail-actions { flex-shrink: 0; width: 145px; gap: 9px; }
+.compact-action { pointer-events: auto; min-height: 55px; padding: 8px; align-items: center; justify-content: center; color: #102017; background-color: #56d5a0; border-radius: 15px; font-family: "Rubik UI"; font-size: 15px; text-align: center; }
+.compact-action.secondary { color: #fff3d6; background-color: #2c392f; border: 2px solid #f1bd59; }
+.breakthrough-dialog { width: 520px; padding: 32px; align-items: center; background-color: #152119fc; border: 3px solid #f1bd59; border-radius: 34px; box-shadow: 0 14px 24px #000000dd; }
+.breakthrough-dialog > image { width: 100px; height: 100px; object-fit: contain; }
+.breakthrough-title { margin-top: 14px; font-size: 31px; text-align: center; }
+.breakthrough-chance { margin-top: 10px; color: #56d5a0; font-size: 62px; text-align: center; }
+.breakthrough-cost, .breakthrough-result-text { min-height: 62px; margin-top: 8px; color: #d8d2bf; font-size: 21px; text-align: center; }
+.breakthrough-dialog .wide-action { width: 100%; margin-top: 14px; }
+.effect-popup-card { position: relative; width: 590px; padding: 30px; background-color: #152119fc; border: 2px solid #56d5a0; border-radius: 30px; }
+.effect-popup-card .info-popup-close { position: absolute; right: 12px; top: 12px; width: 50px; height: 50px; }
+.effect-popup-card .info-popup-effect { margin: 0; padding: 24px 70px 24px 22px; min-height: 120px; }

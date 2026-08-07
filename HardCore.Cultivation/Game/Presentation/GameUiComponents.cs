@@ -3,53 +3,58 @@ using Vecxy.UI;
 
 namespace HardCore.Cultivation.Game.Presentation;
 
-internal abstract class AItemCardView : AUiComponent
+[AssetPath("UI/Components/ShopCard.xml")]
+internal sealed class ShopCardView : AUiComponent
 {
-    protected AItemCardView(UiElement root) : base(root)
+    public ShopCardView(UiElement root) : base(root)
     {
-        Rarity = Element<UiText>(".item-rarity");
-        Quality = Element<UiPanel>(".item-quality");
         IconWell = Element<UiPanel>(".item-icon-well");
+        Icon = Element<UiImage>(".item-icon");
+        Name = Element<UiText>(".item-name");
         Meta = Element<UiText>(".item-meta");
+        Effect = Element<UiText>(".item-effect");
+        Buy = Element<UiButton>(".buy-button");
     }
 
     public UiElement Card => Root;
-    public UiText Rarity { get; }
-    public UiPanel Quality { get; }
     public UiPanel IconWell { get; }
+    public UiImage Icon { get; }
+    public UiText Name { get; }
     public UiText Meta { get; }
-}
-
-[AssetPath("UI/Components/ShopCard.xml")]
-internal sealed class ShopCardView : AItemCardView
-{
-    public ShopCardView(UiElement root) : base(root) =>
-        Buy = Element<UiButton>(".buy-button");
-
+    public UiText Effect { get; }
     public UiButton Buy { get; }
 }
 
-internal sealed class InventoryCardView : AItemCardView
+internal sealed class InventoryIconView : AUiComponent
 {
-    public InventoryCardView(UiElement root) : base(root)
+    public InventoryIconView(UiElement root) : base(root)
     {
-        Use = Element<UiButton>(".use-button");
-        Sell = Element<UiButton>(".sell-button");
+        IconWell = Element<UiPanel>(".inventory-icon-well");
+        Icon = Element<UiImage>(".inventory-icon");
+        Quantity = Element<UiText>(".inventory-quantity");
     }
 
-    public UiButton Use { get; }
-    public UiButton Sell { get; }
+    public UiElement Card => Root;
+    public UiPanel IconWell { get; }
+    public UiImage Icon { get; }
+    public UiText Quantity { get; }
 }
 
 internal sealed class MissionCardView : AUiComponent
 {
     public MissionCardView(UiElement root) : base(root)
     {
+        Name = Element<UiText>(".mission-card-title");
+        Description = Element<UiText>(".mission-card-description");
+        Duration = Element<UiText>(".mission-duration-value");
         RewardIcons = Element<UiPanel>(".mission-reward-icons");
         Start = Element<UiButton>(".mission-start");
     }
 
     public UiElement Card => Root;
+    public UiText Name { get; }
+    public UiText Description { get; }
+    public UiText Duration { get; }
     public UiPanel RewardIcons { get; }
     public UiButton Start { get; }
 }
@@ -58,12 +63,17 @@ internal sealed class MissionQueueItemView : AUiComponent
 {
     public MissionQueueItemView(UiElement root) : base(root)
     {
+        Number = Element<UiText>(".queue-number-text");
+        Name = Element<UiText>(".queue-item-name");
         Progress = Element<UiText>(".queue-progress");
         MoveUp = Element<UiButton>(".queue-left");
         MoveDown = Element<UiButton>(".queue-right");
         Remove = Element<UiButton>(".queue-remove");
     }
 
+    public UiElement Card => Root;
+    public UiText Number { get; }
+    public UiText Name { get; }
     public UiText Progress { get; }
     public UiButton MoveUp { get; }
     public UiButton MoveDown { get; }

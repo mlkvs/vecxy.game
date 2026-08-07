@@ -8,7 +8,7 @@ namespace HardCore.Cultivation.Game.Infrastructure;
 
 public sealed class GameSaveSystem(GameDatabase database)
 {
-    public const int CurrentVersion = 4;
+    public const int CurrentVersion = 5;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -25,6 +25,7 @@ public sealed class GameSaveSystem(GameDatabase database)
         {
             Version = CurrentVersion,
             TotalTicks = state.Calendar.TotalTicks,
+            ActivityMode = state.ActivityMode,
             Character = new CharacterSaveData
             {
                 SpiritualPower = state.Character.SpiritualPower,
@@ -40,7 +41,8 @@ public sealed class GameSaveSystem(GameDatabase database)
                 ConfigId = mission.MissionConfigId,
                 RequiredProgress = mission.RequiredProgress,
                 CurrentProgress = mission.CurrentProgress,
-                RewardGranted = mission.RewardGranted
+                RewardGranted = mission.RewardGranted,
+                Rewards = mission.Rewards.Select(ToRewardData).ToList()
             }).ToList(),
             AvailableMissionIds = state.MissionBoard.MissionIds.ToList(),
             Shop = new ShopSaveData
@@ -62,7 +64,8 @@ public sealed class GameSaveSystem(GameDatabase database)
                 Value = effect.Value,
                 SourceRarity = effect.SourceRarity,
                 SourceQuality = effect.SourceQuality,
-                RemainingTicks = effect.RemainingTicks
+                RemainingTicks = effect.RemainingTicks,
+                DurationType = effect.DurationType
             }).ToList()
         };
 
@@ -88,6 +91,7 @@ public sealed class GameSaveSystem(GameDatabase database)
                 return false;
 
             state.Calendar.Restore(data.TotalTicks);
+            state.SetActivityMode(data.ActivityMode);
             state.Character.Restore(
                 data.Character.SpiritualPower,
                 data.Character.Money,
@@ -106,7 +110,12 @@ public sealed class GameSaveSystem(GameDatabase database)
                     Operation = effect.Operation,
                     Value = effect.Value,
                     SourceRarity = effect.SourceRarity,
-                    SourceQuality = effect.SourceQuality <= 0m ? 2.5m : effect.SourceQuality
+                    SourceQuality = effect.SourceQuality <= 0m ? 2.5m : effect.SourceQuality,
+                    DurationType = data.Version >= 5
+                        ? effect.DurationType
+                        : effect.RemainingTicks is null
+                            ? ItemDurationType.Permanent
+                            : ItemDurationType.Temporary
                 };
                 active.RestoreDuration(effect.RemainingTicks);
                 return active;
@@ -122,7 +131,10 @@ public sealed class GameSaveSystem(GameDatabase database)
                 {
                     InstanceId = savedMission.InstanceId == Guid.Empty ? Guid.NewGuid() : savedMission.InstanceId,
                     MissionConfigId = savedMission.ConfigId,
-                    RequiredProgress = savedMission.RequiredProgress
+                    RequiredProgress = savedMission.RequiredProgress,
+                    Rewards = savedMission.Rewards.Count > 0
+                        ? savedMission.Rewards.Select(FromRewardData).ToList()
+                        : LegacyRewards(savedMission.ConfigId)
                 };
                 mission.Restore(savedMission.CurrentProgress, savedMission.RewardGranted);
                 state.EnqueueMission(mission);
@@ -144,7 +156,7 @@ public sealed class GameSaveSystem(GameDatabase database)
             state.Shop.ReplaceStock(
                 slots,
                 data.Shop.BuyMarkupPercent,
-                data.Shop.SellAdjustmentPercent);
+                database.Shop.SellAdjustmentPercent);
             return true;
         }
         catch (Exception exception)
@@ -177,12 +189,41 @@ public sealed class GameSaveSystem(GameDatabase database)
         Quality = item.Quality,
         Quantity = item.Quantity
     };
+
+    private List<MissionReward> LegacyRewards(string missionId)
+    {
+        var money = database.GetMission(missionId).Reward.Money;
+        return money > 0
+            ? [new MissionReward { Type = MissionRewardType.Money, Money = money }]
+            : [];
+    }
+
+    private static MissionReward FromRewardData(MissionRewardSaveData reward) => new()
+    {
+        Type = reward.Type,
+        Money = reward.Money,
+        ItemConfigId = reward.ItemConfigId,
+        ItemRarity = reward.ItemRarity,
+        ItemQuality = reward.ItemQuality,
+        Quantity = reward.Quantity
+    };
+
+    private static MissionRewardSaveData ToRewardData(MissionReward reward) => new()
+    {
+        Type = reward.Type,
+        Money = reward.Money,
+        ItemConfigId = reward.ItemConfigId,
+        ItemRarity = reward.ItemRarity,
+        ItemQuality = reward.ItemQuality,
+        Quantity = reward.Quantity
+    };
 }
 
 public sealed class SaveData
 {
     public int Version { get; init; }
     public long TotalTicks { get; init; }
+    public ActivityMode ActivityMode { get; init; } = ActivityMode.Cultivation;
     public CharacterSaveData Character { get; init; } = new();
     public List<ItemSaveData> Inventory { get; init; } = [];
     public List<MissionSaveData> MissionQueue { get; init; } = [];
@@ -218,6 +259,17 @@ public sealed class MissionSaveData
     public decimal RequiredProgress { get; init; }
     public decimal CurrentProgress { get; init; }
     public bool RewardGranted { get; init; }
+    public List<MissionRewardSaveData> Rewards { get; init; } = [];
+}
+
+public sealed class MissionRewardSaveData
+{
+    public MissionRewardType Type { get; init; }
+    public long Money { get; init; }
+    public string? ItemConfigId { get; init; }
+    public ItemRarity ItemRarity { get; init; }
+    public decimal ItemQuality { get; init; }
+    public int Quantity { get; init; } = 1;
 }
 
 public sealed class ShopSaveData
@@ -243,4 +295,5 @@ public sealed class EffectSaveData
     public ItemRarity SourceRarity { get; init; }
     public decimal SourceQuality { get; init; } = 2.5m;
     public int? RemainingTicks { get; init; }
+    public ItemDurationType DurationType { get; init; } = ItemDurationType.Temporary;
 }

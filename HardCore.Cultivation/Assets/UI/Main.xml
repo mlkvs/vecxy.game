@@ -6,37 +6,37 @@
                 <text class="eyebrow">ПУТЬ БЕССМЕРТНОГО</text>
                 <text id="stage-name" class="screen-title">Закалка тела</text>
             </panel>
-            <panel class="calendar-block">
-                <text id="year-text" class="calendar-year">ГОД 1</text>
-                <text id="tick-text" class="calendar-tick">ТАКТ 0 / 48</text>
+            <panel class="calendar-dial">
+                <radial-progress id="year-dial" class="calendar-ring" />
+                <image src="../Textures/UIIcons/tick.png" />
             </panel>
         </panel>
 
         <panel class="resource-row">
             <panel class="resource-card money-resource">
                 <panel class="resource-icon-shell"><image class="resource-icon" src="../Textures/UIIcons/money.png" /></panel>
-                <panel class="resource-copy"><text class="resource-label">МОНЕТЫ</text><text id="money-text" class="resource-value">1000</text></panel>
-            </panel>
-            <panel class="resource-card spirit-resource">
-                <panel class="resource-icon-shell"><image class="resource-icon" src="../Textures/UIIcons/spirit.png" /></panel>
-                <panel class="resource-copy"><text class="resource-label">ДУХОВНАЯ СИЛА</text><text id="spirit-text" class="resource-value">0</text></panel>
+                <panel class="resource-copy"><text class="resource-label">РУБЛИ</text><text id="money-text" class="resource-value">1000</text></panel>
             </panel>
             <panel class="resource-card age-resource">
                 <panel class="resource-icon-shell"><image class="resource-icon" src="../Textures/UIIcons/age.png" /></panel>
-                <panel class="resource-copy"><text class="resource-label">ВОЗРАСТ / ПРЕДЕЛ</text><text id="age-text" class="resource-value">16 / 80</text></panel>
+                <panel class="resource-copy"><text class="resource-label">ВОЗРАСТ</text><text id="age-text" class="resource-value">16 / 80</text></panel>
             </panel>
+        </panel>
+
+        <panel class="activity-switch">
+            <button id="cultivate-mode-button" class="activity-button active"><image src="../Textures/UIIcons/cultivation.png"/><text>КУЛЬТИВИРОВАТЬ</text></button>
+            <button id="missions-mode-button" class="activity-button"><image src="../Textures/UIIcons/missions.png"/><text>ДЕЛАТЬ МИССИИ</text></button>
         </panel>
 
         <panel class="character-space">
             <button id="character-tap-target" class="character-tap-target" aria-label="Медитировать" />
-            <panel class="mission-float glass-panel">
+            <button id="mission-summary-button" class="mission-float glass-panel">
                 <panel class="float-heading"><image src="../Textures/UIIcons/missions.png" /><text>ТЕКУЩАЯ МИССИЯ</text></panel>
                 <text id="mission-name" class="float-title">Нет активной миссии</text>
                 <text id="mission-description" class="float-description">Выберите поручение.</text>
                 <panel class="progress-track"><progress id="mission-progress" class="progress-fill mission-fill" /></panel>
                 <text id="mission-progress-text" class="progress-caption">0 / 0</text>
-            </panel>
-
+            </button>
             <panel class="side-tools">
                 <panel class="effects-float">
                     <text class="small-heading">ЭФФЕКТЫ</text>
@@ -47,21 +47,18 @@
 
         <panel class="cultivation-bar">
             <panel class="cultivation-copy">
-                <panel class="float-heading"><image src="../Textures/UIIcons/cultivation.png" /><text>КУЛЬТИВАЦИЯ</text></panel>
-                <text id="realm-text" class="cultivation-title">Закалка тела · 1</text>
-                <text id="cultivation-cost" class="cultivation-cost">До уровня: 25 ци</text>
-                <panel class="progress-track"><progress id="cultivation-progress" class="progress-fill" /></panel>
+                <text id="realm-text" class="cultivation-title">Закалка тела · ур. 1</text>
+                <panel class="progress-track cultivation-track">
+                    <progress id="cultivation-progress" class="progress-fill" />
+                    <text id="cultivation-progress-text" class="cultivation-progress-text">0 / 25</text>
+                </panel>
             </panel>
-            <panel class="cultivation-actions">
-                <button id="advance-button" class="primary-button">ПОВЫСИТЬ УРОВЕНЬ</button>
-                <button id="breakthrough-button" class="secondary-button">ПРОРЫВ</button>
-            </panel>
+            <button id="breakthrough-button" class="secondary-button">ПРОРЫВ</button>
         </panel>
 
         <panel class="bottom-nav">
             <button id="shop-button" class="nav-button"><panel class="nav-icon-shell"><image src="../Textures/UIIcons/shop.png" /></panel><text>ЛАВКА</text></button>
             <button id="inventory-button" class="nav-button"><panel class="nav-icon-shell"><image src="../Textures/UIIcons/inventory.png" /></panel><text>РЮКЗАК</text></button>
-            <button id="cultivation-button" class="nav-button"><panel class="nav-icon-shell"><image src="../Textures/UIIcons/cultivation.png" /></panel><text>ПУТЬ</text></button>
             <button id="missions-button" class="nav-button"><panel class="nav-icon-shell"><image src="../Textures/UIIcons/missions.png" /></panel><text>МИССИИ</text></button>
         </panel>
     </panel>

@@ -134,7 +134,7 @@ text {
     background-color: #111b16df; border: 2px solid var(--line); border-radius: 24px;
     box-shadow: 0 8px 14px 0 var(--shadow);
 }
-.mission-float { position: absolute; left: 0; top: 18px; width: 350px; padding: 16px 18px; }
+.mission-float { position: absolute; right: 104px; top: 18px; width: 350px; padding: 16px 18px; }
 .float-heading { flex-direction: row; align-items: center; gap: 8px; color: var(--gold); font-size: 17px; }
 .float-heading image { width: 25px; height: 25px; object-fit: contain; }
 .float-title { margin-top: 7px; font-size: 25px; }
@@ -195,7 +195,6 @@ text {
 }
 .cultivation-copy { flex: 1; min-width: 0; }
 .cultivation-title { margin-top: 5px; font-size: 27px; }
-.cultivation-cost { margin-top: 3px; color: var(--muted); font-size: 19px; }
 .cultivation-actions { flex-shrink: 0; width: 220px; gap: 9px; }
 .primary-button, .secondary-button {
     pointer-events: auto; min-height: 50px; padding: 9px 12px; align-items: center; justify-content: center;
@@ -227,3 +226,37 @@ button:disabled { opacity: 0.38; }
 .nav-icon-shell image { width: 36px; height: 36px; object-fit: contain; }
 
 #window-layer { position: absolute; inset: 0; align-items: center; justify-content: center; pointer-events: none; }
+
+/* Compact main HUD */
+#hud { gap: 9px; }
+.top-card { height: 88px; }
+.calendar-dial { position: relative; flex-shrink: 0; width: 66px; height: 66px; align-items: center; justify-content: center; }
+.calendar-ring { position: absolute; inset: 0; color: var(--gold); border: 7px solid #4a4537; border-radius: 50%; }
+.calendar-dial image { width: 38px; height: 38px; object-fit: contain; }
+.resource-row { height: 78px; }
+.resource-card { padding: 9px 14px; }
+.resource-label { height: 23px; font-size: 16px; }
+.resource-value { height: 31px; font-size: 26px; }
+.activity-switch { height: 60px; flex-direction: row; gap: 9px; padding: 7px; background-color: #0e1712e8; border-radius: 20px; }
+.activity-button { pointer-events: auto; flex: 1; min-width: 0; flex-direction: row; align-items: center; justify-content: center; gap: 8px; color: var(--muted); background-color: #1a2821; border: 2px solid #ffffff22; border-radius: 15px; font-family: "Rubik UI"; font-size: 17px; }
+.activity-button image { width: 28px; height: 28px; object-fit: contain; }
+.activity-button.active { color: #102017; background-color: var(--jade); border-color: #bdffe2; box-shadow: 0 0 12px 2px #56d5a055; }
+.mission-float { pointer-events: auto; align-items: stretch; color: var(--cream); font-family: "Rubik UI"; text-align: left; }
+.mission-float:hover { border-color: var(--jade); background-color: #17271fea; }
+.cultivation-bar { min-height: 108px; }
+.cultivation-title { margin-top: 0; }
+.cultivation-track { position: relative; height: 30px; margin-top: 10px; border-radius: 11px; }
+.cultivation-progress-text { pointer-events: none; position: absolute; inset: 0; height: 30px; color: #fff9e8; font-size: 16px; text-align: center; text-shadow: 0 2px 3px #000000dd; }
+.cultivation-bar > .secondary-button { flex-shrink: 0; width: 190px; min-height: 58px; }
+.bottom-nav { height: 102px; }
+.tap-feedback { width: 92px; height: 92px; margin-left: -46px; margin-top: -46px; background-color: #62caff28; border-color: #91dcff; }
+.achievement-effect { pointer-events: none; position: absolute; z-index: 1400; inset: 0; align-items: center; justify-content: center; opacity: 0; background-color: #56d5a00a; animation: achievement-flash 1.45s ease-out; }
+.achievement-effect text { width: 620px; min-height: 92px; padding: 22px; color: #fff2b5; background-color: #173126e8; border: 3px solid var(--gold); border-radius: 30px; box-shadow: 0 0 45px 14px #56d5a077; font-size: 34px; text-align: center; }
+@keyframes achievement-flash {
+    from { opacity: 0; transform: scale(0.76); }
+    16% { opacity: 1; transform: scale(1.04); }
+    68% { opacity: 0.92; transform: scale(1); }
+    to { opacity: 0; transform: scale(1.12); }
+}
+.effect-orb { width: 72px; height: 72px; }
+.effect-value-badge, .effect-stack-badge { display: none; }

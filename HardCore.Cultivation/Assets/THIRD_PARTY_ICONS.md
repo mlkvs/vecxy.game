@@ -26,3 +26,12 @@ The Rubik typeface is distributed under the SIL Open Font License 1.1.
 
 - Source: https://github.com/google/fonts/tree/main/ofl/rubik
 - Copyright: Hubert and Fischer, Meir Sadan, Cyreal
+# CC0 Potion Icons
+
+The pill item textures (`focus-pill.png`, `still-age-pill.png`, `spirit-dew.png`,
+`marrow-elixir.png`, and `time-incense.png`) are from the “Potion Icons” pack by
+CC0 Game Assets, downloaded from OpenGameArt:
+
+https://opengameart.org/content/potion-icons-0
+
+License: Creative Commons Zero (CC0 1.0 Universal).

@@ -22,8 +22,10 @@
     <Project Path="Engine/Vecxy/Code/Vecxy.Rendering/Vecxy.Rendering.csproj" />
     <Project Path="Engine\Vecxy\Code\Vecxy.Scene\Vecxy.Scene.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.UI/Vecxy.UI.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.UI.Tests/Vecxy.UI.Tests.csproj" />
   </Folder>
   <Folder Name="/Game/">
     <Project Path="HardCore.Cultivation/HardCore.Cultivation.csproj" />
+    <Project Path="HardCore.Cultivation.Tests/HardCore.Cultivation.Tests.csproj" />
   </Folder>
 </Solution>

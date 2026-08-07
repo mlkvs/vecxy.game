@@ -3,5 +3,4 @@ minimumQuantity: 1
 maximumQuantity: 5
 minimumBuyMarkup: 25
 maximumBuyMarkup: 100
-minimumSellAdjustment: -50
-maximumSellAdjustment: -10
+sellAdjustmentPercent: -33

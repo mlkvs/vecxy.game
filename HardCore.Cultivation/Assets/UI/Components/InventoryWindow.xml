@@ -1,5 +1,21 @@
 <panel id="inventory-window" class="window" hidden="true">
-    <panel class="window-header"><panel><text class="window-title">Инвентарь</text><text class="window-subtitle">Используйте предметы или продайте их лавочнику</text></panel><button class="window-close"><image src="../Textures/UIIcons/close.png" /></button></panel>
-    <panel class="window-toolbar"><text id="inventory-count">0 предметов</text><text id="sell-rate" class="toolbar-value">Продажа: -0%</text></panel>
-    <panel class="window-content" virtualize="true"><panel id="inventory-grid" class="card-grid" /></panel>
+    <panel class="window-header"><panel><text class="window-title">Рюкзак</text><text class="window-subtitle">Нажмите на предмет, чтобы увидеть описание</text></panel><button class="window-close"><image src="../Textures/UIIcons/close.png" /></button></panel>
+    <panel class="window-toolbar"><text id="inventory-count">0 предметов</text><text id="sell-rate" class="toolbar-value">Продажа: −33%</text></panel>
+    <panel class="category-tabs">
+        <button id="ingredients-tab" class="category-tab active">ИНГРЕДИЕНТЫ</button>
+        <button id="cores-tab" class="category-tab">ЯДРА ЗВЕРЕЙ</button>
+        <button id="pills-tab" class="category-tab">ПИЛЮЛИ</button>
+    </panel>
+    <panel id="inventory-grid" class="inventory-grid" />
+    <panel id="inventory-details" class="inventory-details" hidden="true">
+        <panel id="inventory-detail-icon-well" class="inventory-detail-icon-well"><image id="inventory-detail-icon" /></panel>
+        <panel class="inventory-detail-copy">
+            <text id="inventory-detail-name" class="inventory-detail-name">Предмет</text>
+            <text id="inventory-detail-effect" class="inventory-detail-effect">Описание эффекта</text>
+        </panel>
+        <panel class="inventory-detail-actions">
+            <button id="inventory-use-button" class="compact-action">ИСПОЛЬЗОВАТЬ</button>
+            <button id="inventory-sell-button" class="compact-action secondary">ПРОДАТЬ</button>
+        </panel>
+    </panel>
 </panel>

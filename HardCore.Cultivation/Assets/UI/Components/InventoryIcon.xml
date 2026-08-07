@@ -1,0 +1,4 @@
+<button class="inventory-icon-card" data-key="{{key}}">
+    <panel class="inventory-icon-well"><image class="inventory-icon" src="{{icon}}" /></panel>
+    <text class="inventory-quantity">×{{quantity}}</text>
+</button>

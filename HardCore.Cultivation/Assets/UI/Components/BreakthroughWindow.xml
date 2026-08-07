@@ -1,0 +1,11 @@
+<panel id="breakthrough-window" class="info-popup-overlay" hidden="true">
+    <panel class="breakthrough-dialog">
+        <image src="../Textures/UIIcons/cultivation.png" />
+        <text class="info-popup-kind">ПРОРЫВ</text>
+        <text class="breakthrough-title">Шанс прорваться</text>
+        <text id="breakthrough-chance" class="breakthrough-chance">50%</text>
+        <text id="breakthrough-cost" class="breakthrough-cost">Стоимость: 100 духовной силы</text>
+        <button id="confirm-breakthrough" class="wide-action">ПРОРЫВ</button>
+        <button id="cancel-breakthrough" class="wide-action secondary-wide">ПОЗЖЕ</button>
+    </panel>
+</panel>

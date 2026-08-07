@@ -1,7 +1,7 @@
 items:
   - id: focus_pill
     name: Пилюля сосредоточения
-    description: Обостряет восприятие и помогает извлечь больше пользы из каждого такта.
+    description: Обостряет восприятие и помогает извлечь больше пользы из каждой недели.
     icon: Assets/Textures/Items/focus-pill.png
     category: Pill
     durationType: Temporary
@@ -30,7 +30,7 @@ items:
     description: Укрепляет основание культивации перед будущими прорывами.
     icon: Assets/Textures/Items/insight-core.png
     category: Core
-    durationType: Permanent
+    durationType: UntilBreakthroughAttempt
     basePrice: 700
     shopWeight: 5
     effects:
@@ -155,7 +155,7 @@ items:
         value: 60
   - id: spirit_seed
     name: Семя вечного духа
-    description: Навсегда укрепляет восприятие мира и немного повышает результат каждого такта.
+    description: Навсегда укрепляет восприятие мира и немного повышает результат каждой недели.
     icon: Assets/Textures/Items/spirit-seed.png
     category: Core
     durationType: Permanent

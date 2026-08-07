@@ -1,0 +1,22 @@
+{
+  "width": 1024,
+  "padding": 2,
+  "sources": {
+    "age": "UIIcons/age.png",
+    "close": "UIIcons/close.png",
+    "cultivation": "UIIcons/cultivation.png",
+    "death": "UIIcons/death.png",
+    "inventory": "UIIcons/inventory.png",
+    "missions": "UIIcons/missions.png",
+    "money": "UIIcons/money.png",
+    "queue-left": "UIIcons/queue-left.png",
+    "queue-right": "UIIcons/queue-right.png",
+    "remove": "UIIcons/remove.png",
+    "reward": "UIIcons/reward.png",
+    "shop": "UIIcons/shop.png",
+    "spirit": "UIIcons/spirit.png",
+    "star-gold": "UIIcons/star-gold.png",
+    "star-gray": "UIIcons/star-gray.png",
+    "tick": "UIIcons/tick.png"
+  }
+}

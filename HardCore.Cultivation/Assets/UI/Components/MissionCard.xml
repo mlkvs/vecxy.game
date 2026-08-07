@@ -1,15 +1,8 @@
 <panel class="mission-card" data-key="{{key}}">
-    <panel class="mission-card-copy">
-        <text class="mission-card-kicker">ПОРУЧЕНИЕ СЕКТЫ</text>
-        <text class="mission-card-title">{{name}}</text>
-        <text class="mission-card-description">{{description}}</text>
-        <panel class="mission-duration-row">
-            <panel class="mission-duration-icon"><image src="../Textures/UIIcons/age.png" /></panel>
-            <panel class="mission-duration-copy"><text class="mission-duration-label">ДЛИТЕЛЬНОСТЬ</text><text class="mission-duration-value">{{duration}}</text><text class="mission-duration-years">{{years}}</text></panel>
-        </panel>
-        <panel class="mission-reward-row">
-            <panel><text class="reward-label">ВОЗМОЖНЫЕ НАГРАДЫ</text><panel class="mission-reward-icons" /></panel>
-        </panel>
+    <text class="mission-card-title">{{name}}</text>
+    <text class="mission-card-description">{{description}}</text>
+    <panel class="mission-card-footer">
+        <panel><text class="mission-duration-value">{{duration}}</text><panel class="mission-reward-icons" /></panel>
+        <button class="mission-start">ПРИНЯТЬ</button>
     </panel>
-    <button class="mission-start"><image src="../Textures/UIIcons/missions.png" /><text>В ОЧЕРЕДЬ</text></button>
 </panel>

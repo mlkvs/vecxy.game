@@ -6,3 +6,4 @@ Build/
 .vs/
 *.user
 imgui.ini
+tmp/

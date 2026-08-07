@@ -1,35 +1,6 @@
 <panel id="effect-popup" class="info-popup-overlay effect-popup-overlay" hidden="true">
-    <panel id="effect-popup-card" class="info-popup-card">
-        <panel class="info-popup-header">
-            <panel id="effect-popup-icon-well" class="info-popup-icon-well">
-                <image id="effect-popup-icon" class="info-popup-icon"/>
-            </panel>
-            <panel class="info-popup-heading">
-                <text id="effect-popup-kind" class="info-popup-kind">АКТИВНЫЙ ЭФФЕКТ</text>
-                <text id="effect-popup-title" class="info-popup-title">Название</text>
-            </panel>
-            <button id="effect-popup-close" class="info-popup-close">
-                <image src="../Textures/UIIcons/close.png"/>
-            </button>
-        </panel>
-        <text id="effect-popup-description" class="info-popup-description">Описание</text>
-        <text id="effect-popup-effect" class="info-popup-effect">Эффект</text>
-        <panel class="info-popup-stats">
-            <panel>
-                <text class="info-popup-stat-label">СТАКИ</text>
-                <text id="effect-popup-stacks" class="info-popup-stat-value">1</text>
-            </panel>
-            <panel>
-                <text class="info-popup-stat-label">КАЧЕСТВО</text>
-                <panel id="effect-popup-quality" class="info-popup-quality"/>
-            </panel>
-            <panel>
-                <text class="info-popup-stat-label">РЕДКОСТЬ</text>
-                <text id="effect-popup-rarity" class="info-popup-stat-value">Обычная</text>
-            </panel>
-        </panel>
-        <text id="effect-popup-details" class="info-popup-details">Дополнительная информация</text>
-        <button id="effect-popup-item" class="wide-action secondary-wide">ОТКРЫТЬ ПРЕДМЕТ</button>
-        <button id="effect-popup-ok" class="wide-action">ПОНЯТНО</button>
+    <panel id="effect-popup-card" class="effect-popup-card">
+        <button id="effect-popup-close" class="info-popup-close"><image src="../Textures/UIIcons/close.png"/></button>
+        <text id="effect-popup-effect" class="info-popup-effect">Описание эффекта</text>
     </panel>
 </panel>

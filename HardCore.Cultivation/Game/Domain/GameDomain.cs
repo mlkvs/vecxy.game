@@ -9,6 +9,12 @@ public enum EffectType
     MissionProgress
 }
 
+public enum ActivityMode
+{
+    Cultivation,
+    Missions
+}
+
 public enum ModifierOperation
 {
     Flat,
@@ -27,7 +33,14 @@ public enum ItemDurationType
 {
     Instant,
     Temporary,
-    Permanent
+    Permanent,
+    UntilBreakthroughAttempt
+}
+
+public enum MissionRewardType
+{
+    Money,
+    Item
 }
 
 public enum ItemRarity
@@ -194,7 +207,9 @@ public sealed class ActiveEffect
     public ItemRarity SourceRarity { get; init; }
     public decimal SourceQuality { get; init; } = 2.5m;
     public int? RemainingTicks { get; private set; }
-    public bool IsPermanent => RemainingTicks is null;
+    public ItemDurationType DurationType { get; init; } = ItemDurationType.Temporary;
+    public bool IsPermanent => DurationType == ItemDurationType.Permanent;
+    public bool IsUntilBreakthroughAttempt => DurationType == ItemDurationType.UntilBreakthroughAttempt;
     public bool IsExpired => RemainingTicks is <= 0;
 
     public ActiveEffect()
@@ -206,6 +221,7 @@ public sealed class ActiveEffect
         ItemEffectDefinition definition,
         decimal scaledValue,
         int? remainingTicks,
+        ItemDurationType durationType,
         ItemRarity sourceRarity,
         decimal sourceQuality)
     {
@@ -214,17 +230,28 @@ public sealed class ActiveEffect
         Operation = definition.Operation;
         Value = scaledValue;
         RemainingTicks = remainingTicks;
+        DurationType = durationType;
         SourceRarity = sourceRarity;
         SourceQuality = sourceQuality;
     }
 
     public void AdvanceTick()
     {
-        if (RemainingTicks is not null)
+        if (DurationType == ItemDurationType.Temporary && RemainingTicks is not null)
             RemainingTicks--;
     }
 
     public void RestoreDuration(int? remainingTicks) => RemainingTicks = remainingTicks;
+}
+
+public sealed record MissionReward
+{
+    public MissionRewardType Type { get; init; }
+    public long Money { get; init; }
+    public string? ItemConfigId { get; init; }
+    public ItemRarity ItemRarity { get; init; }
+    public decimal ItemQuality { get; init; }
+    public int Quantity { get; init; } = 1;
 }
 
 public sealed class ItemInstance
@@ -317,6 +344,7 @@ public sealed class ActiveMission
     public decimal CurrentProgress { get; private set; }
     public bool RewardGranted { get; private set; }
     public bool IsCompleted => CurrentProgress >= RequiredProgress;
+    public List<MissionReward> Rewards { get; init; } = [];
 
     public void AddProgress(decimal amount)
     {
@@ -413,8 +441,11 @@ public sealed class GameState
     public IReadOnlyList<ActiveMission> MissionQueue => _missionQueue;
     public ActiveMission? CurrentMission => _missionQueue.FirstOrDefault();
     public List<ActiveEffect> ActiveEffects { get; } = [];
+    public ActivityMode ActivityMode { get; private set; } = ActivityMode.Cultivation;
 
     public GameState(int ticksPerYear) => Calendar = new GameCalendar(ticksPerYear);
+
+    public void SetActivityMode(ActivityMode mode) => ActivityMode = mode;
 
     public void EnqueueMission(ActiveMission mission)
     {
@@ -455,6 +486,7 @@ public sealed record TickResult(
     decimal SpiritualPowerGained,
     decimal MissionProgressAdded,
     bool MissionCompleted,
+    int LevelsGained,
     bool NewYearStarted,
     bool CharacterDied);
 
@@ -463,6 +495,7 @@ public sealed record BreakthroughResult(
     decimal FinalChance,
     int StageIndex,
     int Level,
+    int LevelsLost,
     string Message);
 
 public sealed record TransactionResult(bool Success, string Message, long TotalPrice = 0)

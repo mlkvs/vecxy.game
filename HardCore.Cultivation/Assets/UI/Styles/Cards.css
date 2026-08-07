@@ -1,86 +1,574 @@
 .item-card {
-    height: 500px; padding: 22px; background-color: #203128; border: 3px solid #8d8979;
-    border-radius: 28px; box-shadow: 0 8px 14px 0 #020805cc; overflow: hidden;
+    height: 500px;
+    padding: 22px;
+    background-color: #203128;
+    border: 3px solid #8d8979;
+    border-radius: 28px;
+    box-shadow: 0 8px 14px 0 #020805cc;
+    overflow: hidden;
 }
-.item-top-row { min-height: 185px; flex-direction: row; align-items: center; gap: 18px; }
+
+.item-top-row {
+    min-height: 185px;
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+}
+
 .item-icon-well {
-    flex-shrink: 0; width: 126px; height: 126px; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    width: 126px;
+    height: 126px;
+    align-items: center;
+    justify-content: center;
     pointer-events: auto;
-    background-color: #0f1813; border: 2px solid #ffffff24; border-radius: 28px;
+    background-color: #0f1813;
+    border: 2px solid #ffffff24;
+    border-radius: 28px;
     box-shadow: 0 6px 12px 0 #000000aa;
 }
-.item-icon { width: 106px; height: 106px; object-fit: contain; }
-.item-heading { flex: 1; min-width: 0; justify-content: center; }
-.item-rarity { font-size: 18px; }
+
+.item-icon {
+    width: 106px;
+    height: 106px;
+    object-fit: contain;
+}
+
+.item-heading {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
+.item-rarity {
+    font-size: 18px;
+}
+
 .rarity-badge {
-    align-self: flex-start; min-height: 32px; padding: 5px 11px; color: #102017;
-    background-color: #d8d2bf; border-radius: 11px; text-align: center;
+    align-self: flex-start;
+    min-height: 32px;
+    padding: 5px 11px;
+    color: #102017;
+    background-color: #d8d2bf;
+    border-radius: 11px;
+    text-align: center;
 }
-.item-name { min-height: 64px; margin-top: 6px; font-size: 29px; vertical-align: middle; }
-.item-meta { width: 100%; height: 28px; margin-top: 7px; color: #f1c86e; font-size: 22px; white-space: nowrap; }
-.item-quality { min-height: 30px; margin-top: 6px; }
-.quality-stars { flex-direction: row; align-items: center; gap: 4px; }
-.quality-star { position: relative; flex-shrink: 0; width: 27px; height: 27px; }
-.quality-star-empty { position: absolute; inset: 0; width: 27px; height: 27px; object-fit: contain; }
-.quality-star-fill { position: absolute; left: 0; top: 0; width: 0%; height: 27px; overflow: hidden; }
-.quality-star-fill image { flex-shrink: 0; width: 27px; height: 27px; object-fit: contain; }
-.item-description { min-height: 62px; margin-top: 14px; color: #e5dfcf; font-size: 22px; }
+
+.item-name {
+    min-height: 64px;
+    margin-top: 6px;
+    font-size: 29px;
+    vertical-align: middle;
+}
+
+.item-meta {
+    width: 100%;
+    height: 28px;
+    margin-top: 7px;
+    color: #f1c86e;
+    font-size: 22px;
+    white-space: nowrap;
+}
+
+.item-quality {
+    min-height: 30px;
+    margin-top: 6px;
+}
+
+.quality-stars {
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+}
+
+.quality-star {
+    position: relative;
+    flex-shrink: 0;
+    width: 27px;
+    height: 27px;
+}
+
+.quality-star-empty {
+    position: absolute;
+    inset: 0;
+    width: 27px;
+    height: 27px;
+    object-fit: contain;
+}
+
+.quality-star-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0%;
+    height: 27px;
+    overflow: hidden;
+}
+
+.quality-star-fill image {
+    flex-shrink: 0;
+    width: 27px;
+    height: 27px;
+    object-fit: contain;
+}
+
+.item-description {
+    min-height: 62px;
+    margin-top: 14px;
+    color: #e5dfcf;
+    font-size: 22px;
+}
+
 .item-effect {
-    min-height: 82px; margin-top: 11px; padding: 11px 13px; color: #c8ffe7; background-color: #103126;
-    border: 2px solid #56d5a055; border-left: 6px solid #56d5a0; border-radius: 13px; font-size: 22px;
+    min-height: 82px;
+    margin-top: 11px;
+    padding: 11px 13px;
+    color: #c8ffe7;
+    background-color: #103126;
+    border: 2px solid #56d5a055;
+    border-left: 6px solid #56d5a0;
+    border-radius: 13px;
+    font-size: 22px;
 }
-.card-action-row { margin-top: auto; flex-direction: row; gap: 10px; }
+
+.card-action-row {
+    margin-top: auto;
+    flex-direction: row;
+    gap: 10px;
+}
+
 .card-action {
-    pointer-events: auto; flex: 1; min-height: 62px; padding: 10px; color: #0c1912; background-color: #56d5a0;
-    border-radius: 18px; box-shadow: 0 6px 12px 0 #00000088;
-    font-family: "Rubik UI"; font-size: 22px; align-items: center; justify-content: center; text-align: center;
+    pointer-events: auto;
+    flex: 1;
+    min-height: 62px;
+    padding: 10px;
+    color: #0c1912;
+    background-color: #56d5a0;
+    border-radius: 18px;
+    box-shadow: 0 6px 12px 0 #00000088;
+    font-family: "Rubik UI";
+    font-size: 22px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
-.card-action:hover { background-color: #86edc5; }
-.card-action.secondary { color: #fff3d6; background-color: #343e36; border: 2px solid #f1bd59; }
+
+.card-action:hover {
+    background-color: #86edc5;
+}
+
+.card-action.secondary {
+    color: #fff3d6;
+    background-color: #343e36;
+    border: 2px solid #f1bd59;
+}
 
 .mission-card {
-    min-height: 560px; gap: 15px; padding: 22px;
-    background-color: #203128; border: 3px solid #56d5a080; border-left: 8px solid #56d5a0;
-    border-radius: 28px; box-shadow: 0 8px 14px 0 #020805cc;
+    min-height: 560px;
+    gap: 15px;
+    padding: 22px;
+    background-color: #203128;
+    border: 3px solid #56d5a080;
+    border-left: 8px solid #56d5a0;
+    border-radius: 28px;
+    box-shadow: 0 8px 14px 0 #020805cc;
 }
-.mission-card-copy { flex: 1; min-width: 0; }
-.mission-card-kicker { color: #56d5a0; font-size: 19px; }
-.mission-card-title { min-height: 76px; margin-top: 5px; color: #fff3d6; font-size: 32px; }
-.mission-card-description { min-height: 70px; margin-top: 9px; color: #e2dccb; font-size: 22px; }
+
+.mission-card-copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.mission-card-kicker {
+    color: #56d5a0;
+    font-size: 19px;
+}
+
+.mission-card-title {
+    min-height: 76px;
+    margin-top: 5px;
+    color: #fff3d6;
+    font-size: 32px;
+}
+
+.mission-card-description {
+    min-height: 70px;
+    margin-top: 9px;
+    color: #e2dccb;
+    font-size: 22px;
+}
+
 .mission-duration-row {
-    min-height: 94px; margin-top: 14px; padding: 12px 14px; flex-direction: row; align-items: center; gap: 13px;
-    background-color: #17251d; border: 1px solid #56d5a044; border-radius: 19px;
+    min-height: 94px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    flex-direction: row;
+    align-items: center;
+    gap: 13px;
+    background-color: #17251d;
+    border: 1px solid #56d5a044;
+    border-radius: 19px;
 }
+
 .mission-duration-icon {
-    flex-shrink: 0; width: 62px; height: 62px; align-items: center; justify-content: center;
-    background-color: #254637; border-radius: 17px;
+    flex-shrink: 0;
+    width: 62px;
+    height: 62px;
+    align-items: center;
+    justify-content: center;
+    background-color: #254637;
+    border-radius: 17px;
 }
-.mission-duration-icon image { width: 43px; height: 43px; object-fit: contain; }
-.mission-duration-copy { flex: 1; min-width: 0; justify-content: center; }
-.mission-duration-label { color: #9cbaa8; font-size: 15px; }
-.mission-duration-value { margin-top: 2px; color: #c8ffe7; font-size: 24px; }
-.mission-duration-years { margin-top: 2px; color: #d1cbb8; font-size: 17px; }
+
+.mission-duration-icon image {
+    width: 43px;
+    height: 43px;
+    object-fit: contain;
+}
+
+.mission-duration-copy {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
+.mission-duration-label {
+    color: #9cbaa8;
+    font-size: 15px;
+}
+
+.mission-duration-value {
+    margin-top: 2px;
+    color: #c8ffe7;
+    font-size: 24px;
+}
+
+.mission-duration-years {
+    margin-top: 2px;
+    color: #d1cbb8;
+    font-size: 17px;
+}
+
 .mission-reward-row {
-    min-height: 106px; margin-top: 14px; flex-direction: row; align-items: center; justify-content: space-between; gap: 14px;
-    padding: 13px 15px; background-color: #111a15; border: 1px solid #f1bd5944; border-radius: 20px;
+    min-height: 106px;
+    margin-top: 14px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 13px 15px;
+    background-color: #111a15;
+    border: 1px solid #f1bd5944;
+    border-radius: 20px;
 }
-.reward-label { color: #f1bd59; font-size: 18px; }
-.mission-reward-icons { margin-top: 8px; flex-direction: row; gap: 8px; }
+
+.reward-label {
+    color: #f1bd59;
+    font-size: 18px;
+}
+
+.mission-reward-icons {
+    margin-top: 8px;
+    flex-direction: row;
+    gap: 8px;
+}
+
 .reward-icon-tile {
-    position: relative; width: 64px; height: 64px; align-items: center; justify-content: center;
+    position: relative;
+    width: 64px;
+    height: 64px;
+    align-items: center;
+    justify-content: center;
     pointer-events: auto;
-    background-color: #26352b; border: 1px solid #ffffff30; border-radius: 16px;
+    background-color: #26352b;
+    border: 1px solid #ffffff30;
+    border-radius: 16px;
 }
-.reward-item-icon { width: 52px; height: 52px; object-fit: contain; }
+
+.reward-item-icon {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+}
+
 .reward-icon-badge {
-    position: absolute; right: -4px; bottom: -4px; min-width: 33px; padding: 3px 6px;
-    color: #101914; background-color: #f1bd59; border: 2px solid #111a15;
-    border-radius: 10px; font-size: 15px; text-align: center;
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    min-width: 33px;
+    padding: 3px 6px;
+    color: #101914;
+    background-color: #f1bd59;
+    border: 2px solid #111a15;
+    border-radius: 10px;
+    font-size: 15px;
+    text-align: center;
 }
+
 .mission-start {
-    pointer-events: auto; width: 100%; min-height: 66px; flex-direction: row; align-items: center; justify-content: center; gap: 10px;
-    color: #0d1b14; background-color: #56d5a0; border-radius: 22px;
-    box-shadow: 0 7px 13px 0 #00000099; font-family: "Rubik UI"; font-size: 22px; text-align: center;
+    pointer-events: auto;
+    width: 100%;
+    min-height: 66px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #0d1b14;
+    background-color: #56d5a0;
+    border-radius: 22px;
+    box-shadow: 0 7px 13px 0 #00000099;
+    font-family: "Rubik UI";
+    font-size: 22px;
+    text-align: center;
 }
-.mission-start image { width: 40px; height: 40px; object-fit: contain; }
-.mission-start:hover { background-color: #89efc8; }
+
+.mission-start image {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.mission-start:hover {
+    background-color: #89efc8;
+}
+
+/* Compact shop, mission and inventory cards */
+.shop-card {
+    min-width: 0;
+    min-height: 0;
+    padding: 12px;
+    align-items: center;
+    background-color: #1b2b23;
+    border: 2px solid #ffffff26;
+    border-radius: 20px;
+    box-shadow: 0 5px 10px #00000088;
+    overflow: hidden;
+}
+
+.shop-card .item-icon-well {
+    width: 90px;
+    height: 90px;
+    border-width: 4px;
+    border-radius: 22px;
+}
+
+.shop-card .item-icon {
+    width: 76px;
+    height: 76px;
+}
+
+.shop-card .item-name {
+    min-height: 49px;
+    margin-top: 5px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.shop-card .item-meta {
+    min-height: 22px;
+    margin-top: 2px;
+    font-size: 15px;
+    text-align: center;
+}
+
+.shop-card .item-effect {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    margin-top: 5px;
+    padding: 7px;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+.shop-card .card-action {
+    flex: 0;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 7px;
+    font-size: 15px;
+}
+
+.mission-card {
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    padding: 10px 12px;
+    gap: 3px;
+    border-width: 2px;
+    border-left-width: 5px;
+    border-radius: 17px;
+}
+
+.mission-card-title {
+    min-height: 31px;
+    margin: 0;
+    font-size: 18px;
+}
+
+.mission-card-description {
+    flex: 1;
+    min-height: 0;
+    margin: 1px 0 0;
+    font-size: 13px;
+    overflow: hidden;
+}
+
+.mission-card-footer {
+    min-height: 48px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.mission-duration-value {
+    font-size: 13px;
+    color: #c8ffe7;
+}
+
+.mission-reward-icons {
+    margin-top: 2px;
+    gap: 4px;
+}
+
+.reward-icon-tile {
+    width: 35px;
+    height: 35px;
+    border-radius: 9px;
+}
+
+.reward-item-icon {
+    width: 29px;
+    height: 29px;
+}
+
+.reward-icon-badge {
+    right: -4px;
+    bottom: -4px;
+    min-width: 20px;
+    padding: 1px 3px;
+    font-size: 9px;
+    border-width: 1px;
+}
+
+.mission-start {
+    width: 92px;
+    min-height: 42px;
+    border-radius: 13px;
+    font-size: 14px;
+}
+
+.queue-item {
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    padding: 14px;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    background-color: #1b2b23;
+    border: 2px solid #56d5a055;
+    border-radius: 20px;
+}
+
+.queue-number {
+    flex-shrink: 0;
+    width: 45px;
+    height: 45px;
+    align-items: center;
+    justify-content: center;
+    color: #102017;
+    background-color: #f1bd59;
+    border-radius: 50%;
+}
+
+.queue-number text {
+    width: 100%;
+    height: 100%;
+    font-size: 21px;
+    text-align: center;
+}
+
+.queue-copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.queue-item-name {
+    font-size: 18px;
+}
+
+.queue-progress {
+    margin-top: 5px;
+    color: #c8ffe7;
+    font-size: 15px;
+}
+
+.queue-controls {
+    flex-shrink: 0;
+    width: 42px;
+    gap: 5px;
+}
+
+.queue-control {
+    pointer-events: auto;
+    width: 38px;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+    background-color: #303d34;
+    border-radius: 11px;
+}
+
+.queue-control image {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.inventory-icon-card {
+    pointer-events: auto;
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: #18271f;
+    border: 2px solid #ffffff22;
+    border-radius: 19px;
+}
+
+.inventory-icon-card:hover {
+    background-color: #253c30;
+    border-color: #56d5a0;
+}
+
+.inventory-icon-well {
+    width: 82px;
+    height: 82px;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid #ffffff;
+    border-radius: 19px;
+    background-color: #0e1712;
+}
+
+.inventory-icon-well image {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+}
+
+.inventory-quantity {
+    position: absolute;
+    right: 5px;
+    bottom: 4px;
+    min-width: 31px;
+    padding: 2px 5px;
+    color: #102017;
+    background-color: #f1bd59;
+    border-radius: 9px;
+    font-size: 13px;
+    text-align: center;
+}

@@ -7,21 +7,19 @@ internal sealed class GameView
     public GameView(UiDocument document)
     {
         Document = document;
-
         WindowLayer = Panel("window-layer");
         CharacterTapTarget = Button("character-tap-target");
-
+        MissionSummaryButton = Button("mission-summary-button");
         StageName = Text("stage-name");
-        Year = Text("year-text");
-        Tick = Text("tick-text");
+        YearDial = Radial("year-dial");
         Money = Text("money-text");
-        Spirit = Text("spirit-text");
         Age = Text("age-text");
         Realm = Text("realm-text");
-        CultivationCost = Text("cultivation-cost");
+        CultivationProgressText = Text("cultivation-progress-text");
         CultivationProgress = Progress("cultivation-progress");
-        Advance = Button("advance-button");
         Breakthrough = Button("breakthrough-button");
+        CultivateMode = Button("cultivate-mode-button");
+        MissionsMode = Button("missions-mode-button");
 
         MissionName = Text("mission-name");
         MissionDescription = Text("mission-description");
@@ -31,9 +29,7 @@ internal sealed class GameView
 
         ShopButton = Button("shop-button");
         InventoryButton = Button("inventory-button");
-        CultivationButton = Button("cultivation-button");
         MissionsButton = Button("missions-button");
-
         ShopWindow = Panel("shop-window");
         ShopMarkup = Text("shop-markup");
         ShopMoney = Text("shop-money");
@@ -43,21 +39,36 @@ internal sealed class GameView
         InventoryCount = Text("inventory-count");
         SellRate = Text("sell-rate");
         InventoryGrid = Panel("inventory-grid");
-
-        CultivationWindow = Panel("cultivation-window");
-        DetailStage = Text("detail-stage");
-        DetailLevel = Text("detail-level");
-        DetailCost = Text("detail-cost");
-        DetailProgress = Progress("detail-progress");
-        DetailAdvance = Button("detail-advance");
-        DetailBreakthrough = Button("detail-breakthrough");
-        CultivationPath = Panel("cultivation-path-scroll");
+        IngredientsTab = Button("ingredients-tab");
+        CoresTab = Button("cores-tab");
+        PillsTab = Button("pills-tab");
+        InventoryDetails = Panel("inventory-details");
+        InventoryDetailIconWell = Panel("inventory-detail-icon-well");
+        InventoryDetailIcon = Image("inventory-detail-icon");
+        InventoryDetailName = Text("inventory-detail-name");
+        InventoryDetailEffect = Text("inventory-detail-effect");
+        InventoryUse = Button("inventory-use-button");
+        InventorySell = Button("inventory-sell-button");
 
         MissionsWindow = Panel("missions-window");
+        AvailableMissionsTab = Button("available-missions-tab");
+        AcceptedMissionsTab = Button("accepted-missions-tab");
+        AvailableMissionsPage = Panel("available-missions-page");
+        AcceptedMissionsPage = Panel("accepted-missions-page");
         MissionQueueCount = Text("mission-queue-count");
         MissionRefresh = Text("mission-refresh");
         MissionQueue = Panel("mission-queue");
         MissionsList = Panel("missions-list");
+
+        BreakthroughWindow = Panel("breakthrough-window");
+        BreakthroughChance = Text("breakthrough-chance");
+        BreakthroughCost = Text("breakthrough-cost");
+        ConfirmBreakthrough = Button("confirm-breakthrough");
+        CancelBreakthrough = Button("cancel-breakthrough");
+        BreakthroughResult = Panel("breakthrough-result");
+        BreakthroughResultTitle = Text("breakthrough-result-title");
+        BreakthroughResultText = Text("breakthrough-result-text");
+        BreakthroughResultOk = Button("breakthrough-result-ok");
 
         DeathWindow = Panel("death-window");
         DeathAge = Text("death-age");
@@ -86,38 +97,28 @@ internal sealed class GameView
 
         EffectPopup = Panel("effect-popup");
         EffectPopupCard = Panel("effect-popup-card");
-        EffectPopupIconWell = Panel("effect-popup-icon-well");
-        EffectPopupIcon = Image("effect-popup-icon");
-        EffectPopupKind = Text("effect-popup-kind");
-        EffectPopupTitle = Text("effect-popup-title");
-        EffectPopupDescription = Text("effect-popup-description");
         EffectPopupEffect = Text("effect-popup-effect");
-        EffectPopupStacks = Text("effect-popup-stacks");
-        EffectPopupQuality = Panel("effect-popup-quality");
-        EffectPopupRarity = Text("effect-popup-rarity");
-        EffectPopupDetails = Text("effect-popup-details");
-        EffectPopupItem = Button("effect-popup-item");
         EffectPopupClose = Button("effect-popup-close");
-        EffectPopupOk = Button("effect-popup-ok");
-
-        Windows = document.QueryAll(".window").OfType<UiPanel>().ToArray();
+        // Every top-level subtree in the window layer is a mountable surface,
+        // including dialogs and popups that intentionally do not use .window.
+        Windows = WindowLayer.Children.OfType<UiPanel>().ToArray();
         WindowCloseButtons = document.QueryAll(".window-close").OfType<UiButton>().ToArray();
     }
 
     public UiDocument Document { get; }
     public UiPanel WindowLayer { get; }
     public UiButton CharacterTapTarget { get; }
+    public UiButton MissionSummaryButton { get; }
     public UiText StageName { get; }
-    public UiText Year { get; }
-    public UiText Tick { get; }
+    public UiRadialProgress YearDial { get; }
     public UiText Money { get; }
-    public UiText Spirit { get; }
     public UiText Age { get; }
     public UiText Realm { get; }
-    public UiText CultivationCost { get; }
+    public UiText CultivationProgressText { get; }
     public UiProgress CultivationProgress { get; }
-    public UiButton Advance { get; }
     public UiButton Breakthrough { get; }
+    public UiButton CultivateMode { get; }
+    public UiButton MissionsMode { get; }
     public UiText MissionName { get; }
     public UiText MissionDescription { get; }
     public UiText MissionProgressText { get; }
@@ -125,7 +126,6 @@ internal sealed class GameView
     public UiPanel Effects { get; }
     public UiButton ShopButton { get; }
     public UiButton InventoryButton { get; }
-    public UiButton CultivationButton { get; }
     public UiButton MissionsButton { get; }
     public UiPanel ShopWindow { get; }
     public UiText ShopMarkup { get; }
@@ -135,19 +135,34 @@ internal sealed class GameView
     public UiText InventoryCount { get; }
     public UiText SellRate { get; }
     public UiPanel InventoryGrid { get; }
-    public UiPanel CultivationWindow { get; }
-    public UiText DetailStage { get; }
-    public UiText DetailLevel { get; }
-    public UiText DetailCost { get; }
-    public UiProgress DetailProgress { get; }
-    public UiButton DetailAdvance { get; }
-    public UiButton DetailBreakthrough { get; }
-    public UiPanel CultivationPath { get; }
+    public UiButton IngredientsTab { get; }
+    public UiButton CoresTab { get; }
+    public UiButton PillsTab { get; }
+    public UiPanel InventoryDetails { get; }
+    public UiPanel InventoryDetailIconWell { get; }
+    public UiImage InventoryDetailIcon { get; }
+    public UiText InventoryDetailName { get; }
+    public UiText InventoryDetailEffect { get; }
+    public UiButton InventoryUse { get; }
+    public UiButton InventorySell { get; }
     public UiPanel MissionsWindow { get; }
+    public UiButton AvailableMissionsTab { get; }
+    public UiButton AcceptedMissionsTab { get; }
+    public UiPanel AvailableMissionsPage { get; }
+    public UiPanel AcceptedMissionsPage { get; }
     public UiText MissionQueueCount { get; }
     public UiText MissionRefresh { get; }
     public UiPanel MissionQueue { get; }
     public UiPanel MissionsList { get; }
+    public UiPanel BreakthroughWindow { get; }
+    public UiText BreakthroughChance { get; }
+    public UiText BreakthroughCost { get; }
+    public UiButton ConfirmBreakthrough { get; }
+    public UiButton CancelBreakthrough { get; }
+    public UiPanel BreakthroughResult { get; }
+    public UiText BreakthroughResultTitle { get; }
+    public UiText BreakthroughResultText { get; }
+    public UiButton BreakthroughResultOk { get; }
     public UiPanel DeathWindow { get; }
     public UiText DeathAge { get; }
     public UiText DeathStage { get; }
@@ -173,19 +188,8 @@ internal sealed class GameView
     public UiButton InfoPopupOk { get; }
     public UiPanel EffectPopup { get; }
     public UiPanel EffectPopupCard { get; }
-    public UiPanel EffectPopupIconWell { get; }
-    public UiImage EffectPopupIcon { get; }
-    public UiText EffectPopupKind { get; }
-    public UiText EffectPopupTitle { get; }
-    public UiText EffectPopupDescription { get; }
     public UiText EffectPopupEffect { get; }
-    public UiText EffectPopupStacks { get; }
-    public UiPanel EffectPopupQuality { get; }
-    public UiText EffectPopupRarity { get; }
-    public UiText EffectPopupDetails { get; }
-    public UiButton EffectPopupItem { get; }
     public UiButton EffectPopupClose { get; }
-    public UiButton EffectPopupOk { get; }
     public IReadOnlyList<UiPanel> Windows { get; }
     public IReadOnlyList<UiButton> WindowCloseButtons { get; }
 
@@ -194,4 +198,5 @@ internal sealed class GameView
     private UiButton Button(string id) => Document.GetElementById<UiButton>(id);
     private UiImage Image(string id) => Document.GetElementById<UiImage>(id);
     private UiProgress Progress(string id) => Document.GetElementById<UiProgress>(id);
+    private UiRadialProgress Radial(string id) => Document.GetElementById<UiRadialProgress>(id);
 }

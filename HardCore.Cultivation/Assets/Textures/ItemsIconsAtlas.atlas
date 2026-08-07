@@ -1,0 +1,21 @@
+{
+  "width": 1024,
+  "padding": 2,
+  "sources": {
+    "azure-spirit-core": "Items/azure-spirit-core.png",
+    "breakthrough-seal": "Items/breakthrough-seal.png",
+    "celestial-orb": "Items/celestial-orb.png",
+    "crimson-beast-core": "Items/crimson-beast-core.png",
+    "focus-pill": "Items/focus-pill.png",
+    "insight-core": "Items/insight-core.png",
+    "jade-lotus": "Items/jade-lotus.png",
+    "marrow-elixir": "Items/marrow-elixir.png",
+    "mission-talisman": "Items/mission-talisman.png",
+    "phoenix-feather": "Items/phoenix-feather.png",
+    "spirit-dew": "Items/spirit-dew.png",
+    "spirit-seed": "Items/spirit-seed.png",
+    "still-age-pill": "Items/still-age-pill.png",
+    "swift-scroll": "Items/swift-scroll.png",
+    "time-incense": "Items/time-incense.png"
+  }
+}

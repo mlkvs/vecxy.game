@@ -114,8 +114,7 @@ public sealed class ShopConfig : IYamlConfig
     public int MaximumQuantity { get; init; } = 5;
     public int MinimumBuyMarkup { get; init; } = 25;
     public int MaximumBuyMarkup { get; init; } = 100;
-    public int MinimumSellAdjustment { get; init; } = -50;
-    public int MaximumSellAdjustment { get; init; } = -10;
+    public int SellAdjustmentPercent { get; init; } = -33;
 }
 
 public sealed class GameDatabase
@@ -139,20 +138,29 @@ public sealed class GameDatabase
         ConfigRef<MissionsConfig> missions,
         ConfigRef<CultivationConfig> cultivation,
         ConfigRef<ShopConfig> shop)
+        => Initialize(balance.Value, rarities.Value, items.Value, missions.Value, cultivation.Value, shop.Value);
+
+    public void Initialize(
+        GameBalanceConfig balance,
+        RaritiesConfig rarities,
+        ItemsConfig items,
+        MissionsConfig missions,
+        CultivationConfig cultivation,
+        ShopConfig shop)
     {
-        Balance = balance.Value;
-        Cultivation = cultivation.Value;
-        Shop = shop.Value;
-        MissionBoardSlotCount = missions.Value.BoardSlotCount;
+        Balance = balance;
+        Cultivation = cultivation;
+        Shop = shop;
+        MissionBoardSlotCount = missions.BoardSlotCount;
         _items.Clear();
         _missions.Clear();
         _rarities.Clear();
 
-        foreach (var item in items.Value.Items)
+        foreach (var item in items.Items)
             AddUnique(_items, item.Id, item, "item");
-        foreach (var mission in missions.Value.Missions)
+        foreach (var mission in missions.Missions)
             AddUnique(_missions, mission.Id, mission, "mission");
-        foreach (var rarity in rarities.Value.Rarities)
+        foreach (var rarity in rarities.Rarities)
         {
             if (!_rarities.TryAdd(rarity.Rarity, rarity))
                 throw new InvalidDataException($"Duplicate rarity: {rarity.Rarity}");
