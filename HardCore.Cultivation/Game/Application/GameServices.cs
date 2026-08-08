@@ -527,6 +527,31 @@ public sealed class CultivationService(GameDatabase database, IRandomSource rand
     }
 }
 
+public readonly record struct DogMeditationResult(bool Success, long Reward, string Message);
+
+public sealed class DogMeditationService(GameDatabase database, IRandomSource random)
+{
+    public float GetProgress(GameState state) =>
+        state.DogMeditation.GetProgress(database.Dog.ChargeDurationSeconds);
+
+    public bool Update(GameState state, float deltaTime) =>
+        state.DogMeditation.Advance(deltaTime, database.Dog.ChargeDurationSeconds);
+
+    public DogMeditationResult Collect(GameState state)
+    {
+        if (!state.DogMeditation.IsReady(database.Dog.ChargeDurationSeconds))
+            return new(false, 0, "Собака ещё медитирует.");
+
+        var rewardUnits = random.NextInt(
+            database.Dog.MinimumRewardUnits,
+            checked(database.Dog.MaximumRewardUnits + 1));
+        var reward = checked((long)rewardUnits * database.Dog.RewardUnitRubles);
+        state.Character.AddMoney(reward);
+        state.DogMeditation.Reset();
+        return new(true, reward, $"Собака намедитировала {reward:N0} рублей.");
+    }
+}
+
 public enum CombatEventType
 {
     Started,

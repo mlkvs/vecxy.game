@@ -1,6 +1,8 @@
 ﻿using System.Numerics;
+using HardCore.Cultivation.Game.Infrastructure;
 using JetBrains.Annotations;
 using Vecxy.Assets;
+using Vecxy.Kernel;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 
@@ -50,18 +52,39 @@ public class Character : AComponent
             sprite.Pivot = new Vector2(0.5f, 0.0f);
             sprite.SortingLayer = 1;
 
-            // The companion is parented to the cultivator so both share the
-            // same levitation transform.
+            var dogConfig = new DogConfig();
             var dogObject = characterObject.CreateChild("Dog companion");
-            dogObject.Transform.Position = new Vector3(-450.0f, 50.0f, 0.0f);
-            dogObject.Transform.Scale = new Vector3(0.28f, 0.28f, 1.0f);
-            using var dogTexture = assets.Load<TextureAsset>("Textures/Dog.png");
+            dogObject.Transform.Position = new Vector3(dogConfig.LocalPositionX, dogConfig.LocalPositionY, 0.0f);
+            dogObject.Transform.Scale = new Vector3(dogConfig.BaseScale, dogConfig.BaseScale, 1.0f);
+            using var dogTexture = assets.Load<TextureAsset>(dogConfig.MeditatingTexture);
             var dogSprite = dogObject.AddComponent<SpriteRenderer>();
             dogSprite.SetTexture(dogTexture);
             dogSprite.PixelsPerUnit = 1.0f;
             dogSprite.Pivot = new Vector2(0.5f, 0.0f);
             dogSprite.SortingLayer = 2;
-            dogObject.AddComponent(new DogCompanion(assets));
+            using var chargedTexture = assets.Load<TextureAsset>(dogConfig.ChargedTexture);
+            var chargedObject = dogObject.CreateChild("Dog meditation fill");
+            var chargedSprite = chargedObject.AddComponent<SpriteRenderer>();
+            chargedSprite.SetTexture(chargedTexture);
+            chargedSprite.PixelsPerUnit = 1.0f;
+            chargedSprite.Pivot = new Vector2(0.5f, 0.0f);
+            chargedSprite.SortingLayer = 2;
+            chargedSprite.OrderInLayer = 1;
+
+            var glowSprites = new List<SpriteRenderer>(2);
+            for (var index = 0; index < 2; index++)
+            {
+                var glowObject = dogObject.CreateChild($"Dog ready glow {index + 1}");
+                var glowSprite = glowObject.AddComponent<SpriteRenderer>();
+                glowSprite.SetTexture(chargedTexture);
+                glowSprite.PixelsPerUnit = 1.0f;
+                glowSprite.Pivot = new Vector2(0.5f, 0.0f);
+                glowSprite.SortingLayer = 2;
+                glowSprite.OrderInLayer = -2 + index;
+                glowSprites.Add(glowSprite);
+            }
+
+            dogObject.AddComponent(new DogCompanion(assets, dogSprite, chargedSprite, glowSprites));
                 
             // Character
             var character = characterObject.AddComponent<Character>();
@@ -96,11 +119,14 @@ public class Character : AComponent
     }
 }
 
-public sealed class DogCompanion(IAssetsManager assets) : AComponent
+public sealed class DogCompanion(
+    IAssetsManager assets,
+    SpriteRenderer baseSprite,
+    SpriteRenderer chargedSprite,
+    IReadOnlyList<SpriteRenderer> glowSprites) : AComponent
 {
-    private const float ExcitedDurationSeconds = 0.9f;
-    private float _excitedRemaining;
-    private bool _isExcited;
+    private DogConfig _config = new();
+    private float _chargeProgress;
     private float _elapsed;
     private Vector3 _origin;
     private Vector3 _baseScale;
@@ -109,40 +135,68 @@ public sealed class DogCompanion(IAssetsManager assets) : AComponent
     {
         _origin = Transform.Position;
         _baseScale = Transform.Scale;
+        SetChargeProgress(0f);
     }
 
-    public void React()
+    public void Configure(DogConfig config)
     {
-        _excitedRemaining = ExcitedDurationSeconds;
-        if (_isExcited)
-            return;
-        _isExcited = true;
-        SetTexture("Textures/Dog2.png");
+        _config = config;
+        Transform.Position = new Vector3(config.LocalPositionX, config.LocalPositionY, 0f);
+        Transform.Scale = new Vector3(config.BaseScale, config.BaseScale, 1f);
+        _origin = Transform.Position;
+        _baseScale = Transform.Scale;
+
+        using var meditatingTexture = assets.Load<TextureAsset>(config.MeditatingTexture);
+        baseSprite.SetTexture(meditatingTexture);
+        using var chargedTexture = assets.Load<TextureAsset>(config.ChargedTexture);
+        chargedSprite.SetTexture(chargedTexture);
+        foreach (var glow in glowSprites)
+            glow.SetTexture(chargedTexture);
+        SetChargeProgress(_chargeProgress);
+    }
+
+    public void SetChargeProgress(float progress)
+    {
+        _chargeProgress = Math.Clamp(progress, 0f, 1f);
+        var texture = chargedSprite.Texture;
+        var visibleHeight = Math.Clamp(texture.Height * _chargeProgress, 0f, texture.Height);
+        chargedSprite.SceneObject!.Enabled = visibleHeight >= 1f;
+        chargedSprite.SourceRect = visibleHeight >= 1f
+            ? new Rect(0f, texture.Height - visibleHeight, texture.Width, visibleHeight)
+            : null;
+
+        var ready = _chargeProgress >= 1f;
+        foreach (var glow in glowSprites)
+            glow.SceneObject!.Enabled = ready;
     }
 
     public override void Update(float deltaTime)
     {
         _elapsed += deltaTime;
-        var excitement = _isExcited ? 2.2f : 1.0f;
-        var bob = MathF.Sin(_elapsed * 3.1f * excitement) * (_isExcited ? 10.0f : 5.0f);
-        var sway = MathF.Sin(_elapsed * 1.8f * excitement) * (_isExcited ? 0.045f : 0.022f);
-        var breath = 1.0f + MathF.Sin(_elapsed * 2.2f) * 0.012f;
+        var bob = MathF.Sin(_elapsed * _config.BobSpeed) * _config.BobAmplitude;
+        var sway = MathF.Sin(_elapsed * _config.SwaySpeed) * _config.SwayAmplitudeRadians;
+        var breath = 1.0f + MathF.Sin(_elapsed * _config.BreathingSpeed) * _config.BreathingAmplitude;
+        var chargeScale = _config.MinimumChargeScale +
+                          (_config.MaximumChargeScale - _config.MinimumChargeScale) * SmoothStep(_chargeProgress);
         Transform.Position = _origin + Vector3.UnitY * bob;
         Transform.Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, sway);
-        Transform.Scale = _baseScale * new Vector3(breath, breath, 1.0f);
+        Transform.Scale = _baseScale * new Vector3(chargeScale * breath, chargeScale * breath, 1.0f);
 
-        if (!_isExcited)
+        if (_chargeProgress < 1f)
             return;
-        _excitedRemaining -= deltaTime;
-        if (_excitedRemaining > 0f)
-            return;
-        _isExcited = false;
-        SetTexture("Textures/Dog.png");
+        var pulse = 1f + MathF.Sin(_elapsed * _config.GlowPulseSpeed) * _config.GlowPulseAmplitude;
+        for (var index = 0; index < glowSprites.Count; index++)
+        {
+            var glow = glowSprites[index];
+            var layerScale = _config.GlowScale + index * 0.08f;
+            glow.Transform.Scale = new Vector3(layerScale * pulse, layerScale * pulse, 1f);
+            glow.Color = new Vector4(
+                _config.GlowRed,
+                _config.GlowGreen,
+                _config.GlowBlue,
+                _config.GlowAlpha / (index + 1));
+        }
     }
 
-    private void SetTexture(string path)
-    {
-        using var texture = assets.Load<TextureAsset>(path);
-        SceneObject!.GetComponent<SpriteRenderer>()!.SetTexture(texture);
-    }
+    private static float SmoothStep(float value) => value * value * (3f - 2f * value);
 }

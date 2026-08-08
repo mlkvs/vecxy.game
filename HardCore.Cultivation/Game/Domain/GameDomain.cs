@@ -580,6 +580,30 @@ public sealed class MissionBoardState
     }
 }
 
+public sealed class DogMeditationState
+{
+    public float ElapsedSeconds { get; private set; }
+
+    public float GetProgress(float durationSeconds) =>
+        durationSeconds <= 0f ? 1f : Math.Clamp(ElapsedSeconds / durationSeconds, 0f, 1f);
+
+    public bool IsReady(float durationSeconds) => GetProgress(durationSeconds) >= 1f;
+
+    public bool Advance(float deltaTime, float durationSeconds)
+    {
+        if (deltaTime <= 0f || IsReady(durationSeconds))
+            return false;
+        var wasReady = IsReady(durationSeconds);
+        ElapsedSeconds = Math.Min(durationSeconds, ElapsedSeconds + deltaTime);
+        return !wasReady && IsReady(durationSeconds);
+    }
+
+    public void Reset() => ElapsedSeconds = 0f;
+
+    public void Restore(float elapsedSeconds, float durationSeconds) =>
+        ElapsedSeconds = Math.Clamp(elapsedSeconds, 0f, Math.Max(0f, durationSeconds));
+}
+
 public sealed class GameState
 {
     private readonly List<ActiveMission> _missionQueue = [];
@@ -589,6 +613,7 @@ public sealed class GameState
     public Inventory Inventory { get; } = new();
     public ShopState Shop { get; } = new();
     public MissionBoardState MissionBoard { get; } = new();
+    public DogMeditationState DogMeditation { get; } = new();
     public IReadOnlyList<ActiveMission> MissionQueue => _missionQueue;
     public ActiveMission? CurrentMission => _missionQueue.FirstOrDefault();
     public List<ActiveEffect> ActiveEffects { get; } = [];

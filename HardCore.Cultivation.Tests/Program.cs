@@ -9,6 +9,7 @@ var effectService = new ItemEffectService(database);
 var missionService = new MissionService(database, generator, random);
 var shopService = new ShopService(database, generator, random);
 var cultivation = new CultivationService(database, random);
+var dogMeditation = new DogMeditationService(database, random);
 var processor = new TickProcessor(database, effectService, missionService, shopService, cultivation);
 
 var state = new GameState(database.Balance.TicksPerYear);
@@ -43,6 +44,20 @@ for (var index = 0; index < 200 && combatState.CurrentMission?.Encounter?.Resolv
 Check(combatEvents.Any(value => value.Type == CombatEventType.Started), "Combat did not start at encounter progress.");
 Check(combatEvents.Any(value => value.Type == CombatEventType.Victory), "Hero did not win the deterministic training combat.");
 Check(combatState.CurrentMission?.Encounter?.Resolved == true, "Victory did not resolve the mission encounter.");
+
+var dogState = new GameState(database.Balance.TicksPerYear);
+Check(!dogMeditation.Update(dogState, 0.5f), "Dog meditation became ready too early.");
+Check(!dogMeditation.Collect(dogState).Success, "Dog reward was collected before charging.");
+Check(dogMeditation.Update(dogState, 0.5f), "Dog meditation did not become ready.");
+var dogReward = dogMeditation.Collect(dogState);
+Check(dogReward.Success && dogReward.Reward == 1000 && dogState.Character.Money == 1000,
+    "Dog meditation reward is incorrect.");
+Check(dogMeditation.GetProgress(dogState) == 0f, "Dog meditation did not reset after collection.");
+var maximumDogMeditation = new DogMeditationService(database, new MaximumRandom());
+var maximumDogState = new GameState(database.Balance.TicksPerYear);
+_ = maximumDogMeditation.Update(maximumDogState, 1f);
+Check(maximumDogMeditation.Collect(maximumDogState).Reward == 3000,
+    "Dog meditation did not include the configured maximum reward.");
 
 var defeatedState = new GameState(database.Balance.TicksPerYear);
 combat.ConfigureHero(defeatedState.Character, true);
@@ -202,7 +217,14 @@ static GameDatabase BuildDatabase()
                 new CultivationStageConfig { Id = "three", Name = "Three", BaseBreakthroughChance = 50 }
             ]
         },
-        new ShopConfig { SlotCount = 2, MinimumQuantity = 1, MaximumQuantity = 2, MinimumBuyMarkup = 0, MaximumBuyMarkup = 0, SellAdjustmentPercent = -33 });
+        new ShopConfig { SlotCount = 2, MinimumQuantity = 1, MaximumQuantity = 2, MinimumBuyMarkup = 0, MaximumBuyMarkup = 0, SellAdjustmentPercent = -33 },
+        dog: new DogConfig
+        {
+            ChargeDurationSeconds = 1f,
+            RewardUnitRubles = 1000,
+            MinimumRewardUnits = 1,
+            MaximumRewardUnits = 3
+        });
     return database;
 }
 

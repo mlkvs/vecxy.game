@@ -8,7 +8,7 @@ namespace HardCore.Cultivation.Game.Infrastructure;
 
 public sealed class GameSaveSystem(GameDatabase database)
 {
-    public const int CurrentVersion = 7;
+    public const int CurrentVersion = 8;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -26,6 +26,7 @@ public sealed class GameSaveSystem(GameDatabase database)
             TotalTicks = state.Calendar.TotalTicks,
             ActivityMode = state.ActivityMode,
             RecoveryRequired = state.RecoveryRequired,
+            DogMeditationSeconds = state.DogMeditation.ElapsedSeconds,
             Character = new CharacterSaveData
             {
                 SpiritualPower = state.Character.SpiritualPower,
@@ -130,6 +131,9 @@ public sealed class GameSaveSystem(GameDatabase database)
             state.RestoreDefeatRecovery(
                 data.Version >= 7 && data.RecoveryRequired &&
                 state.Character.Health < database.Combat.RecoveryHealthFraction * state.Character.MaximumHealth);
+            state.DogMeditation.Restore(
+                data.Version >= 8 ? data.DogMeditationSeconds : 0f,
+                database.Dog.ChargeDurationSeconds);
             state.Inventory.ReplaceWith(data.Inventory.Select(FromItemData));
             state.ActiveEffects.AddRange(data.ActiveEffects.Select(effect =>
             {
@@ -309,6 +313,7 @@ public sealed class SaveData
     public long TotalTicks { get; init; }
     public ActivityMode ActivityMode { get; init; } = ActivityMode.Cultivation;
     public bool RecoveryRequired { get; init; }
+    public float DogMeditationSeconds { get; init; }
     public CharacterSaveData Character { get; init; } = new();
     public List<ItemSaveData> Inventory { get; init; } = [];
     public List<MissionSaveData> MissionQueue { get; init; } = [];

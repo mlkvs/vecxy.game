@@ -68,8 +68,10 @@ public sealed class CombatScenePresenter(
         }
         foreach (var sceneObject in _objects)
             sceneObject.Enabled = true;
-        _hero!.Play(combat.Phase == CombatPhase.Defeat ? "death" : "idle", combat.Phase == CombatPhase.Fighting);
-        _enemy!.Play(combat.Phase == CombatPhase.Victory ? "death" : "idle", combat.Phase == CombatPhase.Fighting);
+        var heroDead = combat.Phase == CombatPhase.Defeat;
+        var enemyDead = combat.Phase == CombatPhase.Victory;
+        _hero!.Play(heroDead ? "death" : "idle", !heroDead, locked: heroDead, force: true);
+        _enemy!.Play(enemyDead ? "death" : "idle", !enemyDead, locked: enemyDead, force: true);
     }
 
     public void Handle(IReadOnlyList<CombatEvent> events)

@@ -21,6 +21,7 @@ public sealed class GameController(
     ItemEffectService effects,
     ItemPriceCalculator prices,
     CultivationService cultivation,
+    DogMeditationService dogMeditation,
     CombatService combat,
     CombatScenePresenter combatScene,
     ISceneManager scenes,
@@ -58,6 +59,8 @@ public sealed class GameController(
     private UiText? _missionQueueEmpty;
     private decimal _pendingHealthRestored;
     private float _healthFloatElapsed;
+    private DogCompanion? _dog;
+    private bool _dogConfigured;
 
     public GameState State => _state;
     public event Action<TickResult>? TickCompleted;
@@ -72,6 +75,7 @@ public sealed class GameController(
             missions.Refresh(_state);
         combat.ConfigureHero(_state.Character, _state.Character.MaximumHealth <= 0m);
         combatScene.Initialize();
+        SyncDogVisual();
         _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character);
 
         _floatingDocument = ui.Load("UI/FloatingOverlay.xml");
@@ -107,6 +111,10 @@ public sealed class GameController(
 
         if (_gameOver)
             return;
+
+        if (dogMeditation.Update(_state, deltaTime))
+            Save();
+        SyncDogVisual();
 
         var combatUpdate = combat.Update(_state, deltaTime);
         if (_state.CurrentMission?.Combat is { } activeCombat)
@@ -196,6 +204,8 @@ public sealed class GameController(
         _inventoryIcons = null;
         _missionCards = null;
         _missionQueueItems = null;
+        _dog = null;
+        _dogConfigured = false;
         combatScene.Dispose();
     }
 
@@ -250,6 +260,11 @@ public sealed class GameController(
             UpdateMissionQueueItem);
         _missionBoardEmpty = null;
         _missionQueueEmpty = null;
+
+        _view.DogTapTarget.Style.Set("left", CssPixels(database.Dog.TapAreaLeft));
+        _view.DogTapTarget.Style.Set("bottom", CssPixels(database.Dog.TapAreaBottom));
+        _view.DogTapTarget.Style.Set("width", CssPixels(database.Dog.TapAreaWidth));
+        _view.DogTapTarget.Style.Set("height", CssPixels(database.Dog.TapAreaHeight));
 
         BindClick(_view.ShopButton, () => { OpenWindow(_view.ShopWindow); SyncShop(); });
         BindClick(_view.InventoryButton, () => { OpenWindow(_view.InventoryWindow); SyncInventory(); });
@@ -359,10 +374,37 @@ public sealed class GameController(
 
     private void ReactDog()
     {
-        var dog = scenes.ActiveScene?.Objects
+        var result = dogMeditation.Collect(_state);
+        SyncDogVisual();
+        if (!result.Success)
+        {
+            var progress = Math.Round(dogMeditation.GetProgress(_state) * 100f);
+            ShowActionFeedback(
+                $"Собака медитирует: {progress:0}%",
+                "Assets/Textures/UIIcons/money.png",
+                true,
+                info: true);
+            return;
+        }
+
+        PlaySound("Sounds/item.wav", 0.55f);
+        SpawnFloatingValue(result.Reward, "РУБ.", "money-value");
+        ShowActionFeedback(result.Message, "Assets/Textures/UIIcons/money.png", true);
+        UpdateHud();
+        Save();
+    }
+
+    private void SyncDogVisual()
+    {
+        _dog ??= scenes.ActiveScene?.Objects
             .Select(sceneObject => sceneObject.GetComponent<DogCompanion>())
             .FirstOrDefault(component => component is not null);
-        dog?.React();
+        if (_dog is not null && !_dogConfigured)
+        {
+            _dog.Configure(database.Dog);
+            _dogConfigured = true;
+        }
+        _dog?.SetChargeProgress(dogMeditation.GetProgress(_state));
     }
 
     private void SetActivity(ActivityMode mode)
@@ -370,7 +412,7 @@ public sealed class GameController(
         if (mode == ActivityMode.Missions && _state.RecoveryRequired)
         {
             ShowActionFeedback(
-                "После поражения нужно полностью восстановить здоровье.",
+                "После поражения восстановите здоровье до отмеченного порога.",
                 "Assets/Textures/UIIcons/close.png",
                 false);
             return;
@@ -1390,6 +1432,9 @@ public sealed class GameController(
         return Math.Round(value, MidpointRounding.AwayFromZero)
             .ToString("0", CultureInfo.InvariantCulture);
     }
+
+    private static string CssPixels(float value) =>
+        string.Concat(value.ToString("0.##", CultureInfo.InvariantCulture), "px");
 
     private static string SignedUi(decimal value)
     {
