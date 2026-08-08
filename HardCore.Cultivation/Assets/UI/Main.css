@@ -20,7 +20,28 @@ text {
     vertical-align: center;
 }
 
-.screen text { white-space: normal; vertical-align: middle; }
+.screen text {
+    white-space: nowrap;
+    text-fit: shrink;
+    min-font-size: 10px;
+    vertical-align: middle;
+}
+
+.screen .action-toast text,
+.screen .detail-text,
+.screen .mission-card-description,
+.screen .item-effect,
+.screen .mission-board-empty,
+.screen .queue-empty,
+.screen .death-description,
+.screen .info-popup-description,
+.screen .info-popup-effect,
+.screen .info-popup-details,
+.screen .breakthrough-result-text,
+.screen .inventory-detail-effect {
+    white-space: normal;
+    text-fit: none;
+}
 
 .screen {
     width: 100%; height: 100%; overflow: hidden;
