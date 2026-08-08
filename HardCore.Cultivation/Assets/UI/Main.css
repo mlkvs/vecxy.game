@@ -127,6 +127,7 @@ text {
 .tick-float.negative { color: #ffad9f; background-color: #321814b8; border-color: #e86d5d77; }
 .tick-float.mission-value { color: #ffe195; background-color: #302614ad; border-color: #f1bd5966; }
 .tick-float.money-value { color: #ffe7aa; }
+.tick-float.health-value { color: #baffc8; background-color: #12331dbd; border-color: #63e18788; }
 .tick-float.lane-0 { left: 5%; top: 36%; }
 .tick-float.lane-1 { right: 5%; top: 42%; }
 .tick-float.lane-2 { left: 10%; top: 57%; }
@@ -142,6 +143,10 @@ text {
 .character-tap-target {
     pointer-events: auto; position: absolute; left: 50%; top: 0; bottom: 0; width: 470px; margin-left: -235px;
     align-items: center; justify-content: center; background-color: transparent; border: 0;
+}
+.dog-tap-target {
+    pointer-events: auto; position: absolute; z-index: 20; left: 0; bottom: 90px;
+    width: 145px; height: 170px; background-color: transparent; border: 0;
 }
 .tap-feedback {
     pointer-events: none; position: absolute; z-index: 5; left: 0; top: 0;
@@ -159,12 +164,36 @@ text {
     box-shadow: 0 8px 14px 0 var(--shadow);
 }
 .mission-float { position: absolute; left: 0; top: 2px; width: 336px; padding: 15px 16px; }
+.combat-preview-shell { position: relative; width: 304px; height: 171px; margin-top: 9px; }
+.mission-combat-preview {
+    width: 304px; height: 171px; object-fit: fill;
+    background-color: #09120e; border: 2px solid #f1bd5966; border-radius: 14px;
+}
+.combat-damage-float {
+    pointer-events: none; position: absolute; z-index: 4; top: 50px;
+    width: 88px; height: 36px; padding: 4px 7px; opacity: 0;
+    color: #fff1e9; background-color: #491713d9; border: 1px solid #ff786b;
+    border-radius: 12px; font-size: 20px; text-align: center;
+    text-shadow: 0 2px 3px #000000dd; animation: combat-damage-rise 0.85s ease-out;
+}
+.combat-hero-damage { left: 31px; }
+.combat-enemy-damage { right: 31px; }
+@keyframes combat-damage-rise {
+    from { opacity: 0; transform: translate(0, 10px) scale(0.86); }
+    16% { opacity: 1; transform: translate(0, 0) scale(1.08); }
+    62% { opacity: 0.92; transform: translate(0, -19px) scale(1.0); }
+    to { opacity: 0; transform: translate(0, -38px) scale(0.94); }
+}
+.mission-combat-status { height: 24px; margin-top: 6px; color: #ffcf71; font-size: 17px; text-align: left; }
+.mission-combat-stats { height: 21px; margin-top: 2px; color: #e8e1ce; font-size: 14px; text-align: left; }
+.combat-health-track { margin-top: 5px; }
 .float-heading { flex-direction: row; align-items: center; gap: 8px; color: var(--gold); font-size: 17px; }
 .float-heading image { width: 25px; height: 25px; object-fit: contain; }
 .float-title { margin-top: 7px; font-size: 25px; }
 .float-description { margin-top: 4px; color: var(--muted); font-size: 19px; }
 .progress-track { height: 14px; margin-top: 12px; background-color: #ffffff24; border-radius: 7px; overflow: hidden; }
 .progress-fill { width: 100%; height: 100%; background-color: var(--gold); border-radius: 7px; }
+.progress-fill.health-fill { background-color: #df554a; }
 .mission-fill { background-color: var(--jade); }
 .progress-caption {
     width: 100%; height: 24px; margin-top: 6px; color: var(--muted);
@@ -180,6 +209,7 @@ text {
 }
 .activity-toggle > text { flex: 1; min-width: 0; height: 24px; text-align: center; }
 .activity-toggle.missions { color: #2a1a06; background-color: #f1bd59; border-color: #ffe7aa; }
+.activity-toggle.recovery { color: #fff0ed; background-color: #7a302b; border-color: #ff9b8c; }
 .activity-toggle-icon-shell {
     width: 46px; height: 46px; align-items: center; justify-content: center;
     background-color: #0d2119; border-radius: 15px;
@@ -227,6 +257,13 @@ text {
 .cultivation-copy { flex: 1; min-width: 0; }
 .cultivation-title { margin-top: 5px; font-size: 27px; }
 .cultivation-track > .progress-fill { background-color: #4daeff; }
+.hero-health-track { position: relative; height: 24px; margin-top: 7px; border-radius: 10px; }
+.hero-health-track .cultivation-progress-text { height: 24px; font-size: 14px; }
+.hero-recovery-threshold {
+    pointer-events: none; position: absolute; left: 30%; top: 0; z-index: 3;
+    width: 4px; height: 100%; background-color: #fff3bd; border-radius: 2px;
+    box-shadow: 0 0 5px 1px #ffcf71;
+}
 .cultivation-actions { flex-shrink: 0; width: 220px; gap: 9px; }
 .primary-button, .secondary-button {
     pointer-events: auto; min-height: 50px; padding: 9px 12px; align-items: center; justify-content: center;

@@ -190,6 +190,7 @@
     color: #fff3d6;
     font-size: 32px;
 }
+.mission-danger { height: 23px; color: #ff8d78; font-size: 17px; }
 
 .mission-card-description {
     min-height: 70px;

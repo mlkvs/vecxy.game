@@ -19,20 +19,34 @@
             </panel>
             <panel class="calendar-slot">
                 <panel class="calendar-dial">
-                    <radial-progress id="year-dial" class="calendar-ring" />
-                    <image sprite="Assets/Textures/UIIconsAtlas.atlas#tick" />
+                    <radial-progress id="year-dial" class="calendar-ring" clockwise-depletion="true" />
+                    <image sprite="Assets/Textures/UIIconsAtlas.atlas#age" />
                 </panel>
             </panel>
         </panel>
 
         <panel class="character-space">
             <button id="character-tap-target" class="character-tap-target" aria-label="Медитировать" />
+            <button id="dog-tap-target" class="dog-tap-target" aria-label="Погладить питомца" />
             <button id="mission-summary-button" class="mission-float glass-panel">
                 <panel class="float-heading"><image sprite="Assets/Textures/UIIconsAtlas.atlas#missions" /><text>ТЕКУЩАЯ МИССИЯ</text></panel>
                 <text id="mission-name" class="float-title">Нет активной миссии</text>
-                <text id="mission-description" class="float-description">Выберите поручение.</text>
-                <panel class="progress-track"><progress id="mission-progress" class="progress-fill mission-fill" /></panel>
-                <text id="mission-progress-text" class="progress-caption">0 / 0</text>
+                <panel id="mission-normal-state">
+                    <text id="mission-description" class="float-description">Выберите поручение.</text>
+                    <panel class="progress-track"><progress id="mission-progress" class="progress-fill mission-fill" /></panel>
+                    <text id="mission-progress-text" class="progress-caption">0 / 0</text>
+                </panel>
+                <panel id="mission-combat-state" hidden="true">
+                    <panel class="combat-preview-shell">
+                        <image id="mission-combat-preview" class="mission-combat-preview" />
+                        <text id="combat-hero-damage" class="combat-damage-float combat-hero-damage" animation-trigger="manual">-0</text>
+                        <text id="combat-enemy-damage" class="combat-damage-float combat-enemy-damage" animation-trigger="manual">-0</text>
+                    </panel>
+                    <text id="mission-combat-status" class="mission-combat-status">АВТОБОЙ</text>
+                    <text id="mission-combat-stats" class="mission-combat-stats">АТК 0 · ЗАЩ 0 · СКОР 0/с</text>
+                    <panel class="progress-track combat-health-track"><progress id="enemy-health-progress" class="progress-fill health-fill" /></panel>
+                    <text id="enemy-health-text" class="progress-caption">0 / 0</text>
+                </panel>
             </button>
             <panel class="side-tools">
                 <panel id="effects-list" class="effects-list" />
@@ -49,6 +63,11 @@
                 <panel class="progress-track cultivation-track">
                     <progress id="cultivation-progress" class="progress-fill" />
                     <text id="cultivation-progress-text" class="cultivation-progress-text">0 / 25</text>
+                </panel>
+                <panel class="progress-track hero-health-track">
+                    <progress id="hero-health-progress" class="progress-fill health-fill" />
+                    <panel id="hero-recovery-threshold" class="hero-recovery-threshold" hidden="true" />
+                    <text id="hero-health-text" class="cultivation-progress-text">120 / 120</text>
                 </panel>
             </panel>
             <button id="breakthrough-button" class="secondary-button">ПРОРЫВ</button>

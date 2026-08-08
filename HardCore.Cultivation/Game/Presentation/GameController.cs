@@ -5,6 +5,7 @@ using HardCore.Cultivation.Game.Application;
 using HardCore.Cultivation.Game.Domain;
 using HardCore.Cultivation.Game.Infrastructure;
 using Vecxy.Audio;
+using Vecxy.Scene;
 using Vecxy.UI;
 using GameState = HardCore.Cultivation.Game.Domain.GameState;
 
@@ -20,6 +21,9 @@ public sealed class GameController(
     ItemEffectService effects,
     ItemPriceCalculator prices,
     CultivationService cultivation,
+    CombatService combat,
+    CombatScenePresenter combatScene,
+    ISceneManager scenes,
     IAudioManager audio,
     GameSaveSystem saves)
 {
@@ -52,6 +56,8 @@ public sealed class GameController(
     private UiKeyedCollection<Guid, ActiveMission, MissionQueueItemView>? _missionQueueItems;
     private UiText? _missionBoardEmpty;
     private UiText? _missionQueueEmpty;
+    private decimal _pendingHealthRestored;
+    private float _healthFloatElapsed;
 
     public GameState State => _state;
     public event Action<TickResult>? TickCompleted;
@@ -64,6 +70,8 @@ public sealed class GameController(
             shop.Refresh(_state.Shop);
         if (_state.MissionBoard.MissionIds.Count == 0)
             missions.Refresh(_state);
+        combat.ConfigureHero(_state.Character, _state.Character.MaximumHealth <= 0m);
+        combatScene.Initialize();
         _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character);
 
         _floatingDocument = ui.Load("UI/FloatingOverlay.xml");
@@ -99,6 +107,57 @@ public sealed class GameController(
 
         if (_gameOver)
             return;
+
+        var combatUpdate = combat.Update(_state, deltaTime);
+        if (_state.CurrentMission?.Combat is { } activeCombat)
+        {
+            if (!combatScene.IsVisible)
+                combatScene.Show(activeCombat);
+            combatScene.Handle(combatUpdate.Events);
+            ShowCombatDamage(combatUpdate.Events);
+            combatScene.Update(deltaTime);
+            UpdateCombatUi();
+        }
+        else if (combatScene.IsVisible)
+        {
+            combatScene.Hide();
+        }
+        if (combatUpdate.StateChanged)
+        {
+            if (combatUpdate.Events.Any(value => value.Type == CombatEventType.Victory))
+                ShowAchievement("ПОБЕДА");
+            if (combatUpdate.Events.Any(value => value.Type == CombatEventType.Defeat))
+                ShowAchievement("ПОРАЖЕНИЕ");
+            if (combatUpdate.Events.Any(value => value.Type == CombatEventType.Closed))
+            {
+                ApplyStateToView();
+                SyncMissions();
+                Save();
+            }
+            else
+            {
+                UpdateMissionSummary();
+                UpdateHud();
+            }
+        }
+        if (combatUpdate.HealthChanged)
+        {
+            UpdateHud();
+            _pendingHealthRestored += combatUpdate.HealthRestored;
+            _healthFloatElapsed += deltaTime;
+            if (_healthFloatElapsed >= 1f || combatUpdate.RecoveryCompleted)
+            {
+                SpawnFloatingValue(_pendingHealthRestored, "HP", "health-value");
+                _pendingHealthRestored = 0m;
+                _healthFloatElapsed = 0f;
+            }
+        }
+        if (combatUpdate.RecoveryCompleted)
+        {
+            ShowAchievement("МОЖНО ВЕРНУТЬСЯ К МИССИЯМ");
+            UpdateActivityButtons();
+            Save();
+        }
         _elapsedMilliseconds += deltaTime * 1000f;
         var processed = 0;
         while (_elapsedMilliseconds >= database.Balance.RealMillisecondsPerTick && processed++ < 100)
@@ -137,6 +196,7 @@ public sealed class GameController(
         _inventoryIcons = null;
         _missionCards = null;
         _missionQueueItems = null;
+        combatScene.Dispose();
     }
 
     private void InitializeNewGame()
@@ -144,6 +204,7 @@ public sealed class GameController(
         _state = new GameState(database.Balance.TicksPerYear);
         _state.Character.Restore(0m, 0, database.Balance.StartingAgeYears);
         _state.Character.AddMoney(database.Balance.StartingMoney);
+        combat.ConfigureHero(_state.Character, true);
         _state.SetActivityMode(ActivityMode.Cultivation);
         shop.Refresh(_state.Shop);
         missions.Refresh(_state);
@@ -204,6 +265,7 @@ public sealed class GameController(
         BindClick(_view.EffectPopupClose, CloseEffectPopup);
         _view.EffectPopup.Clicked += _ => CloseEffectPopup();
         _view.CharacterTapTarget.ClickedAt += (_, position) => TapCharacter(position);
+        BindClick(_view.DogTapTarget, ReactDog);
         BindClick(_view.AvailableMissionsTab, () => ShowMissionPage(false));
         BindClick(_view.AcceptedMissionsTab, () => ShowMissionPage(true));
         BindClick(_view.IngredientsTab, () => SelectInventoryCategory(ItemCategory.Ingredient));
@@ -295,8 +357,24 @@ public sealed class GameController(
         }
     }
 
+    private void ReactDog()
+    {
+        var dog = scenes.ActiveScene?.Objects
+            .Select(sceneObject => sceneObject.GetComponent<DogCompanion>())
+            .FirstOrDefault(component => component is not null);
+        dog?.React();
+    }
+
     private void SetActivity(ActivityMode mode)
     {
+        if (mode == ActivityMode.Missions && _state.RecoveryRequired)
+        {
+            ShowActionFeedback(
+                "После поражения нужно полностью восстановить здоровье.",
+                "Assets/Textures/UIIcons/close.png",
+                false);
+            return;
+        }
         _state.SetActivityMode(mode);
         UpdateActivityButtons();
         Save();
@@ -330,6 +408,12 @@ public sealed class GameController(
         _view.Realm.Value = $"{stage.Name} · ур. {progress.Level}";
         _view.CultivationProgressText.Value = $"{Format(character.SpiritualPower)} / {Format(required)}";
         _view.CultivationProgress.Progress = (float)fraction;
+        var healthFraction = character.MaximumHealth <= 0m ? 0m : character.Health / character.MaximumHealth;
+        _view.HeroHealthProgress.Progress = (float)Math.Clamp(healthFraction, 0m, 1m);
+        _view.HeroRecoveryThreshold.IsVisible = _state.RecoveryRequired;
+        _view.HeroRecoveryThreshold.Style.Set("left", string.Concat(
+            (database.Combat.RecoveryHealthFraction * 100m).ToString("0.##", CultureInfo.InvariantCulture), "%"));
+        _view.HeroHealthText.Value = $"{Format(character.Health)} / {Format(character.MaximumHealth)}";
         _view.Breakthrough.IsEnabled = progress.CanAttemptBreakthrough &&
                                       progress.StageIndex < database.Cultivation.Stages.Count - 1 &&
                                       character.SpiritualPower >= required;
@@ -340,6 +424,13 @@ public sealed class GameController(
     {
         if (_view is null)
             return;
+        if (_state.RecoveryRequired)
+        {
+            _view.ActivityMode.SetAttribute("class", "activity-toggle recovery");
+            _view.ActivityModeIcon.Sprite = AtlasSprite("Assets/Textures/UIIcons/cultivation.png");
+            _view.ActivityModeText.Value = "ВОССТАНОВЛЕНИЕ";
+            return;
+        }
         _view.ActivityMode.SetAttribute("class", _state.ActivityMode == ActivityMode.Missions
             ? "activity-toggle missions"
             : "activity-toggle");
@@ -360,15 +451,49 @@ public sealed class GameController(
             _view.MissionDescription.Value = "Нажмите, чтобы выбрать поручение.";
             _view.MissionProgressText.Value = "0 / 0";
             _view.MissionProgress.Progress = 0f;
+            _view.MissionNormalState.IsVisible = true;
+            _view.MissionCombatState.IsVisible = false;
             return;
         }
         var config = database.GetMission(mission.MissionConfigId);
         _view!.MissionName.Value = config.Name;
-        _view.MissionDescription.Value = _state.ActivityMode == ActivityMode.Missions
-            ? "Выполняется сейчас"
-            : "Ожидает: включите режим миссий";
+        _view.MissionDescription.Value = _state.RecoveryRequired
+            ? "Ожидает полного восстановления"
+            : _state.ActivityMode == ActivityMode.Missions
+                ? "Выполняется сейчас"
+                : "Ожидает: включите режим миссий";
         _view.MissionProgressText.Value = $"{Format(mission.CurrentProgress)} / {Format(mission.RequiredProgress)}";
         _view.MissionProgress.Progress = (float)(mission.RequiredProgress == 0m ? 1m : mission.CurrentProgress / mission.RequiredProgress);
+        UpdateCombatUi();
+    }
+
+    private void UpdateCombatUi()
+    {
+        if (_view is null)
+            return;
+        var active = _state.CurrentMission?.Combat;
+        _view.MissionNormalState.IsVisible = active is null;
+        _view.MissionCombatState.IsVisible = active is not null;
+        if (active is null)
+            return;
+        if (combatScene.RenderTarget is not null)
+            _view.MissionCombatPreview.Texture = combatScene.RenderTarget.ColorTexture;
+        var monster = database.GetMonster(active.MonsterConfigId);
+        _view.MissionCombatStatus.Value = active.Phase switch
+        {
+            CombatPhase.Victory => "ПОБЕДА",
+            CombatPhase.Defeat => "ПОРАЖЕНИЕ",
+            _ => $"АВТОБОЙ · {monster.Name}"
+        };
+        var danger = database.GetDanger(active.DangerLevel);
+        _view.MissionCombatStats.Value =
+            $"АТК {Format(monster.Attack * danger.MonsterPowerMultiplier)} · " +
+            $"ЗАЩ {Format(monster.Defense * danger.MonsterPowerMultiplier)} · " +
+            $"СКОР {Format((decimal)monster.AttacksPerSecond)}/с";
+        _view.EnemyHealthProgress.Progress = (float)(active.EnemyMaximumHealth <= 0m
+            ? 0m
+            : Math.Clamp(active.EnemyHealth / active.EnemyMaximumHealth, 0m, 1m));
+        _view.EnemyHealthText.Value = $"{Format(active.EnemyHealth)} / {Format(active.EnemyMaximumHealth)}";
     }
 
     private void SyncEffects()
@@ -675,6 +800,10 @@ public sealed class GameController(
         var mission = database.GetMission(missionId);
         card.Name.Value = mission.Name;
         card.Description.Value = mission.Description;
+        card.Danger.IsVisible = mission.DangerLevel is not null;
+        card.Danger.Value = mission.DangerLevel is { } danger
+            ? $"ОПАСНОСТЬ {new string('I', danger)}"
+            : string.Empty;
         card.Duration.Value = $"{mission.MinimumDurationTicks}–{mission.MaximumDurationTicks} недель";
         card.Start.IsEnabled = _state.MissionQueue.Count < database.Balance.MaximumMissionQueueSize;
     }
@@ -739,8 +868,10 @@ public sealed class GameController(
         card.Progress.Value = index == 0
             ? $"{Format(mission.CurrentProgress)} / {Format(mission.RequiredProgress)}"
             : $"{Format(mission.RequiredProgress)} недель";
-        card.MoveUp.IsEnabled = index > 0;
-        card.MoveDown.IsEnabled = index < _state.MissionQueue.Count - 1;
+        var queueLocked = _state.CurrentMission?.IsInCombat == true;
+        card.MoveUp.IsEnabled = !queueLocked && index > 0;
+        card.MoveDown.IsEnabled = !queueLocked && index < _state.MissionQueue.Count - 1;
+        card.Remove.IsEnabled = !mission.IsInCombat;
     }
 
     private void MoveMission(Guid id, int offset)
@@ -772,6 +903,7 @@ public sealed class GameController(
     {
         UnmountWindow(_view!.BreakthroughWindow);
         var result = cultivation.AttemptBreakthrough(_state.Character, _state.ActiveEffects);
+        combat.ConfigureHero(_state.Character);
         _view.BreakthroughResultTitle.Value = result.Success ? "ПРОРЫВ УСПЕШЕН" : "ПРОРЫВ НЕ УДАЛСЯ";
         _view.BreakthroughResultText.Value = result.Success
             ? "Вы перешли на новую ступень культивации."
@@ -921,7 +1053,7 @@ public sealed class GameController(
         var host = document.GetElementById<UiPanel>("tick-float-layer");
         host.Clear();
         var lane = 0;
-        foreach (var tone in new[] { "spirit-value", "mission-value", "money-value" })
+        foreach (var tone in new[] { "spirit-value", "mission-value", "money-value", "health-value" })
         foreach (var negative in new[] { false, true })
         {
             var key = (tone, negative);
@@ -950,6 +1082,25 @@ public sealed class GameController(
         var element = pool[Random.Shared.Next(pool.Count)];
         element.Value = string.IsNullOrEmpty(label) ? Signed(value) : $"{Signed(value)} {label}";
         _floatingDocument?.RestartAnimation(element);
+    }
+
+    private void ShowCombatDamage(IReadOnlyList<CombatEvent> events)
+    {
+        if (_view is null || _document is null)
+            return;
+        foreach (var combatEvent in events)
+        {
+            UiText? target = combatEvent.Type switch
+            {
+                CombatEventType.HeroHurt => _view.CombatHeroDamage,
+                CombatEventType.EnemyHurt => _view.CombatEnemyDamage,
+                _ => null
+            };
+            if (target is null || combatEvent.Amount <= 0m)
+                continue;
+            target.Value = Signed(-combatEvent.Amount);
+            _document.RestartAnimation(target);
+        }
     }
 
     private void ShowAchievement(string text)
@@ -1177,6 +1328,8 @@ public sealed class GameController(
             EffectType.SpiritualPowerGain when effect.Operation == ModifierOperation.Flat => $"Добавляет {Format(value)} духовной силы",
             EffectType.SpiritualPowerGain => $"Получение духовной силы {SignedUi(value)}%",
             EffectType.MissionProgress => $"Скорость выполнения миссий {SignedUi(value)}%",
+            EffectType.HealthRegeneration when effect.Operation == ModifierOperation.Flat => $"Регенерация здоровья {SignedUi(value)}/с",
+            EffectType.HealthRegeneration => $"Регенерация здоровья {SignedUi(value)}%",
             _ => $"Эффект {SignedUi(value)}%"
         };
     }
@@ -1210,7 +1363,9 @@ public sealed class GameController(
     {
         EffectType.TickEfficiency => "Эффективность культивации", EffectType.AgingSpeed => "Старение",
         EffectType.BreakthroughChance => "Шанс прорыва", EffectType.SpiritualPowerGain => "Духовная сила",
-        EffectType.MissionProgress => "Выполнение миссий", _ => type.ToString()
+        EffectType.MissionProgress => "Выполнение миссий",
+        EffectType.HealthRegeneration => "Регенерация здоровья",
+        _ => type.ToString()
     };
 
     private void BindClick(UiButton button, Action action) => button.Clicked += _ =>

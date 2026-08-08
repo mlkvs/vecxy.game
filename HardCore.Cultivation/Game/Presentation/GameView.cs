@@ -10,6 +10,7 @@ internal sealed class GameView
         WindowLayer = Panel("window-layer");
         WindowBackdrop = Panel("window-backdrop");
         CharacterTapTarget = Button("character-tap-target");
+        DogTapTarget = Button("dog-tap-target");
         MissionSummaryButton = Button("mission-summary-button");
         YearDial = Radial("year-dial");
         Money = Text("money-text");
@@ -27,6 +28,18 @@ internal sealed class GameView
         MissionDescription = Text("mission-description");
         MissionProgressText = Text("mission-progress-text");
         MissionProgress = Progress("mission-progress");
+        MissionNormalState = Panel("mission-normal-state");
+        MissionCombatState = Panel("mission-combat-state");
+        MissionCombatPreview = Image("mission-combat-preview");
+        MissionCombatStatus = Text("mission-combat-status");
+        MissionCombatStats = Text("mission-combat-stats");
+        CombatHeroDamage = Text("combat-hero-damage");
+        CombatEnemyDamage = Text("combat-enemy-damage");
+        EnemyHealthProgress = Progress("enemy-health-progress");
+        EnemyHealthText = Text("enemy-health-text");
+        HeroHealthProgress = Progress("hero-health-progress");
+        HeroRecoveryThreshold = Panel("hero-recovery-threshold");
+        HeroHealthText = Text("hero-health-text");
         Effects = Panel("effects-list");
 
         ShopButton = Button("shop-button");
@@ -112,6 +125,7 @@ internal sealed class GameView
     public UiPanel WindowLayer { get; }
     public UiPanel WindowBackdrop { get; }
     public UiButton CharacterTapTarget { get; }
+    public UiButton DogTapTarget { get; }
     public UiButton MissionSummaryButton { get; }
     public UiRadialProgress YearDial { get; }
     public UiText Money { get; }
@@ -128,6 +142,18 @@ internal sealed class GameView
     public UiText MissionDescription { get; }
     public UiText MissionProgressText { get; }
     public UiProgress MissionProgress { get; }
+    public UiPanel MissionNormalState { get; }
+    public UiPanel MissionCombatState { get; }
+    public UiImage MissionCombatPreview { get; }
+    public UiText MissionCombatStatus { get; }
+    public UiText MissionCombatStats { get; }
+    public UiText CombatHeroDamage { get; }
+    public UiText CombatEnemyDamage { get; }
+    public UiProgress EnemyHealthProgress { get; }
+    public UiText EnemyHealthText { get; }
+    public UiProgress HeroHealthProgress { get; }
+    public UiPanel HeroRecoveryThreshold { get; }
+    public UiText HeroHealthText { get; }
     public UiPanel Effects { get; }
     public UiButton ShopButton { get; }
     public UiButton InventoryButton { get; }

@@ -1,4 +1,5 @@
 <panel class="mission-card" data-key="{{key}}">
+    <text class="mission-danger" hidden="true">ОПАСНОСТЬ I</text>
     <text class="mission-card-title">{{name}}</text>
     <text class="mission-card-description">{{description}}</text>
     <panel class="mission-card-footer">
