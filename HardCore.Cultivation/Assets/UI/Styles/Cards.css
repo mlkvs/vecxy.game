@@ -372,6 +372,24 @@
     text-align: center;
 }
 
+.shop-item-quality {
+    flex-shrink: 0;
+    min-height: 22px;
+    margin-top: 2px;
+}
+
+.shop-item-quality .quality-stars {
+    gap: 3px;
+}
+
+.shop-item-quality .quality-star,
+.shop-item-quality .quality-star-empty,
+.shop-item-quality .quality-star-fill,
+.shop-item-quality .quality-star-fill image {
+    width: 20px;
+    height: 20px;
+}
+
 .shop-card .item-effect {
     flex: 1;
     min-height: 0;
@@ -452,6 +470,28 @@
     padding: 4px 7px;
     font-size: 17px;
     border-width: 1px;
+}
+
+.reward-quality {
+    pointer-events: none;
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    top: 2px;
+    height: 11px;
+    justify-content: center;
+}
+
+.reward-quality .quality-stars {
+    gap: 1px;
+}
+
+.reward-quality .quality-star,
+.reward-quality .quality-star-empty,
+.reward-quality .quality-star-fill,
+.reward-quality .quality-star-fill image {
+    width: 10px;
+    height: 10px;
 }
 
 .mission-start {
@@ -546,6 +586,30 @@
     background-color: #18271f;
     border: 2px solid #ffffff22;
     border-radius: 19px;
+}
+
+.inventory-quality {
+    pointer-events: none;
+    position: absolute;
+    z-index: 2;
+    left: 5px;
+    right: 5px;
+    top: 4px;
+    height: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.inventory-quality .quality-stars {
+    gap: 1px;
+}
+
+.inventory-quality .quality-star,
+.inventory-quality .quality-star-empty,
+.inventory-quality .quality-star-fill,
+.inventory-quality .quality-star-fill image {
+    width: 14px;
+    height: 14px;
 }
 
 .inventory-icon-well {

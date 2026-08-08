@@ -12,6 +12,7 @@ internal sealed class ShopCardView : AUiComponent
         Icon = Element<UiImage>(".item-icon");
         Name = Element<UiText>(".item-name");
         Meta = Element<UiText>(".item-meta");
+        QualityHost = Element<UiPanel>(".shop-item-quality");
         Effect = Element<UiText>(".item-effect");
         Buy = Element<UiButton>(".buy-button");
     }
@@ -21,6 +22,8 @@ internal sealed class ShopCardView : AUiComponent
     public UiImage Icon { get; }
     public UiText Name { get; }
     public UiText Meta { get; }
+    public UiPanel QualityHost { get; }
+    public QualityStarsView QualityStars { get; set; } = null!;
     public UiText Effect { get; }
     public UiButton Buy { get; }
 }
@@ -31,12 +34,15 @@ internal sealed class InventoryIconView : AUiComponent
     {
         IconWell = Element<UiPanel>(".inventory-icon-well");
         Icon = Element<UiImage>(".inventory-icon");
+        QualityHost = Element<UiPanel>(".inventory-quality");
         Quantity = Element<UiText>(".inventory-quantity");
     }
 
     public UiElement Card => Root;
     public UiPanel IconWell { get; }
     public UiImage Icon { get; }
+    public UiPanel QualityHost { get; }
+    public QualityStarsView QualityStars { get; set; } = null!;
     public UiText Quantity { get; }
 }
 
@@ -82,14 +88,35 @@ internal sealed class MissionQueueItemView : AUiComponent
 
 internal sealed class QualityStarsView : AUiComponent
 {
+    private const string GrayStar = "Assets/Textures/UIIcons/star-gray.png";
+    private const string RainbowStar = "Assets/Textures/UIIcons/star-rainbow.png";
+
+    private readonly IReadOnlyList<UiImage> _emptyStars;
     private readonly IReadOnlyList<UiPanel> _fills;
 
-    public QualityStarsView(UiElement root) : base(root) =>
+    public QualityStarsView(UiElement root) : base(root)
+    {
+        _emptyStars = Elements<UiImage>("quality-star-empty");
         _fills = Elements<UiPanel>("quality-star-fill");
+    }
 
     public void SetQuality(decimal quality)
     {
+        Root.SetAttribute("aria-label", "Качество предмета известно");
+        Root.ToggleClass("unknown-quality", false);
+        foreach (var star in _emptyStars)
+            star.Source = GrayStar;
         for (var index = 0; index < _fills.Count; index++)
             _fills[index].Style.SetWidthPercent((float)Math.Clamp(quality - index, 0m, 1m));
+    }
+
+    public void SetUnknown()
+    {
+        Root.SetAttribute("aria-label", "Качество предмета неизвестно");
+        Root.ToggleClass("unknown-quality", true);
+        foreach (var star in _emptyStars)
+            star.Source = RainbowStar;
+        foreach (var fill in _fills)
+            fill.Style.SetWidthPercent(0f);
     }
 }

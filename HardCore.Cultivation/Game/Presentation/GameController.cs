@@ -423,6 +423,7 @@ public sealed class GameController(
             ["meta"] = string.Empty, ["effect"] = string.Empty, ["price"] = string.Empty
         });
         var card = new ShopCardView(root);
+        card.QualityStars = CreateQualityStars(card.QualityHost);
         card.IconWell.Clicked += _ =>
         {
             if (TryGetGuidAttribute(card.Card, "data-slot-id", out var slotId))
@@ -445,6 +446,7 @@ public sealed class GameController(
         card.Icon.Source = config.Icon;
         card.Name.Value = config.Name;
         card.Meta.Value = $"В наличии: {slot.AvailableQuantity}";
+        card.QualityStars.SetQuality(slot.Item.Quality);
         card.Effect.Value = DescribeItemEffect(config, slot.Item);
         card.Buy.Label = $"КУПИТЬ · {unitPrice.ToString(CultureInfo.InvariantCulture)}";
         card.IconWell.Style.BorderColor = rarity.Color;
@@ -515,6 +517,7 @@ public sealed class GameController(
             ["key"] = item.InstanceId.ToString(), ["icon"] = string.Empty, ["quantity"] = string.Empty
         });
         var icon = new InventoryIconView(root);
+        icon.QualityStars = CreateQualityStars(icon.QualityHost);
         root.Clicked += _ =>
         {
             if (TryGetGuidAttribute(root, "data-item-id", out var id))
@@ -528,6 +531,7 @@ public sealed class GameController(
         var config = database.GetItem(item.ConfigId);
         icon.Card.SetAttribute("data-item-id", item.InstanceId.ToString());
         icon.Icon.Source = config.Icon;
+        icon.QualityStars.SetQuality(item.Quality);
         icon.Quantity.Value = $"×{item.Quantity}";
         icon.IconWell.Style.BorderColor = database.GetRarity(item.Rarity).Color;
     }
@@ -1033,12 +1037,9 @@ public sealed class GameController(
         view.InfoPopupStatLabel3.Value = "РЕДКОСТЬ";
         view.InfoPopupStatValue3.Value = rarity?.DisplayName ?? "Определится при получении";
         view.InfoPopupDetails.Value = context;
-        view.InfoPopupQuality.IsVisible = item is not null;
-        view.InfoPopupStatValue2.IsVisible = item is null;
-        if (item is not null)
-            BuildQualityStars(view.InfoPopupQuality, quality);
-        else
-            view.InfoPopupStatValue2.Value = "—";
+        view.InfoPopupQuality.IsVisible = true;
+        view.InfoPopupStatValue2.IsVisible = false;
+        BuildQualityStars(view.InfoPopupQuality, item?.Quality);
         view.InfoPopupIcon.Source = config.Icon;
         var accent = rarity?.Color ?? "#56d5a0";
         view.InfoPopupKind.Style.Color = accent;
@@ -1049,6 +1050,9 @@ public sealed class GameController(
     private void AddRewardIcon(UiElement parent, ItemConfig item, string badge)
     {
         var tile = AddRewardIcon(parent, item.Icon, badge);
+        var qualityHost = _document!.CreatePanel(new Dictionary<string, string> { ["class"] = "reward-quality" });
+        tile.Add(qualityHost);
+        BuildQualityStars(qualityHost, null);
         tile.Clicked += _ => ShowItemPopup(item, null, badge.TrimStart('×'), "Возможная награда за миссию");
     }
 
@@ -1094,11 +1098,20 @@ public sealed class GameController(
         return tile;
     }
 
-    private void BuildQualityStars(UiElement host, decimal quality)
+    private QualityStarsView CreateQualityStars(UiElement host)
+    {
+        var stars = _document!.Instantiate("Components/QualityStars.xml", host);
+        return new QualityStarsView(stars);
+    }
+
+    private void BuildQualityStars(UiElement host, decimal? quality)
     {
         host.Clear();
-        var stars = _document!.Instantiate("Components/QualityStars.xml", host);
-        new QualityStarsView(stars).SetQuality(quality);
+        var stars = CreateQualityStars(host);
+        if (quality is { } knownQuality)
+            stars.SetQuality(knownQuality);
+        else
+            stars.SetUnknown();
     }
 
     private string DescribeItemEffect(ItemConfig config, ItemInstance item) => DescribeItemEffect(config, item.Quality);

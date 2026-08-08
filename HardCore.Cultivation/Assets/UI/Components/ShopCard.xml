@@ -2,6 +2,7 @@
     <panel class="item-icon-well"><image class="item-icon" src="{{icon}}" /></panel>
     <text class="item-name">{{name}}</text>
     <text class="item-meta">{{meta}}</text>
+    <panel class="item-quality shop-item-quality" />
     <text class="item-effect">{{effect}}</text>
     <button class="card-action buy-button">КУПИТЬ · {{price}}</button>
 </panel>
