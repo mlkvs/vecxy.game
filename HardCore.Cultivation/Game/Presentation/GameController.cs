@@ -211,6 +211,7 @@ public sealed class GameController(
         BindClick(_view.PillsTab, () => SelectInventoryCategory(ItemCategory.Pill));
         BindClick(_view.InventoryUse, UseSelectedItem);
         BindClick(_view.InventorySell, SellSelectedItem);
+        _view.WindowBackdrop.Clicked += _ => { };
         foreach (var close in _view.WindowCloseButtons)
             close.Clicked += _ => CloseWindows();
 
