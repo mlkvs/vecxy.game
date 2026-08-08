@@ -509,14 +509,17 @@
 
 .queue-controls {
     flex-shrink: 0;
-    width: 44px;
+    width: 38px;
+    margin-top: 0;
+    flex-direction: column;
+    align-items: center;
     gap: 6px;
 }
 
 .queue-control {
     pointer-events: auto;
     width: 38px;
-    height: 38px;
+    height: 36px;
     align-items: center;
     justify-content: center;
     background-color: #303d34;
@@ -527,6 +530,10 @@
     width: 24px;
     height: 24px;
     object-fit: contain;
+}
+
+.queue-remove {
+    margin-left: 0;
 }
 
 .inventory-icon-card {
