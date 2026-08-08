@@ -57,7 +57,6 @@
         <panel class="bottom-nav">
             <button id="shop-button" class="nav-button"><panel class="nav-icon-shell"><image src="../Textures/UIIcons/shop.png" /></panel><text>ЛАВКА</text></button>
             <button id="inventory-button" class="nav-button"><panel class="nav-icon-shell"><image src="../Textures/UIIcons/inventory.png" /></panel><text>РЮКЗАК</text></button>
-            <button id="missions-button" class="nav-button"><panel class="nav-icon-shell"><image src="../Textures/UIIcons/missions.png" /></panel><text>МИССИИ</text></button>
         </panel>
     </panel>
     <panel id="window-layer">

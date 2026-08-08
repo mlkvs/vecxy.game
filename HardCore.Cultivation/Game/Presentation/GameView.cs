@@ -31,7 +31,6 @@ internal sealed class GameView
 
         ShopButton = Button("shop-button");
         InventoryButton = Button("inventory-button");
-        MissionsButton = Button("missions-button");
         ShopWindow = Panel("shop-window");
         ShopMarkup = Text("shop-markup");
         ShopMoney = Text("shop-money");
@@ -133,7 +132,6 @@ internal sealed class GameView
     public UiPanel Effects { get; }
     public UiButton ShopButton { get; }
     public UiButton InventoryButton { get; }
-    public UiButton MissionsButton { get; }
     public UiPanel ShopWindow { get; }
     public UiText ShopMarkup { get; }
     public UiText ShopMoney { get; }

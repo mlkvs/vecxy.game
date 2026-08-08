@@ -192,7 +192,6 @@ public sealed class GameController(
 
         BindClick(_view.ShopButton, () => { OpenWindow(_view.ShopWindow); SyncShop(); });
         BindClick(_view.InventoryButton, () => { OpenWindow(_view.InventoryWindow); SyncInventory(); });
-        BindClick(_view.MissionsButton, OpenMissions);
         BindClick(_view.MissionSummaryButton, OpenMissions);
         BindClick(_view.ActivityMode, ToggleActivityMode);
         BindClick(_view.Breakthrough, OpenBreakthrough);
