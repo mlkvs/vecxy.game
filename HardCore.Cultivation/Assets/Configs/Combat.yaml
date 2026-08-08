@@ -1,0 +1,110 @@
+# ============================================================
+# БОЙ, ЗДОРОВЬЕ ГЕРОЯ И ВОССТАНОВЛЕНИЕ
+# ============================================================
+# Здесь настраиваются размер боевой RenderTexture, характеристики героя,
+# восстановление после поражения, уровни опасности и боевые фоны.
+#
+# Важно про уровни и стадии:
+# - В каждой стадии 10 уровней: от 1 до 10.
+# - При прорыве уровень сбрасывается с 10 до 1, но полученные ранее
+#   прибавки за уровни сохраняются.
+# - completedLevels = stageIndex * 9 + level - 1.
+# - stageIndex начинается с 0, поэтому первая стадия не даёт stage-бонус.
+# - Формула характеристики героя:
+#   base + completedLevels * perLevel + stageIndex * perStage.
+# Благодаря этому успешный прорыв не уменьшает боевые параметры.
+
+# Разрешение картинки боя внутри карточки миссии, в пикселях.
+# Желательно сохранять 16:9. Чем оно выше, тем больше расход видеопамяти.
+renderWidth: 576
+renderHeight: 324
+
+# Базовый путь к спрайтшитам героя без суффикса и расширения.
+# Ожидаются файлы _idle.png, _attack.png, _hurt.png и _death.png.
+heroSpriteSet: Textures/Characters/3 Man/Man
+
+# Максимальное здоровье: база, отдельный бонус стадии и бонус уровня.
+# Сейчас стадия 1 ур. 1 = 120 HP, стадия 1 ур. 10 = 192 HP,
+# стадия 2 ур. 1 = 232 HP. Сам прорыв добавляет ровно 40 HP.
+heroBaseHealth: 120
+heroHealthPerStage: 40
+heroHealthPerLevel: 8
+
+# Атака героя рассчитывается по той же формуле прогрессии.
+heroBaseAttack: 18
+heroAttackPerStage: 6
+heroAttackPerLevel: 2
+
+# Защита вычитается из входящего урона. Атака всегда наносит минимум 1 HP.
+heroBaseDefense: 3
+heroDefensePerStage: 2
+heroDefensePerLevel: 0.5
+
+# Число атак героя в секунду. Влияет и на симуляцию, и на частоту анимации.
+# Значение должно быть больше 0.
+heroAttacksPerSecond: 1.1
+
+# Естественное восстановление HP за секунду реального времени ВНЕ боя.
+# 0 отключает базовую регенерацию. Эффекты HealthRegeneration из Items.yaml
+# сначала добавляют Flat-бонусы, а затем применяют проценты.
+healthRegenerationPerSecond: 0.1
+
+# Доля максимального HP, после которой снова разрешены миссии.
+# После поражения здоровье становится 0, включается культивация, а миссии
+# блокируются до этого порога. Диапазон: (0; 1]. 0.30 означает 30%.
+# Светлая риска на полосе здоровья автоматически показывает этот порог.
+recoveryHealthFraction: 0.30
+
+# Задержка в секундах после исхода боя для показа финальной анимации.
+finishDelaySeconds: 1.2
+
+# УРОВНИ ОПАСНОСТИ
+# level — уникальный номер для dangerLevel в Missions.yaml.
+# encounterChancePercent — шанс боя при принятии миссии, от 0 до 100.
+# monsterPowerMultiplier умножает здоровье, атаку и защиту врага,
+# но не изменяет его скорость атак.
+dangerLevels:
+  - level: 1
+    encounterChancePercent: 35
+    monsterPowerMultiplier: 0.85
+  - level: 2
+    encounterChancePercent: 65
+    monsterPowerMultiplier: 1.05
+  - level: 3
+    encounterChancePercent: 90
+    monsterPowerMultiplier: 1.30
+
+# БОЕВЫЕ ФОНЫ
+# id используется в possibleBackgroundIds из Missions.yaml.
+# Первый слой рисуется глубже всех, каждый следующий — поверх предыдущего.
+backgrounds:
+  - id: mist_forest
+    layers:
+      - Textures/Backgrounds/1/1.png
+      - Textures/Backgrounds/1/2.png
+      - Textures/Backgrounds/1/3.png
+      - Textures/Backgrounds/1/4.png
+      - Textures/Backgrounds/1/5.png
+  - id: mountain_pass
+    layers:
+      - Textures/Backgrounds/2/1.png
+      - Textures/Backgrounds/2/2.png
+      - Textures/Backgrounds/2/3.png
+      - Textures/Backgrounds/2/4.png
+      - Textures/Backgrounds/2/5.png
+      - Textures/Backgrounds/2/6.png
+  - id: ancient_ruins
+    layers:
+      - Textures/Backgrounds/3/1.png
+      - Textures/Backgrounds/3/2.png
+      - Textures/Backgrounds/3/3.png
+      - Textures/Backgrounds/3/4.png
+      - Textures/Backgrounds/3/5.png
+  - id: storm_valley
+    layers:
+      - Textures/Backgrounds/4/1.png
+      - Textures/Backgrounds/4/2.png
+      - Textures/Backgrounds/4/3.png
+      - Textures/Backgrounds/4/4.png
+      - Textures/Backgrounds/4/5.png
+      - Textures/Backgrounds/4/6.png

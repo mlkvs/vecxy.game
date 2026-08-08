@@ -230,25 +230,55 @@ public sealed class MissionService(
             return TransactionResult.Fail("Это поручение уже недоступно.");
         var config = database.GetMission(missionId);
         var required = random.NextInt(config.MinimumDurationTicks, config.MaximumDurationTicks + 1);
+        var encounter = RollEncounter(config, required);
         state.EnqueueMission(new ActiveMission
         {
             MissionConfigId = missionId,
             RequiredProgress = required,
-            Rewards = GenerateRewards(config)
+            Rewards = GenerateRewards(config),
+            Encounter = encounter
         });
         state.MissionBoard.Take(missionId);
         return TransactionResult.Ok(0, $"Добавлено в очередь: {config.Name}");
     }
 
-    public TransactionResult Remove(GameState state, Guid missionInstanceId) =>
-        state.RemoveMission(missionInstanceId)
+    private MissionEncounter? RollEncounter(MissionConfig mission, decimal requiredProgress)
+    {
+        if (mission.DangerLevel is not { } level)
+            return null;
+        var danger = database.GetDanger(level);
+        if (random.NextDecimal(0m, 100m) >= danger.EncounterChancePercent)
+            return null;
+        var monsters = mission.PossibleMonsterIds.Select(database.GetMonster).ToArray();
+        var monster = WeightedRandom.Select(monsters, value => value.SelectionWeight, random);
+        var background = mission.PossibleBackgroundIds[random.NextInt(0, mission.PossibleBackgroundIds.Count)];
+        return new MissionEncounter
+        {
+            MonsterConfigId = monster.Id,
+            BackgroundId = background,
+            DangerLevel = level,
+            TriggerProgress = decimal.Round(requiredProgress * random.NextDecimal(0.25m, 0.75m), 2)
+        };
+    }
+
+    public TransactionResult Remove(GameState state, Guid missionInstanceId)
+    {
+        var mission = state.MissionQueue.FirstOrDefault(value => value.InstanceId == missionInstanceId);
+        if (mission?.IsInCombat == true)
+            return TransactionResult.Fail("Нельзя покинуть поручение во время боя.");
+        return state.RemoveMission(missionInstanceId)
             ? TransactionResult.Ok(0, "Миссия удалена из очереди.")
             : TransactionResult.Fail("Миссия не найдена.");
+    }
 
-    public TransactionResult Move(GameState state, Guid missionInstanceId, int offset) =>
-        state.MoveMission(missionInstanceId, offset)
+    public TransactionResult Move(GameState state, Guid missionInstanceId, int offset)
+    {
+        if (state.CurrentMission?.IsInCombat == true)
+            return TransactionResult.Fail("Нельзя менять очередь во время боя.");
+        return state.MoveMission(missionInstanceId, offset)
             ? TransactionResult.Ok(0, "Порядок миссий изменён.")
             : TransactionResult.Fail("Миссию нельзя переместить дальше.");
+    }
 
     public bool AdvanceCurrentMission(GameState state, decimal progress)
     {
@@ -497,6 +527,156 @@ public sealed class CultivationService(GameDatabase database, IRandomSource rand
     }
 }
 
+public enum CombatEventType
+{
+    Started,
+    HeroAttack,
+    EnemyAttack,
+    HeroHurt,
+    EnemyHurt,
+    HeroDied,
+    EnemyDied,
+    Victory,
+    Defeat,
+    Closed
+}
+
+public readonly record struct CombatEvent(CombatEventType Type, decimal Amount = 0m);
+
+public sealed class CombatUpdate
+{
+    public List<CombatEvent> Events { get; } = [];
+    public bool HealthChanged { get; internal set; }
+    public decimal HealthRestored { get; internal set; }
+    public bool RecoveryCompleted { get; internal set; }
+    public bool StateChanged => Events.Count > 0;
+}
+
+public sealed class CombatService(GameDatabase database)
+{
+    private int CompletedCultivationLevels(CharacterState character) =>
+        character.Cultivation.StageIndex * (database.Cultivation.LevelMultipliers.Count - 1) +
+        character.Cultivation.Level - 1;
+
+    public decimal GetHeroMaximumHealth(CharacterState character) =>
+        database.Combat.HeroBaseHealth +
+        character.Cultivation.StageIndex * database.Combat.HeroHealthPerStage +
+        CompletedCultivationLevels(character) * database.Combat.HeroHealthPerLevel;
+
+    public decimal GetHeroAttack(CharacterState character) =>
+        database.Combat.HeroBaseAttack +
+        character.Cultivation.StageIndex * database.Combat.HeroAttackPerStage +
+        CompletedCultivationLevels(character) * database.Combat.HeroAttackPerLevel;
+
+    public decimal GetHeroDefense(CharacterState character) =>
+        database.Combat.HeroBaseDefense +
+        character.Cultivation.StageIndex * database.Combat.HeroDefensePerStage +
+        CompletedCultivationLevels(character) * database.Combat.HeroDefensePerLevel;
+
+    public decimal GetRecoveryHealthThreshold(CharacterState character) =>
+        GetHeroMaximumHealth(character) * database.Combat.RecoveryHealthFraction;
+
+    public void ConfigureHero(CharacterState character, bool fillIfUninitialized = false) =>
+        character.ConfigureMaximumHealth(GetHeroMaximumHealth(character), fillIfUninitialized);
+
+    public CombatUpdate Update(GameState state, float deltaTime)
+    {
+        var result = new CombatUpdate();
+        ConfigureHero(state.Character);
+        var mission = state.CurrentMission;
+        if (mission?.Combat is null && state.Character.Health < state.Character.MaximumHealth && deltaTime > 0f)
+        {
+            var regeneration = Math.Max(0m, ModifierCalculator.Calculate(
+                database.Combat.HealthRegenerationPerSecond,
+                state.ActiveEffects.Where(effect => !effect.IsExpired),
+                EffectType.HealthRegeneration));
+            var before = state.Character.Health;
+            state.Character.Heal(regeneration * (decimal)Math.Clamp(deltaTime, 0f, 0.25f));
+            result.HealthRestored = state.Character.Health - before;
+            result.HealthChanged = result.HealthRestored > 0m;
+            if (state.RecoveryRequired && state.Character.Health >= GetRecoveryHealthThreshold(state.Character))
+            {
+                state.CompleteDefeatRecovery();
+                result.RecoveryCompleted = true;
+            }
+        }
+        if (mission is null)
+            return result;
+
+        if (state.ActivityMode == ActivityMode.Missions && mission.Combat is null && mission.Encounter is { Resolved: false } encounter &&
+            mission.CurrentProgress >= encounter.TriggerProgress)
+        {
+            var monster = database.GetMonster(encounter.MonsterConfigId);
+            var multiplier = database.GetDanger(encounter.DangerLevel).MonsterPowerMultiplier;
+            var maximumHealth = decimal.Round(monster.MaximumHealth * multiplier, 2);
+            var combat = new ActiveCombat
+            {
+                MonsterConfigId = monster.Id,
+                BackgroundId = encounter.BackgroundId,
+                DangerLevel = encounter.DangerLevel,
+                EnemyMaximumHealth = maximumHealth
+            };
+            combat.Initialize(maximumHealth, 0.35f, 0.7f);
+            mission.StartCombat(combat);
+            result.Events.Add(new CombatEvent(CombatEventType.Started));
+        }
+
+        var active = mission.Combat;
+        if (active is null)
+            return result;
+        if (active.IsFinished)
+        {
+            if (!active.AdvanceFinishDelay(deltaTime))
+                return result;
+            var victory = active.Phase == CombatPhase.Victory;
+            mission.ResolveCombat();
+            if (!victory)
+            {
+                state.RemoveMission(mission.InstanceId);
+                state.Character.RestoreHealth(0m, state.Character.MaximumHealth);
+                state.BeginDefeatRecovery();
+            }
+            result.Events.Add(new CombatEvent(CombatEventType.Closed));
+            return result;
+        }
+
+        active.AdvanceCooldowns(Math.Clamp(deltaTime, 0f, 0.25f));
+        var monsterConfig = database.GetMonster(active.MonsterConfigId);
+        var dangerMultiplier = database.GetDanger(active.DangerLevel).MonsterPowerMultiplier;
+
+        while (active.HeroCooldown <= 0f && active.Phase == CombatPhase.Fighting)
+        {
+            var damage = Math.Max(1m, GetHeroAttack(state.Character) - monsterConfig.Defense * dangerMultiplier);
+            var appliedDamage = active.DamageEnemy(damage);
+            active.ResetCooldown(CombatActor.Hero, 1f / database.Combat.HeroAttacksPerSecond);
+            result.Events.Add(new CombatEvent(CombatEventType.HeroAttack, appliedDamage));
+            result.Events.Add(new CombatEvent(CombatEventType.EnemyHurt, appliedDamage));
+            if (active.EnemyHealth <= 0m)
+            {
+                active.Finish(CombatPhase.Victory, database.Combat.FinishDelaySeconds);
+                result.Events.Add(new CombatEvent(CombatEventType.EnemyDied));
+                result.Events.Add(new CombatEvent(CombatEventType.Victory));
+            }
+        }
+
+        while (active.EnemyCooldown <= 0f && active.Phase == CombatPhase.Fighting)
+        {
+            var damage = Math.Max(1m, monsterConfig.Attack * dangerMultiplier - GetHeroDefense(state.Character));
+            var appliedDamage = state.Character.TakeDamage(damage);
+            active.ResetCooldown(CombatActor.Enemy, 1f / monsterConfig.AttacksPerSecond);
+            result.Events.Add(new CombatEvent(CombatEventType.EnemyAttack, appliedDamage));
+            result.Events.Add(new CombatEvent(CombatEventType.HeroHurt, appliedDamage));
+            if (state.Character.Health <= 0m)
+            {
+                active.Finish(CombatPhase.Defeat, database.Combat.FinishDelaySeconds);
+                result.Events.Add(new CombatEvent(CombatEventType.HeroDied));
+                result.Events.Add(new CombatEvent(CombatEventType.Defeat));
+            }
+        }
+        return result;
+    }
+}
+
 public sealed class TickProcessor(
     GameDatabase database,
     ItemEffectService effects,
@@ -511,12 +691,12 @@ public sealed class TickProcessor(
         var missionCompleted = false;
         var spiritualPower = 0m;
         var levelsGained = 0;
-        if (state.ActivityMode == ActivityMode.Missions)
+        if (state.ActivityMode == ActivityMode.Missions && state.CurrentMission?.IsInCombat != true)
         {
             missionProgress = modifiers.TickEfficiency * modifiers.MissionProgressMultiplier;
             missionCompleted = missions.AdvanceCurrentMission(state, missionProgress);
         }
-        else
+        else if (state.ActivityMode == ActivityMode.Cultivation)
         {
             spiritualPower = database.Balance.BaseSpiritualPowerPerTick *
                              modifiers.TickEfficiency *

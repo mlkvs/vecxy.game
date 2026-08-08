@@ -6,7 +6,8 @@ public enum EffectType
     AgingSpeed,
     BreakthroughChance,
     SpiritualPowerGain,
-    MissionProgress
+    MissionProgress,
+    HealthRegeneration
 }
 
 public enum ActivityMode
@@ -41,6 +42,19 @@ public enum MissionRewardType
 {
     Money,
     Item
+}
+
+public enum CombatPhase
+{
+    Fighting,
+    Victory,
+    Defeat
+}
+
+public enum CombatActor
+{
+    Hero,
+    Enemy
 }
 
 public enum ItemRarity
@@ -151,6 +165,8 @@ public sealed class CharacterState
     public long Money { get; private set; }
     public CharacterAge Age { get; } = new(16m);
     public CultivationProgress Cultivation { get; } = new();
+    public decimal MaximumHealth { get; private set; } = 100m;
+    public decimal Health { get; private set; } = 100m;
 
     public void AddSpiritualPower(decimal amount)
     {
@@ -181,6 +197,41 @@ public sealed class CharacterState
 
     public void AddMoney(long amount) => Money = checked(Money + amount);
 
+    public void ConfigureMaximumHealth(decimal maximumHealth, bool fillIfUninitialized = false)
+    {
+        if (maximumHealth <= 0m)
+            throw new ArgumentOutOfRangeException(nameof(maximumHealth));
+        var wasFull = Health >= MaximumHealth;
+        MaximumHealth = maximumHealth;
+        Health = fillIfUninitialized || wasFull
+            ? maximumHealth
+            : Math.Clamp(Health, 0m, maximumHealth);
+    }
+
+    public decimal TakeDamage(decimal amount)
+    {
+        if (amount < 0m)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        var applied = Math.Min(Health, amount);
+        Health -= applied;
+        return applied;
+    }
+
+    public void Heal(decimal amount)
+    {
+        if (amount < 0m)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        Health = Math.Min(MaximumHealth, Health + amount);
+    }
+
+    public void RestoreHealth(decimal health, decimal maximumHealth)
+    {
+        if (maximumHealth <= 0m)
+            throw new InvalidDataException("Maximum health must be positive.");
+        MaximumHealth = maximumHealth;
+        Health = Math.Clamp(health, 0m, maximumHealth);
+    }
+
     public void Restore(decimal spiritualPower, long money, decimal totalYears)
     {
         if (spiritualPower < 0m || money < 0)
@@ -188,6 +239,87 @@ public sealed class CharacterState
         SpiritualPower = spiritualPower;
         Money = money;
         Age.Restore(totalYears);
+    }
+}
+
+public sealed class MissionEncounter
+{
+    public required string MonsterConfigId { get; init; }
+    public required string BackgroundId { get; init; }
+    public int DangerLevel { get; init; }
+    public decimal TriggerProgress { get; init; }
+    public bool Resolved { get; private set; }
+
+    public void MarkResolved() => Resolved = true;
+    public void RestoreResolved(bool resolved) => Resolved = resolved;
+}
+
+public sealed class ActiveCombat
+{
+    public required string MonsterConfigId { get; init; }
+    public required string BackgroundId { get; init; }
+    public int DangerLevel { get; init; }
+    public decimal EnemyMaximumHealth { get; init; }
+    public decimal EnemyHealth { get; private set; }
+    public float HeroCooldown { get; private set; }
+    public float EnemyCooldown { get; private set; }
+    public float FinishDelay { get; private set; }
+    public CombatPhase Phase { get; private set; } = CombatPhase.Fighting;
+
+    public bool IsFinished => Phase != CombatPhase.Fighting;
+
+    public void Initialize(decimal enemyHealth, float heroCooldown, float enemyCooldown)
+    {
+        EnemyHealth = Math.Clamp(enemyHealth, 0m, EnemyMaximumHealth);
+        HeroCooldown = Math.Max(0f, heroCooldown);
+        EnemyCooldown = Math.Max(0f, enemyCooldown);
+    }
+
+    public void AdvanceCooldowns(float deltaTime)
+    {
+        HeroCooldown -= deltaTime;
+        EnemyCooldown -= deltaTime;
+    }
+
+    public void ResetCooldown(CombatActor actor, float seconds)
+    {
+        if (actor == CombatActor.Hero)
+            HeroCooldown += Math.Max(0.05f, seconds);
+        else
+            EnemyCooldown += Math.Max(0.05f, seconds);
+    }
+
+    public decimal DamageEnemy(decimal amount)
+    {
+        var applied = Math.Min(EnemyHealth, Math.Max(0m, amount));
+        EnemyHealth -= applied;
+        return applied;
+    }
+
+    public void Finish(CombatPhase phase, float delay)
+    {
+        if (phase == CombatPhase.Fighting)
+            throw new ArgumentOutOfRangeException(nameof(phase));
+        Phase = phase;
+        FinishDelay = Math.Max(0f, delay);
+    }
+
+    public bool AdvanceFinishDelay(float deltaTime)
+    {
+        FinishDelay = Math.Max(0f, FinishDelay - deltaTime);
+        return FinishDelay <= 0f;
+    }
+
+    public void Restore(
+        decimal enemyHealth,
+        float heroCooldown,
+        float enemyCooldown,
+        CombatPhase phase,
+        float finishDelay)
+    {
+        Initialize(enemyHealth, heroCooldown, enemyCooldown);
+        Phase = phase;
+        FinishDelay = Math.Max(0f, finishDelay);
     }
 }
 
@@ -345,12 +477,16 @@ public sealed class ActiveMission
     public bool RewardGranted { get; private set; }
     public bool IsCompleted => CurrentProgress >= RequiredProgress;
     public List<MissionReward> Rewards { get; init; } = [];
+    public MissionEncounter? Encounter { get; init; }
+    public ActiveCombat? Combat { get; private set; }
+    public bool IsInCombat => Combat is not null;
 
     public void AddProgress(decimal amount)
     {
         if (amount < 0m)
             throw new ArgumentOutOfRangeException(nameof(amount));
-        CurrentProgress = Math.Min(RequiredProgress, CurrentProgress + amount);
+        var maximum = Encounter is { Resolved: false } ? Encounter.TriggerProgress : RequiredProgress;
+        CurrentProgress = Math.Min(maximum, CurrentProgress + amount);
     }
 
     public void MarkRewardGranted()
@@ -359,6 +495,21 @@ public sealed class ActiveMission
             throw new InvalidOperationException("Mission is not completed.");
         RewardGranted = true;
     }
+
+    public void StartCombat(ActiveCombat combat)
+    {
+        if (Encounter is null || Encounter.Resolved || Combat is not null)
+            throw new InvalidOperationException("Mission encounter cannot start.");
+        Combat = combat;
+    }
+
+    public void ResolveCombat()
+    {
+        Encounter?.MarkResolved();
+        Combat = null;
+    }
+
+    public void RestoreCombat(ActiveCombat? combat) => Combat = combat;
 
     public void Restore(decimal progress, bool rewardGranted)
     {
@@ -442,10 +593,31 @@ public sealed class GameState
     public ActiveMission? CurrentMission => _missionQueue.FirstOrDefault();
     public List<ActiveEffect> ActiveEffects { get; } = [];
     public ActivityMode ActivityMode { get; private set; } = ActivityMode.Cultivation;
+    public bool RecoveryRequired { get; private set; }
 
     public GameState(int ticksPerYear) => Calendar = new GameCalendar(ticksPerYear);
 
-    public void SetActivityMode(ActivityMode mode) => ActivityMode = mode;
+    public void SetActivityMode(ActivityMode mode)
+    {
+        if (RecoveryRequired && mode == ActivityMode.Missions)
+            return;
+        ActivityMode = mode;
+    }
+
+    public void BeginDefeatRecovery()
+    {
+        RecoveryRequired = true;
+        ActivityMode = ActivityMode.Cultivation;
+    }
+
+    public void CompleteDefeatRecovery() => RecoveryRequired = false;
+
+    public void RestoreDefeatRecovery(bool required)
+    {
+        RecoveryRequired = required;
+        if (required)
+            ActivityMode = ActivityMode.Cultivation;
+    }
 
     public void EnqueueMission(ActiveMission mission)
     {

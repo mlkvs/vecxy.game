@@ -40,6 +40,8 @@ public sealed class GameLayer
             builder.RegisterType<ShopService>().SingleInstance();
             builder.RegisterType<ShopTransactionService>().SingleInstance();
             builder.RegisterType<CultivationService>().SingleInstance();
+            builder.RegisterType<CombatService>().SingleInstance();
+            builder.RegisterType<CombatScenePresenter>().SingleInstance();
             builder.RegisterType<TickProcessor>().SingleInstance();
             builder.RegisterType<GameSaveSystem>().SingleInstance();
             builder.RegisterType<GameController>().SingleInstance();
@@ -54,8 +56,10 @@ public sealed class GameLayer
         using var missions = configs.LoadConfig<MissionsConfig>("Configs/Missions.yaml");
         using var cultivation = configs.LoadConfig<CultivationConfig>("Configs/Cultivation.yaml");
         using var shop = configs.LoadConfig<ShopConfig>("Configs/Shop.yaml");
+        using var monsters = configs.LoadConfig<MonstersConfig>("Configs/Monsters.yaml");
+        using var combat = configs.LoadConfig<CombatConfig>("Configs/Combat.yaml");
 
-        database.Initialize(balance, rarities, items, missions, cultivation, shop);
+        database.Initialize(balance, rarities, items, missions, cultivation, shop, monsters, combat);
 
         foreach (var sound in new[]
                  {

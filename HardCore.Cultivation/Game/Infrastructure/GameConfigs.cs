@@ -81,7 +81,62 @@ public sealed class MissionConfig
     public int MinimumDurationTicks { get; init; } = 1;
     public int MaximumDurationTicks { get; init; } = 500;
     public decimal BoardWeight { get; init; } = 1m;
+    public int? DangerLevel { get; init; }
+    public List<string> PossibleMonsterIds { get; init; } = [];
+    public List<string> PossibleBackgroundIds { get; init; } = [];
     public MissionRewardConfig Reward { get; init; } = new();
+}
+
+public sealed class MonstersConfig : IYamlConfig
+{
+    public List<MonsterConfig> Monsters { get; init; } = [];
+}
+
+public sealed class MonsterConfig
+{
+    public string Id { get; init; } = string.Empty;
+    public string Name { get; init; } = string.Empty;
+    public string SpriteSet { get; init; } = string.Empty;
+    public decimal MaximumHealth { get; init; } = 100m;
+    public decimal Attack { get; init; } = 10m;
+    public decimal Defense { get; init; }
+    public float AttacksPerSecond { get; init; } = 1f;
+    public decimal SelectionWeight { get; init; } = 1m;
+}
+
+public sealed class CombatConfig : IYamlConfig
+{
+    public int RenderWidth { get; init; } = 576;
+    public int RenderHeight { get; init; } = 324;
+    public string HeroSpriteSet { get; init; } = "Textures/Characters/3 Man/Man";
+    public decimal HeroBaseHealth { get; init; } = 120m;
+    public decimal HeroHealthPerStage { get; init; } = 40m;
+    public decimal HeroHealthPerLevel { get; init; } = 8m;
+    public decimal HeroBaseAttack { get; init; } = 18m;
+    public decimal HeroAttackPerStage { get; init; } = 6m;
+    public decimal HeroAttackPerLevel { get; init; } = 2m;
+    public decimal HeroBaseDefense { get; init; } = 3m;
+    public decimal HeroDefensePerStage { get; init; } = 2m;
+    public decimal HeroDefensePerLevel { get; init; } = 0.5m;
+    public float HeroAttacksPerSecond { get; init; } = 1.1f;
+    public decimal HealthRegenerationPerSecond { get; init; } = 0.1m;
+    public decimal RecoveryHealthFraction { get; init; } = 0.30m;
+    public float FinishDelaySeconds { get; init; } = 1.2f;
+    public List<CombatDangerConfig> DangerLevels { get; init; } = [];
+    public List<CombatBackgroundConfig> Backgrounds { get; init; } = [];
+}
+
+public sealed class CombatDangerConfig
+{
+    public int Level { get; init; }
+    public decimal EncounterChancePercent { get; init; }
+    public decimal MonsterPowerMultiplier { get; init; } = 1m;
+}
+
+public sealed class CombatBackgroundConfig
+{
+    public string Id { get; init; } = string.Empty;
+    public List<string> Layers { get; init; } = [];
 }
 
 public sealed class MissionRewardConfig
@@ -121,14 +176,18 @@ public sealed class GameDatabase
 {
     private readonly Dictionary<string, ItemConfig> _items = new(StringComparer.Ordinal);
     private readonly Dictionary<string, MissionConfig> _missions = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, MonsterConfig> _monsters = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, CombatBackgroundConfig> _backgrounds = new(StringComparer.Ordinal);
     private readonly Dictionary<ItemRarity, RarityConfig> _rarities = [];
 
     public GameBalanceConfig Balance { get; private set; } = new();
     public CultivationConfig Cultivation { get; private set; } = new();
     public ShopConfig Shop { get; private set; } = new();
+    public CombatConfig Combat { get; private set; } = new();
     public int MissionBoardSlotCount { get; private set; } = 6;
     public IReadOnlyDictionary<string, ItemConfig> Items => _items;
     public IReadOnlyDictionary<string, MissionConfig> Missions => _missions;
+    public IReadOnlyDictionary<string, MonsterConfig> Monsters => _monsters;
     public IReadOnlyDictionary<ItemRarity, RarityConfig> Rarities => _rarities;
 
     public void Initialize(
@@ -137,8 +196,10 @@ public sealed class GameDatabase
         ConfigRef<ItemsConfig> items,
         ConfigRef<MissionsConfig> missions,
         ConfigRef<CultivationConfig> cultivation,
-        ConfigRef<ShopConfig> shop)
-        => Initialize(balance.Value, rarities.Value, items.Value, missions.Value, cultivation.Value, shop.Value);
+        ConfigRef<ShopConfig> shop,
+        ConfigRef<MonstersConfig> monsters,
+        ConfigRef<CombatConfig> combat)
+        => Initialize(balance.Value, rarities.Value, items.Value, missions.Value, cultivation.Value, shop.Value, monsters.Value, combat.Value);
 
     public void Initialize(
         GameBalanceConfig balance,
@@ -146,15 +207,20 @@ public sealed class GameDatabase
         ItemsConfig items,
         MissionsConfig missions,
         CultivationConfig cultivation,
-        ShopConfig shop)
+        ShopConfig shop,
+        MonstersConfig? monsters = null,
+        CombatConfig? combat = null)
     {
         Balance = balance;
         Cultivation = cultivation;
         Shop = shop;
+        Combat = combat ?? CreateDefaultCombat();
         MissionBoardSlotCount = missions.BoardSlotCount;
         _items.Clear();
         _missions.Clear();
         _rarities.Clear();
+        _monsters.Clear();
+        _backgrounds.Clear();
 
         foreach (var item in items.Items)
             AddUnique(_items, item.Id, item, "item");
@@ -165,6 +231,10 @@ public sealed class GameDatabase
             if (!_rarities.TryAdd(rarity.Rarity, rarity))
                 throw new InvalidDataException($"Duplicate rarity: {rarity.Rarity}");
         }
+        foreach (var monster in (monsters ?? CreateDefaultMonsters()).Monsters)
+            AddUnique(_monsters, monster.Id, monster, "monster");
+        foreach (var background in Combat.Backgrounds)
+            AddUnique(_backgrounds, background.Id, background, "combat background");
 
         Validate();
     }
@@ -176,6 +246,17 @@ public sealed class GameDatabase
     public MissionConfig GetMission(string id) => _missions.TryGetValue(id, out var mission)
         ? mission
         : throw new KeyNotFoundException($"Unknown mission: {id}");
+
+    public MonsterConfig GetMonster(string id) => _monsters.TryGetValue(id, out var monster)
+        ? monster
+        : throw new KeyNotFoundException($"Unknown monster: {id}");
+
+    public CombatDangerConfig GetDanger(int level) => Combat.DangerLevels.FirstOrDefault(value => value.Level == level)
+        ?? throw new KeyNotFoundException($"Unknown danger level: {level}");
+
+    public CombatBackgroundConfig GetCombatBackground(string id) => _backgrounds.TryGetValue(id, out var background)
+        ? background
+        : throw new KeyNotFoundException($"Unknown combat background: {id}");
 
     public RarityConfig GetRarity(ItemRarity rarity) => _rarities.TryGetValue(rarity, out var config)
         ? config
@@ -199,6 +280,10 @@ public sealed class GameDatabase
             throw new InvalidDataException("Items and missions cannot be empty.");
         if (MissionBoardSlotCount <= 0 || MissionBoardSlotCount > _missions.Count)
             throw new InvalidDataException("Mission board slot count is invalid.");
+        if (Combat.RenderWidth <= 0 || Combat.RenderHeight <= 0 || Combat.HeroBaseHealth <= 0m ||
+            Combat.HealthRegenerationPerSecond < 0m ||
+            Combat.HeroAttacksPerSecond <= 0f || Combat.RecoveryHealthFraction is <= 0m or > 1m)
+            throw new InvalidDataException("Combat settings are invalid.");
 
         foreach (var item in _items.Values)
         {
@@ -216,8 +301,34 @@ public sealed class GameDatabase
             {
                 throw new InvalidDataException($"Invalid mission balance: {mission.Id}");
             }
+            if (mission.DangerLevel is { } danger)
+            {
+                _ = GetDanger(danger);
+                if (mission.PossibleMonsterIds.Count == 0 || mission.PossibleBackgroundIds.Count == 0)
+                    throw new InvalidDataException($"Dangerous mission has no combat pool: {mission.Id}");
+                foreach (var monster in mission.PossibleMonsterIds)
+                    _ = GetMonster(monster);
+                foreach (var background in mission.PossibleBackgroundIds)
+                    _ = GetCombatBackground(background);
+            }
         }
+
+        foreach (var monster in _monsters.Values)
+            if (monster.MaximumHealth <= 0m || monster.Attack <= 0m || monster.Defense < 0m ||
+                monster.AttacksPerSecond <= 0f || monster.SelectionWeight <= 0m || string.IsNullOrWhiteSpace(monster.SpriteSet))
+                throw new InvalidDataException($"Invalid monster balance: {monster.Id}");
     }
+
+    private static MonstersConfig CreateDefaultMonsters() => new()
+    {
+        Monsters = [new MonsterConfig { Id = "training_spirit", Name = "Учебный дух", SpriteSet = "Textures/Characters/1 Samurai/Samurai" }]
+    };
+
+    private static CombatConfig CreateDefaultCombat() => new()
+    {
+        DangerLevels = [new CombatDangerConfig { Level = 1, EncounterChancePercent = 100m }],
+        Backgrounds = [new CombatBackgroundConfig { Id = "forest", Layers = ["Textures/Backgrounds/1/orig.png"] }]
+    };
 
     private static void AddUnique<T>(IDictionary<string, T> target, string id, T value, string kind)
     {

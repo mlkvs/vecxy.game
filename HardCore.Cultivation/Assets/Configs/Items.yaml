@@ -29,11 +29,24 @@
 # - BreakthroughChance  — бонус к шансу прорыва
 # - SpiritualPowerGain  — бонус к духовной силе
 # - MissionProgress     — ускорение миссий
+# - HealthRegeneration  — восстановление здоровья в секунду;
+#   база задаётся через healthRegenerationPerSecond в Combat.yaml
 #
 # operation:
 # - Flat                  — плоское добавление
 # - AdditivePercent       — прибавка в процентах
 # - MultiplicativePercent — отдельный мультипликатор
+#
+# Формула модифицируемого параметра:
+# (base + сумма Flat) * (1 + сумма AdditivePercent / 100)
+#                  * произведение (1 + MultiplicativePercent / 100)
+#
+# Важно: value дополнительно умножается на силу конкретного экземпляра
+# предмета, рассчитанную из его качества в GameBalance.yaml:
+# effectStrength = effectQualityBase + quality * effectQualityPerPoint.
+# Поэтому value здесь — базовое значение ДО влияния звёзд качества.
+# Несколько активных эффектов одного типа складываются или перемножаются
+# согласно operation. Постоянные эффекты также могут накапливаться.
 #
 # Практический совет:
 # - Для "прямой силы" и разовых банок обычно удобнее Flat
@@ -77,6 +90,23 @@ items:
       - type: AgingSpeed
         operation: AdditivePercent
         value: -30
+
+  - id: bloodspring_pill
+    name: Пилюля кровавого источника
+    description: На время ускоряет естественное восстановление тела.
+    icon: Assets/Textures/Items/marrow-elixir.png
+    category: Pill
+    durationType: Temporary
+    temporaryDurationTicks: 48
+    basePrice: 260
+    shopWeight: 11
+    effects:
+      # Базовые +100% к регенерации до влияния качества предмета.
+      # При базовой регенерации 0.1 HP/с и силе предмета 1.0
+      # итоговая скорость на время действия станет 0.2 HP/с.
+      - type: HealthRegeneration
+        operation: AdditivePercent
+        value: 100
 
   # ------------------------------------------------------------
   # ПРЕДМЕТЫ ДЛЯ ПРОРЫВА
@@ -205,6 +235,21 @@ items:
       - type: TickEfficiency
         operation: AdditivePercent
         value: 3
+
+  - id: eternal_vitality_pill
+    name: Пилюля вечной жизненности
+    description: Навсегда укрепляет жизненные каналы и понемногу ускоряет регенерацию.
+    icon: Assets/Textures/Items/focus-pill.png
+    category: Pill
+    durationType: Permanent
+    basePrice: 1250
+    shopWeight: 3
+    effects:
+      # Постоянные +0.02 HP/с до влияния качества предмета.
+      # Flat прибавляется к базе раньше процентных модификаторов.
+      - type: HealthRegeneration
+        operation: Flat
+        value: 0.02
 
   # ------------------------------------------------------------
   # ПОСТОЯННЫЕ НЕБЕСНЫЕ ПИЛЮЛИ

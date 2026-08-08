@@ -7,6 +7,7 @@
 # - диапазон длительности миссий
 # - частоту появления
 # - тип и объём награды
+# - наличие боя, пул врагов и пул боевых фонов
 #
 # Как это работает:
 # - boardSlotCount определяет размер доски доступных миссий.
@@ -14,6 +15,12 @@
 # - Для каждой миссии случайно выбирается длительность в диапазоне
 #   minimumDurationTicks..maximumDurationTicks.
 # - Награда состоит из рублей и/или предметов указанной категории.
+# - Если dangerLevel отсутствует, миссия всегда проходит без боя.
+# - Если dangerLevel указан, при ПРИНЯТИИ миссии один раз проверяется шанс
+#   encounterChancePercent соответствующего уровня из Combat.yaml.
+# - При успешном броске бой начнётся между 25% и 75% прогресса миссии.
+# - После победы выполнение продолжится. После поражения миссия удаляется
+#   без награды, HP падает до 0, а миссии блокируются до порога восстановления.
 
 # Сколько миссий одновременно видно на доске.
 # Не должно быть больше общего числа mission entries.
@@ -25,9 +32,15 @@ missions:
   # description — описание в карточке миссии
   # minimumDurationTicks / maximumDurationTicks — диапазон длительности
   # boardWeight — шанс появления на доске
+  # dangerLevel — необязательный level из Combat.yaml
+  # possibleMonsterIds — id из Monsters.yaml; выбор учитывает selectionWeight
+  # possibleBackgroundIds — id фонов из Combat.yaml; все имеют равный шанс
   # reward.requiredItemCategory — какая категория предметов может выпасть
   # reward.minimumQuantity / maximumQuantity — желаемый диапазон количества
   # reward.money — денежная награда
+  #
+  # В опасной миссии оба списка possible* обязательны и не могут быть пустыми.
+  # В безопасной миссии dangerLevel и possible* лучше вообще не указывать.
 
   - id: gather_mist_herbs
     name: Сад туманной долины
@@ -47,6 +60,9 @@ missions:
     minimumDurationTicks: 24
     maximumDurationTicks: 48
     boardWeight: 11
+    dangerLevel: 2
+    possibleMonsterIds: [crimson_beast, corrupted_adept]
+    possibleBackgroundIds: [mist_forest, mountain_pass]
     reward:
       requiredItemCategory: Core
       minimumQuantity: 1
@@ -59,6 +75,9 @@ missions:
     minimumDurationTicks: 40
     maximumDurationTicks: 72
     boardWeight: 8
+    dangerLevel: 2
+    possibleMonsterIds: [mountain_bandit, corrupted_adept]
+    possibleBackgroundIds: [mountain_pass]
     reward:
       requiredItemCategory: Pill
       minimumQuantity: 1
@@ -83,6 +102,9 @@ missions:
     minimumDurationTicks: 18
     maximumDurationTicks: 34
     boardWeight: 13
+    dangerLevel: 1
+    possibleMonsterIds: [corrupted_adept]
+    possibleBackgroundIds: [ancient_ruins, mist_forest]
     reward:
       requiredItemCategory: Pill
       minimumQuantity: 1
@@ -95,6 +117,9 @@ missions:
     minimumDurationTicks: 28
     maximumDurationTicks: 46
     boardWeight: 10
+    dangerLevel: 1
+    possibleMonsterIds: [mountain_bandit]
+    possibleBackgroundIds: [mountain_pass, mist_forest]
     reward:
       requiredItemCategory: Core
       minimumQuantity: 1
@@ -107,6 +132,9 @@ missions:
     minimumDurationTicks: 46
     maximumDurationTicks: 80
     boardWeight: 7
+    dangerLevel: 3
+    possibleMonsterIds: [ancient_guardian, corrupted_adept]
+    possibleBackgroundIds: [ancient_ruins]
     reward:
       requiredItemCategory: Ingredient
       minimumQuantity: 2
@@ -119,6 +147,9 @@ missions:
     minimumDurationTicks: 32
     maximumDurationTicks: 58
     boardWeight: 9
+    dangerLevel: 2
+    possibleMonsterIds: [thunder_bird]
+    possibleBackgroundIds: [storm_valley, mountain_pass]
     reward:
       requiredItemCategory: Ingredient
       minimumQuantity: 1
@@ -143,6 +174,9 @@ missions:
     minimumDurationTicks: 64
     maximumDurationTicks: 108
     boardWeight: 5
+    dangerLevel: 3
+    possibleMonsterIds: [ancient_guardian, crimson_beast, thunder_bird]
+    possibleBackgroundIds: [storm_valley, ancient_ruins]
     reward:
       requiredItemCategory: Core
       minimumQuantity: 2

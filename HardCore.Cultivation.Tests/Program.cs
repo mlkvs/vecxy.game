@@ -21,6 +21,79 @@ var missionWeek = processor.ProcessTick(state);
 Check(missionWeek.SpiritualPowerGained == 0 && missionWeek.MissionProgressAdded > 0, "Mission mode must only add mission progress.");
 Check(state.Character.SpiritualPower == powerAfterCultivation, "Mission mode changed spiritual power.");
 
+var combat = new CombatService(database);
+var combatState = new GameState(database.Balance.TicksPerYear);
+combat.ConfigureHero(combatState.Character, true);
+combatState.SetActivityMode(ActivityMode.Missions);
+combatState.EnqueueMission(new ActiveMission
+{
+    MissionConfigId = "mission",
+    RequiredProgress = 10,
+    Encounter = new MissionEncounter
+    {
+        MonsterConfigId = "training_spirit",
+        BackgroundId = "forest",
+        DangerLevel = 1,
+        TriggerProgress = 0
+    }
+});
+var combatEvents = new List<CombatEvent>();
+for (var index = 0; index < 200 && combatState.CurrentMission?.Encounter?.Resolved != true; index++)
+    combatEvents.AddRange(combat.Update(combatState, 0.1f).Events);
+Check(combatEvents.Any(value => value.Type == CombatEventType.Started), "Combat did not start at encounter progress.");
+Check(combatEvents.Any(value => value.Type == CombatEventType.Victory), "Hero did not win the deterministic training combat.");
+Check(combatState.CurrentMission?.Encounter?.Resolved == true, "Victory did not resolve the mission encounter.");
+
+var defeatedState = new GameState(database.Balance.TicksPerYear);
+combat.ConfigureHero(defeatedState.Character, true);
+defeatedState.SetActivityMode(ActivityMode.Missions);
+var defeatedMission = new ActiveMission
+{
+    MissionConfigId = "mission",
+    RequiredProgress = 10,
+    Encounter = new MissionEncounter
+    {
+        MonsterConfigId = "training_spirit",
+        BackgroundId = "forest",
+        DangerLevel = 1,
+        TriggerProgress = 0
+    }
+};
+var defeatedCombat = new ActiveCombat
+{
+    MonsterConfigId = "training_spirit",
+    BackgroundId = "forest",
+    DangerLevel = 1,
+    EnemyMaximumHealth = 100
+};
+defeatedCombat.Initialize(100, 1, 1);
+defeatedCombat.Finish(CombatPhase.Defeat, 0);
+defeatedMission.StartCombat(defeatedCombat);
+defeatedState.EnqueueMission(defeatedMission);
+_ = combat.Update(defeatedState, 0.1f);
+Check(defeatedState.RecoveryRequired, "Defeat did not enable mandatory recovery.");
+Check(defeatedState.ActivityMode == ActivityMode.Cultivation, "Defeat did not switch to cultivation.");
+defeatedState.SetActivityMode(ActivityMode.Missions);
+Check(defeatedState.ActivityMode == ActivityMode.Cultivation, "Missions were enabled before full recovery.");
+var healthAfterDefeat = defeatedState.Character.Health;
+for (var index = 0; index < 5000 && defeatedState.RecoveryRequired; index++)
+    _ = combat.Update(defeatedState, 0.25f);
+Check(defeatedState.Character.Health > healthAfterDefeat, "Health regeneration did not advance gradually.");
+Check(!defeatedState.RecoveryRequired &&
+      defeatedState.Character.Health >= combat.GetRecoveryHealthThreshold(defeatedState.Character) &&
+      defeatedState.Character.Health < defeatedState.Character.MaximumHealth,
+    "Recovery did not complete at the configured partial-health threshold.");
+defeatedState.SetActivityMode(ActivityMode.Missions);
+Check(defeatedState.ActivityMode == ActivityMode.Missions, "Missions stayed locked after reaching the recovery threshold.");
+
+var stageHealth = new CharacterState();
+stageHealth.Cultivation.Restore(0, 10, database.Cultivation.Stages.Count);
+var maximumHealthBeforeBreakthrough = combat.GetHeroMaximumHealth(stageHealth);
+stageHealth.Cultivation.Restore(1, 1, database.Cultivation.Stages.Count);
+var maximumHealthAfterBreakthrough = combat.GetHeroMaximumHealth(stageHealth);
+Check(maximumHealthAfterBreakthrough == maximumHealthBeforeBreakthrough + database.Combat.HeroHealthPerStage,
+    "Maximum health did not increase by the stage bonus after breakthrough.");
+
 var leveling = new GameState(database.Balance.TicksPerYear);
 processor.ProcessTick(leveling);
 Check(leveling.Character.Cultivation.Level == 10, "Automatic level advancement did not reach level 10.");
@@ -117,7 +190,7 @@ static GameDatabase BuildDatabase()
         {
             BoardSlotCount = 1,
             Missions = [new MissionConfig { Id = "mission", Name = "Mission", MinimumDurationTicks = 1, MaximumDurationTicks = 10,
-                Reward = new MissionRewardConfig { RequiredItemCategory = ItemCategory.Ingredient, Money = 10 } }]
+                Reward = new MissionRewardConfig { RequiredItemCategory = ItemCategory.Ingredient, MinimumQuantity = 1, MaximumQuantity = 15, Money = 10 } }]
         },
         new CultivationConfig
         {
@@ -125,7 +198,8 @@ static GameDatabase BuildDatabase()
             Stages =
             [
                 new CultivationStageConfig { Id = "one", Name = "One", BaseBreakthroughChance = 50 },
-                new CultivationStageConfig { Id = "two", Name = "Two", BaseBreakthroughChance = 50 }
+                new CultivationStageConfig { Id = "two", Name = "Two", BaseBreakthroughChance = 50 },
+                new CultivationStageConfig { Id = "three", Name = "Three", BaseBreakthroughChance = 50 }
             ]
         },
         new ShopConfig { SlotCount = 2, MinimumQuantity = 1, MaximumQuantity = 2, MinimumBuyMarkup = 0, MaximumBuyMarkup = 0, SellAdjustmentPercent = -33 });

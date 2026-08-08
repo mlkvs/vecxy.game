@@ -8,7 +8,7 @@ namespace HardCore.Cultivation.Game.Infrastructure;
 
 public sealed class GameSaveSystem(GameDatabase database)
 {
-    public const int CurrentVersion = 5;
+    public const int CurrentVersion = 7;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -25,13 +25,16 @@ public sealed class GameSaveSystem(GameDatabase database)
             Version = CurrentVersion,
             TotalTicks = state.Calendar.TotalTicks,
             ActivityMode = state.ActivityMode,
+            RecoveryRequired = state.RecoveryRequired,
             Character = new CharacterSaveData
             {
                 SpiritualPower = state.Character.SpiritualPower,
                 Money = state.Character.Money,
                 TotalYears = state.Character.Age.TotalYears,
                 StageIndex = state.Character.Cultivation.StageIndex,
-                Level = state.Character.Cultivation.Level
+                Level = state.Character.Cultivation.Level,
+                Health = state.Character.Health,
+                MaximumHealth = state.Character.MaximumHealth
             },
             Inventory = state.Inventory.Items.Select(ToItemData).ToList(),
             MissionQueue = state.MissionQueue.Select(mission => new MissionSaveData
@@ -41,7 +44,27 @@ public sealed class GameSaveSystem(GameDatabase database)
                 RequiredProgress = mission.RequiredProgress,
                 CurrentProgress = mission.CurrentProgress,
                 RewardGranted = mission.RewardGranted,
-                Rewards = mission.Rewards.Select(ToRewardData).ToList()
+                Rewards = mission.Rewards.Select(ToRewardData).ToList(),
+                Encounter = mission.Encounter is null ? null : new MissionEncounterSaveData
+                {
+                    MonsterConfigId = mission.Encounter.MonsterConfigId,
+                    BackgroundId = mission.Encounter.BackgroundId,
+                    DangerLevel = mission.Encounter.DangerLevel,
+                    TriggerProgress = mission.Encounter.TriggerProgress,
+                    Resolved = mission.Encounter.Resolved
+                },
+                Combat = mission.Combat is null ? null : new CombatSaveData
+                {
+                    MonsterConfigId = mission.Combat.MonsterConfigId,
+                    BackgroundId = mission.Combat.BackgroundId,
+                    DangerLevel = mission.Combat.DangerLevel,
+                    EnemyMaximumHealth = mission.Combat.EnemyMaximumHealth,
+                    EnemyHealth = mission.Combat.EnemyHealth,
+                    HeroCooldown = mission.Combat.HeroCooldown,
+                    EnemyCooldown = mission.Combat.EnemyCooldown,
+                    Phase = mission.Combat.Phase,
+                    FinishDelay = mission.Combat.FinishDelay
+                }
             }).ToList(),
             AvailableMissionIds = state.MissionBoard.MissionIds.ToList(),
             Shop = new ShopSaveData
@@ -100,6 +123,13 @@ public sealed class GameSaveSystem(GameDatabase database)
                 data.Character.StageIndex,
                 data.Character.Level,
                 database.Cultivation.Stages.Count);
+            if (data.Version >= 6 && data.Character.MaximumHealth > 0m)
+                state.Character.RestoreHealth(data.Character.Health, data.Character.MaximumHealth);
+            else
+                state.Character.ConfigureMaximumHealth(database.Combat.HeroBaseHealth, true);
+            state.RestoreDefeatRecovery(
+                data.Version >= 7 && data.RecoveryRequired &&
+                state.Character.Health < database.Combat.RecoveryHealthFraction * state.Character.MaximumHealth);
             state.Inventory.ReplaceWith(data.Inventory.Select(FromItemData));
             state.ActiveEffects.AddRange(data.ActiveEffects.Select(effect =>
             {
@@ -134,9 +164,11 @@ public sealed class GameSaveSystem(GameDatabase database)
                     RequiredProgress = savedMission.RequiredProgress,
                     Rewards = savedMission.Rewards.Count > 0
                         ? savedMission.Rewards.Select(FromRewardData).ToList()
-                        : LegacyRewards(savedMission.ConfigId)
+                        : LegacyRewards(savedMission.ConfigId),
+                    Encounter = RestoreEncounter(savedMission.Encounter)
                 };
                 mission.Restore(savedMission.CurrentProgress, savedMission.RewardGranted);
+                mission.RestoreCombat(RestoreCombat(savedMission.Combat));
                 state.EnqueueMission(mission);
             }
             foreach (var missionId in data.AvailableMissionIds)
@@ -235,6 +267,40 @@ public sealed class GameSaveSystem(GameDatabase database)
         ItemQuality = reward.ItemQuality,
         Quantity = reward.Quantity
     };
+
+    private MissionEncounter? RestoreEncounter(MissionEncounterSaveData? data)
+    {
+        if (data is null)
+            return null;
+        _ = database.GetMonster(data.MonsterConfigId);
+        _ = database.GetCombatBackground(data.BackgroundId);
+        var encounter = new MissionEncounter
+        {
+            MonsterConfigId = data.MonsterConfigId,
+            BackgroundId = data.BackgroundId,
+            DangerLevel = data.DangerLevel,
+            TriggerProgress = data.TriggerProgress
+        };
+        encounter.RestoreResolved(data.Resolved);
+        return encounter;
+    }
+
+    private ActiveCombat? RestoreCombat(CombatSaveData? data)
+    {
+        if (data is null)
+            return null;
+        _ = database.GetMonster(data.MonsterConfigId);
+        _ = database.GetCombatBackground(data.BackgroundId);
+        var combat = new ActiveCombat
+        {
+            MonsterConfigId = data.MonsterConfigId,
+            BackgroundId = data.BackgroundId,
+            DangerLevel = data.DangerLevel,
+            EnemyMaximumHealth = data.EnemyMaximumHealth
+        };
+        combat.Restore(data.EnemyHealth, data.HeroCooldown, data.EnemyCooldown, data.Phase, data.FinishDelay);
+        return combat;
+    }
 }
 
 public sealed class SaveData
@@ -242,6 +308,7 @@ public sealed class SaveData
     public int Version { get; init; }
     public long TotalTicks { get; init; }
     public ActivityMode ActivityMode { get; init; } = ActivityMode.Cultivation;
+    public bool RecoveryRequired { get; init; }
     public CharacterSaveData Character { get; init; } = new();
     public List<ItemSaveData> Inventory { get; init; } = [];
     public List<MissionSaveData> MissionQueue { get; init; } = [];
@@ -259,6 +326,8 @@ public sealed class CharacterSaveData
     public decimal TotalYears { get; init; }
     public int StageIndex { get; init; }
     public int Level { get; init; } = 1;
+    public decimal Health { get; init; }
+    public decimal MaximumHealth { get; init; }
 }
 
 public sealed class ItemSaveData
@@ -278,6 +347,30 @@ public sealed class MissionSaveData
     public decimal CurrentProgress { get; init; }
     public bool RewardGranted { get; init; }
     public List<MissionRewardSaveData> Rewards { get; init; } = [];
+    public MissionEncounterSaveData? Encounter { get; init; }
+    public CombatSaveData? Combat { get; init; }
+}
+
+public sealed class MissionEncounterSaveData
+{
+    public string MonsterConfigId { get; init; } = string.Empty;
+    public string BackgroundId { get; init; } = string.Empty;
+    public int DangerLevel { get; init; }
+    public decimal TriggerProgress { get; init; }
+    public bool Resolved { get; init; }
+}
+
+public sealed class CombatSaveData
+{
+    public string MonsterConfigId { get; init; } = string.Empty;
+    public string BackgroundId { get; init; } = string.Empty;
+    public int DangerLevel { get; init; }
+    public decimal EnemyMaximumHealth { get; init; }
+    public decimal EnemyHealth { get; init; }
+    public float HeroCooldown { get; init; }
+    public float EnemyCooldown { get; init; }
+    public CombatPhase Phase { get; init; }
+    public float FinishDelay { get; init; }
 }
 
 public sealed class MissionRewardSaveData
