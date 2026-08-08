@@ -3,11 +3,11 @@
     padding: 22px; background-color: #0b120dfc; border: 3px solid #f1bd5988;
     border-radius: 34px; box-shadow: 0 12px 18px 0 #020604e8; overflow: hidden;
 }
-.shop-window {
+.compact-window {
     left: 14px;
     right: 14px;
-    top: 72px;
-    bottom: 72px;
+    top: 84px;
+    bottom: 84px;
     height: auto;
 }
 .window-header {

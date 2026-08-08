@@ -32,13 +32,11 @@ internal sealed class GameView
         ShopButton = Button("shop-button");
         InventoryButton = Button("inventory-button");
         ShopWindow = Panel("shop-window");
-        ShopMarkup = Text("shop-markup");
         ShopMoney = Text("shop-money");
         ShopGrid = Panel("shop-grid");
 
         InventoryWindow = Panel("inventory-window");
         InventoryCount = Text("inventory-count");
-        SellRate = Text("sell-rate");
         InventoryGrid = Panel("inventory-grid");
         IngredientsTab = Button("ingredients-tab");
         CoresTab = Button("cores-tab");
@@ -133,12 +131,10 @@ internal sealed class GameView
     public UiButton ShopButton { get; }
     public UiButton InventoryButton { get; }
     public UiPanel ShopWindow { get; }
-    public UiText ShopMarkup { get; }
     public UiText ShopMoney { get; }
     public UiPanel ShopGrid { get; }
     public UiPanel InventoryWindow { get; }
     public UiText InventoryCount { get; }
-    public UiText SellRate { get; }
     public UiPanel InventoryGrid { get; }
     public UiButton IngredientsTab { get; }
     public UiButton CoresTab { get; }

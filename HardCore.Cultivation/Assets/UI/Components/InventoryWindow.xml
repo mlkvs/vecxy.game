@@ -1,6 +1,6 @@
-<panel id="inventory-window" class="window" hidden="true">
+<panel id="inventory-window" class="window compact-window inventory-window" hidden="true">
     <panel class="window-header"><panel><text class="window-title">Рюкзак</text><text class="window-subtitle">Нажмите на предмет, чтобы увидеть описание</text></panel><button class="window-close"><image src="../Textures/UIIcons/close.png" /></button></panel>
-    <panel class="window-toolbar"><text id="inventory-count">0 предметов</text><text id="sell-rate" class="toolbar-value">Продажа: −33%</text></panel>
+    <panel class="window-toolbar"><text>ПРЕДМЕТЫ</text><text id="inventory-count" class="toolbar-value">0 предметов</text></panel>
     <panel class="category-tabs">
         <button id="ingredients-tab" class="category-tab active">ИНГРЕДИЕНТЫ</button>
         <button id="cores-tab" class="category-tab">ЯДРА ЗВЕРЕЙ</button>

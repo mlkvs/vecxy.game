@@ -410,7 +410,6 @@ public sealed class GameController(
     {
         if (_view is null || _shopCards is null)
             return;
-        _view.ShopMarkup.Value = $"Наценка: +{_state.Shop.BuyMarkupPercent}%";
         _view.ShopMoney.Value = $"{_state.Character.Money:N0} рублей";
         _shopCards.Update(_state.Shop.Slots, slot => slot.SlotId);
     }
@@ -496,7 +495,6 @@ public sealed class GameController(
         if (_view is null || _inventoryIcons is null)
             return;
         _view.InventoryCount.Value = $"{_state.Inventory.Items.Sum(item => item.Quantity)} предметов";
-        _view.SellRate.Value = $"Продажа: {_state.Shop.SellAdjustmentPercent}%";
         _view.IngredientsTab.ToggleClass("active", _inventoryCategory == ItemCategory.Ingredient);
         _view.CoresTab.ToggleClass("active", _inventoryCategory == ItemCategory.Core);
         _view.PillsTab.ToggleClass("active", _inventoryCategory == ItemCategory.Pill);
