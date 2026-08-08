@@ -3,6 +3,13 @@
     padding: 22px; background-color: #0b120dfc; border: 3px solid #f1bd5988;
     border-radius: 34px; box-shadow: 0 12px 18px 0 #020604e8; overflow: hidden;
 }
+.shop-window {
+    left: 14px;
+    right: 14px;
+    top: 72px;
+    bottom: 72px;
+    height: auto;
+}
 .window-header {
     min-height: 100px; flex-direction: row; align-items: center; justify-content: space-between; gap: 18px;
     padding: 5px 2px 17px; border-bottom: 2px solid #f1bd5944;
@@ -23,7 +30,7 @@
     box-shadow: 0 5px 10px 0 #00000077; font-size: 24px;
 }
 .window-toolbar > text { flex: 1; min-width: 0; height: 30px; white-space: nowrap; }
-.toolbar-value { color: #f1bd59; font-size: 23px; text-align: right; }
+.toolbar-value { color: #f1bd59; font-size: 28px; text-align: right; }
 .window-content {
     flex: 1; flex-shrink: 1; min-height: 0; margin-top: 16px; overflow-y: scroll; pointer-events: auto;
     padding: 12px; background-color: #111b16; border: 2px solid #ffffff1f; border-radius: 22px;
@@ -66,7 +73,7 @@
 }
 .mission-board-heading > text { height: 44px; }
 .mission-board-title { flex: 1; min-width: 0; }
-.mission-board-heading .toolbar-value { flex-shrink: 0; width: 278px; font-size: 17px; text-align: right; }
+.mission-board-heading .toolbar-value { flex-shrink: 0; width: 278px; font-size: 20px; text-align: right; }
 .mission-board-empty {
     padding: 34px 24px; color: #d1cbb8; background-color: #1a2720;
     border: 1px solid #ffffff24; border-radius: 22px; font-size: 22px; text-align: center;
@@ -170,12 +177,22 @@
 .mission-page { flex: 1; min-height: 0; }
 .mission-board-heading { flex-shrink: 0; min-height: 45px; flex-direction: row; align-items: center; justify-content: space-between; }
 .mission-board-title { font-size: 17px; color: #56d5a0; }
-.mission-board-heading .toolbar-value { font-size: 16px; }
-.mission-list { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 10px; padding: 0; overflow: hidden; }
-.accepted-mission-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 128px; gap: 12px; overflow-y: auto; padding-right: 6px; }
-.shop-content { flex: 1; min-height: 0; margin-top: 10px; padding: 10px; background-color: #111b16; border: 2px solid #ffffff1f; border-radius: 22px; overflow-y: auto; }
-.shop-grid { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 380px; gap: 10px; padding-right: 6px; }
-.inventory-grid { flex: 1; min-height: 0; margin-top: 10px; padding: 14px; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 132px; gap: 12px; overflow-y: auto; pointer-events: auto; background-color: #101a15; border: 2px solid #ffffff20; border-radius: 20px; }
+.mission-board-heading .toolbar-value { font-size: 20px; }
+.mission-list { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 10px; padding: 0; overflow: hidden; align-content: center; justify-content: center; }
+.accepted-mission-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 128px; gap: 12px; overflow: auto; padding-right: 6px; align-content: start; justify-content: center; }
+.shop-content { margin-top: 10px; padding: 10px; }
+.shop-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 380px;
+    gap: 12px;
+    padding-right: 6px;
+    padding-bottom: 10px;
+    align-content: start;
+    justify-content: center;
+}
+.inventory-grid { flex: 1; min-height: 0; margin-top: 10px; padding: 14px; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 132px; gap: 12px; overflow: auto; align-content: start; justify-content: center; pointer-events: auto; background-color: #101a15; border: 2px solid #ffffff20; border-radius: 20px; }
 .inventory-details { flex-shrink: 0; min-height: 185px; margin-top: 10px; padding: 14px; flex-direction: row; align-items: center; gap: 14px; background-color: #17271f; border: 2px solid #56d5a055; border-radius: 22px; }
 .inventory-detail-icon-well { flex-shrink: 0; width: 108px; height: 108px; align-items: center; justify-content: center; border: 4px solid #56d5a0; border-radius: 24px; background-color: #0c1510; }
 .inventory-detail-icon-well image { width: 92px; height: 92px; object-fit: contain; }

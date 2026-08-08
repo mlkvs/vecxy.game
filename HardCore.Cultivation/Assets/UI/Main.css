@@ -33,7 +33,7 @@ text {
     width: 520px; min-height: 76px; margin-left: -260px; padding: 12px 18px;
     flex-direction: row; align-items: center; gap: 15px; color: #f5fff9;
     background-color: #183b2ced; border: 2px solid #66e3ad; border-radius: 25px;
-    box-shadow: 0 11px 25px 0 #000000c9;
+    box-shadow: 0 11px 25px 0 #000000c9; opacity: 0;
 }
 .action-toast.toast-error { color: #fff0ed; background-color: #4a211ded; border-color: #ff8c7b; }
 .action-toast.toast-info { color: #fff5d8; background-color: #44351bed; border-color: #f1bd59; }
@@ -61,36 +61,40 @@ text {
 #hud { width: 100%; height: 100%; padding: 16px 18px 14px; gap: 12px; }
 
 .top-card {
-    height: 100px; flex-direction: row; align-items: center; justify-content: space-between;
+    height: 100px; flex-direction: row; align-items: center; gap: 10px;
     padding: 16px 20px; background-color: #101a15e8; border: 2px solid var(--line);
     border-radius: 26px; box-shadow: 0 7px 14px 0 var(--shadow);
 }
-.identity-block { flex: 1; min-width: 0; }
+.identity-block { flex: 1; min-width: 0; justify-content: center; }
+.top-stat {
+    min-height: 40px; padding: 6px 8px; flex-direction: row; align-items: center; gap: 8px;
+    background-color: #17231de8; border: 2px solid #fff3d62e; border-radius: 16px;
+}
+.top-stat.horizontal {
+    flex-shrink: 0; width: 150px; min-height: 0; padding: 10px 10px;
+    align-self: stretch;
+}
+.top-stat-icon-shell {
+    flex-shrink: 0; width: 32px; height: 32px; align-items: center; justify-content: center;
+    background-color: #96692e; border-radius: 11px;
+}
+.top-stat-icon-shell.age { background-color: #566059; }
+.top-stat-icon { width: 22px; height: 22px; object-fit: contain; }
+.top-stat-copy { flex: 1; min-width: 0; }
+.top-stat-label { color: var(--muted); font-size: 12px; }
+.top-stat-value { margin-top: 2px; color: #fff3d6; font-size: 19px; white-space: nowrap; }
 .eyebrow { color: var(--gold); font-size: 18px; }
 .screen-title { margin-top: 4px; font-size: 36px; }
+.calendar-slot {
+    flex-shrink: 0; width: 86px; align-self: stretch; align-items: center; justify-content: center;
+    padding-left: 6px; margin-left: 2px; border-left: 2px solid #f1bd5944;
+}
 .calendar-block {
     flex-shrink: 0; width: 172px; align-items: flex-end; padding-left: 16px;
     border-left: 3px solid var(--gold);
 }
 .calendar-year { width: 100%; height: 34px; font-size: 27px; text-align: right; white-space: nowrap; }
 .calendar-tick { width: 100%; height: 24px; margin-top: 3px; color: var(--muted); font-size: 18px; text-align: right; white-space: nowrap; }
-
-.resource-row { height: 94px; flex-direction: row; gap: 10px; }
-.resource-card {
-    flex: 1; min-width: 0; flex-direction: row; align-items: center; gap: 9px;
-    padding: 12px; background-color: #17231de8; border: 2px solid #fff3d62e;
-    border-radius: 22px; box-shadow: 0 6px 12px 0 #07100baa;
-}
-.resource-icon-shell {
-    flex-shrink: 0; width: 52px; height: 52px; align-items: center; justify-content: center;
-    background-color: #96692e; border-radius: 17px;
-}
-.spirit-resource .resource-icon-shell { background-color: #176d52; }
-.age-resource .resource-icon-shell { background-color: #566059; }
-.resource-icon { width: 38px; height: 38px; object-fit: contain; }
-.resource-copy { flex: 1; min-width: 0; }
-.resource-label { width: 100%; height: 42px; color: var(--muted); font-size: 18px; }
-.resource-value { width: 100%; height: 37px; margin-top: 3px; font-size: 30px; white-space: nowrap; }
 
 .character-space { flex: 1; min-height: 0; position: relative; }
 .tick-float-layer { pointer-events: none; position: absolute; inset: 0; overflow: hidden; }
@@ -120,8 +124,8 @@ text {
     align-items: center; justify-content: center; background-color: transparent; border: 0;
 }
 .tap-feedback {
-    pointer-events: none; position: absolute; z-index: 5; left: 50%; top: 47%;
-    width: 270px; height: 390px; margin-left: -135px; margin-top: -195px;
+    pointer-events: none; position: absolute; z-index: 5; left: 0; top: 0;
+    width: 270px; height: 390px; margin-left: 0; margin-top: 0;
     opacity: 0; background-color: #5cf0b52b; border: 5px solid #b6ffe6;
     border-radius: 50%; animation: tap-pulse 0.48s ease-out;
 }
@@ -134,7 +138,7 @@ text {
     background-color: #111b16df; border: 2px solid var(--line); border-radius: 24px;
     box-shadow: 0 8px 14px 0 var(--shadow);
 }
-.mission-float { position: absolute; right: 96px; top: 28px; width: 322px; padding: 15px 16px; }
+.mission-float { position: absolute; left: 0; top: 2px; width: 336px; padding: 15px 16px; }
 .float-heading { flex-direction: row; align-items: center; gap: 8px; color: var(--gold); font-size: 17px; }
 .float-heading image { width: 25px; height: 25px; object-fit: contain; }
 .float-title { margin-top: 7px; font-size: 25px; }
@@ -148,6 +152,18 @@ text {
 }
 
 .side-tools { position: absolute; right: 0; top: 28px; bottom: 28px; width: 88px; align-items: stretch; }
+.activity-toggle {
+    pointer-events: auto; position: absolute; right: 0; bottom: 10px; width: 178px; min-height: 72px;
+    padding: 10px 12px; flex-direction: row; align-items: center; justify-content: center; gap: 10px;
+    color: #102017; background-color: var(--jade); border: 2px solid #baffdf; border-radius: 22px;
+    box-shadow: 0 8px 16px #00000099; font-family: "Rubik UI"; font-size: 17px; text-align: center;
+}
+.activity-toggle.missions { color: #2a1a06; background-color: #f1bd59; border-color: #ffe7aa; }
+.activity-toggle-icon-shell {
+    width: 46px; height: 46px; align-items: center; justify-content: center;
+    background-color: #0d2119; border-radius: 15px;
+}
+.activity-toggle-icon-shell image { width: 30px; height: 30px; object-fit: contain; }
 .effects-float { flex: 1; min-height: 0; align-items: center; overflow: hidden; }
 .small-heading {
     width: 88px; min-height: 31px; color: #ffe39a; background-color: #111b16dd;
@@ -195,6 +211,7 @@ text {
 }
 .cultivation-copy { flex: 1; min-width: 0; }
 .cultivation-title { margin-top: 5px; font-size: 27px; }
+.cultivation-track > .progress-fill { background-color: #4daeff; }
 .cultivation-actions { flex-shrink: 0; width: 220px; gap: 9px; }
 .primary-button, .secondary-button {
     pointer-events: auto; min-height: 50px; padding: 9px 12px; align-items: center; justify-content: center;
@@ -226,21 +243,27 @@ button:disabled { opacity: 0.38; }
 .nav-icon-shell image { width: 36px; height: 36px; object-fit: contain; }
 
 #window-layer { position: absolute; inset: 0; align-items: center; justify-content: center; pointer-events: none; }
+#window-layer.modal-active { pointer-events: auto; }
+#window-backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: auto;
+    background-color: #040806c2;
+}
 
 /* Compact main HUD */
 #hud { gap: 10px; }
 .top-card { height: 96px; }
+.top-stat.horizontal { width: 140px; padding: 10px 8px; }
+.top-stat { min-height: 36px; padding: 5px 7px; gap: 7px; }
+.top-stat-icon-shell { width: 28px; height: 28px; }
+.top-stat-icon { width: 19px; height: 19px; }
+.top-stat-value { font-size: 17px; }
+.calendar-slot { width: 78px; }
 .calendar-dial { position: relative; flex-shrink: 0; width: 66px; height: 66px; align-items: center; justify-content: center; }
 .calendar-ring { position: absolute; inset: 0; color: var(--gold); border: 7px solid #4a4537; border-radius: 50%; }
 .calendar-dial image { width: 38px; height: 38px; object-fit: contain; }
-.resource-row { height: 86px; }
-.resource-card { padding: 10px 14px; }
-.resource-label { height: 23px; font-size: 16px; }
-.resource-value { height: 33px; font-size: 28px; }
-.activity-switch { height: 64px; flex-direction: row; gap: 9px; padding: 7px; background-color: #0e1712e8; border-radius: 20px; }
-.activity-button { pointer-events: auto; flex: 1; min-width: 0; flex-direction: row; align-items: center; justify-content: center; gap: 8px; color: var(--muted); background-color: #1a2821; border: 2px solid #ffffff22; border-radius: 15px; font-family: "Rubik UI"; font-size: 18px; }
-.activity-button image { width: 28px; height: 28px; object-fit: contain; }
-.activity-button.active { color: #102017; background-color: var(--jade); border-color: #bdffe2; box-shadow: 0 0 12px 2px #56d5a055; }
+.activity-toggle { width: 170px; min-height: 68px; font-size: 16px; }
 .mission-float { pointer-events: auto; align-items: stretch; color: var(--cream); font-family: "Rubik UI"; text-align: left; }
 .mission-float:hover { border-color: var(--jade); background-color: #17271fea; }
 .float-title { font-size: 24px; }
@@ -255,7 +278,7 @@ button:disabled { opacity: 0.38; }
 .nav-button { font-size: 18px; }
 .nav-icon-shell { width: 48px; height: 48px; }
 .nav-icon-shell image { width: 34px; height: 34px; object-fit: contain; }
-.tap-feedback { width: 92px; height: 92px; margin-left: -46px; margin-top: -46px; background-color: #62caff28; border-color: #91dcff; }
+.tap-feedback { width: 92px; height: 92px; margin-left: 0; margin-top: 0; background-color: #62caff28; border-color: #91dcff; }
 .achievement-effect { pointer-events: none; position: absolute; z-index: 1400; inset: 0; align-items: center; justify-content: center; opacity: 0; background-color: #56d5a00a; animation: achievement-flash 1.45s ease-out; }
 .achievement-effect text { width: 620px; min-height: 92px; padding: 22px; color: #fff2b5; background-color: #173126e8; border: 3px solid var(--gold); border-radius: 30px; box-shadow: 0 0 45px 14px #56d5a077; font-size: 34px; text-align: center; }
 @keyframes achievement-flash {

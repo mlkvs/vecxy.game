@@ -1,5 +1,5 @@
-<panel id="shop-window" class="window" hidden="true">
+<panel id="shop-window" class="window shop-window" hidden="true">
     <panel class="window-header"><panel><text class="window-title">Лавка духов</text><text class="window-subtitle">Ассортимент обновляется каждый год</text></panel><button class="window-close"><image src="../Textures/UIIcons/close.png" /></button></panel>
     <panel class="window-toolbar"><text id="shop-markup">Наценка: +0%</text><text id="shop-money" class="toolbar-value">1000 рублей</text></panel>
-    <panel class="shop-content"><panel id="shop-grid" class="shop-grid" /></panel>
+    <panel class="window-content shop-content"><panel id="shop-grid" class="shop-grid" /></panel>
 </panel>

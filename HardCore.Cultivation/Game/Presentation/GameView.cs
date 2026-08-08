@@ -8,6 +8,7 @@ internal sealed class GameView
     {
         Document = document;
         WindowLayer = Panel("window-layer");
+        WindowBackdrop = Panel("window-backdrop");
         CharacterTapTarget = Button("character-tap-target");
         MissionSummaryButton = Button("mission-summary-button");
         StageName = Text("stage-name");
@@ -18,8 +19,9 @@ internal sealed class GameView
         CultivationProgressText = Text("cultivation-progress-text");
         CultivationProgress = Progress("cultivation-progress");
         Breakthrough = Button("breakthrough-button");
-        CultivateMode = Button("cultivate-mode-button");
-        MissionsMode = Button("missions-mode-button");
+        ActivityMode = Button("activity-mode-button");
+        ActivityModeIcon = Image("activity-mode-icon");
+        ActivityModeText = Text("activity-mode-text");
 
         MissionName = Text("mission-name");
         MissionDescription = Text("mission-description");
@@ -101,12 +103,16 @@ internal sealed class GameView
         EffectPopupClose = Button("effect-popup-close");
         // Every top-level subtree in the window layer is a mountable surface,
         // including dialogs and popups that intentionally do not use .window.
-        Windows = WindowLayer.Children.OfType<UiPanel>().ToArray();
+        Windows = WindowLayer.Children
+            .OfType<UiPanel>()
+            .Where(panel => panel.Id != "window-backdrop")
+            .ToArray();
         WindowCloseButtons = document.QueryAll(".window-close").OfType<UiButton>().ToArray();
     }
 
     public UiDocument Document { get; }
     public UiPanel WindowLayer { get; }
+    public UiPanel WindowBackdrop { get; }
     public UiButton CharacterTapTarget { get; }
     public UiButton MissionSummaryButton { get; }
     public UiText StageName { get; }
@@ -117,8 +123,9 @@ internal sealed class GameView
     public UiText CultivationProgressText { get; }
     public UiProgress CultivationProgress { get; }
     public UiButton Breakthrough { get; }
-    public UiButton CultivateMode { get; }
-    public UiButton MissionsMode { get; }
+    public UiButton ActivityMode { get; }
+    public UiImage ActivityModeIcon { get; }
+    public UiText ActivityModeText { get; }
     public UiText MissionName { get; }
     public UiText MissionDescription { get; }
     public UiText MissionProgressText { get; }

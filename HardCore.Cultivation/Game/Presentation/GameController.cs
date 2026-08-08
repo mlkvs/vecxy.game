@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Numerics;
+using System.Collections.Generic;
 using HardCore.Cultivation.Game.Application;
 using HardCore.Cultivation.Game.Domain;
 using HardCore.Cultivation.Game.Infrastructure;
@@ -31,13 +32,14 @@ public sealed class GameController(
     private UiImage? _actionToastIcon;
     private UiText? _actionToastText;
     private float _actionToastRemaining;
+    private float _actionToastDuration;
+    private readonly Queue<ActionToastRequest> _actionToastQueue = new();
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
     private UiText? _achievementText;
     private GameState _state = null!;
     private float _elapsedMilliseconds;
     private bool _gameOver;
-    private bool _alternateActionToast;
     private ItemCategory _inventoryCategory = ItemCategory.Ingredient;
     private Guid? _selectedInventoryItem;
     private EffectType? _openEffectType;
@@ -77,11 +79,22 @@ public sealed class GameController(
 
     public void Update(float deltaTime)
     {
-        if (_actionToast is not null && _actionToast.IsVisible)
+        if (_actionToast is not null)
         {
-            _actionToastRemaining -= deltaTime;
-            if (_actionToastRemaining <= 0f)
-                _actionToast.IsVisible = false;
+            if (_actionToast.IsVisible)
+            {
+                _actionToastRemaining -= deltaTime;
+                UpdateActionToastVisuals();
+                if (_actionToastRemaining <= 0f)
+                {
+                    HideActionToast();
+                    ShowNextActionToast();
+                }
+            }
+            else if (_actionToastQueue.Count > 0)
+            {
+                ShowNextActionToast();
+            }
         }
 
         if (_gameOver)
@@ -140,7 +153,11 @@ public sealed class GameController(
     {
         var layer = document.GetElementById<UiPanel>("window-layer");
         _windowLayer = layer;
-        layer.Clear();
+        foreach (var child in layer.Children.ToArray())
+        {
+            if (child.Id != "window-backdrop")
+                child.RemoveFromParent();
+        }
         document.Instantiate("Components/ShopWindow.xml", layer);
         document.Instantiate("Components/InventoryWindow.xml", layer);
         document.Instantiate("Components/MissionsWindow.xml", layer);
@@ -177,8 +194,7 @@ public sealed class GameController(
         BindClick(_view.InventoryButton, () => { OpenWindow(_view.InventoryWindow); SyncInventory(); });
         BindClick(_view.MissionsButton, OpenMissions);
         BindClick(_view.MissionSummaryButton, OpenMissions);
-        BindClick(_view.CultivateMode, () => SetActivity(ActivityMode.Cultivation));
-        BindClick(_view.MissionsMode, () => SetActivity(ActivityMode.Missions));
+        BindClick(_view.ActivityMode, ToggleActivityMode);
         BindClick(_view.Breakthrough, OpenBreakthrough);
         BindClick(_view.ConfirmBreakthrough, AttemptBreakthrough);
         BindClick(_view.CancelBreakthrough, () => UnmountWindow(_view.BreakthroughWindow));
@@ -257,8 +273,13 @@ public sealed class GameController(
         PlaySound("Sounds/cultivate.wav", 0.35f);
         if (_tapFeedback is not null)
         {
-            _tapFeedback.SetStyle("left", $"{position.X:0}px");
-            _tapFeedback.SetStyle("top", $"{position.Y:0}px");
+            var tapBounds = _view!.CharacterTapTarget.Bounds;
+            var feedbackHalfWidth = MathF.Max(0f, _tapFeedback.Bounds.Width * 0.5f);
+            var feedbackHalfHeight = MathF.Max(0f, _tapFeedback.Bounds.Height * 0.5f);
+            var absoluteX = tapBounds.X + position.X - feedbackHalfWidth;
+            var absoluteY = tapBounds.Y + position.Y - feedbackHalfHeight;
+            _tapFeedback.SetStyle("left", $"{absoluteX:0}px");
+            _tapFeedback.SetStyle("top", $"{absoluteY:0}px");
             _floatingDocument?.RestartAnimation(_tapFeedback);
         }
         var result = ticks.ProcessTap(_state);
@@ -281,6 +302,11 @@ public sealed class GameController(
         UpdateActivityButtons();
         Save();
     }
+
+    private void ToggleActivityMode() =>
+        SetActivity(_state.ActivityMode == ActivityMode.Cultivation
+            ? ActivityMode.Missions
+            : ActivityMode.Cultivation);
 
     private void ApplyStateToView()
     {
@@ -315,8 +341,15 @@ public sealed class GameController(
     {
         if (_view is null)
             return;
-        _view.CultivateMode.ToggleClass("active", _state.ActivityMode == ActivityMode.Cultivation);
-        _view.MissionsMode.ToggleClass("active", _state.ActivityMode == ActivityMode.Missions);
+        _view.ActivityMode.SetAttribute("class", _state.ActivityMode == ActivityMode.Missions
+            ? "activity-toggle missions"
+            : "activity-toggle");
+        _view.ActivityModeIcon.Source = _state.ActivityMode == ActivityMode.Missions
+            ? "Assets/Textures/UIIcons/missions.png"
+            : "Assets/Textures/UIIcons/cultivation.png";
+        _view.ActivityModeText.Value = _state.ActivityMode == ActivityMode.Missions
+            ? "МИССИИ"
+            : "КУЛЬТИВАЦИЯ";
     }
 
     private void UpdateMissionSummary()
@@ -391,9 +424,16 @@ public sealed class GameController(
             ["meta"] = string.Empty, ["effect"] = string.Empty, ["price"] = string.Empty
         });
         var card = new ShopCardView(root);
-        var slotId = slot.SlotId;
-        card.IconWell.Clicked += _ => ShowShopItem(slotId);
-        card.Buy.Clicked += _ => BuyShopItem(slotId);
+        card.IconWell.Clicked += _ =>
+        {
+            if (TryGetGuidAttribute(card.Card, "data-slot-id", out var slotId))
+                ShowShopItem(slotId);
+        };
+        card.Buy.Clicked += _ =>
+        {
+            if (TryGetGuidAttribute(card.Card, "data-slot-id", out var slotId))
+                BuyShopItem(slotId);
+        };
         return card;
     }
 
@@ -402,6 +442,7 @@ public sealed class GameController(
         var config = database.GetItem(slot.Item.ConfigId);
         var rarity = database.GetRarity(slot.Item.Rarity);
         var unitPrice = prices.GetBuyPrice(slot.Item, _state.Shop);
+        card.Card.SetAttribute("data-slot-id", slot.SlotId.ToString());
         card.Icon.Source = config.Icon;
         card.Name.Value = config.Name;
         card.Meta.Value = $"В наличии: {slot.AvailableQuantity}";
@@ -476,14 +517,18 @@ public sealed class GameController(
             ["key"] = item.InstanceId.ToString(), ["icon"] = string.Empty, ["quantity"] = string.Empty
         });
         var icon = new InventoryIconView(root);
-        var id = item.InstanceId;
-        root.Clicked += _ => SelectInventoryItem(id);
+        root.Clicked += _ =>
+        {
+            if (TryGetGuidAttribute(root, "data-item-id", out var id))
+                SelectInventoryItem(id);
+        };
         return icon;
     }
 
     private void UpdateInventoryIcon(InventoryIconView icon, ItemInstance item, int _)
     {
         var config = database.GetItem(item.ConfigId);
+        icon.Card.SetAttribute("data-item-id", item.InstanceId.ToString());
         icon.Icon.Source = config.Icon;
         icon.Quantity.Value = $"×{item.Quantity}";
         icon.IconWell.Style.BorderColor = database.GetRarity(item.Rarity).Color;
@@ -601,13 +646,7 @@ public sealed class GameController(
         });
         var card = new MissionCardView(root);
         var mission = database.GetMission(missionId);
-        var possible = database.Items.Values
-            .Where(item => mission.Reward.RequiredItemCategory is null || item.Category == mission.Reward.RequiredItemCategory)
-            .Take(1);
-        foreach (var item in possible)
-            AddRewardIcon(card.RewardIcons, item, item.Category == ItemCategory.Ingredient ? "×1–15" : "×1–3");
-        if (mission.Reward.Money > 0)
-            AddRewardIcon(card.RewardIcons, "Assets/Textures/UIIcons/money.png", $"{mission.Reward.Money}");
+        BuildMissionRewardPreview(card.RewardIcons, mission);
         card.Start.Clicked += _ => StartMission(missionId);
         return card;
     }
@@ -786,12 +825,14 @@ public sealed class GameController(
         if (window.Parent is null)
             _windowLayer!.Add(window);
         window.IsVisible = true;
+        UpdateWindowLayerState();
     }
 
-    private static void UnmountWindow(UiPanel window)
+    private void UnmountWindow(UiPanel window)
     {
         window.IsVisible = false;
         window.DetachFromParent();
+        UpdateWindowLayerState();
     }
 
     private void CloseWindows()
@@ -801,6 +842,7 @@ public sealed class GameController(
         foreach (var window in _view.Windows)
             UnmountWindow(window);
         _openEffectType = null;
+        UpdateWindowLayerState();
     }
 
     private void CloseInfoPopup()
@@ -828,6 +870,16 @@ public sealed class GameController(
         UnmountWindow(_view!.DeathWindow);
         Save();
         ApplyStateToView();
+    }
+
+    private void UpdateWindowLayerState()
+    {
+        if (_view is null)
+            return;
+
+        var hasOpenWindow = _view.Windows.Any(window => window.Parent is not null && window.IsVisible);
+        _view.WindowLayer.SetAttribute("class", hasOpenWindow ? "modal-active" : string.Empty);
+        _view.WindowBackdrop.IsVisible = hasOpenWindow;
     }
 
     private void BuildFloatingUi(UiDocument document)
@@ -885,21 +937,88 @@ public sealed class GameController(
         _actionToastIcon = document.GetElementById<UiImage>("action-toast-icon");
         _actionToastText = document.GetElementById<UiText>("action-toast-text");
         _actionToastRemaining = 0f;
+        _actionToastDuration = 0f;
+        _actionToastQueue.Clear();
+        if (_actionToast is not null)
+            HideActionToast();
     }
 
     private void ShowActionFeedback(string message, string icon, bool success, bool info = false)
     {
+        var toneClass = info ? "toast-info" : success ? "toast-success" : "toast-error";
+        _actionToastQueue.Enqueue(new ActionToastRequest(message, icon, toneClass));
+        if (_actionToast is not null && !_actionToast.IsVisible)
+            ShowNextActionToast();
+    }
+
+    private void HideActionToast()
+    {
+        if (_actionToast is null)
+            return;
+        _actionToastRemaining = 0f;
+        _actionToastDuration = 0f;
+        _actionToast.IsVisible = false;
+        _actionToast.SetAttribute("aria-hidden", "true");
+        _actionToast.SetStyle("opacity", "0");
+        _actionToast.SetStyle("animation", "none");
+        _actionToast.SetStyle("transform", "translate(0, -18px)");
+    }
+
+    private void ShowNextActionToast()
+    {
         if (_actionToast is null || _actionToastIcon is null || _actionToastText is null)
             return;
-        _actionToast.IsVisible = false;
-        _alternateActionToast = !_alternateActionToast;
-        _actionToast.SetAttribute("class", $"action-toast {(info ? "toast-info" : success ? "toast-success" : "toast-error")} {(_alternateActionToast ? "toast-a" : "toast-b")}");
-        _actionToastIcon.Source = icon;
-        _actionToastText.Value = message;
-        _actionToastRemaining = 1.85f;
+        if (_actionToastQueue.Count == 0)
+            return;
+
+        var toast = _actionToastQueue.Dequeue();
+        _actionToast.SetAttribute("class", $"action-toast {toast.ToneClass}");
+        _actionToastIcon.Source = toast.Icon;
+        _actionToastText.Value = toast.Message;
+        _actionToastDuration = 1.85f;
+        _actionToastRemaining = _actionToastDuration;
+        _actionToast.RemoveAttribute("hidden");
+        _actionToast.SetAttribute("aria-hidden", "false");
+        _actionToast.SetStyle("animation", "none");
         _actionToast.IsVisible = true;
-        _transientDocument?.RestartAnimation(_actionToast);
+        UpdateActionToastVisuals();
     }
+
+    private void UpdateActionToastVisuals()
+    {
+        if (_actionToast is null || !_actionToast.IsVisible || _actionToastDuration <= 0f)
+            return;
+
+        var elapsed = Math.Clamp(_actionToastDuration - _actionToastRemaining, 0f, _actionToastDuration);
+        const float fadeIn = 0.16f;
+        const float fadeOut = 0.22f;
+        var opacity = 1f;
+        var offset = 0f;
+
+        if (elapsed < fadeIn)
+        {
+            var t = elapsed / fadeIn;
+            opacity = t;
+            offset = -18f * (1f - t);
+        }
+        else if (_actionToastRemaining < fadeOut)
+        {
+            var t = Math.Max(0f, _actionToastRemaining / fadeOut);
+            opacity = t;
+            offset = -12f * (1f - t);
+        }
+
+        _actionToast.SetStyle("opacity", opacity.ToString("0.###", CultureInfo.InvariantCulture));
+        _actionToast.SetStyle("transform", $"translate(0, {offset:0.###}px)");
+    }
+
+    private static bool TryGetGuidAttribute(UiElement element, string attributeName, out Guid value)
+    {
+        value = Guid.Empty;
+        return element.Attributes.TryGetValue(attributeName, out var raw) && Guid.TryParse(raw, out value);
+    }
+
+    private readonly record struct ActionToastRequest(string Message, string Icon, string ToneClass);
 
     private void ShowItemPopup(ItemConfig config, ItemInstance? item, string quantity, string context)
     {
@@ -933,6 +1052,39 @@ public sealed class GameController(
     {
         var tile = AddRewardIcon(parent, item.Icon, badge);
         tile.Clicked += _ => ShowItemPopup(item, null, badge.TrimStart('×'), "Возможная награда за миссию");
+    }
+
+    private void BuildMissionRewardPreview(UiElement parent, MissionConfig mission)
+    {
+        parent.Clear();
+        var candidates = database.Items.Values
+            .Where(item => mission.Reward.RequiredItemCategory is null || item.Category == mission.Reward.RequiredItemCategory)
+            .OrderByDescending(item => item.ShopWeight)
+            .ToArray();
+
+        var canShowMoney = mission.Reward.Money > 0;
+        var canShowItem = candidates.Length > 0;
+        if (!canShowMoney && !canShowItem)
+            return;
+
+        var showMoney = canShowMoney;
+        var showItem = canShowItem;
+
+        if (canShowMoney && canShowItem)
+        {
+            var variant = Math.Abs(mission.Id.GetHashCode()) % 3;
+            showMoney = variant is 0 or 2;
+            showItem = variant is 1 or 2;
+        }
+
+        if (showItem)
+        {
+            var item = candidates[0];
+            AddRewardIcon(parent, item, $"×{mission.Reward.MinimumQuantity}–{mission.Reward.MaximumQuantity}");
+        }
+
+        if (showMoney)
+            AddRewardIcon(parent, "Assets/Textures/UIIcons/money.png", $"{mission.Reward.Money}");
     }
 
     private UiElement AddRewardIcon(UiElement parent, string source, string badge)

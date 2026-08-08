@@ -286,8 +286,19 @@ public sealed class MissionService(
     private List<MissionReward> GenerateRewards(MissionConfig mission)
     {
         var result = new List<MissionReward>(2);
+        var candidates = database.Items.Values
+            .Where(item => mission.Reward.RequiredItemCategory is null ||
+                           item.Category == mission.Reward.RequiredItemCategory)
+            .ToArray();
+        var canGiveMoney = mission.Reward.Money > 0;
+        var canGiveItem = candidates.Length > 0;
+
+        if (!canGiveMoney && !canGiveItem)
+            throw new InvalidOperationException($"Mission reward pool is empty: {mission.Id}");
+
         var rewardCount = random.NextInt(1, 3);
-        var includeMoney = mission.Reward.Money > 0 && random.NextInt(0, 2) == 0;
+        var includeMoney = canGiveMoney && (!canGiveItem || random.NextInt(0, 2) == 0);
+
         if (includeMoney)
         {
             result.Add(new MissionReward
@@ -297,24 +308,31 @@ public sealed class MissionService(
             });
         }
 
-        while (result.Count < rewardCount)
+        while (result.Count < rewardCount && canGiveItem)
         {
-            var candidates = database.Items.Values
-                .Where(item => mission.Reward.RequiredItemCategory is null ||
-                               item.Category == mission.Reward.RequiredItemCategory)
-                .ToArray();
-            if (candidates.Length == 0)
-                throw new InvalidOperationException($"Mission reward pool is empty: {mission.Id}");
             var config = WeightedRandom.Select(candidates, item => item.ShopWeight, random);
             var generated = itemGenerator.Generate(config.Id);
-            var maximum = config.Category == ItemCategory.Ingredient ? 15 : 3;
             result.Add(new MissionReward
             {
                 Type = MissionRewardType.Item,
                 ItemConfigId = config.Id,
                 ItemRarity = generated.Rarity,
                 ItemQuality = generated.Quality,
-                Quantity = random.NextInt(1, maximum + 1)
+                Quantity = random.NextInt(mission.Reward.MinimumQuantity, mission.Reward.MaximumQuantity + 1)
+            });
+        }
+
+        if (result.Count == 0 && canGiveItem)
+        {
+            var config = WeightedRandom.Select(candidates, item => item.ShopWeight, random);
+            var generated = itemGenerator.Generate(config.Id);
+            result.Add(new MissionReward
+            {
+                Type = MissionRewardType.Item,
+                ItemConfigId = config.Id,
+                ItemRarity = generated.Rarity,
+                ItemQuality = generated.Quality,
+                Quantity = random.NextInt(mission.Reward.MinimumQuantity, mission.Reward.MaximumQuantity + 1)
             });
         }
 

@@ -359,16 +359,16 @@
 }
 
 .shop-card .item-name {
-    min-height: 56px;
+    min-height: 62px;
     margin-top: 5px;
-    font-size: 19px;
+    font-size: 22px;
     text-align: center;
 }
 
 .shop-card .item-meta {
-    min-height: 24px;
+    min-height: 28px;
     margin-top: 2px;
-    font-size: 16px;
+    font-size: 18px;
     text-align: center;
 }
 
@@ -378,7 +378,7 @@
     width: 100%;
     margin-top: 5px;
     padding: 9px 8px;
-    font-size: 15px;
+    font-size: 18px;
     overflow: hidden;
 }
 
@@ -403,16 +403,16 @@
 }
 
 .mission-card-title {
-    min-height: 44px;
+    min-height: 52px;
     margin: 0;
-    font-size: 22px;
+    font-size: 25px;
 }
 
 .mission-card-description {
     flex: 1;
     min-height: 0;
     margin: 2px 0 0;
-    font-size: 16px;
+    font-size: 19px;
     overflow: hidden;
 }
 
@@ -425,7 +425,7 @@
 }
 
 .mission-duration-value {
-    font-size: 16px;
+    font-size: 18px;
     color: #c8ffe7;
 }
 
@@ -435,22 +435,22 @@
 }
 
 .reward-icon-tile {
-    width: 50px;
-    height: 50px;
-    border-radius: 9px;
+    width: 62px;
+    height: 62px;
+    border-radius: 11px;
 }
 
 .reward-item-icon {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
 }
 
 .reward-icon-badge {
     right: -4px;
     bottom: -4px;
-    min-width: 24px;
-    padding: 2px 4px;
-    font-size: 11px;
+    min-width: 36px;
+    padding: 4px 7px;
+    font-size: 17px;
     border-width: 1px;
 }
 
@@ -488,7 +488,7 @@
 .queue-number text {
     width: 100%;
     height: 100%;
-    font-size: 21px;
+    font-size: 25px;
     text-align: center;
 }
 
@@ -498,13 +498,13 @@
 }
 
 .queue-item-name {
-    font-size: 19px;
+    font-size: 22px;
 }
 
 .queue-progress {
     margin-top: 5px;
     color: #c8ffe7;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .queue-controls {
@@ -554,7 +554,7 @@
 }
 
 .inventory-quantity {
-    font-size: 18px;
+    font-size: 24px;
 }
 
 .inventory-icon-card:hover {
@@ -580,13 +580,13 @@
 
 .inventory-quantity {
     position: absolute;
-    right: 5px;
-    bottom: 4px;
-    min-width: 31px;
-    padding: 2px 5px;
+    right: 4px;
+    bottom: 3px;
+    min-width: 42px;
+    padding: 4px 8px;
     color: #102017;
     background-color: #f1bd59;
-    border-radius: 9px;
-    font-size: 13px;
+    border-radius: 12px;
+    font-size: 18px;
     text-align: center;
 }

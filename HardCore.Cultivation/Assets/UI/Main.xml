@@ -6,26 +6,20 @@
                 <text class="eyebrow">ПУТЬ БЕССМЕРТНОГО</text>
                 <text id="stage-name" class="screen-title">Закалка тела</text>
             </panel>
-            <panel class="calendar-dial">
-                <radial-progress id="year-dial" class="calendar-ring" />
-                <image src="../Textures/UIIcons/tick.png" />
+            <panel class="top-stat horizontal">
+                <panel class="top-stat-icon-shell"><image class="top-stat-icon" src="../Textures/UIIcons/money.png" /></panel>
+                <panel class="top-stat-copy"><text class="top-stat-label">РУБЛИ</text><text id="money-text" class="top-stat-value">1000</text></panel>
             </panel>
-        </panel>
-
-        <panel class="resource-row">
-            <panel class="resource-card money-resource">
-                <panel class="resource-icon-shell"><image class="resource-icon" src="../Textures/UIIcons/money.png" /></panel>
-                <panel class="resource-copy"><text class="resource-label">РУБЛИ</text><text id="money-text" class="resource-value">1000</text></panel>
+            <panel class="top-stat horizontal">
+                <panel class="top-stat-icon-shell age"><image class="top-stat-icon" src="../Textures/UIIcons/age.png" /></panel>
+                <panel class="top-stat-copy"><text class="top-stat-label">ВОЗРАСТ</text><text id="age-text" class="top-stat-value">16 / 80</text></panel>
             </panel>
-            <panel class="resource-card age-resource">
-                <panel class="resource-icon-shell"><image class="resource-icon" src="../Textures/UIIcons/age.png" /></panel>
-                <panel class="resource-copy"><text class="resource-label">ВОЗРАСТ</text><text id="age-text" class="resource-value">16 / 80</text></panel>
+            <panel class="calendar-slot">
+                <panel class="calendar-dial">
+                    <radial-progress id="year-dial" class="calendar-ring" />
+                    <image src="../Textures/UIIcons/tick.png" />
+                </panel>
             </panel>
-        </panel>
-
-        <panel class="activity-switch">
-            <button id="cultivate-mode-button" class="activity-button active"><image src="../Textures/UIIcons/cultivation.png"/><text>КУЛЬТИВИРОВАТЬ</text></button>
-            <button id="missions-mode-button" class="activity-button"><image src="../Textures/UIIcons/missions.png"/><text>ДЕЛАТЬ МИССИИ</text></button>
         </panel>
 
         <panel class="character-space">
@@ -43,6 +37,10 @@
                     <panel id="effects-list" class="effects-list"><text class="muted-text">Нет эффектов</text></panel>
                 </panel>
             </panel>
+            <button id="activity-mode-button" class="activity-toggle">
+                <panel class="activity-toggle-icon-shell"><image id="activity-mode-icon" src="../Textures/UIIcons/cultivation.png" /></panel>
+                <text id="activity-mode-text">КУЛЬТИВАЦИЯ</text>
+            </button>
         </panel>
 
         <panel class="cultivation-bar">
@@ -62,5 +60,7 @@
             <button id="missions-button" class="nav-button"><panel class="nav-icon-shell"><image src="../Textures/UIIcons/missions.png" /></panel><text>МИССИИ</text></button>
         </panel>
     </panel>
-    <panel id="window-layer" />
+    <panel id="window-layer">
+        <panel id="window-backdrop" hidden="true" />
+    </panel>
 </ui>
