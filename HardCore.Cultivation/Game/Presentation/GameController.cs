@@ -327,7 +327,7 @@ public sealed class GameController(
         _view!.StageName.Value = stage.Name;
         _view.YearDial.Progress = 1f - _state.Calendar.TickInYear / (float)_state.Calendar.TicksPerYear;
         _view.Money.Value = character.Money.ToString("N0", CultureInfo.InvariantCulture);
-        _view.Age.Value = $"{character.Age.TotalYears:0.0} / {cultivation.GetMaximumAge(character):0}";
+        _view.Age.Value = $"{Format(character.Age.TotalYears)} / {Format(cultivation.GetMaximumAge(character))}";
         _view.Realm.Value = $"{stage.Name} · ур. {progress.Level}";
         _view.CultivationProgressText.Value = $"{Format(character.SpiritualPower)} / {Format(required)}";
         _view.CultivationProgress.Progress = (float)fraction;
@@ -742,7 +742,7 @@ public sealed class GameController(
     {
         var progress = _state.Character.Cultivation;
         var required = cultivation.GetRequiredPower(progress.StageIndex, progress.Level);
-        _view!.BreakthroughChance.Value = $"{cultivation.GetBreakthroughChance(_state.Character, _state.ActiveEffects):0.#}%";
+        _view!.BreakthroughChance.Value = $"{Format(cultivation.GetBreakthroughChance(_state.Character, _state.ActiveEffects))}%";
         _view.BreakthroughCost.Value = $"Стоимость: {Format(required)} духовной силы";
         OpenWindow(_view.BreakthroughWindow);
     }
@@ -760,7 +760,7 @@ public sealed class GameController(
         {
             PlaySound("Sounds/breakthrough.wav", 0.7f);
             ShowAchievement("УСПЕШНЫЙ ПРОРЫВ");
-            ShowActionFeedback($"Предел жизни увеличен до {cultivation.GetMaximumAge(_state.Character):0} лет.",
+            ShowActionFeedback($"Предел жизни увеличен до {Format(cultivation.GetMaximumAge(_state.Character))} лет.",
                 "Assets/Textures/UIIcons/age.png", true, info: true);
         }
         ApplyStateToView();
@@ -853,7 +853,7 @@ public sealed class GameController(
     {
         CloseWindows();
         var stage = database.Cultivation.Stages[_state.Character.Cultivation.StageIndex];
-        _view!.DeathAge.Value = $"{_state.Character.Age.TotalYears:0.0} / {cultivation.GetMaximumAge(_state.Character):0} лет";
+        _view!.DeathAge.Value = $"{Format(_state.Character.Age.TotalYears)} / {Format(cultivation.GetMaximumAge(_state.Character))} лет";
         _view.DeathStage.Value = $"{stage.Name} · ур. {_state.Character.Cultivation.Level}";
         _view.DeathYear.Value = _state.Calendar.CurrentYear.ToString(CultureInfo.InvariantCulture);
         OpenWindow(_view.DeathWindow);
@@ -1126,14 +1126,14 @@ public sealed class GameController(
         var value = effect.Value * strength;
         return effect.Type switch
         {
-            EffectType.TickEfficiency => $"Получение духовной силы {Signed(value)}%",
-            EffectType.AgingSpeed => $"Скорость старения {Signed(value)}%",
-            EffectType.BreakthroughChance when pluralBreakthroughChance => $"Шансы прорыва {Signed(value)}%",
-            EffectType.BreakthroughChance => $"Шанс прорыва {Signed(value)}%",
-            EffectType.SpiritualPowerGain when effect.Operation == ModifierOperation.Flat => $"Добавляет {Format(value)} духовной силы за тик и тап",
-            EffectType.SpiritualPowerGain => $"Получение духовной силы {Signed(value)}%",
-            EffectType.MissionProgress => $"Скорость выполнения миссий {Signed(value)}%",
-            _ => $"Эффект {Signed(value)}%"
+            EffectType.TickEfficiency => $"Получение духовной силы {SignedUi(value)}%",
+            EffectType.AgingSpeed => $"Скорость старения {SignedUi(value)}%",
+            EffectType.BreakthroughChance when pluralBreakthroughChance => $"Шансы прорыва {SignedUi(value)}%",
+            EffectType.BreakthroughChance => $"Шанс прорыва {SignedUi(value)}%",
+            EffectType.SpiritualPowerGain when effect.Operation == ModifierOperation.Flat => $"Добавляет {Format(value)} духовной силы",
+            EffectType.SpiritualPowerGain => $"Получение духовной силы {SignedUi(value)}%",
+            EffectType.MissionProgress => $"Скорость выполнения миссий {SignedUi(value)}%",
+            _ => $"Эффект {SignedUi(value)}%"
         };
     }
 
@@ -1180,6 +1180,18 @@ public sealed class GameController(
         try { audio.Play(path, volume: volume); } catch { }
     }
 
-    private static string Format(decimal value) => value.ToString("0.##", CultureInfo.InvariantCulture);
-    private static string Signed(decimal value) => value >= 0m ? $"+{value:0.#}" : $"{value:0.#}";
+    private static string Format(decimal value) =>
+        Math.Round(value, MidpointRounding.AwayFromZero).ToString("0", CultureInfo.InvariantCulture);
+
+    private static string SignedUi(decimal value)
+    {
+        var rounded = Math.Round(value, MidpointRounding.AwayFromZero);
+        return rounded > 0m ? $"+{Format(rounded)}" : Format(rounded);
+    }
+
+    // Floating tick/tap values intentionally keep their fractional precision.
+    private static string Signed(decimal value) =>
+        value >= 0m
+            ? $"+{value.ToString("0.#", CultureInfo.InvariantCulture)}"
+            : value.ToString("0.#", CultureInfo.InvariantCulture);
 }
