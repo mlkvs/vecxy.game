@@ -11,10 +11,10 @@ internal sealed class GameView
         WindowBackdrop = Panel("window-backdrop");
         CharacterTapTarget = Button("character-tap-target");
         MissionSummaryButton = Button("mission-summary-button");
-        StageName = Text("stage-name");
         YearDial = Radial("year-dial");
         Money = Text("money-text");
         Age = Text("age-text");
+        MaximumAge = Text("maximum-age-text");
         Realm = Text("realm-text");
         CultivationProgressText = Text("cultivation-progress-text");
         CultivationProgress = Progress("cultivation-progress");
@@ -113,10 +113,10 @@ internal sealed class GameView
     public UiPanel WindowBackdrop { get; }
     public UiButton CharacterTapTarget { get; }
     public UiButton MissionSummaryButton { get; }
-    public UiText StageName { get; }
     public UiRadialProgress YearDial { get; }
     public UiText Money { get; }
     public UiText Age { get; }
+    public UiText MaximumAge { get; }
     public UiText Realm { get; }
     public UiText CultivationProgressText { get; }
     public UiProgress CultivationProgress { get; }

@@ -1,6 +1,6 @@
 <panel id="death-window" class="death-overlay" hidden="true">
     <panel class="death-dialog">
-        <panel class="death-icon-shell"><image src="../Textures/UIIcons/death.png" /></panel>
+        <panel class="death-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#death" /></panel>
         <text class="death-kicker">ПУТЬ ЗАВЕРШЁН</text>
         <text class="death-title">Отведённое время истекло</text>
         <text class="death-description">Тело достигло предела смертной жизни. Накопленные предметы и прогресс будут утрачены.</text>

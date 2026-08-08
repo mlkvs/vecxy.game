@@ -23,7 +23,8 @@ public sealed class MainScene(IComponentInstantiator instantiator) : IScene
                 Scene = scene,
                 Position = new Vector3(0.0f, -450.0f, 0.0f),
                 Scale = new Vector3(0.70f, 0.70f, 1.0f),
-            }
+            },
+            new Character.Prototype.Options()
         );
 
         var camera = instantiator.Instantiate<Camera>

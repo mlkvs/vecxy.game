@@ -1,6 +1,6 @@
 <panel id="breakthrough-result" class="info-popup-overlay" hidden="true">
     <panel class="breakthrough-dialog result-dialog">
-        <image id="breakthrough-result-icon" src="../Textures/UIIcons/cultivation.png" />
+        <image id="breakthrough-result-icon" sprite="Assets/Textures/UIIconsAtlas.atlas#cultivation" />
         <text id="breakthrough-result-title" class="breakthrough-title">Результат прорыва</text>
         <text id="breakthrough-result-text" class="breakthrough-result-text">Прорыв не удался</text>
         <button id="breakthrough-reroll" class="wide-action secondary-wide" hidden="true">1 ◈</button>

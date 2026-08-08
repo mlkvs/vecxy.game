@@ -50,7 +50,9 @@
     overflow-x: scroll; overflow-y: hidden; pointer-events: auto;
     scrollbar-width: 8px; scrollbar-color: #56d5a0 #26332b;
 }
-.queue-empty { padding-top: 24px; color: #d1cbb8; font-size: 21px; }
+.queue-empty, .mission-board-empty {
+    padding-top: 24px; color: #d1cbb8; font-size: 21px; vertical-align: top;
+}
 .queue-item {
     flex-shrink: 0; width: 180px; height: 126px; padding: 9px 10px; background-color: #26342b;
     border: 2px solid #ffffff26; border-radius: 17px; box-shadow: 0 4px 8px 0 #00000088;
@@ -75,10 +77,8 @@
 .mission-board-title { flex: 1; min-width: 0; }
 .mission-board-heading .toolbar-value { flex-shrink: 0; width: 278px; font-size: 20px; text-align: right; }
 .mission-board-empty {
-    padding: 34px 24px; color: #d1cbb8; background-color: #1a2720;
-    border: 1px solid #ffffff24; border-radius: 22px; font-size: 22px; text-align: center;
+    grid-column: 1 / span 2; width: 100%;
 }
-
 .death-overlay {
     pointer-events: auto; position: absolute; inset: 0; align-items: center; justify-content: center;
     padding: 34px; background-color: #050906e8;
@@ -125,22 +125,30 @@
 }
 .effect-popup-overlay { z-index: 1000; }
 .info-popup-card {
-    width: 100%; max-width: 610px; max-height: 1020px; padding: 28px;
-    background-color: #152119fc; border: 2px solid #f1bd5988; border-radius: 34px;
-    box-shadow: 0 14px 22px 0 #000000e8;
+    position: relative; width: 100%; max-width: 610px; max-height: 1020px; padding: 22px;
+    background-color: #0b120dfc; border: 3px solid #f1bd5988; border-radius: 34px;
+    box-shadow: 0 12px 18px 0 #020604e8;
 }
-.info-popup-header { min-height: 126px; flex-direction: row; align-items: center; gap: 17px; }
+.info-popup-card > .info-popup-close {
+    position: absolute; z-index: 2; top: 20px; right: 20px; width: 58px; height: 58px;
+    border-radius: 20px;
+}
+.info-popup-card > .info-popup-close image { width: 32px; height: 32px; }
+.info-popup-header {
+    min-height: 126px; padding: 4px 78px 18px 2px; flex-direction: row; align-items: center; gap: 17px;
+    border-bottom: 2px solid #f1bd5944;
+}
 .info-popup-icon-well {
-    flex-shrink: 0; width: 118px; height: 118px; align-items: center; justify-content: center;
+    flex-shrink: 0; width: 108px; height: 108px; align-items: center; justify-content: center;
     pointer-events: auto; background-color: #0d1711; border: 2px solid #56d5a055;
-    border-radius: 30px; box-shadow: 0 7px 13px 0 #00000099;
+    border-radius: 26px; box-shadow: 0 7px 13px 0 #00000099;
 }
 .info-popup-icon-well:hover { background-color: #1a3226; border-color: #f1bd59; }
-.info-popup-icon { width: 98px; height: 98px; object-fit: contain; }
+.info-popup-icon { width: 90px; height: 90px; object-fit: contain; }
 .info-popup-heading { flex: 1; min-width: 0; justify-content: center; }
 .info-popup-kind { color: #56d5a0; font-size: 17px; }
-.info-popup-title { margin-top: 5px; color: #fff3d6; font-size: 31px; }
-.info-popup-description { min-height: 70px; margin-top: 22px; color: #e4decd; font-size: 22px; }
+.info-popup-title { width: 100%; margin-top: 5px; color: #fff3d6; font-size: 31px; }
+.info-popup-description { min-height: 70px; margin-top: 18px; color: #e4decd; font-size: 22px; }
 .info-popup-effect {
     min-height: 92px; margin-top: 16px; padding: 15px 17px; color: #c8ffe7;
     background-color: #103126; border-left: 6px solid #56d5a0; border-radius: 17px; font-size: 22px;
@@ -209,6 +217,15 @@
 .breakthrough-chance { margin-top: 10px; color: #56d5a0; font-size: 62px; text-align: center; }
 .breakthrough-cost, .breakthrough-result-text { min-height: 62px; margin-top: 8px; color: #d8d2bf; font-size: 21px; text-align: center; }
 .breakthrough-dialog .wide-action { width: 100%; margin-top: 14px; }
-.effect-popup-card { position: relative; width: 590px; padding: 30px; background-color: #152119fc; border: 2px solid #56d5a0; border-radius: 30px; }
-.effect-popup-card .info-popup-close { position: absolute; right: 12px; top: 12px; width: 50px; height: 50px; }
-.effect-popup-card .info-popup-effect { margin: 0; padding: 24px 70px 24px 22px; min-height: 120px; }
+.effect-popup-card {
+    width: 590px; padding: 22px; background-color: #0b120dfc;
+    border: 3px solid #f1bd5988; border-radius: 34px; box-shadow: 0 12px 18px 0 #020604e8;
+}
+.effect-popup-header {
+    min-height: 72px; padding: 0 0 14px 2px; flex-direction: row; align-items: center;
+    justify-content: space-between; gap: 18px; border-bottom: 2px solid #f1bd5944;
+}
+.effect-popup-header > .info-popup-kind { flex: 1; min-width: 0; font-size: 18px; }
+.effect-popup-header > .info-popup-close { flex-shrink: 0; width: 54px; height: 54px; border-radius: 19px; }
+.effect-popup-header > .info-popup-close image { width: 30px; height: 30px; }
+.effect-popup-card .info-popup-effect { margin-top: 16px; padding: 20px 22px; min-height: 112px; }

@@ -2,8 +2,8 @@
     <panel class="queue-number"><text class="queue-number-text">{{number}}</text></panel>
     <panel class="queue-copy"><text class="queue-item-name">{{name}}</text><text class="queue-progress">{{progress}}</text></panel>
     <panel class="queue-controls">
-        <button class="queue-control queue-left"><image src="../Textures/UIIcons/queue-left.png" /></button>
-        <button class="queue-control queue-right"><image src="../Textures/UIIcons/queue-right.png" /></button>
-        <button class="queue-control queue-remove"><image src="../Textures/UIIcons/remove.png" /></button>
+        <button class="queue-control queue-left"><image sprite="Assets/Textures/UIIconsAtlas.atlas#queue-left" /></button>
+        <button class="queue-control queue-right"><image sprite="Assets/Textures/UIIconsAtlas.atlas#queue-right" /></button>
+        <button class="queue-control queue-remove"><image sprite="Assets/Textures/UIIconsAtlas.atlas#remove" /></button>
     </panel>
 </panel>

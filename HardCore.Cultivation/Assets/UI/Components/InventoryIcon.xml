@@ -1,5 +1,5 @@
 <button class="inventory-icon-card" data-key="{{key}}">
     <panel class="inventory-quality" />
-    <panel class="inventory-icon-well"><image class="inventory-icon" src="{{icon}}" /></panel>
+    <panel class="inventory-icon-well"><image class="inventory-icon" /></panel>
     <text class="inventory-quantity">×{{quantity}}</text>
 </button>

@@ -2,22 +2,25 @@
     scale-mode="fit" reference-width="620" reference-height="1180">
     <panel id="hud">
         <panel class="top-card">
-            <panel class="identity-block">
-                <text class="eyebrow">ПУТЬ БЕССМЕРТНОГО</text>
-                <text id="stage-name" class="screen-title">Закалка тела</text>
-            </panel>
             <panel class="top-stat horizontal">
-                <panel class="top-stat-icon-shell"><image class="top-stat-icon" src="../Textures/UIIcons/money.png" /></panel>
+                <panel class="top-stat-icon-shell"><image class="top-stat-icon" sprite="Assets/Textures/UIIconsAtlas.atlas#money" /></panel>
                 <panel class="top-stat-copy"><text class="top-stat-label">РУБЛИ</text><text id="money-text" class="top-stat-value">1000</text></panel>
             </panel>
             <panel class="top-stat horizontal">
-                <panel class="top-stat-icon-shell age"><image class="top-stat-icon" src="../Textures/UIIcons/age.png" /></panel>
-                <panel class="top-stat-copy"><text class="top-stat-label">ВОЗРАСТ</text><text id="age-text" class="top-stat-value">16 / 80</text></panel>
+                <panel class="top-stat-icon-shell age"><image class="top-stat-icon" sprite="Assets/Textures/UIIconsAtlas.atlas#age" /></panel>
+                <panel class="top-stat-copy">
+                    <text class="top-stat-label">ВОЗРАСТ</text>
+                    <panel class="age-values">
+                        <text id="age-text" class="top-stat-value">16</text>
+                        <text class="top-stat-value age-separator">/</text>
+                        <text id="maximum-age-text" class="top-stat-value age-maximum">80</text>
+                    </panel>
+                </panel>
             </panel>
             <panel class="calendar-slot">
                 <panel class="calendar-dial">
                     <radial-progress id="year-dial" class="calendar-ring" />
-                    <image src="../Textures/UIIcons/tick.png" />
+                    <image sprite="Assets/Textures/UIIconsAtlas.atlas#tick" />
                 </panel>
             </panel>
         </panel>
@@ -25,20 +28,17 @@
         <panel class="character-space">
             <button id="character-tap-target" class="character-tap-target" aria-label="Медитировать" />
             <button id="mission-summary-button" class="mission-float glass-panel">
-                <panel class="float-heading"><image src="../Textures/UIIcons/missions.png" /><text>ТЕКУЩАЯ МИССИЯ</text></panel>
+                <panel class="float-heading"><image sprite="Assets/Textures/UIIconsAtlas.atlas#missions" /><text>ТЕКУЩАЯ МИССИЯ</text></panel>
                 <text id="mission-name" class="float-title">Нет активной миссии</text>
                 <text id="mission-description" class="float-description">Выберите поручение.</text>
                 <panel class="progress-track"><progress id="mission-progress" class="progress-fill mission-fill" /></panel>
                 <text id="mission-progress-text" class="progress-caption">0 / 0</text>
             </button>
             <panel class="side-tools">
-                <panel class="effects-float">
-                    <text class="small-heading">ЭФФЕКТЫ</text>
-                    <panel id="effects-list" class="effects-list"><text class="muted-text">Нет эффектов</text></panel>
-                </panel>
+                <panel id="effects-list" class="effects-list" />
             </panel>
             <button id="activity-mode-button" class="activity-toggle">
-                <panel class="activity-toggle-icon-shell"><image id="activity-mode-icon" src="../Textures/UIIcons/cultivation.png" /></panel>
+                <panel class="activity-toggle-icon-shell"><image id="activity-mode-icon" sprite="Assets/Textures/UIIconsAtlas.atlas#cultivation" /></panel>
                 <text id="activity-mode-text">КУЛЬТИВАЦИЯ</text>
             </button>
         </panel>
@@ -55,8 +55,8 @@
         </panel>
 
         <panel class="bottom-nav">
-            <button id="shop-button" class="nav-button"><panel class="nav-icon-shell"><image src="../Textures/UIIcons/shop.png" /></panel><text>ЛАВКА</text></button>
-            <button id="inventory-button" class="nav-button"><panel class="nav-icon-shell"><image src="../Textures/UIIcons/inventory.png" /></panel><text>РЮКЗАК</text></button>
+            <button id="shop-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#shop" /></panel><text>ЛАВКА</text></button>
+            <button id="inventory-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#inventory" /></panel><text>РЮКЗАК</text></button>
         </panel>
     </panel>
     <panel id="window-layer">

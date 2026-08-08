@@ -633,6 +633,12 @@
     border-color: #56d5a0;
 }
 
+.inventory-icon-card.selected {
+    background-color: #2d3824;
+    border-color: #f1bd59;
+    box-shadow: 0 0 0 3px #f1bd5966, 0 6px 14px 2px #000000bb;
+}
+
 .inventory-icon-well {
     width: 82px;
     height: 82px;

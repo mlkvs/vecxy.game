@@ -1,8 +1,8 @@
 <panel class="shop-card" data-key="{{key}}">
-    <panel class="item-icon-well"><image class="item-icon" src="{{icon}}" /></panel>
+    <panel class="item-icon-well"><image class="item-icon" /></panel>
     <text class="item-name">{{name}}</text>
     <text class="item-meta">{{meta}}</text>
     <panel class="item-quality shop-item-quality" />
     <text class="item-effect">{{effect}}</text>
-    <button class="card-action buy-button">КУПИТЬ · {{price}}</button>
+    <button class="card-action buy-button">{{price}} РУБЛЕЙ</button>
 </panel>

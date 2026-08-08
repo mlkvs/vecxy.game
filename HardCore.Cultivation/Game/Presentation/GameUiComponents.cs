@@ -88,8 +88,8 @@ internal sealed class MissionQueueItemView : AUiComponent
 
 internal sealed class QualityStarsView : AUiComponent
 {
-    private const string GrayStar = "Assets/Textures/UIIcons/star-gray.png";
-    private const string RainbowStar = "Assets/Textures/UIIcons/star-rainbow.png";
+    private const string GrayStar = "Assets/Textures/UIIconsAtlas.atlas#star-gray";
+    private const string RainbowStar = "Assets/Textures/UIIconsAtlas.atlas#star-rainbow";
 
     private readonly IReadOnlyList<UiImage> _emptyStars;
     private readonly IReadOnlyList<UiPanel> _fills;
@@ -105,7 +105,7 @@ internal sealed class QualityStarsView : AUiComponent
         Root.SetAttribute("aria-label", "Качество предмета известно");
         Root.ToggleClass("unknown-quality", false);
         foreach (var star in _emptyStars)
-            star.Source = GrayStar;
+            star.Sprite = GrayStar;
         for (var index = 0; index < _fills.Count; index++)
             _fills[index].Style.SetWidthPercent((float)Math.Clamp(quality - index, 0m, 1m));
     }
@@ -115,7 +115,7 @@ internal sealed class QualityStarsView : AUiComponent
         Root.SetAttribute("aria-label", "Качество предмета неизвестно");
         Root.ToggleClass("unknown-quality", true);
         foreach (var star in _emptyStars)
-            star.Source = RainbowStar;
+            star.Sprite = RainbowStar;
         foreach (var fill in _fills)
             fill.Style.SetWidthPercent(0f);
     }

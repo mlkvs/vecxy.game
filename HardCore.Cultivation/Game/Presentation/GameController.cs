@@ -273,11 +273,10 @@ public sealed class GameController(
         PlaySound("Sounds/cultivate.wav", 0.35f);
         if (_tapFeedback is not null)
         {
-            var tapBounds = _view!.CharacterTapTarget.Bounds;
             var feedbackHalfWidth = MathF.Max(0f, _tapFeedback.Bounds.Width * 0.5f);
             var feedbackHalfHeight = MathF.Max(0f, _tapFeedback.Bounds.Height * 0.5f);
-            var absoluteX = tapBounds.X + position.X - feedbackHalfWidth;
-            var absoluteY = tapBounds.Y + position.Y - feedbackHalfHeight;
+            var absoluteX = position.X - feedbackHalfWidth;
+            var absoluteY = position.Y - feedbackHalfHeight;
             _tapFeedback.SetStyle("left", $"{absoluteX:0}px");
             _tapFeedback.SetStyle("top", $"{absoluteY:0}px");
             _floatingDocument?.RestartAnimation(_tapFeedback);
@@ -324,10 +323,10 @@ public sealed class GameController(
         var stage = database.Cultivation.Stages[progress.StageIndex];
         var required = cultivation.GetRequiredPower(progress.StageIndex, progress.Level);
         var fraction = required <= 0m ? 1m : Math.Clamp(character.SpiritualPower / required, 0m, 1m);
-        _view!.StageName.Value = stage.Name;
-        _view.YearDial.Progress = 1f - _state.Calendar.TickInYear / (float)_state.Calendar.TicksPerYear;
+        _view!.YearDial.Progress = 1f - _state.Calendar.TickInYear / (float)_state.Calendar.TicksPerYear;
         _view.Money.Value = character.Money.ToString("N0", CultureInfo.InvariantCulture);
-        _view.Age.Value = $"{Format(character.Age.TotalYears)} / {Format(cultivation.GetMaximumAge(character))}";
+        _view.Age.Value = Format(character.Age.TotalYears);
+        _view.MaximumAge.Value = Format(cultivation.GetMaximumAge(character));
         _view.Realm.Value = $"{stage.Name} · ур. {progress.Level}";
         _view.CultivationProgressText.Value = $"{Format(character.SpiritualPower)} / {Format(required)}";
         _view.CultivationProgress.Progress = (float)fraction;
@@ -344,9 +343,9 @@ public sealed class GameController(
         _view.ActivityMode.SetAttribute("class", _state.ActivityMode == ActivityMode.Missions
             ? "activity-toggle missions"
             : "activity-toggle");
-        _view.ActivityModeIcon.Source = _state.ActivityMode == ActivityMode.Missions
+        _view.ActivityModeIcon.Sprite = AtlasSprite(_state.ActivityMode == ActivityMode.Missions
             ? "Assets/Textures/UIIcons/missions.png"
-            : "Assets/Textures/UIIcons/cultivation.png";
+            : "Assets/Textures/UIIcons/cultivation.png");
         _view.ActivityModeText.Value = _state.ActivityMode == ActivityMode.Missions
             ? "МИССИИ"
             : "КУЛЬТИВАЦИЯ";
@@ -378,6 +377,7 @@ public sealed class GameController(
             .GroupBy(effect => effect.Type).OrderBy(group => group.Key).ToArray();
         var signature = string.Join('|', groups.SelectMany(group => group.Select(effect =>
             $"{effect.Type}:{effect.SourceItemId}:{effect.Value}:{effect.DurationType}")));
+        _view!.Effects.IsVisible = groups.Length > 0;
         var currentSignature = _view!.Effects.Attributes.GetValueOrDefault("data-signature");
         if (signature != currentSignature)
         {
@@ -385,17 +385,16 @@ public sealed class GameController(
             _view.Effects.Clear();
             _effectWidgets.Clear();
             if (groups.Length == 0)
-            {
-                _view.Effects.Add(_document!.CreateText("Нет активных эффектов", new Dictionary<string, string> { ["class"] = "detail-text" }));
                 return;
-            }
             foreach (var group in groups)
             {
                 var source = database.GetItem(group.First().SourceItemId);
                 var orb = _document!.CreateButton(attributes: new Dictionary<string, string> { ["class"] = "effect-orb" });
                 var ring = (UiRadialProgress)_document.CreateElement("radial-progress", new Dictionary<string, string> { ["class"] = "effect-ring" });
                 orb.Add(ring);
-                orb.Add(_document.CreateImage(source.Icon, new Dictionary<string, string> { ["class"] = "effect-icon" }));
+                var effectIcon = _document.CreateImage(source.Icon, new Dictionary<string, string> { ["class"] = "effect-icon" });
+                effectIcon.Sprite = AtlasSprite(source.Icon);
+                orb.Add(effectIcon);
                 var type = group.Key;
                 orb.Clicked += _ => ShowEffectPopup(type);
                 _view.Effects.Add(orb);
@@ -443,12 +442,12 @@ public sealed class GameController(
         var rarity = database.GetRarity(slot.Item.Rarity);
         var unitPrice = prices.GetBuyPrice(slot.Item, _state.Shop);
         card.Card.SetAttribute("data-slot-id", slot.SlotId.ToString());
-        card.Icon.Source = config.Icon;
+        card.Icon.Sprite = AtlasSprite(config.Icon);
         card.Name.Value = config.Name;
         card.Meta.Value = $"В наличии: {slot.AvailableQuantity}";
         card.QualityStars.SetQuality(slot.Item.Quality);
         card.Effect.Value = DescribeItemEffect(config, slot.Item);
-        card.Buy.Label = $"КУПИТЬ · {unitPrice.ToString(CultureInfo.InvariantCulture)}";
+        card.Buy.Label = $"{unitPrice.ToString(CultureInfo.InvariantCulture)} РУБЛЕЙ";
         card.IconWell.Style.BorderColor = rarity.Color;
         card.Buy.IsEnabled = slot.AvailableQuantity > 0 && _state.Character.Money >= unitPrice;
     }
@@ -504,6 +503,7 @@ public sealed class GameController(
         _inventoryIcons.Update(
             _state.Inventory.Items.Where(item => database.GetItem(item.ConfigId).Category == _inventoryCategory),
             item => item.InstanceId);
+        UpdateInventorySelection();
         if (_selectedInventoryItem is { } selected && _state.Inventory.Find(selected) is not null)
             SelectInventoryItem(selected);
         else
@@ -530,10 +530,11 @@ public sealed class GameController(
     {
         var config = database.GetItem(item.ConfigId);
         icon.Card.SetAttribute("data-item-id", item.InstanceId.ToString());
-        icon.Icon.Source = config.Icon;
+        icon.Icon.Sprite = AtlasSprite(config.Icon);
         icon.QualityStars.SetQuality(item.Quality);
         icon.Quantity.Value = $"×{item.Quantity}";
         icon.IconWell.Style.BorderColor = database.GetRarity(item.Rarity).Color;
+        icon.Card.ToggleClass("selected", item.InstanceId == _selectedInventoryItem);
     }
 
     private void SelectInventoryItem(Guid id)
@@ -542,17 +543,31 @@ public sealed class GameController(
         if (item is null)
             return;
         _selectedInventoryItem = id;
+        UpdateInventorySelection();
         var config = database.GetItem(item.ConfigId);
         var rarity = database.GetRarity(item.Rarity);
-        _view!.InventoryDetailIcon.Source = config.Icon;
+        _view!.InventoryDetailIcon.Sprite = AtlasSprite(config.Icon);
         _view.InventoryDetailIconWell.Style.BorderColor = rarity.Color;
         _view.InventoryDetailName.Value = $"{config.Name} · ×{item.Quantity}";
         _view.InventoryDetailRarity.Value = rarity.DisplayName.ToUpperInvariant();
         _view.InventoryDetailRarity.Style.Color = rarity.Color;
         _view.InventoryDetailEffect.Value = DescribeItemEffect(config, item);
         _view.InventoryUse.IsEnabled = config.Effects.Count > 0;
-        _view.InventorySell.Label = $"ПРОДАТЬ · {prices.GetSellPrice(item, _state.Shop)}";
+        _view.InventorySell.Label = $"ПРОДАТЬ\n+{prices.GetSellPrice(item, _state.Shop)} РУБЛЕЙ";
         _view.InventoryDetails.IsVisible = true;
+    }
+
+    private void UpdateInventorySelection()
+    {
+        if (_view is null)
+            return;
+        foreach (var card in _view.InventoryGrid.Children)
+        {
+            var selected = TryGetGuidAttribute(card, "data-item-id", out var id) &&
+                           id == _selectedInventoryItem;
+            card.ToggleClass("selected", selected);
+            card.SetAttribute("aria-selected", selected ? "true" : "false");
+        }
     }
 
     private void UseSelectedItem()
@@ -883,7 +898,17 @@ public sealed class GameController(
 
         var hasOpenWindow = _view.Windows.Any(window => window.Parent is not null && window.IsVisible);
         _view.WindowLayer.SetAttribute("class", hasOpenWindow ? "modal-active" : string.Empty);
-        _view.WindowBackdrop.IsVisible = hasOpenWindow;
+        if (hasOpenWindow)
+        {
+            if (_view.WindowBackdrop.Parent is null)
+                _view.WindowLayer.Insert(0, _view.WindowBackdrop);
+            _view.WindowBackdrop.IsVisible = true;
+        }
+        else
+        {
+            _view.WindowBackdrop.IsVisible = false;
+            _view.WindowBackdrop.DetachFromParent();
+        }
     }
 
     private void BuildFloatingUi(UiDocument document)
@@ -977,7 +1002,7 @@ public sealed class GameController(
 
         var toast = _actionToastQueue.Dequeue();
         _actionToast.SetAttribute("class", $"action-toast {toast.ToneClass}");
-        _actionToastIcon.Source = toast.Icon;
+        _actionToastIcon.Sprite = AtlasSprite(toast.Icon);
         _actionToastText.Value = toast.Message;
         _actionToastDuration = 1.85f;
         _actionToastRemaining = _actionToastDuration;
@@ -1042,7 +1067,7 @@ public sealed class GameController(
         view.InfoPopupQuality.IsVisible = true;
         view.InfoPopupStatValue2.IsVisible = false;
         BuildQualityStars(view.InfoPopupQuality, item?.Quality);
-        view.InfoPopupIcon.Source = config.Icon;
+        view.InfoPopupIcon.Sprite = AtlasSprite(config.Icon);
         var accent = rarity?.Color ?? "#56d5a0";
         view.InfoPopupKind.Style.Color = accent;
         view.InfoPopupIconWell.Style.BorderColor = accent;
@@ -1094,7 +1119,11 @@ public sealed class GameController(
     private UiElement AddRewardIcon(UiElement parent, string source, string badge)
     {
         var tile = _document!.CreateElement("panel", new Dictionary<string, string> { ["class"] = "reward-icon-tile" });
-        tile.Add(_document.CreateElement("image", new Dictionary<string, string> { ["class"] = "reward-item-icon", ["src"] = source }));
+        tile.Add(_document.CreateElement("image", new Dictionary<string, string>
+        {
+            ["class"] = "reward-item-icon",
+            ["sprite"] = AtlasSprite(source)
+        }));
         tile.Add(_document.CreateElement("text", new Dictionary<string, string> { ["class"] = "reward-icon-badge" }, badge));
         parent.Add(tile);
         return tile;
@@ -1195,13 +1224,24 @@ public sealed class GameController(
         try { audio.Play(path, volume: volume); } catch { }
     }
 
-    private static string Format(decimal value) =>
-        Math.Round(value, MidpointRounding.AwayFromZero).ToString("0", CultureInfo.InvariantCulture);
+    private static string Format(decimal value)
+    {
+        if (value != 0m && Math.Abs(value) < 1m)
+        {
+            var smallValue = Math.Round(value, 2, MidpointRounding.AwayFromZero);
+            return smallValue.ToString("0.00", CultureInfo.InvariantCulture);
+        }
+
+        return Math.Round(value, MidpointRounding.AwayFromZero)
+            .ToString("0", CultureInfo.InvariantCulture);
+    }
 
     private static string SignedUi(decimal value)
     {
-        var rounded = Math.Round(value, MidpointRounding.AwayFromZero);
-        return rounded > 0m ? $"+{Format(rounded)}" : Format(rounded);
+        var rounded = value != 0m && Math.Abs(value) < 1m
+            ? Math.Round(value, 2, MidpointRounding.AwayFromZero)
+            : Math.Round(value, MidpointRounding.AwayFromZero);
+        return rounded > 0m ? $"+{Format(value)}" : Format(value);
     }
 
     // Floating tick/tap values intentionally keep their fractional precision.
@@ -1209,4 +1249,13 @@ public sealed class GameController(
         value >= 0m
             ? $"+{value.ToString("0.#", CultureInfo.InvariantCulture)}"
             : value.ToString("0.#", CultureInfo.InvariantCulture);
+
+    private static string AtlasSprite(string source)
+    {
+        var normalized = source.Replace('\\', '/');
+        var atlas = normalized.Contains("/Items/", StringComparison.OrdinalIgnoreCase)
+            ? "Assets/Textures/ItemsIconsAtlas.atlas"
+            : "Assets/Textures/UIIconsAtlas.atlas";
+        return $"{atlas}#{Path.GetFileNameWithoutExtension(normalized)}";
+    }
 }

@@ -13,7 +13,7 @@ public class Character : AComponent
     {
         public class Options : IPrototype.IOptions
         {
-            public float Amplitude { get; init; } = 8.0f;
+            public float Amplitude { get; init; } = 24.0f;
             public float PeriodSeconds { get; init; } = 3.6f;
         }
     
@@ -67,8 +67,8 @@ public class Character : AComponent
     private Vector3 _origin;
     private float _elapsed;
 
-    public float Amplitude { get; set; }
-    public float PeriodSeconds { get; set; }
+    public float Amplitude { get; set; } = 24.0f;
+    public float PeriodSeconds { get; set; } = 3.6f;
 
     public override void Start()
     {

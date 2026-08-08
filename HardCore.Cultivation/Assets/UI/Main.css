@@ -31,7 +31,6 @@ text {
 .screen .detail-text,
 .screen .mission-card-description,
 .screen .item-effect,
-.screen .mission-board-empty,
 .screen .queue-empty,
 .screen .death-description,
 .screen .info-popup-description,
@@ -82,33 +81,33 @@ text {
 #hud { width: 100%; height: 100%; padding: 16px 18px 14px; gap: 12px; }
 
 .top-card {
-    height: 100px; flex-direction: row; align-items: center; gap: 10px;
-    padding: 16px 20px; background-color: #101a15e8; border: 2px solid var(--line);
-    border-radius: 26px; box-shadow: 0 7px 14px 0 var(--shadow);
+    height: 78px; flex-direction: row; align-items: center; gap: 10px;
+    padding: 0; background-color: transparent; border: 0; box-shadow: none;
 }
-.identity-block { flex: 1; min-width: 0; justify-content: center; }
 .top-stat {
     min-height: 40px; padding: 6px 8px; flex-direction: row; align-items: center; gap: 8px;
     background-color: #17231de8; border: 2px solid #fff3d62e; border-radius: 16px;
 }
 .top-stat.horizontal {
-    flex-shrink: 0; width: 150px; min-height: 0; padding: 10px 10px;
-    align-self: stretch;
+    flex-shrink: 0; width: 163px; min-height: 0; padding: 10px 10px;
+    align-self: center; height: 70px;
 }
 .top-stat-icon-shell {
-    flex-shrink: 0; width: 32px; height: 32px; align-items: center; justify-content: center;
-    background-color: #96692e; border-radius: 11px;
+    flex-shrink: 0; width: 38px; height: 38px; align-items: center; justify-content: center;
+    background-color: #96692e; border-radius: 13px;
 }
 .top-stat-icon-shell.age { background-color: #566059; }
-.top-stat-icon { width: 22px; height: 22px; object-fit: contain; }
+.top-stat-icon { width: 28px; height: 28px; object-fit: contain; }
 .top-stat-copy { flex: 1; min-width: 0; }
-.top-stat-label { color: var(--muted); font-size: 12px; }
-.top-stat-value { margin-top: 2px; color: #fff3d6; font-size: 19px; white-space: nowrap; }
-.eyebrow { color: var(--gold); font-size: 18px; }
-.screen-title { margin-top: 4px; font-size: 36px; }
+.top-stat-label { color: var(--muted); font-size: 13px; }
+.top-stat-value { margin-top: 2px; color: #fff3d6; font-size: 22px; white-space: nowrap; }
+.age-values { min-width: 0; margin-top: 2px; flex-direction: row; align-items: center; gap: 4px; }
+.age-values .top-stat-value { flex-shrink: 0; margin-top: 0; }
+.age-separator { color: #a9a495; }
+.age-maximum { color: #e86f64; }
 .calendar-slot {
-    flex-shrink: 0; width: 86px; align-self: stretch; align-items: center; justify-content: center;
-    padding-left: 6px; margin-left: 2px; border-left: 2px solid #f1bd5944;
+    flex-shrink: 0; width: 86px; align-self: center; align-items: center; justify-content: center;
+    padding: 0; margin-left: auto; border: 0;
 }
 .calendar-block {
     flex-shrink: 0; width: 172px; align-items: flex-end; padding-left: 16px;
@@ -174,25 +173,20 @@ text {
 
 .side-tools { position: absolute; right: 0; top: 28px; bottom: 28px; width: 88px; align-items: stretch; }
 .activity-toggle {
-    pointer-events: auto; position: absolute; right: 0; bottom: 10px; width: 178px; min-height: 72px;
+    pointer-events: auto; position: absolute; right: 0; bottom: 10px; width: 232px; min-height: 72px;
     padding: 10px 12px; flex-direction: row; align-items: center; justify-content: center; gap: 10px;
     color: #102017; background-color: var(--jade); border: 2px solid #baffdf; border-radius: 22px;
     box-shadow: 0 8px 16px #00000099; font-family: "Rubik UI"; font-size: 17px; text-align: center;
 }
+.activity-toggle > text { flex: 1; min-width: 0; height: 24px; text-align: center; }
 .activity-toggle.missions { color: #2a1a06; background-color: #f1bd59; border-color: #ffe7aa; }
 .activity-toggle-icon-shell {
     width: 46px; height: 46px; align-items: center; justify-content: center;
     background-color: #0d2119; border-radius: 15px;
 }
 .activity-toggle-icon-shell image { width: 30px; height: 30px; object-fit: contain; }
-.effects-float { flex: 1; min-height: 0; align-items: center; overflow: hidden; }
-.small-heading {
-    width: 88px; min-height: 31px; color: #ffe39a; background-color: #111b16dd;
-    border: 1px solid #f1bd5977; border-radius: 12px; font-size: 14px; text-align: center;
-    box-shadow: 0 4px 9px 0 #00000099;
-}
 .effects-list {
-    width: 84px; flex: 1; min-height: 0; margin-top: 8px; display: grid; grid-template-columns: 1fr;
+    width: 84px; flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr;
     grid-auto-rows: 80px; gap: 8px; overflow-y: scroll; pointer-events: auto;
     scrollbar-width: 0px; scrollbar-color: transparent transparent;
 }
@@ -274,17 +268,17 @@ button:disabled { opacity: 0.38; }
 
 /* Compact main HUD */
 #hud { gap: 10px; }
-.top-card { height: 96px; }
-.top-stat.horizontal { width: 140px; padding: 10px 8px; }
+.top-card { height: 72px; }
+.top-stat.horizontal { width: 163px; padding: 10px 8px; }
 .top-stat { min-height: 36px; padding: 5px 7px; gap: 7px; }
-.top-stat-icon-shell { width: 28px; height: 28px; }
-.top-stat-icon { width: 19px; height: 19px; }
-.top-stat-value { font-size: 17px; }
+.top-stat-icon-shell { width: 38px; height: 38px; }
+.top-stat-icon { width: 28px; height: 28px; }
+.top-stat-value { font-size: 22px; }
 .calendar-slot { width: 78px; }
 .calendar-dial { position: relative; flex-shrink: 0; width: 66px; height: 66px; align-items: center; justify-content: center; }
 .calendar-ring { position: absolute; inset: 0; color: var(--gold); border: 7px solid #4a4537; border-radius: 50%; }
 .calendar-dial image { width: 38px; height: 38px; object-fit: contain; }
-.activity-toggle { width: 170px; min-height: 68px; font-size: 16px; }
+.activity-toggle { width: 232px; min-height: 68px; font-size: 17px; }
 .mission-float { pointer-events: auto; align-items: stretch; color: var(--cream); font-family: "Rubik UI"; text-align: left; }
 .mission-float:hover { border-color: var(--jade); background-color: #17271fea; }
 .float-title { font-size: 24px; }

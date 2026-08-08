@@ -1,5 +1,8 @@
 <panel id="info-popup" class="info-popup-overlay" hidden="true">
     <panel id="info-popup-card" class="info-popup-card">
+        <button id="info-popup-close" class="info-popup-close">
+            <image sprite="Assets/Textures/UIIconsAtlas.atlas#close"/>
+        </button>
         <panel class="info-popup-header">
             <panel id="info-popup-icon-well" class="info-popup-icon-well">
                 <image id="info-popup-icon" class="info-popup-icon"/>
@@ -8,9 +11,6 @@
                 <text id="info-popup-kind" class="info-popup-kind">ПРЕДМЕТ</text>
                 <text id="info-popup-title" class="info-popup-title">Название</text>
             </panel>
-            <button id="info-popup-close" class="info-popup-close">
-                <image src="../Textures/UIIcons/close.png"/>
-            </button>
         </panel>
         <text id="info-popup-description" class="info-popup-description">Описание</text>
         <text id="info-popup-effect" class="info-popup-effect">Эффект</text>

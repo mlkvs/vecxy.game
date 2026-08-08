@@ -1,7 +1,7 @@
 <panel class="quality-stars" aria-label="Качество предмета">
-    <panel class="quality-star"><image class="quality-star-empty" src="../Textures/UIIcons/star-gray.png" /><panel class="quality-star-fill"><image src="../Textures/UIIcons/star-gold.png" /></panel></panel>
-    <panel class="quality-star"><image class="quality-star-empty" src="../Textures/UIIcons/star-gray.png" /><panel class="quality-star-fill"><image src="../Textures/UIIcons/star-gold.png" /></panel></panel>
-    <panel class="quality-star"><image class="quality-star-empty" src="../Textures/UIIcons/star-gray.png" /><panel class="quality-star-fill"><image src="../Textures/UIIcons/star-gold.png" /></panel></panel>
-    <panel class="quality-star"><image class="quality-star-empty" src="../Textures/UIIcons/star-gray.png" /><panel class="quality-star-fill"><image src="../Textures/UIIcons/star-gold.png" /></panel></panel>
-    <panel class="quality-star"><image class="quality-star-empty" src="../Textures/UIIcons/star-gray.png" /><panel class="quality-star-fill"><image src="../Textures/UIIcons/star-gold.png" /></panel></panel>
+    <panel class="quality-star"><image class="quality-star-empty" sprite="Assets/Textures/UIIconsAtlas.atlas#star-gray" /><panel class="quality-star-fill"><image sprite="Assets/Textures/UIIconsAtlas.atlas#star-gold" /></panel></panel>
+    <panel class="quality-star"><image class="quality-star-empty" sprite="Assets/Textures/UIIconsAtlas.atlas#star-gray" /><panel class="quality-star-fill"><image sprite="Assets/Textures/UIIconsAtlas.atlas#star-gold" /></panel></panel>
+    <panel class="quality-star"><image class="quality-star-empty" sprite="Assets/Textures/UIIconsAtlas.atlas#star-gray" /><panel class="quality-star-fill"><image sprite="Assets/Textures/UIIconsAtlas.atlas#star-gold" /></panel></panel>
+    <panel class="quality-star"><image class="quality-star-empty" sprite="Assets/Textures/UIIconsAtlas.atlas#star-gray" /><panel class="quality-star-fill"><image sprite="Assets/Textures/UIIconsAtlas.atlas#star-gold" /></panel></panel>
+    <panel class="quality-star"><image class="quality-star-empty" sprite="Assets/Textures/UIIconsAtlas.atlas#star-gray" /><panel class="quality-star-fill"><image sprite="Assets/Textures/UIIconsAtlas.atlas#star-gold" /></panel></panel>
 </panel>

@@ -1,6 +1,6 @@
 <panel id="breakthrough-window" class="info-popup-overlay" hidden="true">
     <panel class="breakthrough-dialog">
-        <image src="../Textures/UIIcons/cultivation.png" />
+        <image sprite="Assets/Textures/UIIconsAtlas.atlas#cultivation" />
         <text class="info-popup-kind">ПРОРЫВ</text>
         <text class="breakthrough-title">Шанс прорваться</text>
         <text id="breakthrough-chance" class="breakthrough-chance">50%</text>
