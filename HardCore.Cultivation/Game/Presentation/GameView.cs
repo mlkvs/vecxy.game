@@ -45,6 +45,7 @@ internal sealed class GameView
         InventoryDetailIconWell = Panel("inventory-detail-icon-well");
         InventoryDetailIcon = Image("inventory-detail-icon");
         InventoryDetailName = Text("inventory-detail-name");
+        InventoryDetailRarity = Text("inventory-detail-rarity");
         InventoryDetailEffect = Text("inventory-detail-effect");
         InventoryUse = Button("inventory-use-button");
         InventorySell = Button("inventory-sell-button");
@@ -143,6 +144,7 @@ internal sealed class GameView
     public UiPanel InventoryDetailIconWell { get; }
     public UiImage InventoryDetailIcon { get; }
     public UiText InventoryDetailName { get; }
+    public UiText InventoryDetailRarity { get; }
     public UiText InventoryDetailEffect { get; }
     public UiButton InventoryUse { get; }
     public UiButton InventorySell { get; }

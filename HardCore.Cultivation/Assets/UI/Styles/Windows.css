@@ -198,6 +198,7 @@
 .inventory-detail-icon-well image { width: 92px; height: 92px; object-fit: contain; }
 .inventory-detail-copy { flex: 1; min-width: 0; }
 .inventory-detail-name { font-size: 24px; color: #fff3d6; }
+.inventory-detail-rarity { margin-bottom: 4px; font-size: 15px; color: #d8d2c4; }
 .inventory-detail-effect { margin-top: 6px; font-size: 18px; color: #c8ffe7; }
 .inventory-detail-actions { flex-shrink: 0; width: 150px; gap: 10px; }
 .compact-action { pointer-events: auto; min-height: 58px; padding: 8px; align-items: center; justify-content: center; color: #102017; background-color: #56d5a0; border-radius: 15px; font-family: "Rubik UI"; font-size: 16px; text-align: center; }

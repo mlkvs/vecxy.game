@@ -547,6 +547,8 @@ public sealed class GameController(
         _view!.InventoryDetailIcon.Source = config.Icon;
         _view.InventoryDetailIconWell.Style.BorderColor = rarity.Color;
         _view.InventoryDetailName.Value = $"{config.Name} · ×{item.Quantity}";
+        _view.InventoryDetailRarity.Value = rarity.DisplayName.ToUpperInvariant();
+        _view.InventoryDetailRarity.Style.Color = rarity.Color;
         _view.InventoryDetailEffect.Value = DescribeItemEffect(config, item);
         _view.InventoryUse.IsEnabled = config.Effects.Count > 0;
         _view.InventorySell.Label = $"ПРОДАТЬ · {prices.GetSellPrice(item, _state.Shop)}";

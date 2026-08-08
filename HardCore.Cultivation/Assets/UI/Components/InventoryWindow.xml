@@ -10,6 +10,7 @@
     <panel id="inventory-details" class="inventory-details" hidden="true">
         <panel id="inventory-detail-icon-well" class="inventory-detail-icon-well"><image id="inventory-detail-icon" /></panel>
         <panel class="inventory-detail-copy">
+            <text id="inventory-detail-rarity" class="inventory-detail-rarity">ОБЫЧНАЯ</text>
             <text id="inventory-detail-name" class="inventory-detail-name">Предмет</text>
             <text id="inventory-detail-effect" class="inventory-detail-effect">Описание эффекта</text>
         </panel>
