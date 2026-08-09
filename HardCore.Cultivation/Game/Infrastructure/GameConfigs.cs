@@ -165,10 +165,6 @@ public sealed class DogConfig : IYamlConfig
     public float GlowGreen { get; init; } = 0.72f;
     public float GlowBlue { get; init; } = 0.22f;
     public float GlowAlpha { get; init; } = 0.28f;
-    public float TapAreaLeft { get; init; } = 28f;
-    public float TapAreaBottom { get; init; } = 90f;
-    public float TapAreaWidth { get; init; } = 160f;
-    public float TapAreaHeight { get; init; } = 175f;
 }
 
 public sealed class MissionRewardConfig
@@ -330,7 +326,6 @@ public sealed class GameDatabase
             Dog.GlowPulseAmplitude is < 0f or >= 1f || Dog.GlowPulseSpeed < 0f ||
             Dog.GlowRed is < 0f or > 1f || Dog.GlowGreen is < 0f or > 1f ||
             Dog.GlowBlue is < 0f or > 1f || Dog.GlowAlpha is < 0f or > 1f ||
-            Dog.TapAreaWidth <= 0f || Dog.TapAreaHeight <= 0f ||
             string.IsNullOrWhiteSpace(Dog.MeditatingTexture) || string.IsNullOrWhiteSpace(Dog.ChargedTexture))
             throw new InvalidDataException("Dog meditation settings are invalid.");
 

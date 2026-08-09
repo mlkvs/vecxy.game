@@ -5,6 +5,8 @@ using HardCore.Cultivation.Game.Application;
 using HardCore.Cultivation.Game.Domain;
 using HardCore.Cultivation.Game.Infrastructure;
 using Vecxy.Audio;
+using Vecxy.Kernel;
+using Vecxy.Rendering;
 using Vecxy.Scene;
 using Vecxy.UI;
 using GameState = HardCore.Cultivation.Game.Domain.GameState;
@@ -25,6 +27,7 @@ public sealed class GameController(
     CombatService combat,
     CombatScenePresenter combatScene,
     ISceneManager scenes,
+    IRenderer renderer,
     IAudioManager audio,
     GameSaveSystem saves)
 {
@@ -61,6 +64,7 @@ public sealed class GameController(
     private float _healthFloatElapsed;
     private DogCompanion? _dog;
     private bool _dogConfigured;
+    private Rect? _dogTapBounds;
 
     public GameState State => _state;
     public event Action<TickResult>? TickCompleted;
@@ -206,6 +210,7 @@ public sealed class GameController(
         _missionQueueItems = null;
         _dog = null;
         _dogConfigured = false;
+        _dogTapBounds = null;
         combatScene.Dispose();
     }
 
@@ -261,10 +266,7 @@ public sealed class GameController(
         _missionBoardEmpty = null;
         _missionQueueEmpty = null;
 
-        _view.DogTapTarget.Style.Set("left", CssPixels(database.Dog.TapAreaLeft));
-        _view.DogTapTarget.Style.Set("bottom", CssPixels(database.Dog.TapAreaBottom));
-        _view.DogTapTarget.Style.Set("width", CssPixels(database.Dog.TapAreaWidth));
-        _view.DogTapTarget.Style.Set("height", CssPixels(database.Dog.TapAreaHeight));
+        _dogTapBounds = null;
 
         BindClick(_view.ShopButton, () => { OpenWindow(_view.ShopWindow); SyncShop(); });
         BindClick(_view.InventoryButton, () => { OpenWindow(_view.InventoryWindow); SyncInventory(); });
@@ -405,6 +407,47 @@ public sealed class GameController(
             _dogConfigured = true;
         }
         _dog?.SetChargeProgress(dogMeditation.GetProgress(_state));
+        SyncDogTapTarget();
+    }
+
+    private void SyncDogTapTarget()
+    {
+        if (_dog is null || _view is null || renderer.GameOutputWidth <= 0 || renderer.GameOutputHeight <= 0)
+            return;
+
+        var camera = scenes.ActiveScene?.Objects
+            .Select(sceneObject => sceneObject.GetComponent<Camera>())
+            .FirstOrDefault(component => component is { TargetTexture: null });
+        var root = _view.Document.Root.Bounds;
+        var parent = _view.DogTapTarget.Parent?.Bounds ?? default;
+        var aspectRatio = renderer.GameOutputWidth / (float)renderer.GameOutputHeight;
+        if (camera is null || root.Width <= 0f || root.Height <= 0f ||
+            parent.Width <= 0f || parent.Height <= 0f ||
+            !_dog.TryGetViewportBounds(camera, aspectRatio, out var viewportBounds))
+            return;
+
+        var projectedLeft = viewportBounds.Left * root.Width;
+        var projectedTop = viewportBounds.Top * root.Height;
+        var projectedRight = viewportBounds.Right * root.Width;
+        var projectedBottom = viewportBounds.Bottom * root.Height;
+        var clippedLeft = Math.Clamp(projectedLeft, parent.Left, parent.Right);
+        var clippedTop = Math.Clamp(projectedTop, parent.Top, parent.Bottom);
+        var clippedRight = Math.Clamp(projectedRight, parent.Left, parent.Right);
+        var clippedBottom = Math.Clamp(projectedBottom, parent.Top, parent.Bottom);
+
+        var left = MathF.Floor(clippedLeft - parent.Left);
+        var top = MathF.Floor(clippedTop - parent.Top);
+        var right = MathF.Ceiling(clippedRight - parent.Left);
+        var bottom = MathF.Ceiling(clippedBottom - parent.Top);
+        var replacement = new Rect(left, top, MathF.Max(0f, right - left), MathF.Max(0f, bottom - top));
+        if (_dogTapBounds == replacement)
+            return;
+
+        _dogTapBounds = replacement;
+        _view.DogTapTarget.Style.Set("left", CssPixels(replacement.Left));
+        _view.DogTapTarget.Style.Set("top", CssPixels(replacement.Top));
+        _view.DogTapTarget.Style.Set("width", CssPixels(replacement.Width));
+        _view.DogTapTarget.Style.Set("height", CssPixels(replacement.Height));
     }
 
     private void SetActivity(ActivityMode mode)

@@ -145,8 +145,8 @@ text {
     align-items: center; justify-content: center; background-color: transparent; border: 0;
 }
 .dog-tap-target {
-    pointer-events: auto; position: absolute; z-index: 20; left: 0; bottom: 90px;
-    width: 145px; height: 170px; background-color: transparent; border: 0;
+    pointer-events: auto; position: absolute; z-index: 20; left: 0; top: 0;
+    width: 0; height: 0; background-color: transparent; border: 0;
 }
 .tap-feedback {
     pointer-events: none; position: absolute; z-index: 5; left: 0; top: 0;

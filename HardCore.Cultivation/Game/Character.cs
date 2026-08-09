@@ -170,6 +170,44 @@ public sealed class DogCompanion(
             glow.SceneObject!.Enabled = ready;
     }
 
+    public bool TryGetViewportBounds(Camera camera, float aspectRatio, out Rect bounds)
+    {
+        bounds = default;
+        if (aspectRatio <= 0f || !float.IsFinite(aspectRatio))
+            return false;
+
+        var localMinimum = baseSprite.LocalBoundsMin;
+        var localMaximum = baseSprite.LocalBoundsMax;
+        var world = baseSprite.Transform.WorldMatrix;
+        var viewProjection = camera.ViewMatrix * camera.GetProjectionMatrix(aspectRatio);
+        Span<Vector3> corners =
+        [
+            new(localMinimum.X, localMinimum.Y, 0f),
+            new(localMaximum.X, localMinimum.Y, 0f),
+            new(localMinimum.X, localMaximum.Y, 0f),
+            new(localMaximum.X, localMaximum.Y, 0f)
+        ];
+
+        var minimum = new Vector2(float.PositiveInfinity);
+        var maximum = new Vector2(float.NegativeInfinity);
+        foreach (var localCorner in corners)
+        {
+            var worldCorner = Vector3.Transform(localCorner, world);
+            var clip = Vector4.Transform(new Vector4(worldCorner, 1f), viewProjection);
+            if (MathF.Abs(clip.W) <= float.Epsilon || !float.IsFinite(clip.W))
+                return false;
+
+            var viewport = new Vector2(
+                (clip.X / clip.W + 1f) * 0.5f,
+                (1f - clip.Y / clip.W) * 0.5f);
+            minimum = Vector2.Min(minimum, viewport);
+            maximum = Vector2.Max(maximum, viewport);
+        }
+
+        bounds = new Rect(minimum.X, minimum.Y, maximum.X - minimum.X, maximum.Y - minimum.Y);
+        return bounds.Width > 0f && bounds.Height > 0f;
+    }
+
     public override void Update(float deltaTime)
     {
         _elapsed += deltaTime;

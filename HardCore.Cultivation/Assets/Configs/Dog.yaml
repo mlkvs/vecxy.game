@@ -25,7 +25,7 @@ chargeDurationSeconds: 60
 
 # Награда = случайное целое число minimumRewardUnits..maximumRewardUnits,
 # умноженное на rewardUnitRubles. Текущая настройка даёт 1 000–5 000 рублей.
-rewardUnitRubles: 1000
+rewardUnitRubles: 200
 minimumRewardUnits: 1
 maximumRewardUnits: 5
 
@@ -53,9 +53,6 @@ glowGreen: 0.72
 glowBlue: 0.22
 glowAlpha: 0.28
 
-# Прозрачная область нажатия в координатах UI с reference 620x1180.
-# Она должна перекрывать собаку и остаётся выше зоны культивации по z-index.
-tapAreaLeft: 28
-tapAreaBottom: 90
-tapAreaWidth: 160
-tapAreaHeight: 175
+# Область нажатия вычисляется автоматически по экранным границам meditatingTexture.
+# Она учитывает позицию, масштаб, покачивание и поворот собаки; отдельно настраивать
+# прямоугольник клика не требуется.
