@@ -1,8 +1,13 @@
 <panel class="shop-card" data-key="{{key}}">
-    <panel class="item-icon-well"><image class="item-icon" /></panel>
-    <text class="item-name">{{name}}</text>
-    <text class="item-meta">{{meta}}</text>
-    <panel class="item-quality shop-item-quality" />
+    <panel class="shop-card-header">
+        <panel class="shop-card-icon-stack">
+            <panel class="item-icon-well"><image class="item-icon" /></panel>
+            <panel class="item-quality shop-item-quality item-icon-quality" />
+        </panel>
+        <panel class="shop-card-heading">
+            <text class="item-name">{{name}}</text>
+        </panel>
+    </panel>
     <text class="item-effect">{{effect}}</text>
     <button class="card-action buy-button">{{price}} РУБЛЕЙ</button>
 </panel>

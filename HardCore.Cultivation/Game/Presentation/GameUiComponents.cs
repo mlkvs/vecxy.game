@@ -11,7 +11,6 @@ internal sealed class ShopCardView : AUiComponent
         IconWell = Element<UiPanel>(".item-icon-well");
         Icon = Element<UiImage>(".item-icon");
         Name = Element<UiText>(".item-name");
-        Meta = Element<UiText>(".item-meta");
         QualityHost = Element<UiPanel>(".shop-item-quality");
         Effect = Element<UiText>(".item-effect");
         Buy = Element<UiButton>(".buy-button");
@@ -21,7 +20,6 @@ internal sealed class ShopCardView : AUiComponent
     public UiPanel IconWell { get; }
     public UiImage Icon { get; }
     public UiText Name { get; }
-    public UiText Meta { get; }
     public UiPanel QualityHost { get; }
     public QualityStarsView QualityStars { get; set; } = null!;
     public UiText Effect { get; }
