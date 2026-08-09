@@ -1,0 +1,91 @@
+# ============================================================
+# АЛХИМИЯ
+# ============================================================
+# В окне алхимии есть два режима:
+# 1. Пилюля — смешивает 2–5 ингредиентов и переносит в результат свойства,
+#    которые достаточно часто повторяются в смеси.
+# 2. Рафинирование — перерабатывает 2–5 одинаковых ингредиентов одной ступени
+#    в экстракт. Экстракты можно рафинировать повторно.
+
+enabled: true
+
+# Технические предметы-результаты должны существовать в Items.yaml.
+craftedPillItemId: crafted_alchemy_pill
+extractItemId: alchemy_extract
+
+# Общий размер смеси.
+minimumIngredients: 2
+maximumIngredients: 5
+
+# Свойство попадёт в пилюлю, только если присутствует минимум у двух единиц
+# сырья и занимает хотя бы 60% смеси. Поэтому 2 совпадения из 2 дадут полную
+# силу, 3 совпадения из 5 сработают с силой 0.6, а 5 из 5 — с полной силой.
+minimumPropertyMatches: 2
+minimumPropertyFraction: 0.6
+
+# Система поддерживает составные пилюли. Значение 4 разрешает до четырёх
+# эффектов. Поставьте 1, если позже решите оставить только один главный эффект.
+maximumPillEffects: 4
+pillDurationTicks: 48
+
+# Пилюля обязательно требует ровно одно ядро. Ядро не участвует в подсчёте
+# совпадений свойств, но на 25% определяет качество результата и входит в
+# усреднение редкости. Остальные 75% качества дают ингредиенты.
+coreQualityWeight: 0.25
+
+# Качество всегда ограничено пятью звёздами.
+maximumQuality: 5.0
+
+# Рафинирование повышает качество за каждую единицу сырья и за каждую уже
+# пройденную ступень. Редкость результата берётся как округлённое среднее.
+distillationQualityPerIngredient: 0.12
+distillationQualityPerLevel: 0.18
+
+# Каждая ступень экстракта дополнительно усиливает алхимические свойства.
+# 0.12 = +12% силы за ступень до расчёта итоговой пилюли.
+distillationPotencyPerLevel: 0.12
+
+# Каталог алхимических свойств. baseValue — сила при 100% совпадении и potency=1
+# ДО стандартного множителя качества готовой пилюли.
+properties:
+  - id: spirit_flow
+    displayName: Поток ци
+    pillName: Пилюля духовного потока
+    effectType: SpiritualPowerGain
+    operation: AdditivePercent
+    baseValue: 24
+
+  - id: clarity
+    displayName: Ясность
+    pillName: Пилюля ясного сознания
+    effectType: TickEfficiency
+    operation: AdditivePercent
+    baseValue: 22
+
+  - id: longevity
+    displayName: Долголетие
+    pillName: Пилюля тихих лет
+    effectType: AgingSpeed
+    operation: AdditivePercent
+    baseValue: -18
+
+  - id: vitality
+    displayName: Жизненность
+    pillName: Пилюля живой крови
+    effectType: HealthRegeneration
+    operation: AdditivePercent
+    baseValue: 65
+
+  - id: swiftness
+    displayName: Стремительность
+    pillName: Пилюля быстрого пути
+    effectType: MissionProgress
+    operation: AdditivePercent
+    baseValue: 28
+
+  - id: insight
+    displayName: Прозрение
+    pillName: Пилюля прозрения
+    effectType: BreakthroughChance
+    operation: Flat
+    baseValue: 4

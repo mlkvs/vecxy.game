@@ -59,6 +59,94 @@ _ = maximumDogMeditation.Update(maximumDogState, 1f);
 Check(maximumDogMeditation.Collect(maximumDogState).Reward == 3000,
     "Dog meditation did not include the configured maximum reward.");
 
+var alchemy = new AlchemyService(database);
+var alchemyState = new GameState(database.Balance.TicksPerYear);
+var primaryIngredient = new ItemInstance
+{
+    InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Common, Quality = 2m
+};
+primaryIngredient.AddQuantity(2);
+var secondaryIngredient = new ItemInstance
+{
+    InstanceId = Guid.NewGuid(), ConfigId = "ingredient_other", Rarity = ItemRarity.Rare, Quality = 4m
+};
+secondaryIngredient.AddQuantity(1);
+var alchemyCore = new ItemInstance
+{
+    InstanceId = Guid.NewGuid(), ConfigId = "attempt", Rarity = ItemRarity.Uncommon, Quality = 3m
+};
+alchemyState.Inventory.Add(primaryIngredient);
+alchemyState.Inventory.Add(secondaryIngredient);
+alchemyState.Inventory.Add(alchemyCore);
+var minimumPillPreview = alchemy.Preview(alchemyState,
+    [new(alchemyCore.InstanceId, 1), new(primaryIngredient.InstanceId, 2)],
+    AlchemyMode.Pill);
+Check(minimumPillPreview.CanCraft && minimumPillPreview.Output?.CraftedEffects.Count > 0,
+    "A core and two matching ingredients did not produce a pill.");
+var pillSelection = new[]
+{
+    new AlchemySelection(alchemyCore.InstanceId, 1),
+    new AlchemySelection(primaryIngredient.InstanceId, 3),
+    new AlchemySelection(secondaryIngredient.InstanceId, 2)
+};
+var pillPreview = alchemy.Preview(alchemyState, pillSelection, AlchemyMode.Pill);
+Check(pillPreview.CanCraft && pillPreview.Output?.CraftedEffects.Count == 1,
+    "Three matching properties out of five did not produce a pill effect.");
+Check(pillPreview.Output!.CraftedEffects[0].Value == 60m,
+    "Missing properties did not proportionally weaken the crafted pill.");
+var pillResult = alchemy.Craft(alchemyState, pillSelection, AlchemyMode.Pill);
+Check(pillResult.Success && pillResult.Output is { CraftedDurationTicks: 48 },
+    "Crafted pill was not added with its dynamic duration.");
+var craftedPill = pillResult.Output!;
+Check(alchemyState.Inventory.Find(craftedPill.InstanceId) is not null,
+    "Alchemy did not return the stored item instance required by popup actions.");
+alchemyState.Inventory.Add(craftedPill.Copy());
+var alchemyPrices = new ItemPriceCalculator(database);
+var alchemyTransactions = new ShopTransactionService(alchemyPrices);
+var pillSellPrice = alchemyPrices.GetSellPrice(craftedPill, alchemyState.Shop);
+var moneyBeforePillSale = alchemyState.Character.Money;
+var pillSale = alchemyTransactions.Sell(alchemyState, craftedPill.InstanceId);
+Check(pillSale.Success && pillSale.TotalPrice == pillSellPrice &&
+      alchemyState.Character.Money == moneyBeforePillSale + pillSellPrice,
+    "Crafted pill could not be sold from its result popup.");
+var pillUse = effectService.Use(alchemyState, craftedPill.InstanceId);
+Check(pillUse.Success && alchemyState.ActiveEffects.Count > 0,
+    "Crafted pill could not be used from its result popup.");
+
+var distillationState = new GameState(database.Balance.TicksPerYear);
+var rawA = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Common, Quality = 1m };
+var rawB = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Rare, Quality = 2m };
+var rawC = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Epic, Quality = 3m };
+distillationState.Inventory.Add(rawA);
+distillationState.Inventory.Add(rawB);
+distillationState.Inventory.Add(rawC);
+var minimumRefiningPreview = alchemy.Preview(distillationState,
+    [new(rawA.InstanceId, 1), new(rawB.InstanceId, 1)],
+    AlchemyMode.Distillation);
+Check(minimumRefiningPreview.CanCraft,
+    "Two matching ingredients were rejected by refining.");
+var distillation = alchemy.Craft(distillationState,
+    [new(rawA.InstanceId, 1), new(rawB.InstanceId, 1), new(rawC.InstanceId, 1)],
+    AlchemyMode.Distillation);
+Check(distillation.Success && distillation.Output is { DistillationLevel: 1, Rarity: ItemRarity.Rare } &&
+      distillation.Output.Quality > 2m,
+    "Distillation did not improve quality and average rarity.");
+var extract = distillation.Output!;
+distillationState.Inventory.Add(extract.Copy(2));
+var powerful = alchemy.Preview(distillationState,
+    [new(extract.InstanceId, 3)], AlchemyMode.Distillation);
+Check(powerful.CanCraft && powerful.Output is { DistillationLevel: 2 } &&
+      powerful.Output.AlchemyProperties[0].Potency > extract.AlchemyProperties[0].Potency,
+    "Repeated distillation did not create a more powerful extract.");
+
+var savePath = Path.Combine(Path.GetTempPath(), $"cultivation-alchemy-{Guid.NewGuid():N}.json");
+var saveSystem = new GameSaveSystem(database) { SavePath = savePath };
+saveSystem.Save(distillationState);
+Check(saveSystem.TryLoad(out var loadedAlchemyState) &&
+      loadedAlchemyState.Inventory.Items.Any(item => item.DistillationLevel == 1 && item.AlchemyProperties.Count > 0),
+    "Alchemy metadata was not preserved by save version 10.");
+File.Delete(savePath);
+
 var defeatedState = new GameState(database.Balance.TicksPerYear);
 combat.ConfigureHero(defeatedState.Character, true);
 defeatedState.SetActivityMode(ActivityMode.Missions);
@@ -122,8 +210,19 @@ breakthrough.ActiveEffects.Add(new ActiveEffect("attempt", new ItemEffectDefinit
     Operation = ModifierOperation.Flat,
     Value = 25
 }, 25, null, ItemDurationType.UntilBreakthroughAttempt, ItemRarity.Common, 1));
-_ = cultivation.AttemptBreakthrough(breakthrough.Character, breakthrough.ActiveEffects);
+var breakthroughResult = cultivation.AttemptBreakthrough(breakthrough.Character, breakthrough.ActiveEffects);
 Check(breakthrough.ActiveEffects.Count == 0, "Next-attempt breakthrough effect was not consumed.");
+Check(breakthroughResult.Success && breakthrough.Character.SpiritualPower == 0m,
+    "Successful breakthrough did not clear accumulated spiritual power.");
+
+var overchargedCharacter = new CharacterState();
+overchargedCharacter.Cultivation.Restore(0, 10, database.Cultivation.Stages.Count);
+var breakthroughPower = cultivation.GetRequiredPower(0, 10);
+overchargedCharacter.AddSpiritualPower(breakthroughPower * 2m);
+var overchargedChance = cultivation.GetBreakthroughChance(overchargedCharacter, []);
+Check(overchargedChance == database.Cultivation.Stages[0].BaseBreakthroughChance +
+      database.Cultivation.BreakthroughChancePerExtraPowerBar,
+    "An extra spiritual-power bar did not increase breakthrough chance.");
 
 var missionState = new GameState(database.Balance.TicksPerYear);
 missionService.Refresh(missionState);
@@ -140,11 +239,13 @@ Check(itemMissionService.Start(itemMissionState, "mission").Success, "Item-rewar
 var itemRewards = itemMissionState.CurrentMission!.Rewards;
 Check(itemRewards.Count == 2 && itemRewards.All(reward => reward.Type == MissionRewardType.Item), "Two-item mission reward was not generated.");
 Check(itemRewards.All(reward => reward.Quantity == 15), "Ingredient reward must allow up to 15 items.");
+Check(itemRewards.All(reward => reward.ItemRolls.Count == reward.Quantity),
+    "Mission item rewards were not rolled individually.");
 
 var failedCultivation = new CultivationService(database, new MaximumRandom());
 var failedCharacter = new CharacterState();
 failedCharacter.Cultivation.Restore(0, 10, database.Cultivation.Stages.Count);
-failedCharacter.AddSpiritualPower(1000);
+failedCharacter.AddSpiritualPower(failedCultivation.GetRequiredPower(0, 10));
 var failedResult = failedCultivation.AttemptBreakthrough(failedCharacter, []);
 Check(!failedResult.Success && failedResult.LevelsLost > 0 && failedResult.Message.Contains("получили травму"), "Failed breakthrough must report injury and lost levels.");
 
@@ -196,7 +297,14 @@ static GameDatabase BuildDatabase()
         {
             Items =
             [
-                new ItemConfig { Id = "ingredient", Name = "Ingredient", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant, BasePrice = 10 },
+                new ItemConfig { Id = "ingredient", Name = "Ingredient", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant, BasePrice = 10,
+                    AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "vitality", Potency = 1m }] },
+                new ItemConfig { Id = "ingredient_other", Name = "Other", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant, BasePrice = 10,
+                    AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "clarity", Potency = 1m }] },
+                new ItemConfig { Id = "crafted_alchemy_pill", Name = "Pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
+                    TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
+                new ItemConfig { Id = "alchemy_extract", Name = "Extract", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant,
+                    BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "attempt", Name = "Attempt", Category = ItemCategory.Core, DurationType = ItemDurationType.UntilBreakthroughAttempt, BasePrice = 10,
                     Effects = [new ItemEffectDefinition { Type = EffectType.BreakthroughChance, Operation = ModifierOperation.Flat, Value = 25 }] }
             ]
@@ -217,13 +325,33 @@ static GameDatabase BuildDatabase()
                 new CultivationStageConfig { Id = "three", Name = "Three", BaseBreakthroughChance = 50 }
             ]
         },
-        new ShopConfig { SlotCount = 2, MinimumQuantity = 1, MaximumQuantity = 2, MinimumBuyMarkup = 0, MaximumBuyMarkup = 0, SellAdjustmentPercent = -33 },
+        new ShopConfig { SlotCount = 2, MinimumQuantity = 1, MaximumQuantity = 1, MinimumBuyMarkup = 0, MaximumBuyMarkup = 0, SellAdjustmentPercent = -33 },
         dog: new DogConfig
         {
             ChargeDurationSeconds = 1f,
             RewardUnitRubles = 1000,
             MinimumRewardUnits = 1,
             MaximumRewardUnits = 3
+        },
+        alchemy: new AlchemyConfig
+        {
+            Enabled = true,
+            MinimumIngredients = 2,
+            MaximumIngredients = 5,
+            MinimumPropertyMatches = 2,
+            MinimumPropertyFraction = 0.6m,
+            MaximumPillEffects = 4,
+            PillDurationTicks = 48,
+            DistillationQualityPerIngredient = 0.12m,
+            DistillationQualityPerLevel = 0.18m,
+            DistillationPotencyPerLevel = 0.12m,
+            Properties =
+            [
+                new AlchemyPropertyConfig { Id = "vitality", DisplayName = "Vitality", PillName = "Vitality pill",
+                    EffectType = EffectType.HealthRegeneration, Operation = ModifierOperation.AdditivePercent, BaseValue = 100m },
+                new AlchemyPropertyConfig { Id = "clarity", DisplayName = "Clarity", PillName = "Clarity pill",
+                    EffectType = EffectType.TickEfficiency, Operation = ModifierOperation.AdditivePercent, BaseValue = 50m }
+            ]
         });
     return database;
 }

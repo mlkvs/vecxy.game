@@ -15,6 +15,8 @@
 # - Для каждой миссии случайно выбирается длительность в диапазоне
 #   minimumDurationTicks..maximumDurationTicks.
 # - Награда состоит из рублей и/или предметов указанной категории.
+# - Если предметов несколько, редкость и качество КАЖДОЙ единицы бросаются
+#   отдельно. Они не наследуют один общий результат генерации на весь стак.
 # - Если dangerLevel отсутствует, миссия всегда проходит без боя.
 # - Если dangerLevel указан, при ПРИНЯТИИ миссии один раз проверяется шанс
 #   encounterChancePercent соответствующего уровня из Combat.yaml.
@@ -36,7 +38,8 @@ missions:
   # possibleMonsterIds — id из Monsters.yaml; выбор учитывает selectionWeight
   # possibleBackgroundIds — id фонов из Combat.yaml; все имеют равный шанс
   # reward.requiredItemCategory — какая категория предметов может выпасть
-  # reward.minimumQuantity / maximumQuantity — желаемый диапазон количества
+  # reward.minimumQuantity / maximumQuantity — диапазон количества; каждая
+  #   единица внутри выбранного количества получает отдельные качество и редкость
   # reward.money — денежная награда
   #
   # В опасной миссии оба списка possible* обязательны и не могут быть пустыми.

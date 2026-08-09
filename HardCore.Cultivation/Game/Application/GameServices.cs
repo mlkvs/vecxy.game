@@ -113,10 +113,13 @@ public sealed class ItemEffectService(GameDatabase database)
         var config = database.GetItem(item.ConfigId);
         var strength = database.Balance.EffectQualityBase +
                        item.Quality * database.Balance.EffectQualityPerPoint;
+        var definitions = item.CraftedEffects.Count > 0
+            ? item.CraftedEffects
+            : config.Effects;
 
         if (config.DurationType == ItemDurationType.Instant)
         {
-            foreach (var effect in config.Effects)
+            foreach (var effect in definitions)
             {
                 var value = effect.Value * strength;
                 if (effect.Type == EffectType.SpiritualPowerGain)
@@ -128,9 +131,9 @@ public sealed class ItemEffectService(GameDatabase database)
         else
         {
             int? duration = config.DurationType == ItemDurationType.Temporary
-                ? config.TemporaryDurationTicks
+                ? item.CraftedDurationTicks ?? config.TemporaryDurationTicks
                 : null;
-            foreach (var definition in config.Effects)
+            foreach (var definition in definitions)
             {
                 state.ActiveEffects.Add(new ActiveEffect(
                     config.Id,
@@ -144,7 +147,7 @@ public sealed class ItemEffectService(GameDatabase database)
         }
 
         state.Inventory.Remove(item.InstanceId, 1);
-        return TransactionResult.Ok(0, $"Использовано: {config.Name}");
+        return TransactionResult.Ok(0, $"Использовано: {item.CustomName ?? config.Name}");
     }
 
     public void AdvanceTemporaryEffects(GameState state)
@@ -297,16 +300,25 @@ public sealed class MissionService(
                 state.Character.AddMoney(reward.Money);
                 continue;
             }
-            var item = new ItemInstance
+            var rolls = reward.ItemRolls.Count > 0
+                ? reward.ItemRolls
+                : Enumerable.Range(0, reward.Quantity)
+                    .Select(_ => new MissionItemRewardRoll
+                    {
+                        Rarity = reward.ItemRarity,
+                        Quality = reward.ItemQuality
+                    })
+                    .ToList();
+            foreach (var roll in rolls)
             {
-                InstanceId = Guid.NewGuid(),
-                ConfigId = reward.ItemConfigId!,
-                Rarity = reward.ItemRarity,
-                Quality = reward.ItemQuality
-            };
-            if (reward.Quantity > 1)
-                item.AddQuantity(reward.Quantity - 1);
-            state.Inventory.Add(item);
+                state.Inventory.Add(new ItemInstance
+                {
+                    InstanceId = Guid.NewGuid(),
+                    ConfigId = reward.ItemConfigId!,
+                    Rarity = roll.Rarity,
+                    Quality = roll.Quality
+                });
+            }
         }
         mission.MarkRewardGranted();
         state.RemoveMission(mission.InstanceId);
@@ -341,32 +353,35 @@ public sealed class MissionService(
         while (result.Count < rewardCount && canGiveItem)
         {
             var config = WeightedRandom.Select(candidates, item => item.ShopWeight, random);
-            var generated = itemGenerator.Generate(config.Id);
-            result.Add(new MissionReward
-            {
-                Type = MissionRewardType.Item,
-                ItemConfigId = config.Id,
-                ItemRarity = generated.Rarity,
-                ItemQuality = generated.Quality,
-                Quantity = random.NextInt(mission.Reward.MinimumQuantity, mission.Reward.MaximumQuantity + 1)
-            });
+            result.Add(GenerateItemReward(config.Id,
+                random.NextInt(mission.Reward.MinimumQuantity, mission.Reward.MaximumQuantity + 1)));
         }
 
         if (result.Count == 0 && canGiveItem)
         {
             var config = WeightedRandom.Select(candidates, item => item.ShopWeight, random);
-            var generated = itemGenerator.Generate(config.Id);
-            result.Add(new MissionReward
-            {
-                Type = MissionRewardType.Item,
-                ItemConfigId = config.Id,
-                ItemRarity = generated.Rarity,
-                ItemQuality = generated.Quality,
-                Quantity = random.NextInt(mission.Reward.MinimumQuantity, mission.Reward.MaximumQuantity + 1)
-            });
+            result.Add(GenerateItemReward(config.Id,
+                random.NextInt(mission.Reward.MinimumQuantity, mission.Reward.MaximumQuantity + 1)));
         }
 
         return result;
+    }
+
+    private MissionReward GenerateItemReward(string configId, int quantity)
+    {
+        var rolls = Enumerable.Range(0, quantity)
+            .Select(_ => itemGenerator.Generate(configId))
+            .Select(item => new MissionItemRewardRoll { Rarity = item.Rarity, Quality = item.Quality })
+            .ToList();
+        return new MissionReward
+        {
+            Type = MissionRewardType.Item,
+            ItemConfigId = configId,
+            ItemRarity = rolls[0].Rarity,
+            ItemQuality = rolls[0].Quality,
+            Quantity = quantity,
+            ItemRolls = rolls
+        };
     }
 }
 
@@ -493,8 +508,13 @@ public sealed class CultivationService(GameDatabase database, IRandomSource rand
         if (!progress.CanAttemptBreakthrough || progress.StageIndex >= database.Cultivation.Stages.Count - 1)
             return 0m;
         var baseChance = database.Cultivation.Stages[progress.StageIndex].BaseBreakthroughChance;
+        var required = GetRequiredPower(progress.StageIndex, 10);
+        var extraPowerBars = required <= 0m
+            ? 0m
+            : Math.Max(0m, character.SpiritualPower / required - 1m);
+        var overchargeBonus = extraPowerBars * database.Cultivation.BreakthroughChancePerExtraPowerBar;
         return Math.Clamp(
-            ModifierCalculator.Calculate(baseChance, effects, EffectType.BreakthroughChance),
+            ModifierCalculator.Calculate(baseChance, effects, EffectType.BreakthroughChance) + overchargeBonus,
             0m,
             database.Balance.MaximumBreakthroughChance);
     }
@@ -509,14 +529,15 @@ public sealed class CultivationService(GameDatabase database, IRandomSource rand
         if (progress.StageIndex >= database.Cultivation.Stages.Count - 1)
             return new(false, 100m, progress.StageIndex, progress.Level, 0, "Достигнута высшая ступень.");
         var cost = GetRequiredPower(progress.StageIndex, 10);
+        var chance = GetBreakthroughChance(character, effects);
         if (!character.TrySpendSpiritualPower(cost))
             return new(false, 0m, progress.StageIndex, progress.Level, 0, "Недостаточно духовной силы.");
 
-        var chance = GetBreakthroughChance(character, effects);
         effects.RemoveAll(effect => effect.IsUntilBreakthroughAttempt);
         if (random.NextDecimal(0m, 100m) < chance)
         {
             progress.BreakthroughSucceeded(database.Cultivation.Stages.Count);
+            character.ClearSpiritualPower();
             return new(true, chance, progress.StageIndex, progress.Level, 0, "Прорыв успешен.");
         }
         var fallback = random.NextInt(1, 10);

@@ -8,7 +8,7 @@ namespace HardCore.Cultivation.Game.Infrastructure;
 
 public sealed class GameSaveSystem(GameDatabase database)
 {
-    public const int CurrentVersion = 8;
+    public const int CurrentVersion = 10;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -229,7 +229,14 @@ public sealed class GameSaveSystem(GameDatabase database)
             InstanceId = data.InstanceId,
             ConfigId = data.ConfigId,
             Rarity = data.Rarity,
-            Quality = data.Quality
+            Quality = data.Quality,
+            CustomName = data.CustomName,
+            CustomDescription = data.CustomDescription,
+            AlchemyOriginId = data.AlchemyOriginId,
+            DistillationLevel = data.DistillationLevel,
+            CraftedDurationTicks = data.CraftedDurationTicks,
+            CraftedEffects = [.. data.CraftedEffects],
+            AlchemyProperties = [.. data.AlchemyProperties]
         };
         item.RestoreQuantity(data.Quantity);
         return item;
@@ -241,7 +248,14 @@ public sealed class GameSaveSystem(GameDatabase database)
         ConfigId = item.ConfigId,
         Rarity = item.Rarity,
         Quality = item.Quality,
-        Quantity = item.Quantity
+        Quantity = item.Quantity,
+        CustomName = item.CustomName,
+        CustomDescription = item.CustomDescription,
+        AlchemyOriginId = item.AlchemyOriginId,
+        DistillationLevel = item.DistillationLevel,
+        CraftedDurationTicks = item.CraftedDurationTicks,
+        CraftedEffects = [.. item.CraftedEffects],
+        AlchemyProperties = [.. item.AlchemyProperties]
     };
 
     private List<MissionReward> LegacyRewards(string missionId)
@@ -259,7 +273,12 @@ public sealed class GameSaveSystem(GameDatabase database)
         ItemConfigId = reward.ItemConfigId,
         ItemRarity = reward.ItemRarity,
         ItemQuality = reward.ItemQuality,
-        Quantity = reward.Quantity
+        Quantity = reward.Quantity,
+        ItemRolls = reward.ItemRolls.Select(item => new MissionItemRewardRoll
+        {
+            Rarity = item.Rarity,
+            Quality = item.Quality
+        }).ToList()
     };
 
     private static MissionRewardSaveData ToRewardData(MissionReward reward) => new()
@@ -269,7 +288,12 @@ public sealed class GameSaveSystem(GameDatabase database)
         ItemConfigId = reward.ItemConfigId,
         ItemRarity = reward.ItemRarity,
         ItemQuality = reward.ItemQuality,
-        Quantity = reward.Quantity
+        Quantity = reward.Quantity,
+        ItemRolls = reward.ItemRolls.Select(item => new MissionItemRewardRollSaveData
+        {
+            Rarity = item.Rarity,
+            Quality = item.Quality
+        }).ToList()
     };
 
     private MissionEncounter? RestoreEncounter(MissionEncounterSaveData? data)
@@ -342,6 +366,13 @@ public sealed class ItemSaveData
     public ItemRarity Rarity { get; init; }
     public decimal Quality { get; init; }
     public int Quantity { get; init; } = 1;
+    public string? CustomName { get; init; }
+    public string? CustomDescription { get; init; }
+    public string? AlchemyOriginId { get; init; }
+    public int DistillationLevel { get; init; }
+    public int? CraftedDurationTicks { get; init; }
+    public List<ItemEffectDefinition> CraftedEffects { get; init; } = [];
+    public List<AlchemyPropertyAmount> AlchemyProperties { get; init; } = [];
 }
 
 public sealed class MissionSaveData
@@ -386,6 +417,13 @@ public sealed class MissionRewardSaveData
     public ItemRarity ItemRarity { get; init; }
     public decimal ItemQuality { get; init; }
     public int Quantity { get; init; } = 1;
+    public List<MissionItemRewardRollSaveData> ItemRolls { get; init; } = [];
+}
+
+public sealed class MissionItemRewardRollSaveData
+{
+    public ItemRarity Rarity { get; init; }
+    public decimal Quality { get; init; }
 }
 
 public sealed class ShopSaveData

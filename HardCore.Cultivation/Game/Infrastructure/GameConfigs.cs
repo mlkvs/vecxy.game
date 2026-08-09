@@ -65,6 +65,36 @@ public sealed class ItemConfig
     public int TemporaryDurationTicks { get; init; }
     public decimal ShopWeight { get; init; } = 1m;
     public List<ItemEffectDefinition> Effects { get; init; } = [];
+    public List<AlchemyPropertyAmount> AlchemyProperties { get; init; } = [];
+}
+
+public sealed class AlchemyConfig : IYamlConfig
+{
+    public bool Enabled { get; init; }
+    public string CraftedPillItemId { get; init; } = "crafted_alchemy_pill";
+    public string ExtractItemId { get; init; } = "alchemy_extract";
+    public int MinimumIngredients { get; init; } = 2;
+    public int MaximumIngredients { get; init; } = 5;
+    public int MinimumPropertyMatches { get; init; } = 2;
+    public decimal MinimumPropertyFraction { get; init; } = 0.6m;
+    public int MaximumPillEffects { get; init; } = 4;
+    public int PillDurationTicks { get; init; } = 48;
+    public decimal CoreQualityWeight { get; init; } = 0.25m;
+    public decimal MaximumQuality { get; init; } = 5m;
+    public decimal DistillationQualityPerIngredient { get; init; } = 0.12m;
+    public decimal DistillationQualityPerLevel { get; init; } = 0.18m;
+    public decimal DistillationPotencyPerLevel { get; init; } = 0.12m;
+    public List<AlchemyPropertyConfig> Properties { get; init; } = [];
+}
+
+public sealed class AlchemyPropertyConfig
+{
+    public string Id { get; init; } = string.Empty;
+    public string DisplayName { get; init; } = string.Empty;
+    public string PillName { get; init; } = string.Empty;
+    public EffectType EffectType { get; init; }
+    public ModifierOperation Operation { get; init; }
+    public decimal BaseValue { get; init; }
 }
 
 public sealed class MissionsConfig : IYamlConfig
@@ -178,6 +208,7 @@ public sealed class MissionRewardConfig
 public sealed class CultivationConfig : IYamlConfig
 {
     public decimal BaseRequiredPower { get; init; } = 100m;
+    public decimal BreakthroughChancePerExtraPowerBar { get; init; } = 10m;
     public List<decimal> LevelMultipliers { get; init; } = [];
     public List<CultivationStageConfig> Stages { get; init; } = [];
 }
@@ -194,7 +225,7 @@ public sealed class ShopConfig : IYamlConfig
 {
     public int SlotCount { get; init; } = 6;
     public int MinimumQuantity { get; init; } = 1;
-    public int MaximumQuantity { get; init; } = 5;
+    public int MaximumQuantity { get; init; } = 1;
     public int MinimumBuyMarkup { get; init; } = 25;
     public int MaximumBuyMarkup { get; init; } = 100;
     public int SellAdjustmentPercent { get; init; } = -33;
@@ -206,6 +237,7 @@ public sealed class GameDatabase
     private readonly Dictionary<string, MissionConfig> _missions = new(StringComparer.Ordinal);
     private readonly Dictionary<string, MonsterConfig> _monsters = new(StringComparer.Ordinal);
     private readonly Dictionary<string, CombatBackgroundConfig> _backgrounds = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, AlchemyPropertyConfig> _alchemyProperties = new(StringComparer.Ordinal);
     private readonly Dictionary<ItemRarity, RarityConfig> _rarities = [];
 
     public GameBalanceConfig Balance { get; private set; } = new();
@@ -213,6 +245,7 @@ public sealed class GameDatabase
     public ShopConfig Shop { get; private set; } = new();
     public CombatConfig Combat { get; private set; } = new();
     public DogConfig Dog { get; private set; } = new();
+    public AlchemyConfig Alchemy { get; private set; } = new();
     public int MissionBoardSlotCount { get; private set; } = 6;
     public IReadOnlyDictionary<string, ItemConfig> Items => _items;
     public IReadOnlyDictionary<string, MissionConfig> Missions => _missions;
@@ -228,8 +261,10 @@ public sealed class GameDatabase
         ConfigRef<ShopConfig> shop,
         ConfigRef<MonstersConfig> monsters,
         ConfigRef<CombatConfig> combat,
-        ConfigRef<DogConfig> dog)
-        => Initialize(balance.Value, rarities.Value, items.Value, missions.Value, cultivation.Value, shop.Value, monsters.Value, combat.Value, dog.Value);
+        ConfigRef<DogConfig> dog,
+        ConfigRef<AlchemyConfig> alchemy)
+        => Initialize(balance.Value, rarities.Value, items.Value, missions.Value, cultivation.Value, shop.Value,
+            monsters.Value, combat.Value, dog.Value, alchemy.Value);
 
     public void Initialize(
         GameBalanceConfig balance,
@@ -240,19 +275,22 @@ public sealed class GameDatabase
         ShopConfig shop,
         MonstersConfig? monsters = null,
         CombatConfig? combat = null,
-        DogConfig? dog = null)
+        DogConfig? dog = null,
+        AlchemyConfig? alchemy = null)
     {
         Balance = balance;
         Cultivation = cultivation;
         Shop = shop;
         Combat = combat ?? CreateDefaultCombat();
         Dog = dog ?? new DogConfig();
+        Alchemy = alchemy ?? CreateDefaultAlchemy();
         MissionBoardSlotCount = missions.BoardSlotCount;
         _items.Clear();
         _missions.Clear();
         _rarities.Clear();
         _monsters.Clear();
         _backgrounds.Clear();
+        _alchemyProperties.Clear();
 
         foreach (var item in items.Items)
             AddUnique(_items, item.Id, item, "item");
@@ -267,6 +305,8 @@ public sealed class GameDatabase
             AddUnique(_monsters, monster.Id, monster, "monster");
         foreach (var background in Combat.Backgrounds)
             AddUnique(_backgrounds, background.Id, background, "combat background");
+        foreach (var property in Alchemy.Properties)
+            AddUnique(_alchemyProperties, property.Id, property, "alchemy property");
 
         Validate();
     }
@@ -294,6 +334,11 @@ public sealed class GameDatabase
         ? config
         : throw new KeyNotFoundException($"Unknown rarity: {rarity}");
 
+    public AlchemyPropertyConfig GetAlchemyProperty(string id) =>
+        _alchemyProperties.TryGetValue(id, out var property)
+            ? property
+            : throw new KeyNotFoundException($"Unknown alchemy property: {id}");
+
     private void Validate()
     {
         if (Balance.TicksPerYear <= 0 || Balance.RealMillisecondsPerTick <= 0)
@@ -306,7 +351,8 @@ public sealed class GameDatabase
             throw new InvalidDataException("Quality price curve requires at least two points.");
         if (_rarities.Count != Enum.GetValues<ItemRarity>().Length)
             throw new InvalidDataException("Every item rarity must be configured.");
-        if (Cultivation.LevelMultipliers.Count != 10 || Cultivation.Stages.Count == 0)
+        if (Cultivation.BaseRequiredPower <= 0m || Cultivation.BreakthroughChancePerExtraPowerBar < 0m ||
+            Cultivation.LevelMultipliers.Count != 10 || Cultivation.Stages.Count == 0)
             throw new InvalidDataException("Cultivation requires ten level multipliers and at least one stage.");
         if (_items.Count == 0 || _missions.Count == 0)
             throw new InvalidDataException("Items and missions cannot be empty.");
@@ -328,13 +374,33 @@ public sealed class GameDatabase
             Dog.GlowBlue is < 0f or > 1f || Dog.GlowAlpha is < 0f or > 1f ||
             string.IsNullOrWhiteSpace(Dog.MeditatingTexture) || string.IsNullOrWhiteSpace(Dog.ChargedTexture))
             throw new InvalidDataException("Dog meditation settings are invalid.");
+        if (Alchemy.Enabled && (Alchemy.MinimumIngredients <= 0 || Alchemy.MaximumIngredients < Alchemy.MinimumIngredients ||
+            Alchemy.MinimumPropertyMatches <= 0 || Alchemy.MinimumPropertyMatches > Alchemy.MaximumIngredients ||
+            Alchemy.MinimumPropertyFraction is <= 0m or > 1m || Alchemy.MaximumPillEffects is < 1 or > 4 ||
+            Alchemy.PillDurationTicks <= 0 || Alchemy.CoreQualityWeight is < 0m or > 1m || Alchemy.MaximumQuality <= 0m ||
+            Alchemy.DistillationQualityPerIngredient < 0m || Alchemy.DistillationQualityPerLevel < 0m ||
+            Alchemy.DistillationPotencyPerLevel < 0m || _alchemyProperties.Count == 0))
+            throw new InvalidDataException("Alchemy settings are invalid.");
+        if (Alchemy.Enabled)
+        {
+            _ = GetItem(Alchemy.CraftedPillItemId);
+            _ = GetItem(Alchemy.ExtractItemId);
+        }
 
         foreach (var item in _items.Values)
         {
-            if (item.BasePrice < 0 || item.ShopWeight <= 0m)
+            if (item.BasePrice < 0 || item.ShopWeight < 0m)
                 throw new InvalidDataException($"Invalid item balance: {item.Id}");
             if (item.DurationType == ItemDurationType.Temporary && item.TemporaryDurationTicks <= 0)
                 throw new InvalidDataException($"Temporary item has no duration: {item.Id}");
+            if (item.AlchemyProperties.Count > 4)
+                throw new InvalidDataException($"Item has more than four alchemy properties: {item.Id}");
+            foreach (var property in item.AlchemyProperties)
+            {
+                _ = GetAlchemyProperty(property.PropertyId);
+                if (property.Potency <= 0m)
+                    throw new InvalidDataException($"Invalid alchemy property potency: {item.Id}/{property.PropertyId}");
+            }
         }
 
         foreach (var mission in _missions.Values)
@@ -373,6 +439,8 @@ public sealed class GameDatabase
         DangerLevels = [new CombatDangerConfig { Level = 1, EncounterChancePercent = 100m }],
         Backgrounds = [new CombatBackgroundConfig { Id = "forest", Layers = ["Textures/Backgrounds/1/orig.png"] }]
     };
+
+    private static AlchemyConfig CreateDefaultAlchemy() => new();
 
     private static void AddUnique<T>(IDictionary<string, T> target, string id, T value, string kind)
     {

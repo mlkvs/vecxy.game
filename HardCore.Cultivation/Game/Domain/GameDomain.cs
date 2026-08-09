@@ -185,6 +185,8 @@ public sealed class CharacterState
         return true;
     }
 
+    public void ClearSpiritualPower() => SpiritualPower = 0m;
+
     public bool TrySpendMoney(long amount)
     {
         if (amount < 0)
@@ -330,6 +332,12 @@ public sealed record ItemEffectDefinition
     public decimal Value { get; init; }
 }
 
+public sealed record AlchemyPropertyAmount
+{
+    public string PropertyId { get; init; } = string.Empty;
+    public decimal Potency { get; init; } = 1m;
+}
+
 public sealed class ActiveEffect
 {
     public string SourceItemId { get; init; } = string.Empty;
@@ -376,6 +384,12 @@ public sealed class ActiveEffect
     public void RestoreDuration(int? remainingTicks) => RemainingTicks = remainingTicks;
 }
 
+public sealed record MissionItemRewardRoll
+{
+    public ItemRarity Rarity { get; init; }
+    public decimal Quality { get; init; }
+}
+
 public sealed record MissionReward
 {
     public MissionRewardType Type { get; init; }
@@ -384,6 +398,7 @@ public sealed record MissionReward
     public ItemRarity ItemRarity { get; init; }
     public decimal ItemQuality { get; init; }
     public int Quantity { get; init; } = 1;
+    public List<MissionItemRewardRoll> ItemRolls { get; init; } = [];
 }
 
 public sealed class ItemInstance
@@ -392,6 +407,13 @@ public sealed class ItemInstance
     public required string ConfigId { get; init; }
     public ItemRarity Rarity { get; init; }
     public decimal Quality { get; init; }
+    public string? CustomName { get; init; }
+    public string? CustomDescription { get; init; }
+    public string? AlchemyOriginId { get; init; }
+    public int DistillationLevel { get; init; }
+    public int? CraftedDurationTicks { get; init; }
+    public List<ItemEffectDefinition> CraftedEffects { get; init; } = [];
+    public List<AlchemyPropertyAmount> AlchemyProperties { get; init; } = [];
     public int Quantity { get; private set; } = 1;
 
     public void AddQuantity(int amount)
@@ -420,12 +442,31 @@ public sealed class ItemInstance
             InstanceId = Guid.NewGuid(),
             ConfigId = ConfigId,
             Rarity = Rarity,
-            Quality = Quality
+            Quality = Quality,
+            CustomName = CustomName,
+            CustomDescription = CustomDescription,
+            AlchemyOriginId = AlchemyOriginId,
+            DistillationLevel = DistillationLevel,
+            CraftedDurationTicks = CraftedDurationTicks,
+            CraftedEffects = [.. CraftedEffects],
+            AlchemyProperties = [.. AlchemyProperties]
         };
         if (quantity > 1)
             copy.AddQuantity(quantity - 1);
         return copy;
     }
+
+    public bool CanStackWith(ItemInstance other) =>
+        ConfigId == other.ConfigId &&
+        Rarity == other.Rarity &&
+        Quality == other.Quality &&
+        CustomName == other.CustomName &&
+        CustomDescription == other.CustomDescription &&
+        AlchemyOriginId == other.AlchemyOriginId &&
+        DistillationLevel == other.DistillationLevel &&
+        CraftedDurationTicks == other.CraftedDurationTicks &&
+        CraftedEffects.SequenceEqual(other.CraftedEffects) &&
+        AlchemyProperties.SequenceEqual(other.AlchemyProperties);
 }
 
 public sealed class Inventory
@@ -436,10 +477,7 @@ public sealed class Inventory
     public void Add(ItemInstance item)
     {
         ArgumentNullException.ThrowIfNull(item);
-        var stack = _items.FirstOrDefault(candidate =>
-            candidate.ConfigId == item.ConfigId &&
-            candidate.Rarity == item.Rarity &&
-            candidate.Quality == item.Quality);
+        var stack = _items.FirstOrDefault(candidate => candidate.CanStackWith(item));
         if (stack is null)
             _items.Add(item);
         else

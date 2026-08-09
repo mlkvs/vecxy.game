@@ -2,6 +2,7 @@
   "width": 1024,
   "padding": 2,
   "sources": {
+    "alchemy-extract": "Items/alchemy-extract.png",
     "azure-spirit-core": "Items/azure-spirit-core.png",
     "breakthrough-seal": "Items/breakthrough-seal.png",
     "celestial-orb": "Items/celestial-orb.png",
