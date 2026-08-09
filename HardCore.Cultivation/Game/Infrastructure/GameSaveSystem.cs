@@ -130,7 +130,9 @@ public sealed class GameSaveSystem(GameDatabase database)
                 state.Character.ConfigureMaximumHealth(database.Combat.HeroBaseHealth, true);
             state.RestoreDefeatRecovery(
                 data.Version >= 7 && data.RecoveryRequired &&
-                state.Character.Health < database.Combat.RecoveryHealthFraction * state.Character.MaximumHealth);
+                state.Character.Health < Math.Min(
+                    state.Character.MaximumHealth,
+                    database.Combat.RecoveryHealthPoints));
             state.DogMeditation.Restore(
                 data.Version >= 8 ? data.DogMeditationSeconds : 0f,
                 database.Dog.ChargeDurationSeconds);

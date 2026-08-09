@@ -5,6 +5,9 @@
     "alchemy": "UIIcons/alchemy.png",
     "age": "UIIcons/age.png",
     "close": "UIIcons/close.png",
+    "combat-attack": "UIIcons/combat-attack.png",
+    "combat-defense": "UIIcons/combat-defense.png",
+    "combat-speed": "UIIcons/combat-speed.png",
     "cultivation": "UIIcons/cultivation.png",
     "death": "UIIcons/death.png",
     "inventory": "UIIcons/inventory.png",
@@ -19,6 +22,7 @@
     "star-gold": "UIIcons/star-gold.png",
     "star-gray": "UIIcons/star-gray.png",
     "star-rainbow": "UIIcons/star-rainbow.png",
-    "tick": "UIIcons/tick.png"
+    "tick": "UIIcons/tick.png",
+    "year-dragon": "UIIcons/year-dragon.png"
   }
 }

@@ -12,6 +12,20 @@ public enum AlchemyMode
 
 public readonly record struct AlchemySelection(Guid InstanceId, int Quantity);
 
+public static class AlchemyCharacteristicFormula
+{
+    public static decimal Calculate(decimal quality, int ingredientCount, decimal coefficient)
+    {
+        if (quality < 0m)
+            throw new ArgumentOutOfRangeException(nameof(quality));
+        if (ingredientCount < 0)
+            throw new ArgumentOutOfRangeException(nameof(ingredientCount));
+        if (coefficient < 0m)
+            throw new ArgumentOutOfRangeException(nameof(coefficient));
+        return quality * ingredientCount * (1m + coefficient * ingredientCount);
+    }
+}
+
 public sealed record AlchemyPreview(
     bool CanCraft,
     string Message,
@@ -118,6 +132,15 @@ public sealed class AlchemyService(GameDatabase database)
         if (ingredients.Length > database.Alchemy.MaximumIngredients)
             return AlchemyPreview.Fail($"В рецепте может быть не больше {database.Alchemy.MaximumIngredients} ингредиентов.");
 
+        var ingredientQuality = ingredients.Average(value => value.Item.Quality);
+        var quality = ingredientQuality * (1m - database.Alchemy.CoreQualityWeight) +
+                      cores[0].Item.Quality * database.Alchemy.CoreQualityWeight;
+        quality = Math.Clamp(quality, 0.1m, database.Alchemy.MaximumQuality);
+        var characteristicMultiplier = AlchemyCharacteristicFormula.Calculate(
+            quality,
+            ingredients.Length,
+            database.Alchemy.IngredientCharacteristicCoefficient);
+
         var effects = new List<(ItemEffectDefinition Effect, AlchemyPropertyConfig Property, int Matches)>();
         foreach (var propertyId in ingredients
                      .SelectMany(unit => GetProperties(unit.Item))
@@ -139,7 +162,7 @@ public sealed class AlchemyService(GameDatabase database)
             {
                 Type = property.EffectType,
                 Operation = property.Operation,
-                Value = property.BaseValue * potency * coverage
+                Value = property.BaseValue * potency * coverage * characteristicMultiplier
             }, property, contributions.Length));
         }
 
@@ -152,9 +175,6 @@ public sealed class AlchemyService(GameDatabase database)
             return AlchemyPreview.Fail(
                 $"Ни одно свойство не повторяется хотя бы {database.Alchemy.MinimumPropertyMatches} раза.");
 
-        var ingredientQuality = ingredients.Average(value => value.Item.Quality);
-        var quality = ingredientQuality * (1m - database.Alchemy.CoreQualityWeight) +
-                      cores[0].Item.Quality * database.Alchemy.CoreQualityWeight;
         var rarity = AverageRarity(units.Select(value => value.Item.Rarity));
         var name = selectedEffects.Length == 1
             ? selectedEffects[0].Property.PillName
@@ -164,7 +184,7 @@ public sealed class AlchemyService(GameDatabase database)
             InstanceId = Guid.Empty,
             ConfigId = database.Alchemy.CraftedPillItemId,
             Rarity = rarity,
-            Quality = Math.Clamp(quality, 0.1m, database.Alchemy.MaximumQuality),
+            Quality = quality,
             CustomName = name,
             CustomDescription = $"Создана из алхимических свойств ингредиентов с ядром «{cores[0].Item.CustomName ?? cores[0].Config.Name}».",
             CraftedDurationTicks = database.Alchemy.PillDurationTicks,

@@ -1,0 +1,6 @@
+<panel class="action-toast toast-success">
+    <panel class="action-toast-icon-shell">
+        <image id="action-toast-icon" sprite="Assets/Textures/UIIconsAtlas.atlas#spirit" />
+    </panel>
+    <text id="action-toast-text">Действие выполнено</text>
+</panel>

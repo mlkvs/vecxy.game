@@ -1,0 +1,9 @@
+{
+  "width": 2048,
+  "padding": 4,
+  "sources": {
+    "slot-frame": "UI/Chinese/slot-frame.png",
+    "round-button": "UI/Chinese/round-button.png",
+    "close-button": "UI/Chinese/close-button.png"
+  }
+}

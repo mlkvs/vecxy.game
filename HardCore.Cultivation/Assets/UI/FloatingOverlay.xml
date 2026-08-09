@@ -1,4 +1,4 @@
-<ui class="screen" styles="Main.css"
+<ui class="screen" styles="Main.css, Styles/Cards.css"
     scale-mode="fit" reference-width="620" reference-height="1180">
     <panel id="tap-feedback" class="tap-feedback" animation-trigger="manual" />
     <panel id="tick-float-layer" class="tick-float-layer floating-overlay" />

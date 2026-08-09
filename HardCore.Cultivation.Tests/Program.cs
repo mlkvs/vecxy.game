@@ -60,6 +60,10 @@ Check(maximumDogMeditation.Collect(maximumDogState).Reward == 3000,
     "Dog meditation did not include the configured maximum reward.");
 
 var alchemy = new AlchemyService(database);
+Check(AlchemyCharacteristicFormula.Calculate(1m, 1, 8m) == 9m &&
+      AlchemyCharacteristicFormula.Calculate(3m, 2, 8m) == 102m &&
+      AlchemyCharacteristicFormula.Calculate(5m, 5, 8m) == 1025m,
+    "Alchemy characteristic formula does not match the balance table.");
 var alchemyState = new GameState(database.Balance.TicksPerYear);
 var primaryIngredient = new ItemInstance
 {
@@ -92,8 +96,8 @@ var pillSelection = new[]
 var pillPreview = alchemy.Preview(alchemyState, pillSelection, AlchemyMode.Pill);
 Check(pillPreview.CanCraft && pillPreview.Output?.CraftedEffects.Count == 1,
     "Three matching properties out of five did not produce a pill effect.");
-Check(pillPreview.Output!.CraftedEffects[0].Value == 60m,
-    "Missing properties did not proportionally weaken the crafted pill.");
+Check(pillPreview.Output!.CraftedEffects[0].Value == 35055m,
+    "Ingredient count, quality, or missing-property coverage was not applied to the crafted pill.");
 var pillResult = alchemy.Craft(alchemyState, pillSelection, AlchemyMode.Pill);
 Check(pillResult.Success && pillResult.Output is { CraftedDurationTicks: 48 },
     "Crafted pill was not added with its dynamic duration.");
@@ -176,6 +180,8 @@ defeatedState.EnqueueMission(defeatedMission);
 _ = combat.Update(defeatedState, 0.1f);
 Check(defeatedState.RecoveryRequired, "Defeat did not enable mandatory recovery.");
 Check(defeatedState.ActivityMode == ActivityMode.Cultivation, "Defeat did not switch to cultivation.");
+Check(combat.GetRecoveryHealthThreshold(defeatedState.Character) == 30m,
+    "Defeat recovery threshold must use the configured fixed HP amount.");
 defeatedState.SetActivityMode(ActivityMode.Missions);
 Check(defeatedState.ActivityMode == ActivityMode.Cultivation, "Missions were enabled before full recovery.");
 var healthAfterDefeat = defeatedState.Character.Health;

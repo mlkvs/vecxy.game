@@ -1,25 +1,27 @@
 <panel id="inventory-window" class="window compact-window inventory-window" hidden="true">
     <panel class="window-header"><panel><text class="window-title">Рюкзак</text><text class="window-subtitle">Нажмите на предмет, чтобы увидеть описание</text></panel><button class="window-close"><image sprite="Assets/Textures/UIIconsAtlas.atlas#close" /></button></panel>
-    <panel class="window-toolbar"><text>ПРЕДМЕТЫ</text><text id="inventory-count" class="toolbar-value">0 предметов</text></panel>
-    <panel class="category-tabs">
-        <button id="ingredients-tab" class="category-tab active">ИНГРЕДИЕНТЫ</button>
-        <button id="cores-tab" class="category-tab">ЯДРА ЗВЕРЕЙ</button>
-        <button id="pills-tab" class="category-tab">ПИЛЮЛИ</button>
-    </panel>
-    <panel id="inventory-grid" class="inventory-grid" />
-    <panel id="inventory-details" class="inventory-details" hidden="true">
-        <panel id="inventory-detail-icon-well" class="inventory-detail-icon-well">
-            <image id="inventory-detail-icon" />
-            <panel id="inventory-detail-quality" class="inventory-detail-quality item-icon-quality" />
+    <panel class="window-body">
+        <panel class="window-toolbar"><text>ПРЕДМЕТЫ</text><text id="inventory-count" class="toolbar-value">0 предметов</text></panel>
+        <panel class="category-tabs">
+            <button id="ingredients-tab" class="category-tab active">ИНГРЕДИЕНТЫ</button>
+            <button id="cores-tab" class="category-tab">ЯДРА ЗВЕРЕЙ</button>
+            <button id="pills-tab" class="category-tab">ПИЛЮЛИ</button>
         </panel>
-        <panel class="inventory-detail-copy">
-            <text id="inventory-detail-rarity" class="inventory-detail-rarity">ОБЫЧНАЯ</text>
-            <text id="inventory-detail-name" class="inventory-detail-name">Предмет</text>
-            <text id="inventory-detail-effect" class="inventory-detail-effect">Описание эффекта</text>
-        </panel>
-        <panel class="inventory-detail-actions">
-            <button id="inventory-use-button" class="compact-action">ИСПОЛЬЗОВАТЬ</button>
-            <button id="inventory-sell-button" class="compact-action secondary">ПРОДАТЬ&#10;+0 ₽</button>
+        <panel id="inventory-grid" class="inventory-grid" />
+        <panel id="inventory-details" class="inventory-details" hidden="true">
+            <panel id="inventory-detail-icon-well" class="inventory-detail-icon-well">
+                <image id="inventory-detail-icon" />
+                <panel id="inventory-detail-quality" class="inventory-detail-quality item-icon-quality" />
+            </panel>
+            <panel class="inventory-detail-copy">
+                <text id="inventory-detail-rarity" class="inventory-detail-rarity">ОБЫЧНАЯ</text>
+                <text id="inventory-detail-name" class="inventory-detail-name">Предмет</text>
+                <text id="inventory-detail-effect" class="inventory-detail-effect">Описание эффекта</text>
+            </panel>
+            <panel class="inventory-detail-actions">
+                <button id="inventory-use-button" class="compact-action">ИСПОЛЬЗОВАТЬ</button>
+                <button id="inventory-sell-button" class="compact-action secondary currency-action"><image sprite="Assets/Textures/UIIconsAtlas.atlas#money"/><text>ПРОДАТЬ&#10;+0</text></button>
+            </panel>
         </panel>
     </panel>
 </panel>

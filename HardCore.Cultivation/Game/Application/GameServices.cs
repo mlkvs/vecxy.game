@@ -111,11 +111,12 @@ public sealed class ItemEffectService(GameDatabase database)
         if (item is null)
             return TransactionResult.Fail("Предмет не найден.");
         var config = database.GetItem(item.ConfigId);
-        var strength = database.Balance.EffectQualityBase +
-                       item.Quality * database.Balance.EffectQualityPerPoint;
         var definitions = item.CraftedEffects.Count > 0
             ? item.CraftedEffects
             : config.Effects;
+        var strength = item.CraftedEffects.Count > 0
+            ? 1m
+            : database.Balance.EffectQualityBase + item.Quality * database.Balance.EffectQualityPerPoint;
 
         if (config.DurationType == ItemDurationType.Instant)
         {
@@ -428,7 +429,7 @@ public sealed class ShopTransactionService(ItemPriceCalculator prices)
             return TransactionResult.Fail("Цена слишком велика.");
         }
         if (!state.Character.TrySpendMoney(total))
-            return TransactionResult.Fail("Недостаточно рублей.");
+            return TransactionResult.Fail("Недостаточно средств.");
         slot.Remove(quantity);
         state.Inventory.Add(slot.Item.Copy(quantity));
         return TransactionResult.Ok(total, "Покупка завершена.");
@@ -569,7 +570,7 @@ public sealed class DogMeditationService(GameDatabase database, IRandomSource ra
         var reward = checked((long)rewardUnits * database.Dog.RewardUnitRubles);
         state.Character.AddMoney(reward);
         state.DogMeditation.Reset();
-        return new(true, reward, $"Собака намедитировала {reward:N0} рублей.");
+        return new(true, reward, $"Собака намедитировала {reward:N0}.");
     }
 }
 
@@ -620,7 +621,7 @@ public sealed class CombatService(GameDatabase database)
         CompletedCultivationLevels(character) * database.Combat.HeroDefensePerLevel;
 
     public decimal GetRecoveryHealthThreshold(CharacterState character) =>
-        GetHeroMaximumHealth(character) * database.Combat.RecoveryHealthFraction;
+        Math.Min(GetHeroMaximumHealth(character), database.Combat.RecoveryHealthPoints);
 
     public void ConfigureHero(CharacterState character, bool fillIfUninitialized = false) =>
         character.ConfigureMaximumHealth(GetHeroMaximumHealth(character), fillIfUninitialized);

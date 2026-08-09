@@ -8,7 +8,7 @@ using Vecxy.Scene;
 
 namespace HardCore.Cultivation.Game;
 
-public class Character : AComponent
+public class Character(IAssetsManager assets, SpriteRenderer sprite, float referenceTextureHeight) : AComponent
 {
     [UsedImplicitly]
     public class Prototype(IAssetsManager assets) : APrototype<Character, Prototype.Options>
@@ -87,7 +87,10 @@ public class Character : AComponent
             dogObject.AddComponent(new DogCompanion(assets, dogSprite, chargedSprite, glowSprites));
                 
             // Character
-            var character = characterObject.AddComponent<Character>();
+            var character = characterObject.AddComponent(new Character(
+                assets,
+                sprite,
+                characterTexture.Value.Height));
                 
             return character;
 
@@ -105,6 +108,21 @@ public class Character : AComponent
 
     public float Amplitude { get; set; } = 24.0f;
     public float PeriodSeconds { get; set; } = 3.6f;
+
+    private bool _missionMode;
+
+    public void SetMissionMode(bool missionMode)
+    {
+        if (_missionMode == missionMode)
+            return;
+
+        _missionMode = missionMode;
+        using var texture = assets.Load<TextureAsset>(missionMode
+            ? "Textures/Character_Missions_Transparent.png"
+            : "Textures/Character.png");
+        sprite.SetTexture(texture);
+        sprite.PixelsPerUnit = texture.Value.Height / referenceTextureHeight;
+    }
 
     public override void Start()
     {
@@ -130,6 +148,7 @@ public sealed class DogCompanion(
     private float _elapsed;
     private Vector3 _origin;
     private Vector3 _baseScale;
+    private bool _missionMode;
 
     public override void Start()
     {
@@ -146,13 +165,32 @@ public sealed class DogCompanion(
         _origin = Transform.Position;
         _baseScale = Transform.Scale;
 
-        using var meditatingTexture = assets.Load<TextureAsset>(config.MeditatingTexture);
+        ApplyTextures(
+            _missionMode ? config.MissionMeditatingTexture : config.MeditatingTexture,
+            _missionMode ? config.MissionChargedTexture : config.ChargedTexture);
+        SetChargeProgress(_chargeProgress);
+    }
+
+    public void SetMissionMode(bool missionMode)
+    {
+        if (_missionMode == missionMode)
+            return;
+
+        _missionMode = missionMode;
+        ApplyTextures(
+            missionMode ? _config.MissionMeditatingTexture : _config.MeditatingTexture,
+            missionMode ? _config.MissionChargedTexture : _config.ChargedTexture);
+        SetChargeProgress(_chargeProgress);
+    }
+
+    private void ApplyTextures(string meditatingPath, string chargedPath)
+    {
+        using var meditatingTexture = assets.Load<TextureAsset>(meditatingPath);
         baseSprite.SetTexture(meditatingTexture);
-        using var chargedTexture = assets.Load<TextureAsset>(config.ChargedTexture);
+        using var chargedTexture = assets.Load<TextureAsset>(chargedPath);
         chargedSprite.SetTexture(chargedTexture);
         foreach (var glow in glowSprites)
             glow.SetTexture(chargedTexture);
-        SetChargeProgress(_chargeProgress);
     }
 
     public void SetChargeProgress(float progress)

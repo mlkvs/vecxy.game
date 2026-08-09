@@ -14,6 +14,7 @@ internal sealed class GameView
         MissionSummaryButton = Button("mission-summary-button");
         YearDial = Radial("year-dial");
         Money = Text("money-text");
+        ModalMoney = Text("modal-money-text");
         Age = Text("age-text");
         MaximumAge = Text("maximum-age-text");
         Realm = Text("realm-text");
@@ -29,11 +30,18 @@ internal sealed class GameView
         MissionDescription = Text("mission-description");
         MissionProgressText = Text("mission-progress-text");
         MissionProgress = Progress("mission-progress");
+        MissionDangerIndicator = Panel("mission-danger-indicator");
+        MissionDangerBars = document.QueryAll(".mission-danger-bar").OfType<UiPanel>().ToArray();
+        MissionCombatMarker = Panel("mission-combat-marker");
         MissionNormalState = Panel("mission-normal-state");
         MissionCombatState = Panel("mission-combat-state");
         MissionCombatPreview = Image("mission-combat-preview");
-        MissionCombatStatus = Text("mission-combat-status");
-        MissionCombatStats = Text("mission-combat-stats");
+        CombatHeroAttackStat = Text("combat-hero-attack-stat");
+        CombatHeroDefenseStat = Text("combat-hero-defense-stat");
+        CombatHeroSpeedStat = Text("combat-hero-speed-stat");
+        CombatEnemyAttackStat = Text("combat-enemy-attack-stat");
+        CombatEnemyDefenseStat = Text("combat-enemy-defense-stat");
+        CombatEnemySpeedStat = Text("combat-enemy-speed-stat");
         CombatHeroDamage = Text("combat-hero-damage");
         CombatEnemyDamage = Text("combat-enemy-damage");
         EnemyHealthProgress = Progress("enemy-health-progress");
@@ -47,7 +55,6 @@ internal sealed class GameView
         AlchemyButton = Button("alchemy-button");
         InventoryButton = Button("inventory-button");
         ShopWindow = Panel("shop-window");
-        ShopMoney = Text("shop-money");
         ShopGrid = Panel("shop-grid");
 
         AlchemyWindow = Panel("alchemy-window");
@@ -114,6 +121,7 @@ internal sealed class GameView
         InfoPopupDescription = Text("info-popup-description");
         InfoPopupEffect = Text("info-popup-effect");
         InfoPopupStatLabel1 = Text("info-popup-stat-label-1");
+        InfoPopupPriceIcon = Image("info-popup-price-icon");
         InfoPopupStatValue1 = Text("info-popup-stat-value-1");
         InfoPopupStatLabel2 = Text("info-popup-stat-label-2");
         InfoPopupQuality = Panel("info-popup-quality");
@@ -134,7 +142,7 @@ internal sealed class GameView
         // including dialogs and popups that intentionally do not use .window.
         Windows = WindowLayer.Children
             .OfType<UiPanel>()
-            .Where(panel => panel.Id != "window-backdrop")
+            .Where(panel => panel.Id is not "window-backdrop" and not "modal-money-stat")
             .ToArray();
         WindowCloseButtons = document.QueryAll(".window-close").OfType<UiButton>().ToArray();
     }
@@ -147,6 +155,7 @@ internal sealed class GameView
     public UiButton MissionSummaryButton { get; }
     public UiRadialProgress YearDial { get; }
     public UiText Money { get; }
+    public UiText ModalMoney { get; }
     public UiText Age { get; }
     public UiText MaximumAge { get; }
     public UiText Realm { get; }
@@ -161,11 +170,18 @@ internal sealed class GameView
     public UiText MissionDescription { get; }
     public UiText MissionProgressText { get; }
     public UiProgress MissionProgress { get; }
+    public UiPanel MissionDangerIndicator { get; }
+    public IReadOnlyList<UiPanel> MissionDangerBars { get; }
+    public UiPanel MissionCombatMarker { get; }
     public UiPanel MissionNormalState { get; }
     public UiPanel MissionCombatState { get; }
     public UiImage MissionCombatPreview { get; }
-    public UiText MissionCombatStatus { get; }
-    public UiText MissionCombatStats { get; }
+    public UiText CombatHeroAttackStat { get; }
+    public UiText CombatHeroDefenseStat { get; }
+    public UiText CombatHeroSpeedStat { get; }
+    public UiText CombatEnemyAttackStat { get; }
+    public UiText CombatEnemyDefenseStat { get; }
+    public UiText CombatEnemySpeedStat { get; }
     public UiText CombatHeroDamage { get; }
     public UiText CombatEnemyDamage { get; }
     public UiProgress EnemyHealthProgress { get; }
@@ -178,7 +194,6 @@ internal sealed class GameView
     public UiButton AlchemyButton { get; }
     public UiButton InventoryButton { get; }
     public UiPanel ShopWindow { get; }
-    public UiText ShopMoney { get; }
     public UiPanel ShopGrid { get; }
     public UiPanel AlchemyWindow { get; }
     public UiButton AlchemyPillTab { get; }
@@ -239,6 +254,7 @@ internal sealed class GameView
     public UiText InfoPopupDescription { get; }
     public UiText InfoPopupEffect { get; }
     public UiText InfoPopupStatLabel1 { get; }
+    public UiImage InfoPopupPriceIcon { get; }
     public UiText InfoPopupStatValue1 { get; }
     public UiText InfoPopupStatLabel2 { get; }
     public UiPanel InfoPopupQuality { get; }

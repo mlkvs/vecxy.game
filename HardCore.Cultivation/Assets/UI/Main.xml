@@ -2,9 +2,9 @@
     scale-mode="fit" reference-width="620" reference-height="1180">
     <panel id="hud">
         <panel class="top-card">
-            <panel class="top-stat horizontal">
+            <panel class="top-stat horizontal money-stat">
                 <panel class="top-stat-icon-shell"><image class="top-stat-icon" sprite="Assets/Textures/UIIconsAtlas.atlas#money" /></panel>
-                <panel class="top-stat-copy"><text class="top-stat-label">РУБЛИ</text><text id="money-text" class="top-stat-value">1000</text></panel>
+                <panel class="top-stat-copy"><text class="top-stat-label">БАЛАНС</text><text id="money-text" class="top-stat-value">1000</text></panel>
             </panel>
             <panel class="top-stat horizontal">
                 <panel class="top-stat-icon-shell age"><image class="top-stat-icon" sprite="Assets/Textures/UIIconsAtlas.atlas#age" /></panel>
@@ -19,8 +19,8 @@
             </panel>
             <panel class="calendar-slot">
                 <panel class="calendar-dial">
-                    <radial-progress id="year-dial" class="calendar-ring" clockwise-depletion="true" />
-                    <image sprite="Assets/Textures/UIIconsAtlas.atlas#age" />
+                    <radial-progress id="year-dial" class="calendar-ring" clockwise-depletion="true"
+                        sprite="Assets/Textures/UIIconsAtlas.atlas#year-dragon" />
                 </panel>
             </panel>
         </panel>
@@ -30,20 +30,35 @@
             <button id="dog-tap-target" class="dog-tap-target" aria-label="Погладить питомца" />
             <button id="mission-summary-button" class="mission-float glass-panel">
                 <panel class="float-heading"><image sprite="Assets/Textures/UIIconsAtlas.atlas#missions" /><text>ТЕКУЩАЯ МИССИЯ</text></panel>
+                <panel id="mission-danger-indicator" class="mission-danger-indicator" hidden="true">
+                    <panel class="mission-danger-bar"/><panel class="mission-danger-bar"/><panel class="mission-danger-bar"/>
+                    <panel class="mission-danger-bar"/><panel class="mission-danger-bar"/>
+                </panel>
                 <text id="mission-name" class="float-title">Нет активной миссии</text>
                 <panel id="mission-normal-state">
                     <text id="mission-description" class="float-description">Выберите поручение.</text>
-                    <panel class="progress-track"><progress id="mission-progress" class="progress-fill mission-fill" /></panel>
+                    <panel class="progress-track mission-progress-track">
+                        <progress id="mission-progress" class="progress-fill mission-fill" />
+                        <panel id="mission-combat-marker" class="mission-combat-marker" hidden="true" />
+                    </panel>
                     <text id="mission-progress-text" class="progress-caption">0 / 0</text>
                 </panel>
                 <panel id="mission-combat-state" hidden="true">
                     <panel class="combat-preview-shell">
                         <image id="mission-combat-preview" class="mission-combat-preview" />
+                        <panel class="combatant-stats combatant-stats-hero">
+                            <panel><image sprite="Assets/Textures/UIIconsAtlas.atlas#combat-attack"/><text id="combat-hero-attack-stat">0</text></panel>
+                            <panel><image sprite="Assets/Textures/UIIconsAtlas.atlas#combat-defense"/><text id="combat-hero-defense-stat">0</text></panel>
+                            <panel><image sprite="Assets/Textures/UIIconsAtlas.atlas#combat-speed"/><text id="combat-hero-speed-stat">0</text></panel>
+                        </panel>
+                        <panel class="combatant-stats combatant-stats-enemy">
+                            <panel><image sprite="Assets/Textures/UIIconsAtlas.atlas#combat-attack"/><text id="combat-enemy-attack-stat">0</text></panel>
+                            <panel><image sprite="Assets/Textures/UIIconsAtlas.atlas#combat-defense"/><text id="combat-enemy-defense-stat">0</text></panel>
+                            <panel><image sprite="Assets/Textures/UIIconsAtlas.atlas#combat-speed"/><text id="combat-enemy-speed-stat">0</text></panel>
+                        </panel>
                         <text id="combat-hero-damage" class="combat-damage-float combat-hero-damage" animation-trigger="manual">-0</text>
                         <text id="combat-enemy-damage" class="combat-damage-float combat-enemy-damage" animation-trigger="manual">-0</text>
                     </panel>
-                    <text id="mission-combat-status" class="mission-combat-status">АВТОБОЙ</text>
-                    <text id="mission-combat-stats" class="mission-combat-stats">АТК 0 · ЗАЩ 0 · СКОР 0/с</text>
                     <panel class="progress-track combat-health-track"><progress id="enemy-health-progress" class="progress-fill health-fill" /></panel>
                     <text id="enemy-health-text" class="progress-caption">0 / 0</text>
                 </panel>
@@ -57,30 +72,36 @@
             </button>
         </panel>
 
-        <panel class="cultivation-bar">
-            <panel class="cultivation-copy">
-                <text id="realm-text" class="cultivation-title">Закалка тела · ур. 1</text>
-                <panel class="progress-track cultivation-track">
-                    <progress id="cultivation-progress" class="progress-fill" />
-                    <progress id="cultivation-overflow-progress" class="progress-fill cultivation-overflow-fill" />
-                    <text id="cultivation-progress-text" class="cultivation-progress-text">0 / 25</text>
+        <panel class="bottom-hud-panel">
+            <panel class="cultivation-bar">
+                <panel class="cultivation-copy">
+                    <text id="realm-text" class="cultivation-title">Закалка тела · ур. 1</text>
+                    <panel class="progress-track cultivation-track">
+                        <progress id="cultivation-progress" class="progress-fill" />
+                        <progress id="cultivation-overflow-progress" class="progress-fill cultivation-overflow-fill" />
+                        <text id="cultivation-progress-text" class="cultivation-progress-text">0 / 25</text>
+                    </panel>
+                    <panel class="progress-track hero-health-track">
+                        <progress id="hero-health-progress" class="progress-fill health-fill" />
+                        <panel id="hero-recovery-threshold" class="hero-recovery-threshold" hidden="true" />
+                        <text id="hero-health-text" class="cultivation-progress-text">120 / 120</text>
+                    </panel>
                 </panel>
-                <panel class="progress-track hero-health-track">
-                    <progress id="hero-health-progress" class="progress-fill health-fill" />
-                    <panel id="hero-recovery-threshold" class="hero-recovery-threshold" hidden="true" />
-                    <text id="hero-health-text" class="cultivation-progress-text">120 / 120</text>
-                </panel>
+                <button id="breakthrough-button" class="secondary-button">ПРОРЫВ</button>
             </panel>
-            <button id="breakthrough-button" class="secondary-button">ПРОРЫВ</button>
-        </panel>
 
-        <panel class="bottom-nav">
-            <button id="shop-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#shop" /></panel><text>ЛАВКА</text></button>
-            <button id="alchemy-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#alchemy" /></panel><text>АЛХИМИЯ</text></button>
-            <button id="inventory-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#inventory" /></panel><text>РЮКЗАК</text></button>
+            <panel class="bottom-nav">
+                <button id="shop-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#shop" /></panel><text>ЛАВКА</text></button>
+                <button id="alchemy-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#alchemy" /></panel><text>АЛХИМИЯ</text></button>
+                <button id="inventory-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#inventory" /></panel><text>РЮКЗАК</text></button>
+            </panel>
         </panel>
     </panel>
     <panel id="window-layer">
         <panel id="window-backdrop" hidden="true" />
+        <panel id="modal-money-stat" class="top-stat horizontal money-stat modal-money-stat">
+            <panel class="top-stat-icon-shell"><image class="top-stat-icon" sprite="Assets/Textures/UIIconsAtlas.atlas#money" /></panel>
+            <panel class="top-stat-copy"><text class="top-stat-label">БАЛАНС</text><text id="modal-money-text" class="top-stat-value">1000</text></panel>
+        </panel>
     </panel>
 </ui>

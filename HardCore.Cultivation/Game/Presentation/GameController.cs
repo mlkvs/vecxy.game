@@ -39,14 +39,15 @@ public sealed class GameController(
     private UiDocument? _transientDocument;
     private GameView? _view;
     private UiPanel? _windowLayer;
+    private UiPanel? _actionToastHost;
     private UiPanel? _actionToast;
     private UiImage? _actionToastIcon;
     private UiText? _actionToastText;
     private Action? _infoPopupAction;
     private Action? _infoPopupUseAction;
     private Action? _infoPopupSellAction;
-    private float _actionToastRemaining;
-    private float _actionToastDuration;
+    private long _actionToastExpiresAt;
+    private const long ActionToastLifetimeMilliseconds = 1850;
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
@@ -63,7 +64,7 @@ public sealed class GameController(
     private int _alchemyQualityFilter;
     private int _alchemyTypeFilter;
     private EffectType? _openEffectType;
-    private readonly Dictionary<(string Tone, bool Negative), List<UiText>> _floatingValuePools = [];
+    private readonly Dictionary<(string Tone, bool Negative), List<FloatingValueWidget>> _floatingValuePools = [];
     private readonly Dictionary<(string Tone, bool Negative), int> _floatingValueIndices = [];
     private readonly Dictionary<EffectType, UiRadialProgress> _effectWidgets = [];
     private UiKeyedCollection<Guid, ShopSlot, ShopCardView>? _shopCards;
@@ -78,6 +79,8 @@ public sealed class GameController(
     private DogCompanion? _dog;
     private bool _dogConfigured;
     private Rect? _dogTapBounds;
+    private Character? _characterVisual;
+    private Background? _backgroundVisual;
 
     public GameState State => _state;
     public event Action<TickResult>? TickCompleted;
@@ -108,22 +111,14 @@ public sealed class GameController(
 
     public void Update(float deltaTime)
     {
-        if (_actionToast is not null)
+        if (_actionToast is not null && Environment.TickCount64 >= _actionToastExpiresAt)
         {
-            if (_actionToast.IsVisible)
-            {
-                _actionToastRemaining -= deltaTime;
-                UpdateActionToastVisuals();
-                if (_actionToastRemaining <= 0f)
-                {
-                    HideActionToast();
-                    ShowNextActionToast();
-                }
-            }
-            else if (_actionToastQueue.Count > 0)
-            {
-                ShowNextActionToast();
-            }
+            HideActionToast();
+            ShowNextActionToast();
+        }
+        else if (_actionToast is null && _actionToastQueue.Count > 0)
+        {
+            ShowNextActionToast();
         }
 
         if (_gameOver)
@@ -225,6 +220,8 @@ public sealed class GameController(
         _dog = null;
         _dogConfigured = false;
         _dogTapBounds = null;
+        _characterVisual = null;
+        _backgroundVisual = null;
         combatScene.Dispose();
     }
 
@@ -245,7 +242,7 @@ public sealed class GameController(
         _windowLayer = layer;
         foreach (var child in layer.Children.ToArray())
         {
-            if (child.Id != "window-backdrop")
+            if (child.Id is not "window-backdrop" and not "modal-money-stat")
                 child.RemoveFromParent();
         }
         document.Instantiate("Components/ShopWindow.xml", layer);
@@ -366,7 +363,7 @@ public sealed class GameController(
             SpawnFloatingValue(result.MissionProgressAdded, "ПРОГРЕСС", "mission-value");
         var moneyDelta = _state.Character.Money - moneyBefore;
         if (moneyDelta != 0)
-            SpawnFloatingValue(moneyDelta, "РУБ.", "money-value");
+            SpawnFloatingValue(moneyDelta, string.Empty, "money-value");
         if (_gameOver)
         {
             Save();
@@ -418,7 +415,7 @@ public sealed class GameController(
         }
 
         PlaySound("Sounds/item.wav", 0.55f);
-        SpawnFloatingValue(result.Reward, "РУБ.", "money-value");
+        SpawnFloatingValue(result.Reward, string.Empty, "money-value");
         ShowActionFeedback(result.Message, "Assets/Textures/UIIcons/money.png", true);
         UpdateHud();
         Save();
@@ -463,19 +460,16 @@ public sealed class GameController(
         var clippedRight = Math.Clamp(projectedRight, parent.Left, parent.Right);
         var clippedBottom = Math.Clamp(projectedBottom, parent.Top, parent.Bottom);
 
-        var left = MathF.Floor(clippedLeft - parent.Left);
-        var top = MathF.Floor(clippedTop - parent.Top);
-        var right = MathF.Ceiling(clippedRight - parent.Left);
-        var bottom = MathF.Ceiling(clippedBottom - parent.Top);
+        var left = MathF.Floor(clippedLeft);
+        var top = MathF.Floor(clippedTop);
+        var right = MathF.Ceiling(clippedRight);
+        var bottom = MathF.Ceiling(clippedBottom);
         var replacement = new Rect(left, top, MathF.Max(0f, right - left), MathF.Max(0f, bottom - top));
         if (_dogTapBounds == replacement)
             return;
 
         _dogTapBounds = replacement;
-        _view.DogTapTarget.Style.Set("left", CssPixels(replacement.Left));
-        _view.DogTapTarget.Style.Set("top", CssPixels(replacement.Top));
-        _view.DogTapTarget.Style.Set("width", CssPixels(replacement.Width));
-        _view.DogTapTarget.Style.Set("height", CssPixels(replacement.Height));
+        _view.DogTapTarget.HitTestBounds = replacement;
     }
 
     private void SetActivity(ActivityMode mode)
@@ -516,6 +510,7 @@ public sealed class GameController(
         var powerBars = required <= 0m ? 1m : Math.Max(0m, character.SpiritualPower / required);
         _view!.YearDial.Progress = 1f - _state.Calendar.TickInYear / (float)_state.Calendar.TicksPerYear;
         _view.Money.Value = character.Money.ToString("N0", CultureInfo.InvariantCulture);
+        _view.ModalMoney.Value = _view.Money.Value;
         _view.Age.Value = Format(character.Age.TotalYears);
         _view.MaximumAge.Value = Format(cultivation.GetMaximumAge(character));
         _view.Realm.Value = $"{stage.Name} · ур. {progress.Level}";
@@ -523,8 +518,11 @@ public sealed class GameController(
         var healthFraction = character.MaximumHealth <= 0m ? 0m : character.Health / character.MaximumHealth;
         _view.HeroHealthProgress.Progress = (float)Math.Clamp(healthFraction, 0m, 1m);
         _view.HeroRecoveryThreshold.IsVisible = _state.RecoveryRequired;
+        var recoveryThresholdFraction = character.MaximumHealth <= 0m
+            ? 0m
+            : combat.GetRecoveryHealthThreshold(character) / character.MaximumHealth;
         _view.HeroRecoveryThreshold.Style.Set("left", string.Concat(
-            (database.Combat.RecoveryHealthFraction * 100m).ToString("0.##", CultureInfo.InvariantCulture), "%"));
+            (Math.Clamp(recoveryThresholdFraction, 0m, 1m) * 100m).ToString("0.##", CultureInfo.InvariantCulture), "%"));
         _view.HeroHealthText.Value = $"{Format(character.Health)} / {Format(character.MaximumHealth)}";
         _view.Breakthrough.IsEnabled = progress.CanAttemptBreakthrough &&
                                       progress.StageIndex < database.Cultivation.Stages.Count - 1 &&
@@ -567,6 +565,7 @@ public sealed class GameController(
             _view.ActivityMode.SetAttribute("class", "activity-toggle recovery");
             _view.ActivityModeIcon.Sprite = AtlasSprite("Assets/Textures/UIIcons/cultivation.png");
             _view.ActivityModeText.Value = "ВОССТАНОВЛЕНИЕ";
+            SyncActivityScene();
             return;
         }
         _view.ActivityMode.SetAttribute("class", _state.ActivityMode == ActivityMode.Missions
@@ -578,6 +577,28 @@ public sealed class GameController(
         _view.ActivityModeText.Value = _state.ActivityMode == ActivityMode.Missions
             ? "МИССИИ"
             : "КУЛЬТИВАЦИЯ";
+        SyncActivityScene();
+    }
+
+    private void SyncActivityScene()
+    {
+        var objects = scenes.ActiveScene?.Objects;
+        if (objects is null)
+            return;
+
+        _characterVisual ??= objects
+            .Select(sceneObject => sceneObject.GetComponent<Character>())
+            .FirstOrDefault(component => component is not null);
+        _backgroundVisual ??= objects
+            .Select(sceneObject => sceneObject.GetComponent<Background>())
+            .FirstOrDefault(component => component is not null);
+
+        var missionMode = !_state.RecoveryRequired && _state.ActivityMode == ActivityMode.Missions;
+        var stageIndex = Math.Clamp(_state.Character.Cultivation.StageIndex, 0, database.Cultivation.Stages.Count - 1);
+        _backgroundVisual?.SetStage(database.Cultivation.Stages[stageIndex]);
+        _characterVisual?.SetMissionMode(missionMode);
+        _dog?.SetMissionMode(missionMode);
+        _backgroundVisual?.SetMissionMode(missionMode);
     }
 
     private void UpdateMissionSummary()
@@ -589,11 +610,28 @@ public sealed class GameController(
             _view.MissionDescription.Value = "Нажмите, чтобы выбрать поручение.";
             _view.MissionProgressText.Value = "0 / 0";
             _view.MissionProgress.Progress = 0f;
+            _view.MissionDangerIndicator.IsVisible = false;
+            _view.MissionCombatMarker.IsVisible = false;
             _view.MissionNormalState.IsVisible = true;
             _view.MissionCombatState.IsVisible = false;
             return;
         }
         var config = database.GetMission(mission.MissionConfigId);
+        var dangerLevel = config.DangerLevel ?? mission.Encounter?.DangerLevel ?? 0;
+        _view!.MissionDangerIndicator.IsVisible = dangerLevel > 0;
+        for (var index = 0; index < _view.MissionDangerBars.Count; index++)
+            _view.MissionDangerBars[index].IsVisible = index < dangerLevel;
+        var encounter = mission.Encounter;
+        var pendingEncounter = encounter is { Resolved: false } && mission.Combat is null;
+        _view.MissionCombatMarker.IsVisible = pendingEncounter;
+        if (pendingEncounter)
+        {
+            var markerPosition = mission.RequiredProgress <= 0m
+                ? 0m
+                : Math.Clamp(encounter!.TriggerProgress / mission.RequiredProgress, 0.02m, 0.98m) * 100m;
+            _view.MissionCombatMarker.SetStyle("left",
+                markerPosition.ToString("0.##", CultureInfo.InvariantCulture) + "%");
+        }
         _view!.MissionName.Value = config.Name;
         _view.MissionDescription.Value = _state.RecoveryRequired
             ? "Ожидает полного восстановления"
@@ -617,17 +655,13 @@ public sealed class GameController(
         if (combatScene.RenderTarget is not null)
             _view.MissionCombatPreview.Texture = combatScene.RenderTarget.ColorTexture;
         var monster = database.GetMonster(active.MonsterConfigId);
-        _view.MissionCombatStatus.Value = active.Phase switch
-        {
-            CombatPhase.Victory => "ПОБЕДА",
-            CombatPhase.Defeat => "ПОРАЖЕНИЕ",
-            _ => $"АВТОБОЙ · {monster.Name}"
-        };
         var danger = database.GetDanger(active.DangerLevel);
-        _view.MissionCombatStats.Value =
-            $"АТК {Format(monster.Attack * danger.MonsterPowerMultiplier)} · " +
-            $"ЗАЩ {Format(monster.Defense * danger.MonsterPowerMultiplier)} · " +
-            $"СКОР {Format((decimal)monster.AttacksPerSecond)}/с";
+        _view.CombatHeroAttackStat.Value = Format(combat.GetHeroAttack(_state.Character));
+        _view.CombatHeroDefenseStat.Value = Format(combat.GetHeroDefense(_state.Character));
+        _view.CombatHeroSpeedStat.Value = Format((decimal)database.Combat.HeroAttacksPerSecond);
+        _view.CombatEnemyAttackStat.Value = Format(monster.Attack * danger.MonsterPowerMultiplier);
+        _view.CombatEnemyDefenseStat.Value = Format(monster.Defense * danger.MonsterPowerMultiplier);
+        _view.CombatEnemySpeedStat.Value = Format((decimal)monster.AttacksPerSecond);
         _view.EnemyHealthProgress.Progress = (float)(active.EnemyMaximumHealth <= 0m
             ? 0m
             : Math.Clamp(active.EnemyHealth / active.EnemyMaximumHealth, 0m, 1m));
@@ -653,9 +687,15 @@ public sealed class GameController(
             {
                 var source = database.GetItem(group.First().SourceItemId);
                 var orb = _document!.CreateButton(attributes: new Dictionary<string, string> { ["class"] = "effect-orb" });
-                var ring = (UiRadialProgress)_document.CreateElement("radial-progress", new Dictionary<string, string> { ["class"] = "effect-ring" });
+                var ring = (UiRadialProgress)_document.CreateElement("radial-progress", new Dictionary<string, string>
+                {
+                    ["class"] = "effect-ring",
+                    ["clockwise-depletion"] = "true",
+                    ["sprite"] = "Assets/Textures/ChineseUIIconsAtlas.atlas#round-button"
+                });
                 orb.Add(ring);
-                var effectIcon = _document.CreateImage(source.Icon, new Dictionary<string, string> { ["class"] = "effect-icon" });
+                var effectIcon = _document.CreateImage(source.Icon,
+                    new Dictionary<string, string> { ["class"] = "effect-icon" });
                 effectIcon.Sprite = AtlasSprite(source.Icon);
                 orb.Add(effectIcon);
                 var type = group.Key;
@@ -673,7 +713,6 @@ public sealed class GameController(
     {
         if (_view is null || _shopCards is null)
             return;
-        _view.ShopMoney.Value = $"{_state.Character.Money:N0} рублей";
         var availableSlots = _state.Shop.Slots.Where(slot => slot.AvailableQuantity > 0).ToArray();
         _shopCards.Update(availableSlots, slot => slot.SlotId);
         if (availableSlots.Length == 0)
@@ -726,7 +765,7 @@ public sealed class GameController(
         card.Name.Value = config.Name;
         card.QualityStars.SetQuality(slot.Item.Quality);
         card.Effect.Value = DescribeItemEffect(config, slot.Item);
-        card.Buy.Label = $"{unitPrice.ToString(CultureInfo.InvariantCulture)} РУБЛЕЙ";
+        card.Buy.Label = unitPrice.ToString(CultureInfo.InvariantCulture);
         card.IconWell.Style.BorderColor = rarity.Color;
         card.Buy.IsEnabled = slot.AvailableQuantity > 0 && _state.Character.Money >= unitPrice;
     }
@@ -739,7 +778,7 @@ public sealed class GameController(
         var config = database.GetItem(slot.Item.ConfigId);
         var unitPrice = prices.GetBuyPrice(slot.Item, _state.Shop);
         ShowItemPopup(config, slot.Item, "1",
-            $"Цена покупки: {unitPrice:N0} рублей");
+            "Цена покупки указана на карточке товара");
     }
 
     private void BuyShopItem(Guid slotId)
@@ -752,11 +791,11 @@ public sealed class GameController(
     private void Buy(Guid slotId, ItemConfig config)
     {
         var result = transactions.Buy(_state, slotId);
-        ShowActionFeedback(result.Success ? $"Куплено: {config.Name} · −{result.TotalPrice:N0} руб." : result.Message,
+        ShowActionFeedback(result.Success ? $"Куплено: {config.Name} · −{result.TotalPrice:N0}" : result.Message,
             result.Success ? config.Icon : "Assets/Textures/UIIcons/close.png", result.Success);
         if (result.Success)
         {
-            SpawnFloatingValue(-result.TotalPrice, "РУБ.", "money-value");
+            SpawnFloatingValue(-result.TotalPrice, string.Empty, "money-value");
             UpdateHud();
             SyncShop();
             SyncInventory();
@@ -833,7 +872,7 @@ public sealed class GameController(
         _view.InventoryDetailRarity.Style.Color = rarity.Color;
         _view.InventoryDetailEffect.Value = DescribeItemEffect(config, item);
         _view.InventoryUse.IsEnabled = config.Effects.Count > 0 || item.CraftedEffects.Count > 0;
-        _view.InventorySell.Label = $"ПРОДАТЬ\n+{prices.GetSellPrice(item, _state.Shop)} РУБЛЕЙ";
+        _view.InventorySell.Label = $"ПРОДАТЬ\n+{prices.GetSellPrice(item, _state.Shop)}";
         _view.InventoryDetails.IsVisible = true;
     }
 
@@ -894,11 +933,11 @@ public sealed class GameController(
             return;
         var config = database.GetItem(item.ConfigId);
         var result = transactions.Sell(_state, id);
-        ShowActionFeedback(result.Success ? $"Продано: {ItemDisplayName(config, item)} · +{result.TotalPrice:N0} руб." : result.Message,
+        ShowActionFeedback(result.Success ? $"Продано: {ItemDisplayName(config, item)} · +{result.TotalPrice:N0}" : result.Message,
             result.Success ? "Assets/Textures/UIIcons/money.png" : "Assets/Textures/UIIcons/close.png", result.Success);
         if (result.Success)
         {
-            SpawnFloatingValue(result.TotalPrice, "РУБ.", "money-value");
+            SpawnFloatingValue(result.TotalPrice, string.Empty, "money-value");
             if (_selectedInventoryItem == id)
                 _selectedInventoryItem = _state.Inventory.Find(id) is null ? null : id;
             UpdateHud();
@@ -1680,17 +1719,25 @@ public sealed class GameController(
         foreach (var negative in new[] { false, true })
         {
             var key = (tone, negative);
-            var pool = new List<UiText>(3);
+            var pool = new List<FloatingValueWidget>(3);
             _floatingValuePools[key] = pool;
             for (var index = 0; index < 3; index++)
             {
-                var element = document.CreateText(attributes: new Dictionary<string, string>
+                var root = document.CreatePanel(new Dictionary<string, string>
                 {
                     ["class"] = $"tick-float {tone} lane-{lane++ % 6}{(negative ? " negative" : string.Empty)}",
                     ["animation-trigger"] = "manual", ["aria-hidden"] = "true"
                 });
-                host.Add(element);
-                pool.Add(element);
+                if (tone == "money-value")
+                    root.Add(document.CreateImage("Assets/Textures/UIIcons/money.png",
+                        new Dictionary<string, string> { ["class"] = "tick-float-money-icon" }));
+                var valueText = document.CreateText(attributes: new Dictionary<string, string>
+                {
+                    ["class"] = "tick-float-text"
+                });
+                root.Add(valueText);
+                host.Add(root);
+                pool.Add(new FloatingValueWidget(root, valueText));
             }
         }
     }
@@ -1702,9 +1749,9 @@ public sealed class GameController(
         var key = (tone, value < 0m);
         var sequence = _floatingValueIndices.GetValueOrDefault(key);
         _floatingValueIndices[key] = sequence + 1;
-        var element = pool[Random.Shared.Next(pool.Count)];
-        element.Value = string.IsNullOrEmpty(label) ? Signed(value) : $"{Signed(value)} {label}";
-        _floatingDocument?.RestartAnimation(element);
+        var widget = pool[Random.Shared.Next(pool.Count)];
+        widget.Value.Value = string.IsNullOrEmpty(label) ? Signed(value) : $"{Signed(value)} {label}";
+        _floatingDocument?.RestartAnimation(widget.Root);
     }
 
     private void ShowCombatDamage(IReadOnlyList<CombatEvent> events)
@@ -1736,83 +1783,59 @@ public sealed class GameController(
 
     private void BuildTransientUi(UiDocument document)
     {
-        _actionToast = document.GetElementById<UiPanel>("action-toast");
-        _actionToastIcon = document.GetElementById<UiImage>("action-toast-icon");
-        _actionToastText = document.GetElementById<UiText>("action-toast-text");
-        _actionToastRemaining = 0f;
-        _actionToastDuration = 0f;
+        _actionToastHost = document.GetElementById<UiPanel>("action-toast-host");
+        _actionToastHost.Clear();
+        _actionToast = null;
+        _actionToastIcon = null;
+        _actionToastText = null;
+        _actionToastExpiresAt = 0;
         _actionToastQueue.Clear();
-        if (_actionToast is not null)
-            HideActionToast();
     }
 
     private void ShowActionFeedback(string message, string icon, bool success, bool info = false)
     {
         var toneClass = info ? "toast-info" : success ? "toast-success" : "toast-error";
+        // Keep no backlog: the latest user action replaces the previous toast and
+        // therefore always disappears one lifetime after the last action.
+        _actionToastQueue.Clear();
         _actionToastQueue.Enqueue(new ActionToastRequest(message, icon, toneClass));
-        if (_actionToast is not null && !_actionToast.IsVisible)
-            ShowNextActionToast();
+        HideActionToast();
+        ShowNextActionToast();
     }
 
     private void HideActionToast()
     {
         if (_actionToast is null)
             return;
-        _actionToastRemaining = 0f;
-        _actionToastDuration = 0f;
-        _actionToast.IsVisible = false;
-        _actionToast.SetAttribute("aria-hidden", "true");
-        _actionToast.SetStyle("opacity", "0");
-        _actionToast.SetStyle("animation", "none");
-        _actionToast.SetStyle("transform", "translate(0, -18px)");
+        _actionToast.RemoveFromParent();
+        _actionToast = null;
+        _actionToastIcon = null;
+        _actionToastText = null;
+        _actionToastExpiresAt = 0;
     }
 
     private void ShowNextActionToast()
     {
-        if (_actionToast is null || _actionToastIcon is null || _actionToastText is null)
+        if (_actionToastHost is null || _transientDocument is null || _actionToast is not null)
             return;
         if (_actionToastQueue.Count == 0)
             return;
 
         var toast = _actionToastQueue.Dequeue();
+        _actionToast = _transientDocument.Instantiate<UiPanel>(
+            "Components/ActionToast.xml",
+            _actionToastHost);
+        _actionToastIcon = _actionToast.Query<UiImage>("#action-toast-icon") ??
+            throw new InvalidDataException("Action toast icon is missing.");
+        _actionToastText = _actionToast.Query<UiText>("#action-toast-text") ??
+            throw new InvalidDataException("Action toast text is missing.");
         _actionToast.SetAttribute("class", $"action-toast {toast.ToneClass}");
         _actionToastIcon.Sprite = AtlasSprite(toast.Icon);
         _actionToastText.Value = toast.Message;
-        _actionToastDuration = 1.85f;
-        _actionToastRemaining = _actionToastDuration;
-        _actionToast.RemoveAttribute("hidden");
-        _actionToast.SetAttribute("aria-hidden", "false");
         _actionToast.SetStyle("animation", "none");
-        _actionToast.IsVisible = true;
-        UpdateActionToastVisuals();
-    }
-
-    private void UpdateActionToastVisuals()
-    {
-        if (_actionToast is null || !_actionToast.IsVisible || _actionToastDuration <= 0f)
-            return;
-
-        var elapsed = Math.Clamp(_actionToastDuration - _actionToastRemaining, 0f, _actionToastDuration);
-        const float fadeIn = 0.16f;
-        const float fadeOut = 0.22f;
-        var opacity = 1f;
-        var offset = 0f;
-
-        if (elapsed < fadeIn)
-        {
-            var t = elapsed / fadeIn;
-            opacity = t;
-            offset = -18f * (1f - t);
-        }
-        else if (_actionToastRemaining < fadeOut)
-        {
-            var t = Math.Max(0f, _actionToastRemaining / fadeOut);
-            opacity = t;
-            offset = -12f * (1f - t);
-        }
-
-        _actionToast.SetStyle("opacity", opacity.ToString("0.###", CultureInfo.InvariantCulture));
-        _actionToast.SetStyle("transform", $"translate(0, {offset:0.###}px)");
+        _actionToast.SetStyle("opacity", "1");
+        _actionToast.SetStyle("transform", "none");
+        _actionToastExpiresAt = Environment.TickCount64 + ActionToastLifetimeMilliseconds;
     }
 
     private static bool TryGetGuidAttribute(UiElement element, string attributeName, out Guid value)
@@ -1844,7 +1867,8 @@ public sealed class GameController(
             ? DescribeItemEffect(config, quality)
             : DescribeItemEffect(config, item);
         view.InfoPopupStatLabel1.Value = sellPrice is null ? "КОЛИЧЕСТВО" : "ЦЕНА ПРОДАЖИ";
-        view.InfoPopupStatValue1.Value = sellPrice is null ? quantity : $"{sellPrice:N0} РУБЛЕЙ";
+        view.InfoPopupPriceIcon.IsVisible = sellPrice is not null;
+        view.InfoPopupStatValue1.Value = sellPrice is null ? quantity : $"{sellPrice:N0}";
         view.InfoPopupStatLabel2.Value = "КАЧЕСТВО";
         view.InfoPopupStatLabel3.Value = "РЕДКОСТЬ";
         view.InfoPopupStatValue3.Value = rarity?.DisplayName ?? "Определится при получении";
@@ -1855,14 +1879,13 @@ public sealed class GameController(
         _infoPopupSellAction = sellAction;
         view.InfoPopupUse.IsVisible = useAction is not null;
         view.InfoPopupSell.IsVisible = sellAction is not null;
-        view.InfoPopupSell.Label = sellPrice is null ? "ПРОДАТЬ" : $"ПРОДАТЬ\n+{sellPrice:N0} РУБЛЕЙ";
+        view.InfoPopupSell.Label = sellPrice is null ? "ПРОДАТЬ" : $"ПРОДАТЬ\n+{sellPrice:N0}";
         view.InfoPopupOk.IsVisible = useAction is null && sellAction is null || action is not null;
         view.InfoPopupQuality.IsVisible = true;
         view.InfoPopupStatValue2.IsVisible = false;
         BuildQualityStars(view.InfoPopupQuality, item?.Quality);
         view.InfoPopupIcon.Sprite = AtlasSprite(config.Icon);
         var accent = rarity?.Color ?? "#56d5a0";
-        view.InfoPopupKind.Style.Color = accent;
         view.InfoPopupIconWell.Style.BorderColor = accent;
         MountWindow(view.InfoPopup, exclusive: false);
     }
@@ -1954,7 +1977,9 @@ public sealed class GameController(
                 : string.Join(" · ", properties.Select(value =>
                     $"{database.GetAlchemyProperty(value.PropertyId).DisplayName} {value.Potency:0.##}"));
         }
-        var strength = database.Balance.EffectQualityBase + item.Quality * database.Balance.EffectQualityPerPoint;
+        var strength = item.CraftedEffects.Count > 0
+            ? 1m
+            : database.Balance.EffectQualityBase + item.Quality * database.Balance.EffectQualityPerPoint;
         var effectText = string.Join("; ", definitions.Select(effect =>
             DescribeEffect(effect, strength, config.DurationType == ItemDurationType.Temporary)));
         return config.DurationType switch
@@ -2083,4 +2108,6 @@ public sealed class GameController(
             : "Assets/Textures/UIIconsAtlas.atlas";
         return $"{atlas}#{Path.GetFileNameWithoutExtension(normalized)}";
     }
+
+    private sealed record FloatingValueWidget(UiPanel Root, UiText Value);
 }

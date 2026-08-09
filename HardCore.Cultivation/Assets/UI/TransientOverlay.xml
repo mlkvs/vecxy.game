@@ -1,7 +1,4 @@
-<ui class="screen" styles="Main.css"
+<ui class="screen" styles="Main.css, Styles/Cards.css"
     scale-mode="fit" reference-width="620" reference-height="1180">
-    <panel id="action-toast" class="action-toast toast-success" hidden="true" aria-hidden="true">
-        <panel class="action-toast-icon-shell"><image id="action-toast-icon" sprite="Assets/Textures/UIIconsAtlas.atlas#spirit" /></panel>
-        <text id="action-toast-text">Действие выполнено</text>
-    </panel>
+    <panel id="action-toast-host" class="action-toast-host" />
 </ui>

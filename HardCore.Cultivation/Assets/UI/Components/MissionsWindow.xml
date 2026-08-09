@@ -1,15 +1,17 @@
 <panel id="missions-window" class="window missions-window" hidden="true">
     <panel class="window-header"><panel><text class="window-title">Миссии секты</text><text class="window-subtitle">Выберите занятие и управляйте очередью</text></panel><button class="window-close"><image sprite="Assets/Textures/UIIconsAtlas.atlas#close" /></button></panel>
-    <panel class="window-tabs">
-        <button id="available-missions-tab" class="window-tab active">ДОСТУПНЫЕ</button>
-        <button id="accepted-missions-tab" class="window-tab">ПРИНЯТЫЕ</button>
-    </panel>
-    <panel id="available-missions-page" class="mission-page">
-        <panel class="mission-board-heading"><text class="mission-board-title">ДОСТУПНЫЕ ПОРУЧЕНИЯ</text><text id="mission-refresh" class="toolbar-value">Обновление через 48 недель</text></panel>
-        <panel id="missions-list" class="mission-list" />
-    </panel>
-    <panel id="accepted-missions-page" class="mission-page" hidden="true">
-        <panel class="mission-board-heading"><text class="mission-board-title">ОЧЕРЕДЬ МИССИЙ</text><text id="mission-queue-count" class="toolbar-value">0 / 6</text></panel>
-        <panel id="mission-queue" class="accepted-mission-grid" />
+    <panel class="window-body">
+        <panel class="window-tabs">
+            <button id="available-missions-tab" class="window-tab active">ДОСТУПНЫЕ</button>
+            <button id="accepted-missions-tab" class="window-tab">ПРИНЯТЫЕ</button>
+        </panel>
+        <panel id="available-missions-page" class="mission-page">
+            <panel class="mission-board-heading"><text class="mission-board-title">ДОСТУПНЫЕ ПОРУЧЕНИЯ</text><text id="mission-refresh" class="toolbar-value">Обновление через 48 недель</text></panel>
+            <panel id="missions-list" class="mission-list" />
+        </panel>
+        <panel id="accepted-missions-page" class="mission-page" hidden="true">
+            <panel class="mission-board-heading"><text class="mission-board-title">ОЧЕРЕДЬ МИССИЙ</text><text id="mission-queue-count" class="toolbar-value">0 / 6</text></panel>
+            <panel id="mission-queue" class="accepted-mission-grid" />
+        </panel>
     </panel>
 </panel>

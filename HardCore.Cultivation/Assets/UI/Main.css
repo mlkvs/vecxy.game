@@ -48,6 +48,11 @@ text {
     pointer-events: none;
 }
 
+.action-toast-host {
+    pointer-events: none; position: absolute; z-index: 2499;
+    left: 0; right: 0; top: 0; bottom: 0;
+}
+
 .action-toast {
     pointer-events: none; position: absolute; z-index: 2500; left: 50%; top: 18px;
     width: 520px; min-height: 76px; margin-left: -260px; padding: 12px 18px;

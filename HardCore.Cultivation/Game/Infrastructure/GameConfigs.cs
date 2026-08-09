@@ -84,6 +84,7 @@ public sealed class AlchemyConfig : IYamlConfig
     public decimal DistillationQualityPerIngredient { get; init; } = 0.12m;
     public decimal DistillationQualityPerLevel { get; init; } = 0.18m;
     public decimal DistillationPotencyPerLevel { get; init; } = 0.12m;
+    public decimal IngredientCharacteristicCoefficient { get; init; } = 8m;
     public List<AlchemyPropertyConfig> Properties { get; init; } = [];
 }
 
@@ -150,7 +151,7 @@ public sealed class CombatConfig : IYamlConfig
     public decimal HeroDefensePerLevel { get; init; } = 0.5m;
     public float HeroAttacksPerSecond { get; init; } = 1.1f;
     public decimal HealthRegenerationPerSecond { get; init; } = 0.1m;
-    public decimal RecoveryHealthFraction { get; init; } = 0.30m;
+    public decimal RecoveryHealthPoints { get; init; } = 30m;
     public float FinishDelaySeconds { get; init; } = 1.2f;
     public List<CombatDangerConfig> DangerLevels { get; init; } = [];
     public List<CombatBackgroundConfig> Backgrounds { get; init; } = [];
@@ -173,6 +174,8 @@ public sealed class DogConfig : IYamlConfig
 {
     public string MeditatingTexture { get; init; } = "Textures/Dog.png";
     public string ChargedTexture { get; init; } = "Textures/Dog2.png";
+    public string MissionMeditatingTexture { get; init; } = "Textures/Dog_Missions.png";
+    public string MissionChargedTexture { get; init; } = "Textures/Dog_Missions2.png";
     public float LocalPositionX { get; init; } = -390f;
     public float LocalPositionY { get; init; } = 50f;
     public float BaseScale { get; init; } = 0.28f;
@@ -217,6 +220,8 @@ public sealed class CultivationStageConfig
 {
     public string Id { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;
+    public string CultivationBackgroundTexture { get; init; } = "Textures/Background.png";
+    public string MissionBackgroundTexture { get; init; } = "Textures/Background_Missions.png";
     public decimal StageMultiplier { get; init; } = 1m;
     public decimal BaseBreakthroughChance { get; init; }
 }
@@ -354,13 +359,17 @@ public sealed class GameDatabase
         if (Cultivation.BaseRequiredPower <= 0m || Cultivation.BreakthroughChancePerExtraPowerBar < 0m ||
             Cultivation.LevelMultipliers.Count != 10 || Cultivation.Stages.Count == 0)
             throw new InvalidDataException("Cultivation requires ten level multipliers and at least one stage.");
+        if (Cultivation.Stages.Any(stage =>
+                string.IsNullOrWhiteSpace(stage.CultivationBackgroundTexture) ||
+                string.IsNullOrWhiteSpace(stage.MissionBackgroundTexture)))
+            throw new InvalidDataException("Every cultivation stage must define cultivation and mission backgrounds.");
         if (_items.Count == 0 || _missions.Count == 0)
             throw new InvalidDataException("Items and missions cannot be empty.");
         if (MissionBoardSlotCount <= 0 || MissionBoardSlotCount > _missions.Count)
             throw new InvalidDataException("Mission board slot count is invalid.");
         if (Combat.RenderWidth <= 0 || Combat.RenderHeight <= 0 || Combat.HeroBaseHealth <= 0m ||
             Combat.HealthRegenerationPerSecond < 0m ||
-            Combat.HeroAttacksPerSecond <= 0f || Combat.RecoveryHealthFraction is <= 0m or > 1m)
+            Combat.HeroAttacksPerSecond <= 0f || Combat.RecoveryHealthPoints <= 0m)
             throw new InvalidDataException("Combat settings are invalid.");
         if (Dog.ChargeDurationSeconds <= 0f || Dog.RewardUnitRubles <= 0 ||
             Dog.MinimumRewardUnits <= 0 || Dog.MaximumRewardUnits < Dog.MinimumRewardUnits ||
@@ -372,14 +381,17 @@ public sealed class GameDatabase
             Dog.GlowPulseAmplitude is < 0f or >= 1f || Dog.GlowPulseSpeed < 0f ||
             Dog.GlowRed is < 0f or > 1f || Dog.GlowGreen is < 0f or > 1f ||
             Dog.GlowBlue is < 0f or > 1f || Dog.GlowAlpha is < 0f or > 1f ||
-            string.IsNullOrWhiteSpace(Dog.MeditatingTexture) || string.IsNullOrWhiteSpace(Dog.ChargedTexture))
+            string.IsNullOrWhiteSpace(Dog.MeditatingTexture) || string.IsNullOrWhiteSpace(Dog.ChargedTexture) ||
+            string.IsNullOrWhiteSpace(Dog.MissionMeditatingTexture) ||
+            string.IsNullOrWhiteSpace(Dog.MissionChargedTexture))
             throw new InvalidDataException("Dog meditation settings are invalid.");
         if (Alchemy.Enabled && (Alchemy.MinimumIngredients <= 0 || Alchemy.MaximumIngredients < Alchemy.MinimumIngredients ||
             Alchemy.MinimumPropertyMatches <= 0 || Alchemy.MinimumPropertyMatches > Alchemy.MaximumIngredients ||
             Alchemy.MinimumPropertyFraction is <= 0m or > 1m || Alchemy.MaximumPillEffects is < 1 or > 4 ||
             Alchemy.PillDurationTicks <= 0 || Alchemy.CoreQualityWeight is < 0m or > 1m || Alchemy.MaximumQuality <= 0m ||
             Alchemy.DistillationQualityPerIngredient < 0m || Alchemy.DistillationQualityPerLevel < 0m ||
-            Alchemy.DistillationPotencyPerLevel < 0m || _alchemyProperties.Count == 0))
+            Alchemy.DistillationPotencyPerLevel < 0m || Alchemy.IngredientCharacteristicCoefficient < 0m ||
+            _alchemyProperties.Count == 0))
             throw new InvalidDataException("Alchemy settings are invalid.");
         if (Alchemy.Enabled)
         {

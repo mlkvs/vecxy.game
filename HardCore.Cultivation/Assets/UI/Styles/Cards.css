@@ -685,3 +685,3082 @@
     font-size: 18px;
     text-align: center;
 }
+
+/* Hand-painted Chinese fantasy sprite theme. */
+.screen {
+    color: #4b3b2b;
+}
+
+.top-stat,
+.mission-float,
+.cultivation-bar,
+.bottom-nav,
+.action-toast,
+.achievement-effect text,
+.window-toolbar,
+.window-content,
+.mission-queue-panel,
+.mission-board-heading,
+.info-popup-card,
+.effect-popup-card,
+.breakthrough-dialog,
+.breakthrough-result-card,
+.death-dialog,
+.inventory-details,
+.info-popup-effect,
+.info-popup-stats,
+.info-popup-details,
+.alchemy-source-heading,
+.alchemy-filters,
+.alchemy-ingredients {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'card-frame');
+    background-size: fill;
+    background-color: transparent;
+    border: 0;
+    border-radius: 30px;
+    box-shadow: none;
+}
+
+.window {
+    color: #4b3b2b;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'window-frame');
+    background-size: fill;
+    background-color: transparent;
+    border: 0;
+    border-radius: 44px;
+    box-shadow: none;
+}
+
+.compact-window {
+    left: 10px;
+    right: 10px;
+    top: 76px;
+    bottom: 76px;
+    padding: 38px 30px 34px;
+}
+
+.shop-card,
+.mission-card,
+.queue-item,
+.item-card,
+.death-stats,
+.mission-duration-row,
+.mission-reward-row {
+    color: #4b3b2b;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'card-frame');
+    background-size: fill;
+    background-color: transparent;
+    border: 0;
+    border-radius: 28px;
+    box-shadow: none;
+}
+
+.activity-toggle,
+.primary-button,
+.secondary-button,
+.nav-button,
+.wide-action,
+.compact-action,
+.restart-button,
+.card-action,
+.mission-start,
+.window-tab,
+.category-tab,
+.alchemy-filter-button,
+.alchemy-filter-option {
+    color: #4a3826;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
+    background-size: fill;
+    background-color: transparent;
+    border: 0;
+    border-radius: 28px;
+    box-shadow: none;
+}
+
+.activity-toggle:hover,
+.primary-button:hover,
+.secondary-button:hover,
+.nav-button:hover,
+.wide-action:hover,
+.compact-action:hover,
+.restart-button:hover,
+.card-action:hover,
+.mission-start:hover,
+.window-tab:hover,
+.category-tab:hover,
+.alchemy-filter-button:hover,
+.alchemy-filter-option:hover {
+    color: #2d624e;
+    background-color: #d8f0dc55;
+}
+
+.window-tab.active,
+.category-tab.active,
+.alchemy-filter-button.active,
+.alchemy-filter-option.selected,
+.activity-toggle.missions {
+    color: #265a48;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
+    background-color: #b9e2c777;
+    border: 0;
+}
+
+.activity-toggle.recovery,
+.secondary-wide,
+.card-action.secondary,
+.compact-action.secondary,
+.queue-remove {
+    color: #8c493f;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
+    background-color: #f2c0b177;
+    border: 0;
+}
+
+.top-stat-icon-shell,
+.calendar-dial,
+.nav-icon-shell,
+.activity-toggle-icon-shell,
+.effect-orb,
+.action-toast-icon-shell,
+.death-icon-shell,
+.info-popup-icon-well,
+.inventory-detail-icon-well,
+.item-icon-well,
+.inventory-icon-card,
+.inventory-icon-well,
+.reward-icon-tile,
+.alchemy-slot,
+.queue-control {
+    background-image: sprite('../Textures/ChineseUIIconsAtlas.atlas', 'slot-frame');
+    background-size: fill;
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.progress-track {
+    padding: 3px 12px;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'progress-frame');
+    background-size: fill;
+    background-color: transparent;
+    border: 0;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    border-radius: 12px;
+}
+
+.cultivation-track {
+    height: 34px;
+    padding: 5px 17px;
+}
+
+.hero-health-track {
+    height: 28px;
+    padding: 4px 14px;
+}
+
+.top-stat {
+    padding: 12px 14px;
+}
+
+.top-stat-label,
+.window-subtitle,
+.float-description,
+.progress-caption,
+.mission-card-description,
+.mission-duration-label,
+.mission-duration-years,
+.queue-progress,
+.queue-empty,
+.mission-board-empty,
+.shop-empty,
+.info-popup-description,
+.info-popup-details,
+.inventory-detail-effect,
+.death-description,
+.breakthrough-cost,
+.breakthrough-result-text,
+.alchemy-source-note {
+    color: #766551;
+}
+
+.top-stat-value,
+.float-title,
+.cultivation-title,
+.window-title,
+.item-name,
+.mission-card-title,
+.queue-item-name,
+.inventory-detail-name,
+.info-popup-title,
+.death-title,
+.breakthrough-title {
+    color: #493625;
+}
+
+.float-heading,
+.toolbar-value,
+.mission-board-title,
+.queue-position,
+.reward-label,
+.item-meta,
+.info-popup-stat-value,
+.alchemy-core-label,
+.info-popup-kind,
+.mission-card-kicker {
+    color: #8b6a32;
+}
+
+.item-effect,
+.inventory-detail-effect,
+.info-popup-effect {
+    color: #315f50;
+}
+
+.bottom-nav {
+    padding: 11px 14px;
+    gap: 7px;
+}
+
+.nav-button {
+    padding: 7px 5px;
+}
+
+.nav-button text,
+.activity-toggle text,
+.wide-action,
+.compact-action,
+.card-action,
+.mission-start,
+.restart-button {
+    color: #473522;
+    text-shadow: 0 1px 0 #fffaf0cc;
+}
+
+.window-header {
+    border-bottom: 2px solid #c6a46466;
+}
+
+.window-content,
+.alchemy-ingredients {
+    scrollbar-color: #9bc7ad #f3e7ce;
+}
+
+.window-close,
+.info-popup-close {
+    padding: 11px;
+}
+
+.window-close image,
+.info-popup-close image {
+    opacity: 0.72;
+}
+
+.mission-danger,
+.death-kicker,
+.age-maximum {
+    color: #bf6559;
+}
+
+.item-icon-quality .quality-stars {
+    background-color: #fff7e8e6;
+    border: 1px solid #b8965c88;
+}
+
+.inventory-icon-card.selected {
+    background-image: sprite('../Textures/ChineseUIIconsAtlas.atlas', 'slot-frame');
+    background-color: #f7d99966;
+    border: 0;
+    box-shadow: 0 0 14px 4px #f1bf6caa;
+}
+
+.inventory-quantity,
+.reward-icon-badge {
+    color: #5a4025;
+    background-color: #f4d99b;
+    border-color: #fff7e8;
+}
+
+.alchemy-selection {
+    border: 0;
+    border-radius: 30px;
+    box-shadow: inset 0 0 26px #fbe8c799;
+}
+
+.alchemy-slot.filled,
+.alchemy-core-slot.filled,
+.alchemy-core-slot.equipment {
+    background-image: sprite('../Textures/ChineseUIIconsAtlas.atlas', 'slot-frame');
+    background-color: #d8eddf66;
+    border: 0;
+    box-shadow: 0 0 13px 2px #e7c77f99;
+}
+
+.alchemy-filter-menu {
+    padding: 10px;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'card-frame');
+    background-size: fill;
+    background-color: transparent;
+    border: 0;
+    border-radius: 24px;
+    box-shadow: 0 8px 18px #5c493866;
+}
+
+.info-popup-overlay,
+.death-overlay,
+.breakthrough-overlay,
+.breakthrough-result-overlay,
+#window-backdrop {
+    background-color: #4b403080;
+}
+
+.action-toast,
+.achievement-effect text {
+    color: #4a3826;
+}
+
+.tick-float,
+.combat-damage-float {
+    color: #4a3826;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
+    background-size: fill;
+    background-color: transparent;
+    border: 0;
+    border-radius: 24px;
+}
+
+/* Composition corrections after checking the UI at 500x900. */
+.character-tap-target,
+.dog-tap-target {
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.compact-window {
+    padding: 28px 28px 32px;
+}
+
+.window-header {
+    position: relative;
+    z-index: 3;
+    min-height: 92px;
+    padding: 13px 66px 13px;
+    align-items: center;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'title-plaque');
+    background-size: fill;
+    background-color: #00000000;
+    border: 0;
+}
+
+.window-header > panel {
+    align-items: center;
+    justify-content: center;
+}
+
+.window-title,
+.window-subtitle {
+    width: 100%;
+    text-align: center;
+}
+
+.window-title {
+    height: 39px;
+    font-size: 31px;
+}
+
+.window-subtitle {
+    height: 24px;
+    margin-top: 1px;
+    font-size: 16px;
+}
+
+.window-header > .window-close {
+    position: absolute;
+    z-index: 4;
+    right: 7px;
+    top: 17px;
+    width: 54px;
+    height: 54px;
+}
+
+.window-toolbar,
+.mission-board-heading,
+.alchemy-source-heading {
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'title-plaque');
+    background-size: fill;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.window-content,
+.shop-content,
+.inventory-grid,
+.alchemy-ingredients,
+.alchemy-filters,
+.mission-list,
+.accepted-mission-grid {
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.mission-duration-row,
+.mission-reward-row,
+.death-stats,
+.info-popup-effect,
+.info-popup-stats,
+.info-popup-details,
+.item-effect,
+.shop-card .item-effect,
+.inventory-detail-effect {
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.shop-card .item-effect {
+    padding: 4px 7px;
+    color: #547363;
+}
+
+.mission-duration-row,
+.mission-reward-row {
+    padding: 5px 4px;
+    margin-top: 4px;
+}
+
+.top-stat-icon-shell,
+.nav-icon-shell,
+.activity-toggle-icon-shell,
+.action-toast-icon-shell,
+.queue-control {
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.nav-button,
+.window-tab,
+.category-tab,
+.alchemy-filter-button,
+.alchemy-filter-option {
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'title-plaque');
+}
+
+.bottom-nav {
+    padding: 13px 18px;
+}
+
+.nav-button {
+    gap: 2px;
+}
+
+.nav-icon-shell {
+    width: 42px;
+    height: 42px;
+}
+
+.window-tabs,
+.category-tabs {
+    gap: 3px;
+}
+
+.info-popup-card,
+.effect-popup-card,
+.breakthrough-dialog,
+.breakthrough-result-card,
+.death-dialog {
+    color: #4b3b2b;
+    padding: 34px;
+}
+
+.info-popup-card > .info-popup-close {
+    top: 25px;
+    right: 25px;
+}
+
+.info-popup-header,
+.effect-popup-header {
+    border-bottom-color: #c7a86f66;
+}
+
+.alchemy-source-heading {
+    padding: 7px 25px;
+}
+
+.alchemy-filters {
+    padding: 0;
+}
+
+.alchemy-ingredients {
+    padding: 8px 2px;
+}
+
+.reward-icon-tile,
+.inventory-icon-card,
+.inventory-icon-well,
+.item-icon-well {
+    border-radius: 28px;
+}
+
+.bottom-hud-panel {
+    flex-shrink: 0;
+    height: 222px;
+    padding: 17px 22px 14px;
+    gap: 0;
+    color: #4b3b2b;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'card-frame');
+    background-size: fill;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 34px;
+    box-shadow: none;
+}
+
+.bottom-hud-panel > .cultivation-bar {
+    flex: 1;
+    min-height: 0;
+    padding: 4px 10px 8px;
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.bottom-hud-panel > .bottom-nav {
+    flex-shrink: 0;
+    height: 92px;
+    padding: 5px 1px 0;
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.progress-fill {
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'energy-fill');
+    background-size: fill;
+    border-radius: 14px;
+}
+
+.progress-fill.health-fill {
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'health-fill');
+    background-size: fill;
+    background-color: #e9685c;
+}
+
+.mission-fill {
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'energy-fill');
+    background-size: fill;
+}
+
+.bottom-hud-panel .cultivation-title {
+    color: #493625;
+}
+
+.top-stat,
+.mission-float,
+.action-toast,
+.achievement-effect text,
+.window-toolbar,
+.mission-queue-panel,
+.mission-board-heading,
+.inventory-details,
+.shop-card,
+.mission-card,
+.queue-item,
+.item-card {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'simple-panel');
+    background-size: fill;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.info-popup-card,
+.effect-popup-card,
+.breakthrough-dialog,
+.breakthrough-result-card,
+.death-dialog {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'window-frame');
+    background-size: fill;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.window-close,
+.info-popup-close {
+    background-image: sprite('../Textures/ChineseUIIconsAtlas.atlas', 'close-button');
+    background-size: fill;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 50%;
+    box-shadow: none;
+}
+
+.window-close image,
+.info-popup-close image {
+    opacity: 0;
+}
+
+.calendar-dial,
+.effect-orb,
+.death-icon-shell {
+    background-image: sprite('../Textures/ChineseUIIconsAtlas.atlas', 'round-button');
+    background-size: fill;
+}
+
+.inventory-grid,
+.alchemy-ingredients,
+.accepted-mission-grid,
+.mission-queue-strip,
+.effects-list {
+    scrollbar-width: 0px;
+    scrollbar-color: transparent transparent;
+}
+
+.mission-card {
+    padding: 14px 16px;
+}
+
+.mission-card-description {
+    color: #665744;
+}
+
+.shop-card {
+    padding: 10px 12px;
+}
+
+.inventory-details {
+    padding: 12px 18px;
+}
+
+.info-popup-card {
+    padding: 52px 38px 42px;
+}
+
+.info-popup-card > .info-popup-close {
+    top: 22px;
+    right: 22px;
+}
+
+/* Stable card composition and safe scroll insets. */
+.shop-content {
+    margin-top: 106px;
+    padding: 10px 14px 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: 0px;
+    scrollbar-color: transparent transparent;
+}
+
+.shop-grid {
+    flex-shrink: 0;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    padding: 2px 2px 36px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 164px);
+    grid-auto-rows: 164px;
+    row-gap: 14px;
+    column-gap: 16px;
+    overflow: visible;
+    align-content: start;
+}
+
+.shop-card {
+    height: 164px;
+    min-width: 0;
+    min-height: 0;
+    padding: 9px 14px;
+    overflow: hidden;
+}
+
+.shop-card-header {
+    flex: 0;
+    flex-shrink: 0;
+    width: 100%;
+    height: 64px;
+    min-height: 64px;
+    gap: 8px;
+    align-items: center;
+}
+
+.shop-card-icon-stack {
+    flex: 0;
+    flex-shrink: 0;
+    position: relative;
+    width: 64px;
+    height: 64px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.shop-card .item-icon-well {
+    flex-shrink: 0;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    overflow: visible;
+}
+
+.shop-card .item-icon {
+    position: relative;
+    z-index: 2;
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    visibility: visible;
+    opacity: 1;
+}
+
+.shop-item-quality {
+    left: -2px;
+    top: 47px;
+    width: 66px;
+    height: 17px;
+    margin: 0;
+}
+
+.shop-item-quality .quality-stars {
+    flex-shrink: 0;
+    gap: 0;
+    padding: 1px 2px;
+}
+
+.shop-item-quality .quality-star,
+.shop-item-quality .quality-star-empty,
+.shop-item-quality .quality-star-fill,
+.shop-item-quality .quality-star-fill image {
+    width: 12px;
+    height: 12px;
+}
+
+.shop-card-heading {
+    flex: 1;
+    min-width: 0;
+    height: 64px;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.shop-card .item-name {
+    width: 100%;
+    height: 64px;
+    margin: 0;
+    color: #493625;
+    font-size: 22px;
+    min-font-size: 14px;
+    text-fit: shrink;
+    white-space: normal;
+    text-align: left;
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+.shop-card .item-effect {
+    flex: 1;
+    flex-shrink: 1;
+    min-height: 0;
+    width: auto;
+    margin-top: 2px;
+    padding: 2px 3px;
+    color: #547363;
+    font-size: 14px;
+    min-font-size: 10px;
+    text-fit: shrink;
+    white-space: normal;
+    overflow: hidden;
+}
+
+.shop-card .card-action {
+    flex: 0;
+    flex-shrink: 0;
+    width: 100%;
+    height: 38px;
+    min-height: 38px;
+    margin-top: 7px;
+    padding: 5px 12px 7px;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    min-font-size: 15px;
+    text-fit: shrink;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* Lists in other decorated windows use the same safe content boundary. */
+.mission-list {
+    padding: 3px 8px 22px;
+    row-gap: 14px;
+    column-gap: 16px;
+}
+
+.accepted-mission-grid {
+    padding: 3px 8px 32px;
+    row-gap: 14px;
+    column-gap: 16px;
+}
+
+.inventory-grid {
+    padding: 14px 16px 34px;
+    row-gap: 14px;
+    column-gap: 14px;
+}
+
+.alchemy-ingredients {
+    padding: 10px 2px 32px;
+    row-gap: 12px;
+    column-gap: 12px;
+}
+
+/* Inventory content begins inside the quiet body of the painted window. */
+.inventory-window .category-tabs {
+    margin-top: 106px;
+    column-gap: 10px;
+}
+
+.inventory-window .inventory-grid {
+    margin-top: 14px;
+}
+
+/* One coherent sprite treatment for every alchemy control and state. */
+.alchemy-tabs {
+    column-gap: 12px;
+}
+
+.alchemy-tabs .window-tab,
+.alchemy-filter-button,
+.alchemy-filter-option,
+.alchemy-craft {
+    color: #4a3826;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
+    background-size: fill;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 24px;
+    box-shadow: none;
+    text-shadow: 0 1px 0 #fffaf0cc;
+}
+
+.alchemy-tabs .window-tab:hover,
+.alchemy-filter-button:hover,
+.alchemy-filter-option:hover,
+.alchemy-craft:hover {
+    color: #285c49;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
+    background-color: #cce8d388;
+    border: 0;
+    box-shadow: none;
+}
+
+.alchemy-tabs .window-tab:active,
+.alchemy-filter-button:active,
+.alchemy-filter-option:active,
+.alchemy-craft:active {
+    color: #70453d;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
+    background-color: #efc7b499;
+    border: 0;
+    box-shadow: none;
+}
+
+.alchemy-tabs .window-tab.active,
+.alchemy-filter-button.active,
+.alchemy-filter-option.selected {
+    color: #285c49;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
+    background-color: #b9dfc899;
+    border: 0;
+    box-shadow: none;
+}
+
+.alchemy-craft:disabled {
+    color: #8a7964;
+    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
+    background-color: #d8d0be77;
+    border: 0;
+    box-shadow: none;
+    opacity: 0.72;
+}
+
+.alchemy-filter-menu {
+    top: 52px;
+    max-height: 230px;
+    padding: 13px 12px;
+    gap: 6px;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'simple-panel');
+    background-size: fill;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 25px;
+    box-shadow: 0 9px 18px #5c493855;
+    scrollbar-width: 0px;
+    scrollbar-color: transparent transparent;
+}
+
+.alchemy-filter-option {
+    min-height: 39px;
+    padding: 6px 10px;
+    border-radius: 20px;
+}
+
+/* Unified panel family: the painted sprite owns the frame, title bay and body. */
+.window,
+.compact-window,
+.missions-window {
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    bottom: 10px;
+    height: auto;
+    padding: 94px 62px 60px;
+    color: #493b2c;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 38px;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.window-header {
+    position: relative;
+    z-index: 3;
+    flex-shrink: 0;
+    width: 100%;
+    height: 126px;
+    min-height: 126px;
+    margin: 0;
+    padding: 9px 58px 11px;
+    align-items: center;
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.window-header > panel {
+    align-items: center;
+    justify-content: center;
+}
+
+.window-title {
+    height: 43px;
+    color: #493625;
+    font-size: 34px;
+    text-align: center;
+}
+
+.window-subtitle {
+    height: 25px;
+    margin-top: 3px;
+    color: #766551;
+    font-size: 17px;
+    text-align: center;
+}
+
+.window-header > .window-close {
+    position: absolute;
+    z-index: 5;
+    top: 35px;
+    right: 1px;
+    width: 52px;
+    height: 52px;
+}
+
+.window-body {
+    flex: 1;
+    flex-shrink: 1;
+    min-height: 0;
+    width: 100%;
+    padding: 18px 14px 8px;
+    overflow: hidden;
+}
+
+.window-toolbar,
+.window-tabs,
+.category-tabs,
+.mission-board-heading,
+.alchemy-source-heading {
+    flex-shrink: 0;
+}
+
+.window-toolbar {
+    min-height: 62px;
+    margin-top: 0;
+    padding: 10px 20px;
+}
+
+.window-tabs,
+.category-tabs,
+.inventory-window .category-tabs {
+    min-height: 56px;
+    margin-top: 10px;
+}
+
+.alchemy-window .window-tabs,
+.missions-window .window-tabs {
+    margin-top: 0;
+}
+
+.shop-content {
+    margin-top: 10px;
+    padding: 8px 10px 0;
+}
+
+.inventory-window .inventory-grid {
+    margin-top: 10px;
+}
+
+.mission-page {
+    overflow: hidden;
+}
+
+/* The craft action is part of the body, never a stretched extension of the frame. */
+.alchemy-footer {
+    flex-shrink: 0;
+    width: 100%;
+    height: 64px;
+    margin-top: 8px;
+    padding: 3px 54px;
+    align-items: center;
+    justify-content: center;
+}
+
+.alchemy-footer > .alchemy-craft {
+    width: 100%;
+    height: 58px;
+    min-height: 58px;
+    margin: 0;
+    padding: 10px 24px;
+    font-size: 20px;
+}
+
+/* Every modal uses the compact member of the exact same panel family. */
+.info-popup-card,
+.effect-popup-card,
+.breakthrough-dialog,
+.result-dialog,
+.death-dialog {
+    width: 100%;
+    max-width: 560px;
+    min-height: 370px;
+    padding: 66px 68px 58px;
+    color: #493b2c;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 38px;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.info-popup-card {
+    min-height: 0;
+    max-height: 900px;
+    padding: 58px 54px 48px;
+}
+
+.effect-popup-card {
+    min-height: 380px;
+}
+
+.breakthrough-dialog,
+.result-dialog {
+    min-height: 600px;
+}
+
+.death-dialog {
+    min-height: 690px;
+}
+
+.info-popup-header,
+.effect-popup-header {
+    flex-shrink: 0;
+    min-height: 82px;
+    padding: 3px 52px 8px 0;
+    border: 0;
+    background-image: none;
+    background-color: #00000000;
+}
+
+.info-popup-card > .info-popup-close,
+.effect-popup-card .info-popup-close {
+    top: 65px;
+    right: 53px;
+    width: 44px;
+    height: 44px;
+}
+
+.info-popup-icon-well {
+    width: 76px;
+    height: 76px;
+    border-radius: 18px;
+}
+
+.info-popup-icon {
+    width: 68px;
+    height: 68px;
+}
+
+.info-popup-quality {
+    left: -2px;
+    top: 64px;
+    width: 80px;
+    height: 18px;
+}
+
+.info-popup-title {
+    margin-top: 2px;
+    font-size: 25px;
+}
+
+.info-popup-description {
+    min-height: 38px;
+    margin-top: 9px;
+    font-size: 18px;
+}
+
+.info-popup-effect {
+    min-height: 48px;
+    margin-top: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 18px;
+}
+
+.info-popup-stats {
+    min-height: 64px;
+    margin-top: 8px;
+    padding: 7px 5px;
+}
+
+.info-popup-stat-label {
+    font-size: 12px;
+}
+
+.info-popup-stat-value {
+    margin-top: 2px;
+    font-size: 17px;
+}
+
+.info-popup-details {
+    min-height: 38px;
+    margin-top: 8px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-size: 16px;
+}
+
+.info-popup-actions {
+    min-height: 54px;
+    margin-top: 10px;
+    gap: 8px;
+}
+
+.info-popup-actions > .wide-action {
+    min-height: 52px;
+    height: 52px;
+    padding: 8px 12px;
+    font-size: 17px;
+}
+
+.info-popup-description,
+.info-popup-effect,
+.info-popup-details,
+.breakthrough-cost,
+.breakthrough-result-text,
+.death-description {
+    padding-left: 8px;
+    padding-right: 8px;
+    color: #665847;
+}
+
+.info-popup-effect,
+.info-popup-stats,
+.info-popup-details,
+.death-stats {
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+/* Quiet item wells keep the actual icon dominant and the rarity outline readable. */
+.item-icon-well,
+.inventory-icon-well,
+.inventory-detail-icon-well,
+.info-popup-icon-well,
+.alchemy-slot,
+.reward-icon-tile {
+    background-image: none;
+    background-color: #e9e3cedd;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #9b865f;
+    box-shadow: none;
+}
+
+.shop-card-icon-stack,
+.shop-card .item-icon-well {
+    position: relative;
+    z-index: 10;
+}
+
+.shop-card .item-icon-well {
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.shop-card .item-icon {
+    position: absolute;
+    z-index: 20;
+    left: 2px;
+    top: 2px;
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Hover/press states retain one painted skin instead of layering old CSS fills. */
+.activity-toggle:hover,
+.primary-button:hover,
+.secondary-button:hover,
+.nav-button:hover,
+.wide-action:hover,
+.compact-action:hover,
+.restart-button:hover,
+.card-action:hover,
+.mission-start:hover,
+.window-tab:hover,
+.category-tab:hover,
+.alchemy-filter-button:hover,
+.alchemy-filter-option:hover {
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+    color: #2d624e;
+    opacity: 0.94;
+    transform: scale(1.01);
+}
+
+.activity-toggle:active,
+.primary-button:active,
+.secondary-button:active,
+.nav-button:active,
+.wide-action:active,
+.compact-action:active,
+.restart-button:active,
+.card-action:active,
+.mission-start:active,
+.window-tab:active,
+.category-tab:active,
+.alchemy-filter-button:active,
+.alchemy-filter-option:active {
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+    transform: scale(0.98);
+}
+
+.window-close:hover,
+.info-popup-close:hover,
+.window-close:active,
+.info-popup-close:active {
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+    opacity: 0.9;
+}
+
+/* One compact 9-slice surface now backs every panel-shaped element. */
+.window,
+.compact-window,
+.missions-window,
+.window-body,
+.window-header,
+.top-stat,
+.mission-float,
+.bottom-hud-panel,
+.action-toast,
+.achievement-effect text,
+.mission-queue-panel,
+.inventory-details,
+.shop-card,
+.mission-card,
+.queue-item,
+.item-card,
+.alchemy-filter-menu,
+.info-popup-card,
+.effect-popup-card,
+.breakthrough-dialog,
+.result-dialog,
+.death-dialog,
+.death-stats {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.window,
+.compact-window,
+.missions-window {
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    bottom: 10px;
+    padding: 22px;
+    border-radius: 14px;
+}
+
+.window-header {
+    height: 102px;
+    min-height: 102px;
+    padding: 12px 64px;
+    border-radius: 12px;
+}
+
+.window-header > .window-close {
+    top: 25px;
+    right: 12px;
+}
+
+.window-body {
+    margin-top: 10px;
+    padding: 18px 16px 14px;
+    border-radius: 12px;
+}
+
+.window-title {
+    color: #43382d;
+}
+
+.window-subtitle,
+.mission-card-description,
+.float-description,
+.info-popup-description,
+.info-popup-details,
+.death-description,
+.breakthrough-cost,
+.breakthrough-result-text,
+.inventory-detail-effect,
+.alchemy-source-note {
+    color: #675b4d;
+}
+
+.window-toolbar,
+.mission-board-heading,
+.alchemy-source-heading {
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    border-bottom: 1px solid #a18a6066;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* One regenerated rectangular control skin; pseudo states never add a second skin. */
+.activity-toggle,
+.primary-button,
+.secondary-button,
+.nav-button,
+.wide-action,
+.compact-action,
+.restart-button,
+.card-action,
+.mission-start,
+.window-tab,
+.category-tab,
+.alchemy-filter-button,
+.alchemy-filter-option,
+.queue-control {
+    color: #40362b;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+.activity-toggle:hover,
+.primary-button:hover,
+.secondary-button:hover,
+.nav-button:hover,
+.wide-action:hover,
+.compact-action:hover,
+.restart-button:hover,
+.card-action:hover,
+.mission-start:hover,
+.window-tab:hover,
+.category-tab:hover,
+.alchemy-filter-button:hover,
+.alchemy-filter-option:hover,
+.queue-control:hover {
+    color: #255c48;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+    opacity: 1;
+    transform: scale(1.01);
+}
+
+.activity-toggle:active,
+.primary-button:active,
+.secondary-button:active,
+.nav-button:active,
+.wide-action:active,
+.compact-action:active,
+.restart-button:active,
+.card-action:active,
+.mission-start:active,
+.window-tab:active,
+.category-tab:active,
+.alchemy-filter-button:active,
+.alchemy-filter-option:active,
+.queue-control:active {
+    color: #75483f;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+    opacity: 1;
+    transform: scale(0.98);
+}
+
+.window-tab.active,
+.category-tab.active,
+.alchemy-filter-button.active,
+.alchemy-filter-option.selected,
+.activity-toggle.missions {
+    color: #205943;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-color: #00000000;
+    border: 0;
+    box-shadow: 0 0 0 2px #5f967b;
+}
+
+.window-close,
+.info-popup-close {
+    padding: 8px;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+.window-close image,
+.info-popup-close image {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    visibility: visible;
+    opacity: 1;
+}
+
+.window-close:hover,
+.info-popup-close:hover {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-color: #00000000;
+    opacity: 1;
+    transform: scale(1.04);
+}
+
+.alchemy-tabs .window-tab:hover,
+.alchemy-craft:hover {
+    color: #205943;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #f7f0d899;
+    border: 2px solid #6e9b82;
+    box-shadow: 0 0 0 2px #e8f3e9, 0 4px 8px #46584833;
+}
+
+.alchemy-tabs .window-tab:active,
+.alchemy-craft:active {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 2px solid #a66c59;
+    box-shadow: none;
+}
+
+.alchemy-tabs .window-tab.active {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #eef7e6aa;
+    border: 2px solid #5f967b;
+    box-shadow: none;
+}
+
+.nav-icon-shell,
+.activity-toggle-icon-shell,
+.top-stat-icon-shell,
+.action-toast-icon-shell,
+.queue-control image {
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+    opacity: 1;
+}
+
+.nav-icon-shell image,
+.activity-toggle-icon-shell image,
+.top-stat-icon-shell image,
+.action-toast-icon-shell image,
+.queue-control image {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Square, quiet item cells. Rarity remains on the inner outline. */
+.inventory-icon-card,
+.inventory-icon-well,
+.item-icon-well,
+.inventory-detail-icon-well,
+.info-popup-icon-well,
+.alchemy-slot,
+.reward-icon-tile {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+.inventory-icon-card {
+    border: 2px solid #a7916b55;
+}
+
+.inventory-icon-card:hover {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-color: #00000000;
+    border: 2px solid #6e9b82;
+    box-shadow: none;
+    transform: scale(1.01);
+}
+
+.inventory-icon-card.selected {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-color: #00000000;
+    border: 3px solid #c28a34;
+    box-shadow: 0 0 0 2px #fff2c8;
+    transform: none;
+}
+
+/* Shop and missions contain exactly three rows; alchemy keeps room for inventory. */
+.shop-window,
+.missions-window {
+    top: 150px;
+    bottom: 150px;
+}
+
+.shop-window {
+    top: 190px;
+    bottom: 190px;
+}
+
+.inventory-window {
+    top: 105px;
+    bottom: 105px;
+}
+
+.alchemy-window {
+    top: 55px;
+    bottom: -76px;
+}
+
+.shop-content {
+    margin-top: 0;
+    padding-top: 2px;
+}
+
+/* The original money block stays above the modal dimmer in its HUD position. */
+.money-stat {
+    position: relative;
+    z-index: 3200;
+}
+
+/* Quality is a guaranteed foreground overlay on every item icon. */
+.item-icon-quality,
+.shop-item-quality,
+.inventory-quality,
+.inventory-detail-quality,
+.info-popup-quality,
+.alchemy-slot-quality,
+.reward-quality {
+    z-index: 80;
+    visibility: visible;
+    opacity: 1;
+}
+
+.item-icon-quality .quality-stars,
+.quality-stars,
+.quality-star,
+.quality-star-empty,
+.quality-star-fill,
+.quality-star-fill image {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* The refining equipment icon is clipped by the same circular core receptacle. */
+.alchemy-core-slot,
+.alchemy-core-slot.filled,
+.alchemy-core-slot.equipment {
+    overflow: hidden;
+}
+
+.alchemy-core-slot.equipment > image {
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
+}
+
+/* Effects are plain icons with one thin lifetime ring. */
+.effects-list {
+    width: 62px;
+    grid-auto-rows: 58px;
+    gap: 7px;
+}
+
+.effect-orb,
+.effect-orb.permanent-effect {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    padding: 4px;
+    align-items: center;
+    justify-content: center;
+    background-image: none;
+    background-color: #00000000;
+    border-width: 0;
+    border-color: #00000000;
+    border-radius: 50%;
+    box-shadow: none;
+}
+
+.effect-ring,
+.effect-orb.permanent-effect .effect-ring {
+    position: absolute;
+    inset: 1px;
+    color: #6e9c7e;
+    background-image: none;
+    background-color: #00000000;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #4e594c77;
+    border-radius: 50%;
+    box-shadow: none;
+}
+
+.effect-icon {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+/* Mission cards use explicit rows and a stable footer instead of free-flowing text. */
+.mission-list {
+    grid-template-rows: repeat(3, 215px);
+    grid-auto-rows: 215px;
+    row-gap: 12px;
+    column-gap: 12px;
+    padding: 2px 6px 12px;
+    align-content: start;
+}
+
+.mission-card {
+    height: 215px;
+    padding: 11px 12px;
+    gap: 5px;
+    border-width: 0;
+    border-left-width: 0;
+}
+
+.mission-danger {
+    flex-shrink: 0;
+    height: 18px;
+    color: #b85248;
+    font-size: 16px;
+    min-font-size: 12px;
+}
+
+.mission-card-title {
+    flex-shrink: 0;
+    height: 40px;
+    min-height: 40px;
+    margin: 0;
+    color: #49392c;
+    font-size: 22px;
+    min-font-size: 14px;
+    text-fit: shrink;
+    overflow: hidden;
+}
+
+.mission-card-description {
+    flex: 1;
+    min-height: 0;
+    height: 48px;
+    margin: 0;
+    color: #625647;
+    font-size: 17px;
+    min-font-size: 12px;
+    text-fit: shrink;
+    overflow: hidden;
+}
+
+.mission-card-footer {
+    flex-shrink: 0;
+    min-height: 88px;
+    height: 88px;
+    gap: 5px;
+}
+
+.mission-card-footer > panel {
+    flex: 1;
+    min-width: 0;
+    height: 88px;
+}
+
+.mission-duration-value {
+    flex-shrink: 0;
+    height: 22px;
+    margin: 0;
+    color: #80653d;
+    font-size: 16px;
+    min-font-size: 11px;
+}
+
+.mission-card .mission-reward-icons {
+    flex-shrink: 0;
+    height: 64px;
+    margin-top: 2px;
+    gap: 3px;
+}
+
+.mission-card .reward-icon-tile {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+}
+
+.mission-card .reward-item-icon {
+    left: 4px;
+    top: 4px;
+    width: 54px;
+    height: 54px;
+}
+
+.mission-card .reward-quality {
+    left: 2px;
+    right: 2px;
+    top: auto;
+    bottom: 1px;
+    width: auto;
+    height: 14px;
+}
+
+.mission-card .reward-icon-badge {
+    left: auto;
+    right: -3px;
+    top: -3px;
+    bottom: auto;
+    width: auto;
+    min-width: 29px;
+    height: 20px;
+    padding: 1px 4px;
+    color: #5a4025;
+    background-color: #f0d59a;
+    border: 1px solid #9a7440;
+    border-radius: 7px;
+    font-size: 12px;
+    min-font-size: 9px;
+    text-fit: shrink;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.mission-card .mission-start {
+    flex-shrink: 0;
+    width: 88px;
+    height: 48px;
+    min-height: 48px;
+    padding: 5px;
+    font-size: 15px;
+    min-font-size: 11px;
+}
+
+.mission-board-title,
+.mission-board-heading .toolbar-value,
+.queue-progress,
+.mission-duration-value {
+    color: #705b3e;
+}
+
+/* Danger is communicated by a count of compact red bars. */
+.mission-danger-indicator {
+    position: absolute;
+    z-index: 5;
+    right: 14px;
+    top: 15px;
+    height: 24px;
+    padding: 4px 5px;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 3px;
+    background-color: #efe2c7dd;
+    border-radius: 6px;
+}
+
+.mission-danger-bar {
+    flex-shrink: 0;
+    width: 5px;
+    height: 15px;
+    background-color: #b84f47;
+    border-radius: 2px;
+}
+
+.mission-progress-track {
+    position: relative;
+    overflow: visible;
+}
+
+.mission-combat-marker {
+    position: absolute;
+    z-index: 6;
+    top: 1px;
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    background-color: #c13e37;
+    border: 2px solid #f4dfbf;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px #3b1c18aa;
+}
+
+/* Combat numbers live on the render texture: hero left, enemy right. */
+.combatant-stats {
+    position: absolute;
+    z-index: 3;
+    top: 8px;
+    width: 76px;
+    padding: 5px 6px;
+    gap: 3px;
+    background-color: #182219d6;
+    border: 1px solid #d9bd7b88;
+    border-radius: 8px;
+}
+
+.combatant-stats-hero { left: 7px; }
+.combatant-stats-enemy { right: 7px; }
+
+.combatant-stats > panel {
+    height: 22px;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+}
+
+.combatant-stats image {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.combatant-stats text {
+    flex: 1;
+    min-width: 0;
+    color: #f4e4bf;
+    font-size: 14px;
+    min-font-size: 11px;
+    text-align: right;
+}
+
+.mission-combat-status {
+    color: #6f5432;
+}
+
+/* Progress tracks and fills are solid colors only. */
+.progress-track,
+.cultivation-track,
+.hero-health-track,
+.combat-health-track {
+    background-image: none;
+    background-color: #d9cfb9;
+    border: 1px solid #998c73;
+    box-shadow: none;
+}
+
+.progress-fill,
+.mission-fill,
+.progress-fill.health-fill,
+.cultivation-overflow-fill {
+    background-image: none;
+    background-size: fill;
+    box-shadow: none;
+}
+
+.mission-fill { background-color: #718f70; }
+.progress-fill.health-fill { background-color: #c84d45; }
+
+/* One item-cell language everywhere; alchemy receptacles remain the sole circles. */
+.shop-card .item-icon-well,
+.inventory-icon-well,
+.inventory-detail-icon-well,
+.info-popup-icon-well,
+.reward-icon-tile {
+    background-image: none;
+    background-color: #e9e2cf;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #9a835f;
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+.shop-card .item-icon-well {
+    width: 64px;
+    height: 64px;
+    padding: 4px;
+}
+
+.shop-card .item-icon {
+    left: 4px;
+    top: 4px;
+    width: 54px;
+    height: 54px;
+}
+
+.shop-item-quality,
+.inventory-quality,
+.inventory-detail-quality,
+.info-popup-quality {
+    top: auto;
+    bottom: 1px;
+    height: 16px;
+}
+
+.shop-item-quality .quality-star,
+.shop-item-quality .quality-star-empty,
+.shop-item-quality .quality-star-fill,
+.shop-item-quality .quality-star-fill image,
+.inventory-quality .quality-star,
+.inventory-quality .quality-star-empty,
+.inventory-quality .quality-star-fill,
+.inventory-quality .quality-star-fill image {
+    width: 11px;
+    height: 11px;
+}
+
+.item-icon-quality .quality-stars {
+    padding: 1px 2px;
+    gap: 0;
+    background-color: #f8efd9e8;
+    border: 1px solid #ae8a4e88;
+    border-radius: 5px;
+}
+
+/* Text on parchment stays in the warm ink palette; cyan is reserved for no labels. */
+.queue-position,
+.info-popup-kind,
+.info-popup-effect,
+.inventory-detail-effect,
+.alchemy-source-heading,
+.alchemy-source-note,
+.mission-board-title,
+.mission-duration-value,
+.queue-progress,
+.item-effect,
+.shop-card .item-effect,
+.breakthrough-chance {
+    color: #66553d;
+}
+
+/* Popup close controls are removed from normal flow in both popup variants. */
+.info-popup-card > .info-popup-close,
+.effect-popup-card > .info-popup-close {
+    position: absolute;
+    z-index: 12;
+    top: 24px;
+    right: 24px;
+    left: auto;
+    bottom: auto;
+}
+
+.effect-popup-card .effect-popup-header {
+    margin: 0;
+    padding: 8px 58px 8px 12px;
+    min-height: 72px;
+    align-items: center;
+}
+
+.effect-popup-card .info-popup-body {
+    margin-top: 8px;
+}
+
+/* Inventory grid shares the body's left guide instead of adding a second inset. */
+.inventory-window .inventory-grid {
+    margin-top: 10px;
+    padding: 8px 0 28px;
+    row-gap: 12px;
+    column-gap: 12px;
+    align-content: start;
+    justify-content: start;
+}
+
+.inventory-detail-copy {
+    height: 108px;
+    min-height: 108px;
+    padding-top: 3px;
+    justify-content: flex-start;
+}
+
+.inventory-detail-rarity {
+    color: #7b684a;
+}
+
+.inventory-detail-name {
+    margin-top: 1px;
+    color: #49392c;
+}
+
+/* Active effects use an opaque parchment circle like the rest of the panels. */
+.effect-orb,
+.effect-orb.permanent-effect {
+    background-image: none;
+    background-color: #f0e1c2;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #9b8055;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px #4f3c2638;
+}
+
+.effect-ring,
+.effect-orb.permanent-effect .effect-ring {
+    inset: 1px;
+    color: #718f70;
+    border-width: 2px;
+    border-color: #b8a47d;
+}
+
+.effect-icon {
+    width: 38px;
+    height: 38px;
+}
+
+/* Final compact-layout pass: keep incomplete alchemy rows visually centred. */
+.alchemy-ingredients {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px 12px 32px;
+}
+
+.alchemy-ingredients > .inventory-icon-card {
+    flex: 0 0 96px;
+    width: 96px;
+    height: 112px;
+    min-width: 96px;
+    max-width: 96px;
+    min-height: 112px;
+    max-height: 112px;
+}
+
+/* Refining uses the same round central receptacle as the pill furnace. */
+.alchemy-furnace-stage > .alchemy-slot,
+.alchemy-furnace-stage > .alchemy-slot.filled,
+.alchemy-furnace-stage > .alchemy-core-slot,
+.alchemy-furnace-stage > .alchemy-core-slot.filled,
+.alchemy-furnace-stage > .alchemy-core-slot.equipment {
+    background-image: none;
+    background-color: #f0e1bded;
+    border: 3px solid #aa8148;
+    border-radius: 50%;
+    box-shadow: inset 0 3px 8px #75552238;
+    overflow: hidden;
+}
+
+.alchemy-furnace-stage > .alchemy-slot.filled {
+    background-color: #e7eed5ed;
+    border-color: #789064;
+}
+
+.alchemy-furnace-stage > .alchemy-core-slot.equipment {
+    background-color: #d9eadced;
+    border-color: #668a70;
+}
+
+/* Three shop rows are the entire assortment: no unused tall modal body. */
+.shop-window {
+    top: 235px;
+    bottom: 235px;
+}
+
+/* Popup copy must remain readable on the warm painted panel. */
+.info-popup-kind {
+    color: #503b27;
+    font-size: 19px;
+}
+
+.info-popup-description,
+.info-popup-effect,
+.info-popup-details {
+    color: #4e3b29;
+    font-size: 18px;
+    min-font-size: 14px;
+}
+
+.info-popup-stat-label {
+    color: #634b31;
+    font-size: 15px;
+    min-font-size: 13px;
+}
+
+.info-popup-stat-value,
+.info-popup-stat-value-row .info-popup-stat-value {
+    color: #3f3022;
+    font-size: 20px;
+    min-font-size: 16px;
+}
+
+/* Clean time icon and a deliberately dominant currency glyph. */
+.top-stat-icon-shell.age {
+    background-image: none;
+    background-color: #00000000;
+    border-width: 0;
+    border-color: #00000000;
+    box-shadow: none;
+}
+
+.top-stat-icon-shell.age .top-stat-icon {
+    width: 34px;
+    height: 34px;
+}
+
+.money-stat .top-stat-icon-shell {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.money-stat .top-stat-icon {
+    width: 54px;
+    height: 54px;
+}
+
+.currency-action {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.currency-action > image {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.currency-action > text {
+    min-width: 0;
+    text-align: center;
+}
+
+.info-popup-stat-value-row {
+    min-height: 28px;
+    margin-top: 2px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.info-popup-stat-value-row > image {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.info-popup-stat-value-row .info-popup-stat-value {
+    margin-top: 0;
+}
+
+/* Reset every legacy edge so hover cannot leave a one-sided green outline. */
+.activity-toggle:hover,
+.primary-button:hover,
+.secondary-button:hover,
+.nav-button:hover,
+.wide-action:hover,
+.compact-action:hover,
+.restart-button:hover,
+.card-action:hover,
+.mission-start:hover,
+.window-tab:hover,
+.category-tab:hover,
+.alchemy-filter-button:hover,
+.alchemy-filter-option:hover,
+.queue-control:hover,
+.window-close:hover,
+.info-popup-close:hover,
+.alchemy-tabs .window-tab:hover,
+.alchemy-craft:hover,
+.activity-toggle:active,
+.primary-button:active,
+.secondary-button:active,
+.nav-button:active,
+.wide-action:active,
+.compact-action:active,
+.restart-button:active,
+.card-action:active,
+.mission-start:active,
+.window-tab:active,
+.category-tab:active,
+.alchemy-filter-button:active,
+.alchemy-filter-option:active,
+.queue-control:active,
+.window-close:active,
+.info-popup-close:active,
+.alchemy-tabs .window-tab:active,
+.alchemy-craft:active {
+    color: #49392c;
+    border-width: 0;
+    border-color: #00000000;
+}
+
+.nav-button:hover .nav-icon-shell,
+.nav-button:active .nav-icon-shell,
+.activity-toggle:hover .activity-toggle-icon-shell,
+.activity-toggle:active .activity-toggle-icon-shell {
+    background-image: none;
+    background-color: #00000000;
+    border-width: 0;
+    border-color: #00000000;
+    box-shadow: none;
+    opacity: 1;
+}
+
+/* Alchemy receptacles keep their original round, ceramic-like shape. */
+.alchemy-slot,
+.alchemy-slot.filled,
+.alchemy-core-slot,
+.alchemy-core-slot.filled,
+.alchemy-core-slot.equipment {
+    background-image: none;
+    background-color: #f0e1bddf;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #aa8148;
+    border-radius: 50%;
+    box-shadow: inset 0 3px 8px #75552238, 0 2px 5px #271b102e;
+}
+
+.alchemy-slot.filled,
+.alchemy-core-slot.filled {
+    background-color: #e7eed5ed;
+    border-width: 3px;
+    box-shadow: inset 0 3px 8px #52735735, 0 0 8px #d7b45f66;
+}
+
+.alchemy-core-slot.equipment {
+    background-color: #d9eadced;
+    border-color: #668a70;
+}
+
+/* All selected tabs use the same darker version of the regular control. */
+.window-tab.active,
+.category-tab.active,
+.alchemy-filter-button.active,
+.alchemy-filter-option.selected,
+.activity-toggle.missions,
+.alchemy-tabs .window-tab.active {
+    color: #49392c;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border-width: 0;
+    border-color: #00000000;
+    box-shadow: none;
+    opacity: 0.72;
+    transform: none;
+}
+
+.alchemy-slot.filled,
+.alchemy-core-slot.filled,
+.alchemy-core-slot.equipment {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-color: #00000000;
+    border-width: 3px;
+    box-shadow: none;
+}
+
+.bottom-hud-panel {
+    height: 230px;
+    padding: 18px 20px 16px;
+    border-radius: 12px;
+}
+
+.bottom-hud-panel > .cultivation-bar,
+.bottom-hud-panel > .bottom-nav {
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.bottom-hud-panel > .bottom-nav {
+    height: 94px;
+    padding: 7px 2px 0;
+}
+
+/* Popup sizes follow their content instead of mimicking a full-height window. */
+.info-popup-card,
+.effect-popup-card,
+.breakthrough-dialog,
+.result-dialog,
+.death-dialog {
+    min-height: 0;
+    padding: 22px 24px 24px;
+    border-radius: 12px;
+}
+
+.info-popup-card {
+    max-width: 530px;
+}
+
+.info-popup-header,
+.effect-popup-header {
+    min-height: 88px;
+    padding: 8px 54px 10px 8px;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 10px;
+}
+
+.info-popup-card > .info-popup-close {
+    top: 41px;
+    right: 34px;
+}
+
+.breakthrough-dialog,
+.result-dialog {
+    max-width: 500px;
+}
+
+.death-dialog {
+    max-width: 560px;
+}
+
+/* Tracks are only quiet outlines; textured fills are revealed without scaling. */
+.progress-track,
+.cultivation-track,
+.hero-health-track,
+.combat-health-track {
+    padding: 2px;
+    background-image: none;
+    background-color: #e6ddc7aa;
+    border: 1px solid #8b806b88;
+    border-radius: 9px;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.progress-fill,
+.mission-fill,
+.progress-fill.health-fill,
+.cultivation-overflow-fill {
+    background-size: fill;
+    background-position: left center;
+    border-radius: 7px;
+}
+
+/* Slightly smaller modal windows keep the dimmed game visible around them. */
+.window,
+.compact-window,
+.missions-window {
+    left: 16px;
+    right: 16px;
+    top: 36px;
+    bottom: 36px;
+}
+
+/* The dragon itself is the clockwise-depleting year indicator. */
+.calendar-dial {
+    width: 72px;
+    height: 72px;
+    padding: 4px;
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.calendar-ring {
+    position: absolute;
+    inset: 4px;
+    color: #ffffff;
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 0;
+}
+
+/* Phone readability: larger defaults and safer shrink floor. */
+.screen {
+    font-size: 26px;
+}
+
+.screen text {
+    min-font-size: 12px;
+}
+
+.window-title {
+    font-size: 36px;
+}
+
+.window-subtitle {
+    font-size: 19px;
+}
+
+.window-toolbar,
+.mission-board-heading {
+    font-size: 21px;
+}
+
+.toolbar-value {
+    font-size: 24px;
+}
+
+.window-tab,
+.category-tab,
+.alchemy-filter-button,
+.alchemy-filter-option,
+.nav-button text,
+.activity-toggle text {
+    font-size: 18px;
+    min-font-size: 13px;
+}
+
+.item-name,
+.shop-card .item-name,
+.inventory-detail-name,
+.mission-card-title,
+.queue-item-name,
+.info-popup-title {
+    font-size: 24px;
+    min-font-size: 15px;
+}
+
+.item-effect,
+.shop-card .item-effect,
+.inventory-detail-effect,
+.mission-card-description,
+.info-popup-description,
+.info-popup-effect,
+.info-popup-details,
+.death-description,
+.breakthrough-result-text {
+    font-size: 16px;
+    min-font-size: 12px;
+}
+
+.top-stat-label {
+    font-size: 15px;
+}
+
+.top-stat-value {
+    font-size: 27px;
+}
+
+.cultivation-title,
+.float-title {
+    font-size: 22px;
+}
+
+.progress-caption,
+.cultivation-progress-text {
+    font-size: 17px;
+}
+
+/* Shop icons stay in normal layout so they cannot disappear behind the well. */
+.shop-card .shop-card-icon-stack {
+    flex-shrink: 0;
+    width: 64px;
+    min-width: 64px;
+    max-width: 64px;
+    height: 64px;
+    min-height: 64px;
+    overflow: visible;
+}
+
+.shop-card .item-icon-well {
+    flex-shrink: 0;
+    width: 64px;
+    min-width: 64px;
+    max-width: 64px;
+    height: 64px;
+    padding: 1px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-image: none;
+    background-color: #e9e2cf;
+    border: 2px solid #9a835f;
+}
+
+.shop-card .item-icon {
+    position: relative;
+    z-index: 30;
+    left: 0;
+    top: 0;
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    visibility: visible;
+    opacity: 1;
+}
+
+/* One clean state system: hover highlights the whole control, never its icon. */
+.activity-toggle:hover,
+.primary-button:hover,
+.secondary-button:hover,
+.nav-button:hover,
+.wide-action:hover,
+.compact-action:hover,
+.restart-button:hover,
+.card-action:hover,
+.mission-start:hover,
+.window-tab:hover,
+.category-tab:hover,
+.alchemy-filter-button:hover,
+.alchemy-filter-option:hover,
+.queue-control:hover,
+.window-close:hover,
+.info-popup-close:hover {
+    color: #205943;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #f7f0d899;
+    border: 2px solid #6e9b82;
+    box-shadow: 0 0 0 2px #e8f3e9, 0 4px 8px #46584833;
+    opacity: 1;
+}
+
+.nav-button:hover image,
+.activity-toggle:hover image,
+.window-close:hover image,
+.info-popup-close:hover image,
+.queue-control:hover image,
+.alchemy-filter-button:hover image,
+.alchemy-filter-option:hover image {
+    color: #ffffff;
+    visibility: visible;
+    opacity: 1;
+    filter: none;
+}
+
+.activity-toggle:disabled,
+.primary-button:disabled,
+.secondary-button:disabled,
+.nav-button:disabled,
+.wide-action:disabled,
+.compact-action:disabled,
+.card-action:disabled,
+.mission-start:disabled,
+.alchemy-craft:disabled,
+.activity-toggle.recovery,
+.secondary-wide {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    box-shadow: none;
+}
+
+.tick-float,
+.combat-damage-float {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+}
+
+/* Final compact geometry shared by every full window. */
+.window,
+.compact-window,
+.missions-window {
+    top: 90px;
+    bottom: 90px;
+    left: 18px;
+    right: 18px;
+    padding: 18px;
+}
+
+.window-header {
+    height: 90px;
+    min-height: 90px;
+    padding: 10px 60px 10px 18px;
+}
+
+.window-body {
+    margin-top: 8px;
+    padding: 14px 16px 16px;
+}
+
+/* Rating lives on the icon; quantities get their own row and never cover art. */
+.shop-card .shop-card-icon-stack {
+    position: relative;
+}
+
+.shop-item-quality {
+    left: 1px;
+    right: 1px;
+    top: auto;
+    bottom: 2px;
+    width: auto;
+    height: 17px;
+}
+
+.inventory-icon-card {
+    padding: 5px 5px 4px;
+    gap: 2px;
+}
+
+.inventory-icon-well {
+    position: relative;
+    flex-shrink: 0;
+    width: 82px;
+    height: 82px;
+}
+
+.inventory-quality {
+    left: 3px;
+    right: 3px;
+    top: auto;
+    bottom: 2px;
+    width: auto;
+    height: 17px;
+    margin: 0;
+}
+
+.inventory-quantity {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    min-width: 0;
+    height: 20px;
+    margin: 0;
+    padding: 0 5px;
+    color: #5a4025;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 0;
+    font-size: 16px;
+    text-align: center;
+}
+
+.inventory-detail-quality,
+.info-popup-quality,
+.alchemy-slot-quality {
+    left: 3px;
+    right: 3px;
+    top: auto;
+    bottom: 2px;
+    width: auto;
+    height: 18px;
+}
+
+.reward-icon-tile {
+    position: relative;
+    flex-shrink: 0;
+    width: 68px;
+    height: 82px;
+    padding: 0;
+}
+
+.reward-item-icon {
+    position: absolute;
+    left: 8px;
+    top: 3px;
+    width: 52px;
+    height: 52px;
+}
+
+.reward-quality {
+    left: 2px;
+    right: 2px;
+    top: 43px;
+    bottom: auto;
+    width: auto;
+    height: 14px;
+}
+
+.reward-icon-badge {
+    left: 4px;
+    right: 4px;
+    top: auto;
+    bottom: 2px;
+    min-width: 0;
+    height: 19px;
+    padding: 0 2px;
+    border: 0;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.mission-reward-row {
+    min-height: 118px;
+}
+
+/* Item and effect popups use the same header/body composition as windows. */
+.info-popup-card,
+.effect-popup-card {
+    width: 530px;
+    max-width: 530px;
+    min-height: 0;
+    max-height: 850px;
+    padding: 14px;
+    gap: 0;
+    border-radius: 12px;
+}
+
+.info-popup-header,
+.effect-popup-header {
+    flex-shrink: 0;
+    min-height: 72px;
+    height: auto;
+    padding: 8px 58px 8px 10px;
+    border-radius: 10px;
+}
+
+.info-popup-body {
+    margin-top: 8px;
+    padding: 12px 14px 14px;
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 10px;
+}
+
+.info-popup-card > .info-popup-close,
+.effect-popup-card > .info-popup-close {
+    top: 25px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+}
+
+.info-popup-description,
+.info-popup-effect,
+.info-popup-details {
+    min-height: 0;
+    margin-top: 5px;
+    padding: 5px 7px;
+}
+
+.info-popup-stats {
+    min-height: 54px;
+    margin-top: 5px;
+    padding: 5px;
+}
+
+.info-popup-actions {
+    min-height: 48px;
+    margin-top: 7px;
+}
+
+.info-popup-actions > .wide-action {
+    height: 46px;
+    min-height: 46px;
+    padding: 6px 10px;
+}
+
+/* Hover and press keep exactly the same sprite, only darkening it. */
+.activity-toggle:hover,
+.primary-button:hover,
+.secondary-button:hover,
+.nav-button:hover,
+.wide-action:hover,
+.compact-action:hover,
+.restart-button:hover,
+.card-action:hover,
+.mission-start:hover,
+.window-tab:hover,
+.category-tab:hover,
+.alchemy-filter-button:hover,
+.alchemy-filter-option:hover,
+.queue-control:hover,
+.window-close:hover,
+.info-popup-close:hover,
+.alchemy-tabs .window-tab:hover,
+.alchemy-craft:hover {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+    opacity: 0.84;
+    transform: none;
+}
+
+.activity-toggle:active,
+.primary-button:active,
+.secondary-button:active,
+.nav-button:active,
+.wide-action:active,
+.compact-action:active,
+.restart-button:active,
+.card-action:active,
+.mission-start:active,
+.window-tab:active,
+.category-tab:active,
+.alchemy-filter-button:active,
+.alchemy-filter-option:active,
+.queue-control:active,
+.window-close:active,
+.info-popup-close:active,
+.alchemy-tabs .window-tab:active,
+.alchemy-craft:active {
+    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+    opacity: 0.68;
+    transform: none;
+}
+
+/* Final live-layout corrections. Keep these last so legacy theme layers cannot win. */
+.alchemy-ingredients {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(96px, 1fr));
+    grid-auto-rows: 112px;
+    align-content: flex-start;
+    gap: 12px;
+    padding: 10px 2px 32px;
+}
+
+.alchemy-ingredients > .inventory-icon-card {
+    width: 100%;
+    height: 112px;
+    min-width: 96px;
+    max-width: none;
+    min-height: 112px;
+    max-height: 112px;
+}
+
+.alchemy-furnace-stage > .alchemy-slot,
+.alchemy-furnace-stage > .alchemy-slot.filled,
+.alchemy-furnace-stage > .alchemy-core-slot,
+.alchemy-furnace-stage > .alchemy-core-slot.filled,
+.alchemy-furnace-stage > .alchemy-core-slot.equipment {
+    background-image: none;
+    background-color: #f0e1bded;
+    border: 3px solid #aa8148;
+    border-radius: 50%;
+    box-shadow: inset 0 3px 8px #75552238;
+    overflow: hidden;
+}
+
+.alchemy-furnace-stage > .alchemy-slot.filled {
+    background-color: #e7eed5ed;
+    border-color: #789064;
+}
+
+.alchemy-furnace-stage > .alchemy-core-slot.equipment {
+    background-color: #d9eadced;
+    border-color: #668a70;
+}
+
+.shop-window {
+    top: 235px;
+    bottom: 235px;
+}
+
+.shop-window .window-body {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.shop-window .shop-content {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.shop-window .shop-grid {
+    padding-left: 2px;
+    padding-right: 2px;
+    column-gap: 12px;
+}
+
+.info-popup-kind {
+    color: #503b27;
+    font-size: 19px;
+}
+
+.info-popup-description,
+.info-popup-effect,
+.info-popup-details {
+    color: #4e3b29;
+    font-size: 18px;
+    min-font-size: 14px;
+}
+
+.info-popup-stat-label {
+    color: #634b31;
+    font-size: 15px;
+    min-font-size: 13px;
+}
+
+.info-popup-stat-value,
+.info-popup-stat-value-row .info-popup-stat-value {
+    color: #3f3022;
+    font-size: 20px;
+    min-font-size: 16px;
+}
+
+.modal-money-stat {
+    display: none;
+    pointer-events: none;
+    position: absolute;
+    z-index: 3200;
+    left: 18px;
+    top: 17px;
+    width: 163px;
+    height: 70px;
+}
+
+#window-layer.modal-active > .modal-money-stat {
+    display: flex;
+}
+
+/* The complete round effect panel depletes clockwise; the icon stays readable above it. */
+.effect-ring,
+.effect-orb.permanent-effect .effect-ring {
+    position: absolute;
+    left: 0;
+    right: auto;
+    top: 0;
+    bottom: auto;
+    width: 56px;
+    height: 56px;
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.effect-orb,
+.effect-orb.permanent-effect {
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 28px;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.effect-icon {
+    position: absolute;
+    z-index: 2;
+    left: 12px;
+    top: 12px;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.action-toast,
+.action-toast.toast-error,
+.action-toast.toast-info,
+.action-toast text,
+.action-toast.toast-error text,
+.action-toast.toast-info text {
+    color: #17120d;
+}
+
+.tick-float {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.tick-float-text {
+    min-width: 0;
+    color: inherit;
+    font-size: inherit;
+    text-align: center;
+}
+
+.tick-float-money-icon {
+    flex-shrink: 0;
+    width: 23px;
+    height: 23px;
+    object-fit: contain;
+}

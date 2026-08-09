@@ -1,9 +1,11 @@
 <panel id="effect-popup" class="info-popup-overlay effect-popup-overlay" hidden="true">
     <panel id="effect-popup-card" class="effect-popup-card">
+        <button id="effect-popup-close" class="info-popup-close"><image sprite="Assets/Textures/UIIconsAtlas.atlas#close"/></button>
         <panel class="effect-popup-header">
             <text class="info-popup-kind">АКТИВНЫЙ ЭФФЕКТ</text>
-            <button id="effect-popup-close" class="info-popup-close"><image sprite="Assets/Textures/UIIconsAtlas.atlas#close"/></button>
         </panel>
-        <text id="effect-popup-effect" class="info-popup-effect">Описание эффекта</text>
+        <panel class="info-popup-body">
+            <text id="effect-popup-effect" class="info-popup-effect">Описание эффекта</text>
+        </panel>
     </panel>
 </panel>
