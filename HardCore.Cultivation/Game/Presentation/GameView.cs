@@ -19,6 +19,7 @@ internal sealed class GameView
         Realm = Text("realm-text");
         CultivationProgressText = Text("cultivation-progress-text");
         CultivationProgress = Progress("cultivation-progress");
+        CultivationOverflowProgress = Progress("cultivation-overflow-progress");
         Breakthrough = Button("breakthrough-button");
         ActivityMode = Button("activity-mode-button");
         ActivityModeIcon = Image("activity-mode-icon");
@@ -43,10 +44,24 @@ internal sealed class GameView
         Effects = Panel("effects-list");
 
         ShopButton = Button("shop-button");
+        AlchemyButton = Button("alchemy-button");
         InventoryButton = Button("inventory-button");
         ShopWindow = Panel("shop-window");
         ShopMoney = Text("shop-money");
         ShopGrid = Panel("shop-grid");
+
+        AlchemyWindow = Panel("alchemy-window");
+        AlchemyPillTab = Button("alchemy-pill-tab");
+        AlchemyDistillTab = Button("alchemy-distill-tab");
+        AlchemySelection = Panel("alchemy-selection");
+        AlchemyRarityFilter = Button("alchemy-rarity-filter");
+        AlchemyQualityFilter = Button("alchemy-quality-filter");
+        AlchemyTypeFilter = Button("alchemy-type-filter");
+        AlchemyRarityMenu = Panel("alchemy-rarity-menu");
+        AlchemyQualityMenu = Panel("alchemy-quality-menu");
+        AlchemyTypeMenu = Panel("alchemy-type-menu");
+        AlchemyIngredients = Panel("alchemy-ingredients");
+        AlchemyCraft = Button("alchemy-craft-button");
 
         InventoryWindow = Panel("inventory-window");
         InventoryCount = Text("inventory-count");
@@ -57,6 +72,7 @@ internal sealed class GameView
         InventoryDetails = Panel("inventory-details");
         InventoryDetailIconWell = Panel("inventory-detail-icon-well");
         InventoryDetailIcon = Image("inventory-detail-icon");
+        InventoryDetailQuality = Panel("inventory-detail-quality");
         InventoryDetailName = Text("inventory-detail-name");
         InventoryDetailRarity = Text("inventory-detail-rarity");
         InventoryDetailEffect = Text("inventory-detail-effect");
@@ -106,6 +122,8 @@ internal sealed class GameView
         InfoPopupStatValue3 = Text("info-popup-stat-value-3");
         InfoPopupDetails = Text("info-popup-details");
         InfoPopupClose = Button("info-popup-close");
+        InfoPopupUse = Button("info-popup-use");
+        InfoPopupSell = Button("info-popup-sell");
         InfoPopupOk = Button("info-popup-ok");
 
         EffectPopup = Panel("effect-popup");
@@ -134,6 +152,7 @@ internal sealed class GameView
     public UiText Realm { get; }
     public UiText CultivationProgressText { get; }
     public UiProgress CultivationProgress { get; }
+    public UiProgress CultivationOverflowProgress { get; }
     public UiButton Breakthrough { get; }
     public UiButton ActivityMode { get; }
     public UiImage ActivityModeIcon { get; }
@@ -156,10 +175,23 @@ internal sealed class GameView
     public UiText HeroHealthText { get; }
     public UiPanel Effects { get; }
     public UiButton ShopButton { get; }
+    public UiButton AlchemyButton { get; }
     public UiButton InventoryButton { get; }
     public UiPanel ShopWindow { get; }
     public UiText ShopMoney { get; }
     public UiPanel ShopGrid { get; }
+    public UiPanel AlchemyWindow { get; }
+    public UiButton AlchemyPillTab { get; }
+    public UiButton AlchemyDistillTab { get; }
+    public UiPanel AlchemySelection { get; }
+    public UiButton AlchemyRarityFilter { get; }
+    public UiButton AlchemyQualityFilter { get; }
+    public UiButton AlchemyTypeFilter { get; }
+    public UiPanel AlchemyRarityMenu { get; }
+    public UiPanel AlchemyQualityMenu { get; }
+    public UiPanel AlchemyTypeMenu { get; }
+    public UiPanel AlchemyIngredients { get; }
+    public UiButton AlchemyCraft { get; }
     public UiPanel InventoryWindow { get; }
     public UiText InventoryCount { get; }
     public UiPanel InventoryGrid { get; }
@@ -169,6 +201,7 @@ internal sealed class GameView
     public UiPanel InventoryDetails { get; }
     public UiPanel InventoryDetailIconWell { get; }
     public UiImage InventoryDetailIcon { get; }
+    public UiPanel InventoryDetailQuality { get; }
     public UiText InventoryDetailName { get; }
     public UiText InventoryDetailRarity { get; }
     public UiText InventoryDetailEffect { get; }
@@ -214,6 +247,8 @@ internal sealed class GameView
     public UiText InfoPopupStatValue3 { get; }
     public UiText InfoPopupDetails { get; }
     public UiButton InfoPopupClose { get; }
+    public UiButton InfoPopupUse { get; }
+    public UiButton InfoPopupSell { get; }
     public UiButton InfoPopupOk { get; }
     public UiPanel EffectPopup { get; }
     public UiPanel EffectPopupCard { get; }

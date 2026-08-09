@@ -6,6 +6,7 @@
         <panel class="info-popup-header">
             <panel id="info-popup-icon-well" class="info-popup-icon-well">
                 <image id="info-popup-icon" class="info-popup-icon"/>
+                <panel id="info-popup-quality" class="info-popup-quality item-icon-quality"/>
             </panel>
             <panel class="info-popup-heading">
                 <text id="info-popup-kind" class="info-popup-kind">ПРЕДМЕТ</text>
@@ -19,9 +20,8 @@
                 <text id="info-popup-stat-label-1" class="info-popup-stat-label">ПАРАМЕТР</text>
                 <text id="info-popup-stat-value-1" class="info-popup-stat-value">—</text>
             </panel>
-            <panel>
+            <panel hidden="true">
                 <text id="info-popup-stat-label-2" class="info-popup-stat-label">КАЧЕСТВО</text>
-                <panel id="info-popup-quality" class="info-popup-quality"/>
                 <text id="info-popup-stat-value-2" class="info-popup-stat-value" hidden="true">—</text>
             </panel>
             <panel>
@@ -30,6 +30,10 @@
             </panel>
         </panel>
         <text id="info-popup-details" class="info-popup-details">Дополнительная информация</text>
-        <button id="info-popup-ok" class="wide-action">ПОНЯТНО</button>
+        <panel class="info-popup-actions">
+            <button id="info-popup-use" class="wide-action" hidden="true">ИСПОЛЬЗОВАТЬ</button>
+            <button id="info-popup-sell" class="wide-action secondary-wide" hidden="true">ПРОДАТЬ</button>
+            <button id="info-popup-ok" class="wide-action">ПОНЯТНО</button>
+        </panel>
     </panel>
 </panel>

@@ -1,0 +1,28 @@
+<panel id="alchemy-window" class="window compact-window alchemy-window" hidden="true">
+    <panel class="window-header">
+        <panel><text class="window-title">Алхимия</text><text class="window-subtitle">Соединяйте свойства и очищайте сырьё</text></panel>
+        <button class="window-close"><image sprite="Assets/Textures/UIIconsAtlas.atlas#close" /></button>
+    </panel>
+    <panel class="window-tabs alchemy-tabs">
+        <button id="alchemy-pill-tab" class="window-tab active">АЛХИМИЧЕСКАЯ ПЕЧЬ</button>
+        <button id="alchemy-distill-tab" class="window-tab">РАФИНИРОВАНИЕ</button>
+    </panel>
+    <panel id="alchemy-selection" class="alchemy-selection" />
+    <panel class="alchemy-source-heading"><text>ДОСТУПНОЕ СЫРЬЁ</text><text class="alchemy-source-note">Нажмите для информации</text></panel>
+    <panel class="alchemy-filters">
+        <panel class="alchemy-filter-control">
+            <button id="alchemy-rarity-filter" class="alchemy-filter-button">РЕДКОСТЬ: ВСЕ ▼</button>
+            <panel id="alchemy-rarity-menu" class="alchemy-filter-menu" hidden="true" />
+        </panel>
+        <panel class="alchemy-filter-control">
+            <button id="alchemy-quality-filter" class="alchemy-filter-button">КАЧЕСТВО: ВСЕ ▼</button>
+            <panel id="alchemy-quality-menu" class="alchemy-filter-menu" hidden="true" />
+        </panel>
+        <panel class="alchemy-filter-control">
+            <button id="alchemy-type-filter" class="alchemy-filter-button">ТИП: ВСЕ ▼</button>
+            <panel id="alchemy-type-menu" class="alchemy-filter-menu" hidden="true" />
+        </panel>
+    </panel>
+    <panel id="alchemy-ingredients" class="alchemy-ingredients" />
+    <button id="alchemy-craft-button" class="wide-action alchemy-craft" disabled="true">СОЗДАТЬ</button>
+</panel>

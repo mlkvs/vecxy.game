@@ -2,6 +2,7 @@
   "width": 1024,
   "padding": 2,
   "sources": {
+    "alchemy": "UIIcons/alchemy.png",
     "age": "UIIcons/age.png",
     "close": "UIIcons/close.png",
     "cultivation": "UIIcons/cultivation.png",

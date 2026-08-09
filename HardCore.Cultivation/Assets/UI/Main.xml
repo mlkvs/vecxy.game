@@ -62,6 +62,7 @@
                 <text id="realm-text" class="cultivation-title">Закалка тела · ур. 1</text>
                 <panel class="progress-track cultivation-track">
                     <progress id="cultivation-progress" class="progress-fill" />
+                    <progress id="cultivation-overflow-progress" class="progress-fill cultivation-overflow-fill" />
                     <text id="cultivation-progress-text" class="cultivation-progress-text">0 / 25</text>
                 </panel>
                 <panel class="progress-track hero-health-track">
@@ -75,6 +76,7 @@
 
         <panel class="bottom-nav">
             <button id="shop-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#shop" /></panel><text>ЛАВКА</text></button>
+            <button id="alchemy-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#alchemy" /></panel><text>АЛХИМИЯ</text></button>
             <button id="inventory-button" class="nav-button"><panel class="nav-icon-shell"><image sprite="Assets/Textures/UIIconsAtlas.atlas#inventory" /></panel><text>РЮКЗАК</text></button>
         </panel>
     </panel>

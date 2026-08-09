@@ -23,6 +23,7 @@ public sealed class GameController(
     ItemEffectService effects,
     ItemPriceCalculator prices,
     CultivationService cultivation,
+    AlchemyService alchemy,
     DogMeditationService dogMeditation,
     CombatService combat,
     CombatScenePresenter combatScene,
@@ -31,6 +32,8 @@ public sealed class GameController(
     IAudioManager audio,
     GameSaveSystem saves)
 {
+    private static readonly string[] CultivationPowerColors =
+        ["#4daeff", "#56d5a0", "#f1bd59", "#c68bea", "#ef7f59", "#69f3e1"];
     private UiDocument? _document;
     private UiDocument? _floatingDocument;
     private UiDocument? _transientDocument;
@@ -39,6 +42,9 @@ public sealed class GameController(
     private UiPanel? _actionToast;
     private UiImage? _actionToastIcon;
     private UiText? _actionToastText;
+    private Action? _infoPopupAction;
+    private Action? _infoPopupUseAction;
+    private Action? _infoPopupSellAction;
     private float _actionToastRemaining;
     private float _actionToastDuration;
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
@@ -50,6 +56,12 @@ public sealed class GameController(
     private bool _gameOver;
     private ItemCategory _inventoryCategory = ItemCategory.Ingredient;
     private Guid? _selectedInventoryItem;
+    private readonly List<Guid?> _alchemySlots = [];
+    private Guid? _alchemyCore;
+    private AlchemyMode _alchemyMode;
+    private int _alchemyRarityFilter;
+    private int _alchemyQualityFilter;
+    private int _alchemyTypeFilter;
     private EffectType? _openEffectType;
     private readonly Dictionary<(string Tone, bool Negative), List<UiText>> _floatingValuePools = [];
     private readonly Dictionary<(string Tone, bool Negative), int> _floatingValueIndices = [];
@@ -60,6 +72,7 @@ public sealed class GameController(
     private UiKeyedCollection<Guid, ActiveMission, MissionQueueItemView>? _missionQueueItems;
     private UiText? _missionBoardEmpty;
     private UiText? _missionQueueEmpty;
+    private UiText? _shopEmpty;
     private decimal _pendingHealthRestored;
     private float _healthFloatElapsed;
     private DogCompanion? _dog;
@@ -208,6 +221,7 @@ public sealed class GameController(
         _inventoryIcons = null;
         _missionCards = null;
         _missionQueueItems = null;
+        _shopEmpty = null;
         _dog = null;
         _dogConfigured = false;
         _dogTapBounds = null;
@@ -236,6 +250,7 @@ public sealed class GameController(
         }
         document.Instantiate("Components/ShopWindow.xml", layer);
         document.Instantiate("Components/InventoryWindow.xml", layer);
+        document.Instantiate("Components/AlchemyWindow.xml", layer);
         document.Instantiate("Components/MissionsWindow.xml", layer);
         document.Instantiate("Components/DeathWindow.xml", layer);
         document.Instantiate("Components/BreakthroughWindow.xml", layer);
@@ -265,10 +280,14 @@ public sealed class GameController(
             UpdateMissionQueueItem);
         _missionBoardEmpty = null;
         _missionQueueEmpty = null;
+        _shopEmpty = null;
 
         _dogTapBounds = null;
+        ResetAlchemySlots();
+        _alchemyCore = null;
 
         BindClick(_view.ShopButton, () => { OpenWindow(_view.ShopWindow); SyncShop(); });
+        BindClick(_view.AlchemyButton, OpenAlchemy);
         BindClick(_view.InventoryButton, () => { OpenWindow(_view.InventoryWindow); SyncInventory(); });
         BindClick(_view.MissionSummaryButton, OpenMissions);
         BindClick(_view.ActivityMode, ToggleActivityMode);
@@ -277,7 +296,9 @@ public sealed class GameController(
         BindClick(_view.CancelBreakthrough, () => UnmountWindow(_view.BreakthroughWindow));
         BindClick(_view.BreakthroughResultOk, () => UnmountWindow(_view.BreakthroughResult));
         BindClick(_view.Restart, RestartGame);
-        BindClick(_view.InfoPopupOk, CloseInfoPopup);
+        BindClick(_view.InfoPopupOk, ConfirmInfoPopup);
+        BindClick(_view.InfoPopupUse, UseInfoPopupItem);
+        BindClick(_view.InfoPopupSell, SellInfoPopupItem);
         BindClick(_view.InfoPopupClose, CloseInfoPopup);
         BindClick(_view.EffectPopupClose, CloseEffectPopup);
         _view.EffectPopup.Clicked += _ => CloseEffectPopup();
@@ -288,12 +309,19 @@ public sealed class GameController(
         BindClick(_view.IngredientsTab, () => SelectInventoryCategory(ItemCategory.Ingredient));
         BindClick(_view.CoresTab, () => SelectInventoryCategory(ItemCategory.Core));
         BindClick(_view.PillsTab, () => SelectInventoryCategory(ItemCategory.Pill));
+        BindClick(_view.AlchemyPillTab, () => SetAlchemyMode(AlchemyMode.Pill));
+        BindClick(_view.AlchemyDistillTab, () => SetAlchemyMode(AlchemyMode.Distillation));
+        BindClick(_view.AlchemyRarityFilter, () => ToggleAlchemyFilterMenu(_view.AlchemyRarityMenu));
+        BindClick(_view.AlchemyQualityFilter, () => ToggleAlchemyFilterMenu(_view.AlchemyQualityMenu));
+        BindClick(_view.AlchemyTypeFilter, () => ToggleAlchemyFilterMenu(_view.AlchemyTypeMenu));
+        BindClick(_view.AlchemyCraft, CraftAlchemy);
         BindClick(_view.InventoryUse, UseSelectedItem);
         BindClick(_view.InventorySell, SellSelectedItem);
         _view.WindowBackdrop.Clicked += _ => { };
         foreach (var close in _view.WindowCloseButtons)
             close.Clicked += _ => CloseWindows();
 
+        BuildAlchemyFilterMenus();
         ApplyStateToView();
         if (_gameOver)
             ShowDeathWindow();
@@ -485,14 +513,13 @@ public sealed class GameController(
         var progress = character.Cultivation;
         var stage = database.Cultivation.Stages[progress.StageIndex];
         var required = cultivation.GetRequiredPower(progress.StageIndex, progress.Level);
-        var fraction = required <= 0m ? 1m : Math.Clamp(character.SpiritualPower / required, 0m, 1m);
+        var powerBars = required <= 0m ? 1m : Math.Max(0m, character.SpiritualPower / required);
         _view!.YearDial.Progress = 1f - _state.Calendar.TickInYear / (float)_state.Calendar.TicksPerYear;
         _view.Money.Value = character.Money.ToString("N0", CultureInfo.InvariantCulture);
         _view.Age.Value = Format(character.Age.TotalYears);
         _view.MaximumAge.Value = Format(cultivation.GetMaximumAge(character));
         _view.Realm.Value = $"{stage.Name} · ур. {progress.Level}";
-        _view.CultivationProgressText.Value = $"{Format(character.SpiritualPower)} / {Format(required)}";
-        _view.CultivationProgress.Progress = (float)fraction;
+        UpdateCultivationPowerBar(character.SpiritualPower, required, powerBars);
         var healthFraction = character.MaximumHealth <= 0m ? 0m : character.Health / character.MaximumHealth;
         _view.HeroHealthProgress.Progress = (float)Math.Clamp(healthFraction, 0m, 1m);
         _view.HeroRecoveryThreshold.IsVisible = _state.RecoveryRequired;
@@ -503,6 +530,32 @@ public sealed class GameController(
                                       progress.StageIndex < database.Cultivation.Stages.Count - 1 &&
                                       character.SpiritualPower >= required;
         UpdateActivityButtons();
+    }
+
+    private void UpdateCultivationPowerBar(decimal spiritualPower, decimal required, decimal powerBars)
+    {
+        var completedBars = Math.Max(0, (int)decimal.Floor(powerBars));
+        if (powerBars < 1m)
+        {
+            _view!.CultivationProgress.Progress = (float)powerBars;
+            _view.CultivationProgress.Style.Set("background-color", CultivationPowerColors[0]);
+            _view.CultivationOverflowProgress.Progress = 0f;
+            _view.CultivationOverflowProgress.Style.Set("background-color", CultivationPowerColors[1]);
+            _view.CultivationProgressText.Value = $"{Format(spiritualPower)} / {Format(required)}";
+            return;
+        }
+
+        var remainder = powerBars - completedBars;
+        var completedColor = CultivationPowerColors[(completedBars - 1) % CultivationPowerColors.Length];
+        var nextColor = CultivationPowerColors[completedBars % CultivationPowerColors.Length];
+        _view!.CultivationProgress.Progress = 1f;
+        _view.CultivationProgress.Style.Set("background-color", completedColor);
+        _view.CultivationOverflowProgress.Progress = (float)Math.Clamp(remainder, 0m, 1m);
+        _view.CultivationOverflowProgress.Style.Set("background-color", nextColor);
+        var reservePercent = Math.Max(0m, (powerBars - 1m) * 100m);
+        _view.CultivationProgressText.Value = reservePercent > 0m
+            ? $"{Format(spiritualPower)} / {Format(required)} · запас +{Format(reservePercent)}%"
+            : $"{Format(spiritualPower)} / {Format(required)}";
     }
 
     private void UpdateActivityButtons()
@@ -621,7 +674,24 @@ public sealed class GameController(
         if (_view is null || _shopCards is null)
             return;
         _view.ShopMoney.Value = $"{_state.Character.Money:N0} рублей";
-        _shopCards.Update(_state.Shop.Slots, slot => slot.SlotId);
+        var availableSlots = _state.Shop.Slots.Where(slot => slot.AvailableQuantity > 0).ToArray();
+        _shopCards.Update(availableSlots, slot => slot.SlotId);
+        if (availableSlots.Length == 0)
+        {
+            if (_shopEmpty is null)
+            {
+                _shopEmpty = _document!.CreateText(
+                    "Все товары распроданы. Новые появятся в начале следующего года.",
+                    new Dictionary<string, string> { ["class"] = "shop-empty" });
+                _view.ShopGrid.Add(_shopEmpty);
+            }
+            return;
+        }
+        if (_shopEmpty is not null)
+        {
+            _shopEmpty.RemoveFromParent();
+            _shopEmpty = null;
+        }
     }
 
     private ShopCardView CreateShopCard(ShopSlot slot)
@@ -629,7 +699,7 @@ public sealed class GameController(
         var root = _document!.Instantiate("Components/ShopCard.xml", _view!.ShopGrid, new Dictionary<string, string>
         {
             ["key"] = slot.SlotId.ToString(), ["icon"] = string.Empty, ["name"] = string.Empty,
-            ["meta"] = string.Empty, ["effect"] = string.Empty, ["price"] = string.Empty
+            ["effect"] = string.Empty, ["price"] = string.Empty
         });
         var card = new ShopCardView(root);
         card.QualityStars = CreateQualityStars(card.QualityHost);
@@ -654,7 +724,6 @@ public sealed class GameController(
         card.Card.SetAttribute("data-slot-id", slot.SlotId.ToString());
         card.Icon.Sprite = AtlasSprite(config.Icon);
         card.Name.Value = config.Name;
-        card.Meta.Value = $"В наличии: {slot.AvailableQuantity}";
         card.QualityStars.SetQuality(slot.Item.Quality);
         card.Effect.Value = DescribeItemEffect(config, slot.Item);
         card.Buy.Label = $"{unitPrice.ToString(CultureInfo.InvariantCulture)} РУБЛЕЙ";
@@ -669,7 +738,7 @@ public sealed class GameController(
             return;
         var config = database.GetItem(slot.Item.ConfigId);
         var unitPrice = prices.GetBuyPrice(slot.Item, _state.Shop);
-        ShowItemPopup(config, slot.Item, slot.AvailableQuantity.ToString(),
+        ShowItemPopup(config, slot.Item, "1",
             $"Цена покупки: {unitPrice:N0} рублей");
     }
 
@@ -758,11 +827,12 @@ public sealed class GameController(
         var rarity = database.GetRarity(item.Rarity);
         _view!.InventoryDetailIcon.Sprite = AtlasSprite(config.Icon);
         _view.InventoryDetailIconWell.Style.BorderColor = rarity.Color;
-        _view.InventoryDetailName.Value = $"{config.Name} · ×{item.Quantity}";
+        BuildQualityStars(_view.InventoryDetailQuality, item.Quality);
+        _view.InventoryDetailName.Value = $"{ItemDisplayName(config, item)} · ×{item.Quantity}";
         _view.InventoryDetailRarity.Value = rarity.DisplayName.ToUpperInvariant();
         _view.InventoryDetailRarity.Style.Color = rarity.Color;
         _view.InventoryDetailEffect.Value = DescribeItemEffect(config, item);
-        _view.InventoryUse.IsEnabled = config.Effects.Count > 0;
+        _view.InventoryUse.IsEnabled = config.Effects.Count > 0 || item.CraftedEffects.Count > 0;
         _view.InventorySell.Label = $"ПРОДАТЬ\n+{prices.GetSellPrice(item, _state.Shop)} РУБЛЕЙ";
         _view.InventoryDetails.IsVisible = true;
     }
@@ -782,7 +852,14 @@ public sealed class GameController(
 
     private void UseSelectedItem()
     {
-        if (_selectedInventoryItem is not { } id || _state.Inventory.Find(id) is not { } item)
+        if (_selectedInventoryItem is not { } id)
+            return;
+        UseInventoryItem(id);
+    }
+
+    private void UseInventoryItem(Guid id)
+    {
+        if (_state.Inventory.Find(id) is not { } item)
             return;
         var config = database.GetItem(item.ConfigId);
         var before = _state.Character.SpiritualPower;
@@ -795,28 +872,457 @@ public sealed class GameController(
             ShowAchievement(levels == 1 ? "НОВЫЙ УРОВЕНЬ" : $"+{levels} УРОВНЯ");
         if (result.Success)
         {
-            _selectedInventoryItem = _state.Inventory.Find(id) is null ? null : id;
+            if (_selectedInventoryItem == id)
+                _selectedInventoryItem = _state.Inventory.Find(id) is null ? null : id;
             ApplyStateToView();
             SyncInventory();
+            SyncAlchemy();
+            Save();
         }
     }
 
     private void SellSelectedItem()
     {
-        if (_selectedInventoryItem is not { } id || _state.Inventory.Find(id) is not { } item)
+        if (_selectedInventoryItem is not { } id)
+            return;
+        SellInventoryItem(id);
+    }
+
+    private void SellInventoryItem(Guid id)
+    {
+        if (_state.Inventory.Find(id) is not { } item)
             return;
         var config = database.GetItem(item.ConfigId);
         var result = transactions.Sell(_state, id);
-        ShowActionFeedback(result.Success ? $"Продано: {config.Name} · +{result.TotalPrice:N0} руб." : result.Message,
+        ShowActionFeedback(result.Success ? $"Продано: {ItemDisplayName(config, item)} · +{result.TotalPrice:N0} руб." : result.Message,
             result.Success ? "Assets/Textures/UIIcons/money.png" : "Assets/Textures/UIIcons/close.png", result.Success);
         if (result.Success)
         {
             SpawnFloatingValue(result.TotalPrice, "РУБ.", "money-value");
-            _selectedInventoryItem = _state.Inventory.Find(id) is null ? null : id;
+            if (_selectedInventoryItem == id)
+                _selectedInventoryItem = _state.Inventory.Find(id) is null ? null : id;
             UpdateHud();
             SyncInventory();
+            SyncAlchemy();
             SyncShop();
+            Save();
         }
+    }
+
+    private void OpenAlchemy()
+    {
+        ResetAlchemySlots();
+        _alchemyCore = null;
+        _alchemyMode = AlchemyMode.Pill;
+        CloseAlchemyFilterMenus();
+        OpenWindow(_view!.AlchemyWindow);
+        SyncAlchemy();
+    }
+
+    private void SetAlchemyMode(AlchemyMode mode)
+    {
+        _alchemyMode = mode;
+        ResetAlchemySlots();
+        _alchemyCore = null;
+        CloseAlchemyFilterMenus();
+        SyncAlchemy();
+    }
+
+    private void ResetAlchemySlots()
+    {
+        _alchemySlots.Clear();
+        EnsureAlchemySlots();
+    }
+
+    private void EnsureAlchemySlots()
+    {
+        while (_alchemySlots.Count < database.Alchemy.MaximumIngredients)
+            _alchemySlots.Add(null);
+        if (_alchemySlots.Count > database.Alchemy.MaximumIngredients)
+            _alchemySlots.RemoveRange(database.Alchemy.MaximumIngredients,
+                _alchemySlots.Count - database.Alchemy.MaximumIngredients);
+    }
+
+    private IReadOnlyList<AlchemySelection> CurrentAlchemySelection()
+    {
+        var result = _alchemySlots
+            .OfType<Guid>()
+            .GroupBy(value => value)
+            .Select(group => new AlchemySelection(group.Key, group.Count()))
+            .ToList();
+        if (_alchemyMode == AlchemyMode.Pill && _alchemyCore is { } core)
+            result.Add(new AlchemySelection(core, 1));
+        return result;
+    }
+
+    private void SyncAlchemy()
+    {
+        if (_view is null || _document is null)
+            return;
+        EnsureAlchemySlots();
+        var selectedCounts = new Dictionary<Guid, int>();
+        for (var index = 0; index < _alchemySlots.Count; index++)
+        {
+            if (_alchemySlots[index] is not { } instanceId)
+                continue;
+            var item = _state.Inventory.Find(instanceId);
+            var alreadySelected = selectedCounts.GetValueOrDefault(instanceId);
+            if (item is null || alreadySelected >= item.Quantity)
+            {
+                _alchemySlots[index] = null;
+                continue;
+            }
+            selectedCounts[instanceId] = alreadySelected + 1;
+        }
+        if (_alchemyCore is { } coreId && _state.Inventory.Find(coreId) is null)
+            _alchemyCore = null;
+
+        _view.AlchemyPillTab.ToggleClass("active", _alchemyMode == AlchemyMode.Pill);
+        _view.AlchemyDistillTab.ToggleClass("active", _alchemyMode == AlchemyMode.Distillation);
+        SyncAlchemyFilters();
+
+        BuildAlchemySlots();
+        BuildAlchemyIngredients();
+        var preview = alchemy.Preview(_state, CurrentAlchemySelection(), _alchemyMode);
+        _view.AlchemyCraft.IsEnabled = preview.CanCraft;
+        _view.AlchemyCraft.Label = _alchemyMode == AlchemyMode.Pill ? "СОЗДАТЬ ПИЛЮЛЮ" : "РАФИНИРОВАТЬ";
+    }
+
+    private void BuildAlchemySlots()
+    {
+        _view!.AlchemySelection.Clear();
+        _view.AlchemySelection.Add(_document!.CreateImage(
+            "Assets/Textures/UI/alchemy-room.png",
+            new Dictionary<string, string> { ["class"] = "alchemy-room" }));
+        var furnaceStage = _document.CreatePanel(new Dictionary<string, string>
+        {
+            ["class"] = "alchemy-furnace-stage"
+        });
+        furnaceStage.Add(_document.CreateImage(
+            "Assets/Textures/UI/alchemy-furnace.png",
+            new Dictionary<string, string> { ["class"] = "alchemy-furnace" }));
+        _view.AlchemySelection.Add(furnaceStage);
+        EnsureAlchemySlots();
+        for (var index = 0; index < database.Alchemy.MaximumIngredients; index++)
+        {
+            var selectedUnit = _alchemySlots[index];
+            var slot = _document!.CreateButton(attributes: new Dictionary<string, string>
+            {
+                ["class"] = selectedUnit is not null
+                    ? $"alchemy-slot alchemy-outer-slot slot-{index + 1} filled"
+                    : $"alchemy-slot alchemy-outer-slot slot-{index + 1}"
+            });
+            if (selectedUnit is { } instanceId)
+            {
+                var item = _state.Inventory.Find(instanceId)!;
+                var config = database.GetItem(item.ConfigId);
+                var image = _document.CreateImage(config.Icon);
+                image.Sprite = AtlasSprite(config.Icon);
+                slot.Add(image);
+                var qualityHost = _document.CreatePanel(new Dictionary<string, string>
+                {
+                    ["class"] = "alchemy-slot-quality item-icon-quality"
+                });
+                slot.Add(qualityHost);
+                BuildQualityStars(qualityHost, item.Quality);
+                var slotIndex = index;
+                slot.Clicked += _ => RemoveAlchemyIngredientAt(slotIndex);
+            }
+            else
+            {
+                slot.Add(_document.CreateText((index + 1).ToString(CultureInfo.InvariantCulture),
+                    new Dictionary<string, string> { ["class"] = "alchemy-slot-index" }));
+            }
+            furnaceStage.Add(slot);
+        }
+
+        var coreSlot = _document!.CreateButton(attributes: new Dictionary<string, string>
+        {
+            ["class"] = _alchemyMode == AlchemyMode.Distillation
+                ? "alchemy-slot alchemy-core-slot equipment"
+                : _alchemyCore is null
+                    ? "alchemy-slot alchemy-core-slot"
+                    : "alchemy-slot alchemy-core-slot filled"
+        });
+        if (_alchemyMode == AlchemyMode.Distillation)
+        {
+            coreSlot.Add(_document.CreateElement("image", new Dictionary<string, string>
+            {
+                ["sprite"] = "Assets/Textures/UIIconsAtlas.atlas#alchemy"
+            }));
+        }
+        else if (_alchemyCore is { } coreId && _state.Inventory.Find(coreId) is { } core)
+        {
+            var config = database.GetItem(core.ConfigId);
+            var image = _document.CreateImage(config.Icon);
+            image.Sprite = AtlasSprite(config.Icon);
+            coreSlot.Add(image);
+            var qualityHost = _document.CreatePanel(new Dictionary<string, string>
+            {
+                ["class"] = "alchemy-slot-quality item-icon-quality"
+            });
+            coreSlot.Add(qualityHost);
+            BuildQualityStars(qualityHost, core.Quality);
+            coreSlot.Clicked += _ =>
+            {
+                _alchemyCore = null;
+                SyncAlchemy();
+            };
+        }
+        else
+        {
+            coreSlot.Add(_document.CreateText("ЯДРО", new Dictionary<string, string> { ["class"] = "alchemy-core-label" }));
+        }
+        furnaceStage.Add(coreSlot);
+    }
+
+    private void BuildAlchemyIngredients()
+    {
+        _view!.AlchemyIngredients.Clear();
+        foreach (var item in _state.Inventory.Items
+                     .Where(item =>
+                     {
+                         var category = database.GetItem(item.ConfigId).Category;
+                         return _alchemyMode == AlchemyMode.Pill
+                             ? category == ItemCategory.Core || category == ItemCategory.Ingredient && alchemy.GetProperties(item).Count > 0
+                             : category == ItemCategory.Ingredient && alchemy.GetProperties(item).Count > 0;
+                     })
+                     .Where(MatchesAlchemyFilters)
+                     .OrderBy(item => database.GetItem(item.ConfigId).Category == ItemCategory.Core ? 0 : 1)
+                     .ThenByDescending(item => item.DistillationLevel)
+                     .ThenByDescending(item => item.Rarity)
+                     .ThenByDescending(item => item.Quality))
+        {
+            var config = database.GetItem(item.ConfigId);
+            var isCore = config.Category == ItemCategory.Core;
+            var selected = isCore
+                ? (_alchemyCore == item.InstanceId ? 1 : 0)
+                : _alchemySlots.Count(value => value == item.InstanceId);
+            var root = _document!.Instantiate("Components/InventoryIcon.xml", _view.AlchemyIngredients,
+                new Dictionary<string, string>
+                {
+                    ["key"] = item.InstanceId.ToString(), ["icon"] = string.Empty,
+                    ["quantity"] = item.Quantity.ToString(CultureInfo.InvariantCulture)
+                });
+            var icon = new InventoryIconView(root);
+            icon.QualityStars = CreateQualityStars(icon.QualityHost);
+            icon.Icon.Sprite = AtlasSprite(config.Icon);
+            icon.QualityStars.SetQuality(item.Quality);
+            icon.Quantity.Value = $"×{item.Quantity}";
+            icon.IconWell.Style.BorderColor = database.GetRarity(item.Rarity).Color;
+            icon.Card.ToggleClass("selected", selected > 0);
+            var instanceId = item.InstanceId;
+            root.Clicked += _ => ShowAlchemyItem(instanceId);
+        }
+    }
+
+    private bool MatchesAlchemyFilters(ItemInstance item)
+    {
+        if (_alchemyRarityFilter > 0 && (int)item.Rarity != _alchemyRarityFilter - 1)
+            return false;
+        if (_alchemyQualityFilter > 0 &&
+            (int)decimal.Ceiling(Math.Clamp(item.Quality, 0.1m, 5m)) != _alchemyQualityFilter)
+            return false;
+        if (_alchemyTypeFilter == 0)
+            return true;
+        var category = database.GetItem(item.ConfigId).Category;
+        return _alchemyTypeFilter switch
+        {
+            1 => category == ItemCategory.Ingredient && item.DistillationLevel == 0,
+            2 => category == ItemCategory.Core,
+            3 => category == ItemCategory.Ingredient && item.DistillationLevel > 0,
+            _ => true
+        };
+    }
+
+    private void BuildAlchemyFilterMenus()
+    {
+        _view!.AlchemyRarityMenu.Clear();
+        _view.AlchemyQualityMenu.Clear();
+        _view.AlchemyTypeMenu.Clear();
+
+        AddAlchemyFilterOption(_view.AlchemyRarityMenu, "ВСЕ", 0, value => _alchemyRarityFilter = value);
+        foreach (var rarity in Enum.GetValues<ItemRarity>())
+            AddAlchemyFilterOption(
+                _view.AlchemyRarityMenu,
+                database.GetRarity(rarity).DisplayName.ToUpperInvariant(),
+                (int)rarity + 1,
+                value => _alchemyRarityFilter = value);
+
+        AddAlchemyFilterOption(_view.AlchemyQualityMenu, "ВСЕ", 0, value => _alchemyQualityFilter = value);
+        for (var quality = 1; quality <= 5; quality++)
+        {
+            var value = quality;
+            AddAlchemyFilterOption(
+                _view.AlchemyQualityMenu,
+                $"{quality - 1}–{quality}★",
+                value,
+                selected => _alchemyQualityFilter = selected);
+        }
+
+        var typeLabels = new[] { "ВСЕ", "СЫРЬЁ", "ЯДРА", "ЭКСТРАКТЫ" };
+        for (var type = 0; type < typeLabels.Length; type++)
+        {
+            var value = type;
+            AddAlchemyFilterOption(
+                _view.AlchemyTypeMenu,
+                typeLabels[type],
+                value,
+                selected => _alchemyTypeFilter = selected);
+        }
+        CloseAlchemyFilterMenus();
+    }
+
+    private void AddAlchemyFilterOption(UiPanel menu, string label, int value, Action<int> select)
+    {
+        var option = _document!.CreateButton(label, new Dictionary<string, string>
+        {
+            ["class"] = "alchemy-filter-option",
+            ["data-filter-value"] = value.ToString(CultureInfo.InvariantCulture)
+        });
+        option.Clicked += _ =>
+        {
+            select(value);
+            CloseAlchemyFilterMenus();
+            SyncAlchemy();
+        };
+        menu.Add(option);
+    }
+
+    private void ToggleAlchemyFilterMenu(UiPanel menu)
+    {
+        var show = !menu.IsVisible;
+        CloseAlchemyFilterMenus();
+        menu.IsVisible = show;
+    }
+
+    private void CloseAlchemyFilterMenus()
+    {
+        if (_view is null)
+            return;
+        _view.AlchemyRarityMenu.IsVisible = false;
+        _view.AlchemyQualityMenu.IsVisible = false;
+        _view.AlchemyTypeMenu.IsVisible = false;
+    }
+
+    private void SyncAlchemyFilters()
+    {
+        var rarityLabel = _alchemyRarityFilter == 0
+            ? "ВСЕ"
+            : database.GetRarity((ItemRarity)(_alchemyRarityFilter - 1)).DisplayName.ToUpperInvariant();
+        var qualityLabel = _alchemyQualityFilter == 0
+            ? "ВСЕ"
+            : $"{_alchemyQualityFilter - 1}–{_alchemyQualityFilter}★";
+        var typeLabel = _alchemyTypeFilter switch
+        {
+            1 => "СЫРЬЁ",
+            2 => "ЯДРА",
+            3 => "ЭКСТРАКТЫ",
+            _ => "ВСЕ"
+        };
+        _view!.AlchemyRarityFilter.Label = $"РЕДКОСТЬ: {rarityLabel} ▼";
+        _view.AlchemyQualityFilter.Label = $"КАЧЕСТВО: {qualityLabel} ▼";
+        _view.AlchemyTypeFilter.Label = $"ТИП: {typeLabel} ▼";
+        _view.AlchemyRarityFilter.ToggleClass("active", _alchemyRarityFilter > 0);
+        _view.AlchemyQualityFilter.ToggleClass("active", _alchemyQualityFilter > 0);
+        _view.AlchemyTypeFilter.ToggleClass("active", _alchemyTypeFilter > 0);
+        UpdateAlchemyFilterMenuSelection(_view.AlchemyRarityMenu, _alchemyRarityFilter);
+        UpdateAlchemyFilterMenuSelection(_view.AlchemyQualityMenu, _alchemyQualityFilter);
+        UpdateAlchemyFilterMenuSelection(_view.AlchemyTypeMenu, _alchemyTypeFilter);
+    }
+
+    private static void UpdateAlchemyFilterMenuSelection(UiPanel menu, int selectedValue)
+    {
+        foreach (var option in menu.Children.OfType<UiButton>())
+        {
+            var selected = option.Attributes.TryGetValue("data-filter-value", out var raw) &&
+                           int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value) &&
+                           value == selectedValue;
+            option.ToggleClass("selected", selected);
+        }
+    }
+
+    private void ShowAlchemyItem(Guid instanceId)
+    {
+        var item = _state.Inventory.Find(instanceId);
+        if (item is null)
+            return;
+        var config = database.GetItem(item.ConfigId);
+        var propertyText = config.Category == ItemCategory.Core
+            ? "Ядро занимает центральную точку и влияет на качество и редкость готовой пилюли."
+            : $"Свойства: {string.Join(" · ", alchemy.GetProperties(item)
+                .Select(value => database.GetAlchemyProperty(value.PropertyId).DisplayName))}";
+        ShowItemPopup(
+            config,
+            item,
+            item.Quantity.ToString(CultureInfo.InvariantCulture),
+            propertyText,
+            () => AddAlchemyIngredient(instanceId),
+            config.Category == ItemCategory.Core ? "ПОМЕСТИТЬ В ЦЕНТР" : "ДОБАВИТЬ В СХЕМУ");
+    }
+
+    private void AddAlchemyIngredient(Guid instanceId)
+    {
+        var item = _state.Inventory.Find(instanceId);
+        if (item is null)
+            return;
+        var config = database.GetItem(item.ConfigId);
+        if (config.Category == ItemCategory.Core)
+        {
+            if (_alchemyMode != AlchemyMode.Pill)
+                return;
+            _alchemyCore = instanceId;
+            SyncAlchemy();
+            return;
+        }
+        EnsureAlchemySlots();
+        var emptySlot = _alchemySlots.FindIndex(value => value is null);
+        if (emptySlot < 0)
+        {
+            ShowActionFeedback("Все ячейки смеси уже заполнены.", "Assets/Textures/UIIcons/close.png", false, info: true);
+            return;
+        }
+        var selected = _alchemySlots.Count(value => value == instanceId);
+        if (selected >= item.Quantity)
+            return;
+        _alchemySlots[emptySlot] = instanceId;
+        SyncAlchemy();
+    }
+
+    private void RemoveAlchemyIngredientAt(int slotIndex)
+    {
+        EnsureAlchemySlots();
+        if (slotIndex < 0 || slotIndex >= _alchemySlots.Count)
+            return;
+        _alchemySlots[slotIndex] = null;
+        SyncAlchemy();
+    }
+
+    private void CraftAlchemy()
+    {
+        var result = alchemy.Craft(_state, CurrentAlchemySelection(), _alchemyMode);
+        if (!result.Success || result.Output is not { } output)
+        {
+            ShowActionFeedback(result.Message, "Assets/Textures/UIIcons/close.png", false);
+            return;
+        }
+        var mode = _alchemyMode;
+        ResetAlchemySlots();
+        _alchemyCore = null;
+        Save();
+        SyncAlchemy();
+        SyncInventory();
+        var config = database.GetItem(output.ConfigId);
+        var sellPrice = prices.GetSellPrice(output, _state.Shop);
+        var canUse = config.Effects.Count > 0 || output.CraftedEffects.Count > 0;
+        ShowItemPopup(
+            config,
+            output,
+            "1",
+            mode == AlchemyMode.Pill ? "Создано в алхимической печи." : "Получено после рафинирования.",
+            useAction: canUse ? () => UseInventoryItem(output.InstanceId) : null,
+            sellAction: () => SellInventoryItem(output.InstanceId),
+            sellPrice: sellPrice);
     }
 
     private void OpenMissions()
@@ -980,7 +1486,8 @@ public sealed class GameController(
         var progress = _state.Character.Cultivation;
         var required = cultivation.GetRequiredPower(progress.StageIndex, progress.Level);
         _view!.BreakthroughChance.Value = $"{Format(cultivation.GetBreakthroughChance(_state.Character, _state.ActiveEffects))}%";
-        _view.BreakthroughCost.Value = $"Стоимость: {Format(required)} духовной силы";
+        _view.BreakthroughCost.Value =
+            $"Нужно: {Format(required)} · накоплено: {Format(_state.Character.SpiritualPower)}\nПосле успеха запас обнулится";
         OpenWindow(_view.BreakthroughWindow);
     }
 
@@ -1022,13 +1529,16 @@ public sealed class GameController(
             _view!.EffectPopupEffect.Value = $"{EffectName(type)}: осталось 0 недель";
             return;
         }
-        var source = database.GetItem(active[0].SourceItemId);
         var duration = active.Any(effect => effect.IsUntilBreakthroughAttempt)
             ? "к следующей попытке прорыва"
             : active.All(effect => effect.IsPermanent)
                 ? string.Empty
                 : $"на {FormatDuration(active.Where(effect => !effect.IsPermanent).Min(effect => Math.Max(0, effect.RemainingTicks ?? 0)))}";
-        _view!.EffectPopupEffect.Value = $"{DescribeItemEffect(source, active[0].SourceQuality)}{(string.IsNullOrEmpty(duration) ? string.Empty : $" · {duration}")}";
+        var description = string.Join("; ", active.Select(effect => DescribeEffect(
+            new ItemEffectDefinition { Type = effect.Type, Operation = effect.Operation, Value = effect.Value },
+            1m,
+            effect.DurationType == ItemDurationType.Temporary)));
+        _view!.EffectPopupEffect.Value = $"{description}{(string.IsNullOrEmpty(duration) ? string.Empty : $" · {duration}")}";
     }
 
     private void CloseEffectPopup()
@@ -1078,6 +1588,10 @@ public sealed class GameController(
         foreach (var window in _view.Windows)
             UnmountWindow(window);
         _openEffectType = null;
+        CloseAlchemyFilterMenus();
+        _infoPopupAction = null;
+        _infoPopupUseAction = null;
+        _infoPopupSellAction = null;
         UpdateWindowLayerState();
     }
 
@@ -1085,6 +1599,30 @@ public sealed class GameController(
     {
         if (_view is not null)
             UnmountWindow(_view.InfoPopup);
+        _infoPopupAction = null;
+        _infoPopupUseAction = null;
+        _infoPopupSellAction = null;
+    }
+
+    private void ConfirmInfoPopup()
+    {
+        var action = _infoPopupAction;
+        CloseInfoPopup();
+        action?.Invoke();
+    }
+
+    private void UseInfoPopupItem()
+    {
+        var action = _infoPopupUseAction;
+        CloseInfoPopup();
+        action?.Invoke();
+    }
+
+    private void SellInfoPopupItem()
+    {
+        var action = _infoPopupSellAction;
+        CloseInfoPopup();
+        action?.Invoke();
     }
 
     private void ShowDeathWindow()
@@ -1285,21 +1823,40 @@ public sealed class GameController(
 
     private readonly record struct ActionToastRequest(string Message, string Icon, string ToneClass);
 
-    private void ShowItemPopup(ItemConfig config, ItemInstance? item, string quantity, string context)
+    private void ShowItemPopup(
+        ItemConfig config,
+        ItemInstance? item,
+        string quantity,
+        string context,
+        Action? action = null,
+        string? actionLabel = null,
+        Action? useAction = null,
+        Action? sellAction = null,
+        long? sellPrice = null)
     {
         var rarity = item is null ? null : database.GetRarity(item.Rarity);
         var quality = item?.Quality ?? 2.5m;
         var view = _view!;
         view.InfoPopupKind.Value = ItemCategoryName(config.Category);
-        view.InfoPopupTitle.Value = config.Name;
-        view.InfoPopupDescription.Value = config.Description;
-        view.InfoPopupEffect.Value = DescribeItemEffect(config, quality);
-        view.InfoPopupStatLabel1.Value = "КОЛИЧЕСТВО";
-        view.InfoPopupStatValue1.Value = quantity;
+        view.InfoPopupTitle.Value = item is null ? config.Name : ItemDisplayName(config, item);
+        view.InfoPopupDescription.Value = item?.CustomDescription ?? config.Description;
+        view.InfoPopupEffect.Value = item is null
+            ? DescribeItemEffect(config, quality)
+            : DescribeItemEffect(config, item);
+        view.InfoPopupStatLabel1.Value = sellPrice is null ? "КОЛИЧЕСТВО" : "ЦЕНА ПРОДАЖИ";
+        view.InfoPopupStatValue1.Value = sellPrice is null ? quantity : $"{sellPrice:N0} РУБЛЕЙ";
         view.InfoPopupStatLabel2.Value = "КАЧЕСТВО";
         view.InfoPopupStatLabel3.Value = "РЕДКОСТЬ";
         view.InfoPopupStatValue3.Value = rarity?.DisplayName ?? "Определится при получении";
         view.InfoPopupDetails.Value = context;
+        view.InfoPopupOk.Label = actionLabel ?? "ПОНЯТНО";
+        _infoPopupAction = action;
+        _infoPopupUseAction = useAction;
+        _infoPopupSellAction = sellAction;
+        view.InfoPopupUse.IsVisible = useAction is not null;
+        view.InfoPopupSell.IsVisible = sellAction is not null;
+        view.InfoPopupSell.Label = sellPrice is null ? "ПРОДАТЬ" : $"ПРОДАТЬ\n+{sellPrice:N0} РУБЛЕЙ";
+        view.InfoPopupOk.IsVisible = useAction is null && sellAction is null || action is not null;
         view.InfoPopupQuality.IsVisible = true;
         view.InfoPopupStatValue2.IsVisible = false;
         BuildQualityStars(view.InfoPopupQuality, item?.Quality);
@@ -1313,7 +1870,10 @@ public sealed class GameController(
     private void AddRewardIcon(UiElement parent, ItemConfig item, string badge)
     {
         var tile = AddRewardIcon(parent, item.Icon, badge);
-        var qualityHost = _document!.CreatePanel(new Dictionary<string, string> { ["class"] = "reward-quality" });
+        var qualityHost = _document!.CreatePanel(new Dictionary<string, string>
+        {
+            ["class"] = "reward-quality item-icon-quality"
+        });
         tile.Add(qualityHost);
         BuildQualityStars(qualityHost, null);
         tile.Clicked += _ => ShowItemPopup(item, null, badge.TrimStart('×'), "Возможная награда за миссию");
@@ -1381,7 +1941,29 @@ public sealed class GameController(
             stars.SetUnknown();
     }
 
-    private string DescribeItemEffect(ItemConfig config, ItemInstance item) => DescribeItemEffect(config, item.Quality);
+    private static string ItemDisplayName(ItemConfig config, ItemInstance item) => item.CustomName ?? config.Name;
+
+    private string DescribeItemEffect(ItemConfig config, ItemInstance item)
+    {
+        var definitions = item.CraftedEffects.Count > 0 ? item.CraftedEffects : config.Effects;
+        if (definitions.Count == 0)
+        {
+            var properties = alchemy.GetProperties(item);
+            return properties.Count == 0
+                ? "Материал для алхимии."
+                : string.Join(" · ", properties.Select(value =>
+                    $"{database.GetAlchemyProperty(value.PropertyId).DisplayName} {value.Potency:0.##}"));
+        }
+        var strength = database.Balance.EffectQualityBase + item.Quality * database.Balance.EffectQualityPerPoint;
+        var effectText = string.Join("; ", definitions.Select(effect =>
+            DescribeEffect(effect, strength, config.DurationType == ItemDurationType.Temporary)));
+        return config.DurationType switch
+        {
+            ItemDurationType.Temporary => $"{effectText} на {FormatDuration(item.CraftedDurationTicks ?? config.TemporaryDurationTicks)}",
+            ItemDurationType.UntilBreakthroughAttempt => $"{effectText} к следующей попытке прорыва",
+            _ => effectText
+        };
+    }
 
     private string DescribeItemEffect(ItemConfig config, decimal quality)
     {

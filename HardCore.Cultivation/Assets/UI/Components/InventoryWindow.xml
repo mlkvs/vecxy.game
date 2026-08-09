@@ -8,7 +8,10 @@
     </panel>
     <panel id="inventory-grid" class="inventory-grid" />
     <panel id="inventory-details" class="inventory-details" hidden="true">
-        <panel id="inventory-detail-icon-well" class="inventory-detail-icon-well"><image id="inventory-detail-icon" /></panel>
+        <panel id="inventory-detail-icon-well" class="inventory-detail-icon-well">
+            <image id="inventory-detail-icon" />
+            <panel id="inventory-detail-quality" class="inventory-detail-quality item-icon-quality" />
+        </panel>
         <panel class="inventory-detail-copy">
             <text id="inventory-detail-rarity" class="inventory-detail-rarity">ОБЫЧНАЯ</text>
             <text id="inventory-detail-name" class="inventory-detail-name">Предмет</text>
