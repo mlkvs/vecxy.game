@@ -192,7 +192,6 @@ public sealed class GameController(
         {
             _healthUiElapsed += deltaTime;
             if (_healthUiElapsed >= HealthUiRefreshIntervalSeconds ||
-                combatUpdate.RecoveryCompleted ||
                 _state.Character.Health >= _state.Character.MaximumHealth)
             {
                 UpdateHud();
@@ -200,18 +199,12 @@ public sealed class GameController(
             }
             _pendingHealthRestored += combatUpdate.HealthRestored;
             _healthFloatElapsed += deltaTime;
-            if (_healthFloatElapsed >= 1f || combatUpdate.RecoveryCompleted)
+            if (_healthFloatElapsed >= 1f)
             {
                 SpawnFloatingValue(_pendingHealthRestored, string.Empty, "health-value");
                 _pendingHealthRestored = 0m;
                 _healthFloatElapsed = 0f;
             }
-        }
-        if (combatUpdate.RecoveryCompleted)
-        {
-            ShowAchievement("МОЖНО ВЕРНУТЬСЯ К МИССИЯМ");
-            UpdateActivityButtons();
-            Save();
         }
         _elapsedMilliseconds += deltaTime * 1000f;
         var processed = 0;
@@ -668,14 +661,6 @@ public sealed class GameController(
 
     private void SetActivity(ActivityMode mode)
     {
-        if (mode == ActivityMode.Missions && _state.RecoveryRequired)
-        {
-            ShowActionFeedback(
-                "После поражения восстановите здоровье до отмеченного порога.",
-                "Assets/Textures/UIIcons/close.png",
-                false);
-            return;
-        }
         _state.SetActivityMode(mode);
         UpdateActivityButtons();
         Save();
@@ -769,12 +754,7 @@ public sealed class GameController(
         UpdateCultivationPowerBar(character.SpiritualPower, required, powerBars);
         var healthFraction = character.MaximumHealth <= 0m ? 0m : character.Health / character.MaximumHealth;
         _view.HeroHealthProgress.Progress = (float)Math.Clamp(healthFraction, 0m, 1m);
-        _view.HeroRecoveryThreshold.IsVisible = _state.RecoveryRequired;
-        var recoveryThresholdFraction = character.MaximumHealth <= 0m
-            ? 0m
-            : combat.GetRecoveryHealthThreshold(character) / character.MaximumHealth;
-        _view.HeroRecoveryThreshold.Style.Set("left", string.Concat(
-            (Math.Clamp(recoveryThresholdFraction, 0m, 1m) * 100m).ToString("0.##", CultureInfo.InvariantCulture), "%"));
+        _view.HeroRecoveryThreshold.IsVisible = false;
         _view.HeroHealthText.Value = $"{Format(character.Health)} / {Format(character.MaximumHealth)}";
         _view.Breakthrough.IsEnabled = progress.CanAttemptBreakthrough &&
                                       progress.StageIndex < database.Cultivation.Stages.Count - 1 &&
@@ -812,14 +792,6 @@ public sealed class GameController(
     {
         if (_view is null)
             return;
-        if (_state.RecoveryRequired)
-        {
-            _view.ActivityMode.SetAttribute("class", "activity-toggle recovery");
-            _view.ActivityModeIcon.Sprite = AtlasSprite("Assets/Textures/UIIcons/cultivation.png");
-            _view.ActivityModeText.Value = "ВОССТАНОВЛЕНИЕ";
-            SyncActivityScene();
-            return;
-        }
         _view.ActivityMode.SetAttribute("class", _state.ActivityMode == ActivityMode.Missions
             ? "activity-toggle missions"
             : "activity-toggle");
@@ -847,7 +819,7 @@ public sealed class GameController(
 
         _characterVisual?.PrewarmTextures(renderer);
 
-        var missionMode = !_state.RecoveryRequired && _state.ActivityMode == ActivityMode.Missions;
+        var missionMode = _state.ActivityMode == ActivityMode.Missions;
         var stageIndex = Math.Clamp(_state.Character.Cultivation.StageIndex, 0, database.Cultivation.Stages.Count - 1);
         _backgroundVisual?.SetStage(database.Cultivation.Stages[stageIndex]);
         _characterVisual?.SetMissionMode(missionMode);
@@ -887,11 +859,9 @@ public sealed class GameController(
                 markerPosition.ToString("0.##", CultureInfo.InvariantCulture) + "%");
         }
         _view!.MissionName.Value = config.Name;
-        _view.MissionDescription.Value = _state.RecoveryRequired
-            ? "Ожидает полного восстановления"
-            : _state.ActivityMode == ActivityMode.Missions
-                ? "Выполняется сейчас"
-                : "Ожидает: включите режим миссий";
+        _view.MissionDescription.Value = _state.ActivityMode == ActivityMode.Missions
+            ? "Выполняется сейчас"
+            : "Ожидает: включите режим миссий";
         _view.MissionProgressText.Value = $"{Format(mission.CurrentProgress)} / {Format(mission.RequiredProgress)}";
         _view.MissionProgress.Progress = (float)(mission.RequiredProgress == 0m ? 1m : mission.CurrentProgress / mission.RequiredProgress);
         UpdateCombatUi();

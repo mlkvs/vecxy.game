@@ -134,11 +134,7 @@ public sealed class GameSaveSystem(GameDatabase database)
                 state.Character.RestoreCheatOffsets(
                     data.Character.MaximumHealthOffset,
                     data.Character.MaximumAgeOffsetYears);
-            state.RestoreDefeatRecovery(
-                data.Version >= 7 && data.RecoveryRequired &&
-                state.Character.Health < Math.Min(
-                    state.Character.MaximumHealth,
-                    database.Combat.RecoveryHealthPoints));
+            state.RestoreDefeatRecovery(false);
             state.DogMeditation.Restore(
                 data.Version >= 8 ? data.DogMeditationSeconds : 0f,
                 database.Dog.ChargeDurationSeconds);

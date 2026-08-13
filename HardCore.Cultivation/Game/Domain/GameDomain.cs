@@ -674,24 +674,19 @@ public sealed class GameState
 
     public void SetActivityMode(ActivityMode mode)
     {
-        if (RecoveryRequired && mode == ActivityMode.Missions)
-            return;
         ActivityMode = mode;
     }
 
     public void BeginDefeatRecovery()
     {
-        RecoveryRequired = true;
-        ActivityMode = ActivityMode.Cultivation;
+        RecoveryRequired = false;
     }
 
     public void CompleteDefeatRecovery() => RecoveryRequired = false;
 
     public void RestoreDefeatRecovery(bool required)
     {
-        RecoveryRequired = required;
-        if (required)
-            ActivityMode = ActivityMode.Cultivation;
+        RecoveryRequired = false;
     }
 
     public void EnqueueMission(ActiveMission mission)

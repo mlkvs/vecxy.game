@@ -595,12 +595,13 @@ public sealed class CombatUpdate
     public List<CombatEvent> Events { get; } = [];
     public bool HealthChanged { get; internal set; }
     public decimal HealthRestored { get; internal set; }
-    public bool RecoveryCompleted { get; internal set; }
     public bool StateChanged => Events.Count > 0;
 }
 
 public sealed class CombatService(GameDatabase database)
 {
+    private const decimal DefeatSurvivalHealth = 0.1m;
+
     private int CompletedCultivationLevels(CharacterState character) =>
         character.Cultivation.StageIndex * (database.Cultivation.LevelMultipliers.Count - 1) +
         character.Cultivation.Level - 1;
@@ -623,9 +624,6 @@ public sealed class CombatService(GameDatabase database)
         character.Cultivation.StageIndex * database.Combat.HeroDefensePerStage +
         CompletedCultivationLevels(character) * database.Combat.HeroDefensePerLevel;
 
-    public decimal GetRecoveryHealthThreshold(CharacterState character) =>
-        Math.Min(GetHeroMaximumHealth(character), database.Combat.RecoveryHealthPoints);
-
     public void ConfigureHero(CharacterState character, bool fillIfUninitialized = false) =>
         character.ConfigureMaximumHealth(GetHeroMaximumHealth(character), fillIfUninitialized);
 
@@ -644,11 +642,6 @@ public sealed class CombatService(GameDatabase database)
             state.Character.Heal(regeneration * (decimal)Math.Clamp(deltaTime, 0f, 0.25f));
             result.HealthRestored = state.Character.Health - before;
             result.HealthChanged = result.HealthRestored > 0m;
-            if (state.RecoveryRequired && state.Character.Health >= GetRecoveryHealthThreshold(state.Character))
-            {
-                state.CompleteDefeatRecovery();
-                result.RecoveryCompleted = true;
-            }
         }
         if (mission is null)
             return result;
@@ -683,8 +676,9 @@ public sealed class CombatService(GameDatabase database)
             if (!victory)
             {
                 state.RemoveMission(mission.InstanceId);
-                state.Character.RestoreHealth(0m, state.Character.MaximumHealth);
-                state.BeginDefeatRecovery();
+                state.Character.RestoreHealth(
+                    Math.Min(DefeatSurvivalHealth, state.Character.MaximumHealth),
+                    state.Character.MaximumHealth);
             }
             result.Events.Add(new CombatEvent(CombatEventType.Closed));
             return result;
