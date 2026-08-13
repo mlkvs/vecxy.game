@@ -8,7 +8,7 @@ namespace HardCore.Cultivation.Game.Infrastructure;
 
 public sealed class GameSaveSystem(GameDatabase database)
 {
-    public const int CurrentVersion = 10;
+    public const int CurrentVersion = 11;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -35,7 +35,9 @@ public sealed class GameSaveSystem(GameDatabase database)
                 StageIndex = state.Character.Cultivation.StageIndex,
                 Level = state.Character.Cultivation.Level,
                 Health = state.Character.Health,
-                MaximumHealth = state.Character.MaximumHealth
+                MaximumHealth = state.Character.MaximumHealth,
+                MaximumHealthOffset = state.Character.MaximumHealthOffset,
+                MaximumAgeOffsetYears = state.Character.MaximumAgeOffsetYears
             },
             Inventory = state.Inventory.Items.Select(ToItemData).ToList(),
             MissionQueue = state.MissionQueue.Select(mission => new MissionSaveData
@@ -128,6 +130,10 @@ public sealed class GameSaveSystem(GameDatabase database)
                 state.Character.RestoreHealth(data.Character.Health, data.Character.MaximumHealth);
             else
                 state.Character.ConfigureMaximumHealth(database.Combat.HeroBaseHealth, true);
+            if (data.Version >= 11)
+                state.Character.RestoreCheatOffsets(
+                    data.Character.MaximumHealthOffset,
+                    data.Character.MaximumAgeOffsetYears);
             state.RestoreDefeatRecovery(
                 data.Version >= 7 && data.RecoveryRequired &&
                 state.Character.Health < Math.Min(
@@ -359,6 +365,8 @@ public sealed class CharacterSaveData
     public int Level { get; init; } = 1;
     public decimal Health { get; init; }
     public decimal MaximumHealth { get; init; }
+    public decimal MaximumHealthOffset { get; init; }
+    public decimal MaximumAgeOffsetYears { get; init; }
 }
 
 public sealed class ItemSaveData

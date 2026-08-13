@@ -474,7 +474,7 @@ public sealed class CultivationService(GameDatabase database, IRandomSource rand
         ArgumentNullException.ThrowIfNull(character);
         var unlockedStages = Math.Clamp(character.Cultivation.StageIndex, 0, LongevityStageBonuses.Length);
         var bonus = LongevityStageBonuses.Take(unlockedStages).Sum();
-        return database.Balance.MaximumAgeYears + bonus;
+        return Math.Max(1m, database.Balance.MaximumAgeYears + bonus + character.MaximumAgeOffsetYears);
     }
 
     public TransactionResult TryAdvanceLevel(CharacterState character)
@@ -606,9 +606,12 @@ public sealed class CombatService(GameDatabase database)
         character.Cultivation.Level - 1;
 
     public decimal GetHeroMaximumHealth(CharacterState character) =>
-        database.Combat.HeroBaseHealth +
-        character.Cultivation.StageIndex * database.Combat.HeroHealthPerStage +
-        CompletedCultivationLevels(character) * database.Combat.HeroHealthPerLevel;
+        Math.Max(
+            1m,
+            database.Combat.HeroBaseHealth +
+            character.Cultivation.StageIndex * database.Combat.HeroHealthPerStage +
+            CompletedCultivationLevels(character) * database.Combat.HeroHealthPerLevel +
+            character.MaximumHealthOffset);
 
     public decimal GetHeroAttack(CharacterState character) =>
         database.Combat.HeroBaseAttack +

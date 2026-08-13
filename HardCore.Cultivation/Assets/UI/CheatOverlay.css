@@ -1,0 +1,152 @@
+@font-face {
+    font-family: "Rubik UI";
+    src: url("../Fonts/Rubik-SemiBold.ttf");
+}
+
+text {
+    vertical-align: center;
+}
+
+.cheat-screen {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    font-family: "Rubik UI";
+    font-size: 18px;
+    color: #fff3d6;
+}
+
+.cheat-screen text {
+    white-space: nowrap;
+    text-fit: shrink;
+    min-font-size: 9px;
+    vertical-align: middle;
+}
+
+.cheat-trigger {
+    pointer-events: auto;
+    position: absolute;
+    z-index: 5000;
+    left: 0;
+    top: 50%;
+    width: 34px;
+    height: 34px;
+    margin-top: -17px;
+    background-color: #ffffff26;
+    border: 1px solid #fff3d666;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 0 4px 10px #00000066;
+}
+
+.cheat-fps {
+    pointer-events: none;
+    position: absolute;
+    z-index: 5000;
+    right: 8px;
+    top: 8px;
+    width: 92px;
+    height: 28px;
+    padding: 3px 8px;
+    color: #9ff2c9;
+    background-color: #07120ecc;
+    border: 1px solid #9ff2c966;
+    border-radius: 8px;
+    font-size: 15px;
+    text-align: right;
+}
+
+.cheat-overlay {
+    pointer-events: auto;
+    position: absolute;
+    z-index: 5001;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: #030604aa;
+}
+
+.cheat-panel {
+    width: 560px;
+    max-height: 980px;
+    padding: 18px;
+    background-color: #17231ded;
+    border: 2px solid #f1bd59;
+    border-radius: 18px;
+    box-shadow: 0 12px 28px #000000cc;
+}
+
+.cheat-header {
+    height: 48px;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.cheat-title {
+    flex: 1;
+    font-size: 28px;
+    color: #f1bd59;
+}
+
+.cheat-close {
+    width: 44px;
+    height: 44px;
+    color: #fff3d6;
+    background-color: #00000022;
+    border: 1px solid #fff3d655;
+    border-radius: 8px;
+    font-size: 28px;
+}
+
+.cheat-groups {
+    max-height: 830px;
+    overflow-y: auto;
+    gap: 12px;
+    scrollbar-width: 0px;
+    scrollbar-color: transparent transparent;
+}
+
+.cheat-group {
+    padding: 12px;
+    background-color: #0d1814cc;
+    border: 1px solid #fff3d62e;
+    border-radius: 10px;
+    gap: 10px;
+}
+
+.cheat-group-title {
+    height: 24px;
+    color: #9ff2c9;
+    font-size: 19px;
+}
+
+.cheat-button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 48px;
+    gap: 8px;
+}
+
+.cheat-action {
+    min-height: 48px;
+    padding: 6px 8px;
+    color: #17120d;
+    background-color: #f6ddb0;
+    border: 2px solid #fff3d6;
+    border-radius: 8px;
+    font-size: 15px;
+    min-font-size: 10px;
+    text-fit: shrink;
+    text-align: center;
+}
+
+.cheat-action:hover {
+    background-color: #fff3d6;
+}
+
+.cheat-status {
+    height: 30px;
+    margin-top: 12px;
+    color: #d9c7a2;
+    font-size: 16px;
+}

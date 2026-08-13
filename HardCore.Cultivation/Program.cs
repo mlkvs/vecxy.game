@@ -22,11 +22,12 @@ public sealed class Application : IEntryPoint
             AssetsDirectory = context.AssetsDirectory
         }));
         
-#if !ANDROID
-        layers.Add(new Vecxy.Editor.EditorLayer.Definition());
-#endif
-        
         layers.Add(new GameLayer.Definition());
+        layers.Add(new CheatLayer.Definition());
+        
+#if !ANDROID
+        // layers.Add(new UiProfilerLayer.Definition());
+#endif
     }
 }
 

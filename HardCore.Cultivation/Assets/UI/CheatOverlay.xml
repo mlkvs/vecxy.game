@@ -1,0 +1,15 @@
+<ui class="cheat-screen" styles="CheatOverlay.css"
+    scale-mode="fit" reference-width="620" reference-height="1180">
+    <text id="cheat-fps" class="cheat-fps">0 FPS</text>
+    <button id="cheat-trigger" class="cheat-trigger" aria-label="Cheats" />
+    <panel id="cheat-overlay" class="cheat-overlay">
+        <panel class="cheat-panel">
+            <panel class="cheat-header">
+                <text class="cheat-title">ЧИТЫ</text>
+                <button id="cheat-close" class="cheat-close">×</button>
+            </panel>
+            <panel id="cheat-groups" class="cheat-groups" />
+            <text id="cheat-status" class="cheat-status">Готово</text>
+        </panel>
+    </panel>
+</ui>

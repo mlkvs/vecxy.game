@@ -165,6 +165,8 @@ public sealed class CharacterState
     public long Money { get; private set; }
     public CharacterAge Age { get; } = new(16m);
     public CultivationProgress Cultivation { get; } = new();
+    public decimal MaximumHealthOffset { get; private set; }
+    public decimal MaximumAgeOffsetYears { get; private set; }
     public decimal MaximumHealth { get; private set; } = 100m;
     public decimal Health { get; private set; } = 100m;
 
@@ -198,6 +200,16 @@ public sealed class CharacterState
     }
 
     public void AddMoney(long amount) => Money = checked(Money + amount);
+
+    public void RestoreCheatOffsets(decimal maximumHealthOffset, decimal maximumAgeOffsetYears)
+    {
+        MaximumHealthOffset = maximumHealthOffset;
+        MaximumAgeOffsetYears = maximumAgeOffsetYears;
+    }
+
+    public void AdjustMaximumHealthOffset(decimal amount) => MaximumHealthOffset += amount;
+
+    public void AdjustMaximumAgeOffset(decimal years) => MaximumAgeOffsetYears += years;
 
     public void ConfigureMaximumHealth(decimal maximumHealth, bool fillIfUninitialized = false)
     {
