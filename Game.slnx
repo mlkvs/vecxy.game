@@ -3,6 +3,7 @@
     <Project Path="Sandbox/Tests/Tests.csproj" />
   </Folder>
   <Folder Name="/Tools/">
+    <Project Path="Engine/Vecxy/Code/Vecxy.AssetCompiler/Vecxy.AssetCompiler.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.CLI/Vecxy.CLI.csproj" />
   </Folder>
   <Folder Name="/Editor/">
