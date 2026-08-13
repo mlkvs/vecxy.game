@@ -36,9 +36,9 @@ public sealed class GameController(
         ["#4daeff", "#56d5a0", "#f1bd59", "#c68bea", "#ef7f59", "#69f3e1"];
     private UiDocument? _document;
     private UiDocument? _floatingDocument;
+    private GameWindowDocuments? _windowDocuments;
     private UiDocument? _transientDocument;
     private GameView? _view;
-    private UiPanel? _windowLayer;
     private UiPanel? _actionToastHost;
     private UiPanel? _actionToast;
     private UiImage? _actionToastIcon;
@@ -60,6 +60,10 @@ public sealed class GameController(
     private float _elapsedMilliseconds;
     private float _yearCandleAnimationSeconds;
     private int _yearCandleFlameFrame = -1;
+    private int _yearCandleWaxPixel = int.MinValue;
+    private int _yearCandleCapPixel = int.MinValue;
+    private string? _yearCandleCapOpacity;
+    private bool _deferredHudRefresh;
     private bool _gameOver;
     private ItemCategory _inventoryCategory = ItemCategory.Ingredient;
     private Guid? _selectedInventoryItem;
@@ -78,7 +82,9 @@ public sealed class GameController(
     private EffectType? _openEffectType;
     private readonly List<FloatingValueWidget> _floatingValues = [];
     private int _floatingValueIndex;
+    private readonly List<EffectType> _activeEffectTypes = [];
     private readonly Dictionary<EffectType, UiRadialProgress> _effectWidgets = [];
+    private int _activeEffectsSignature = int.MinValue;
     private UiKeyedCollection<Guid, ShopSlot, ShopCardView>? _shopCards;
     private UiKeyedCollection<Guid, ItemInstance, InventoryIconView>? _inventoryIcons;
     private UiKeyedCollection<Guid, ItemInstance, InventoryIconView>? _alchemyIngredientIcons;
@@ -112,11 +118,18 @@ public sealed class GameController(
         SyncDogVisual();
         _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character);
 
+        _document = ui.Load("UI/Main.xml");
+        _document.Reloaded += BuildUi;
         _floatingDocument = ui.Load("UI/FloatingOverlay.xml");
         _floatingDocument.Reloaded += BuildFloatingUi;
         BuildFloatingUi(_floatingDocument);
-        _document = ui.Load("UI/Main.xml");
-        _document.Reloaded += BuildUi;
+        _windowDocuments = LoadWindowDocuments();
+        foreach (var windowDocument in _windowDocuments.All)
+        {
+            windowDocument.Reloaded += HandleWindowDocumentReloaded;
+            BuildWindowUi(windowDocument);
+            windowDocument.IsVisible = false;
+        }
         BuildUi(_document);
         _transientDocument = ui.Load("UI/TransientOverlay.xml");
         _transientDocument.Reloaded += BuildTransientUi;
@@ -300,6 +313,14 @@ public sealed class GameController(
             _floatingDocument.Reloaded -= BuildFloatingUi;
             ui.Unload(_floatingDocument);
         }
+        if (_windowDocuments is not null)
+        {
+            foreach (var windowDocument in _windowDocuments.All)
+            {
+                windowDocument.Reloaded -= HandleWindowDocumentReloaded;
+                ui.Unload(windowDocument);
+            }
+        }
         if (_transientDocument is not null)
         {
             _transientDocument.Reloaded -= BuildTransientUi;
@@ -307,6 +328,7 @@ public sealed class GameController(
         }
         _document = null;
         _floatingDocument = null;
+        _windowDocuments = null;
         _transientDocument = null;
         _view = null;
         _shopCards = null;
@@ -348,23 +370,10 @@ public sealed class GameController(
 
     private void BuildUi(UiDocument document)
     {
-        var layer = document.GetElementById<UiPanel>("window-layer");
-        _windowLayer = layer;
-        foreach (var child in layer.Children.ToArray())
-        {
-            if (child.Id is not "window-backdrop" and not "modal-money-stat")
-                child.RemoveFromParent();
-        }
-        document.Instantiate("Components/ShopWindow.xml", layer);
-        document.Instantiate("Components/InventoryWindow.xml", layer);
-        document.Instantiate("Components/AlchemyWindow.xml", layer);
-        document.Instantiate("Components/MissionsWindow.xml", layer);
-        document.Instantiate("Components/DeathWindow.xml", layer);
-        document.Instantiate("Components/BreakthroughWindow.xml", layer);
-        document.Instantiate("Components/BreakthroughResult.xml", layer);
-        document.Instantiate("Components/EffectPopup.xml", layer);
-        document.Instantiate("Components/InfoPopup.xml", layer);
-        _view = new GameView(document);
+        var windowDocuments = _windowDocuments ?? throw new InvalidOperationException("Window UI documents are not loaded.");
+        foreach (var windowDocument in windowDocuments.All)
+            BuildWindowUi(windowDocument);
+        _view = new GameView(document, windowDocuments);
         _shopCards = new UiKeyedCollection<Guid, ShopSlot, ShopCardView>(
             _view.ShopGrid,
             CreateShopCard,
@@ -390,6 +399,62 @@ public sealed class GameController(
             CreateMissionQueueItem,
             item => item.Card,
             UpdateMissionQueueItem);
+        InitializeBuiltUi(document);
+    }
+
+    private GameWindowDocuments LoadWindowDocuments() =>
+        new(
+            ui.Load("UI/ShopWindowDocument.xml"),
+            ui.Load("UI/InventoryWindowDocument.xml"),
+            ui.Load("UI/AlchemyWindowDocument.xml"),
+            ui.Load("UI/MissionsWindowDocument.xml"),
+            ui.Load("UI/BreakthroughDocument.xml"),
+            ui.Load("UI/DeathWindowDocument.xml"),
+            ui.Load("UI/InfoPopupDocument.xml"),
+            ui.Load("UI/EffectPopupDocument.xml"));
+
+    private void HandleWindowDocumentReloaded(UiDocument document)
+    {
+        BuildWindowUi(document);
+        if (_document is not null)
+            BuildUi(_document);
+    }
+
+    private void BuildWindowUi(UiDocument document)
+    {
+        var layer = document.GetElementById<UiPanel>("window-layer");
+        foreach (var child in layer.Children.ToArray())
+        {
+            if (child.Id is not "window-backdrop" and not "modal-money-stat")
+                child.RemoveFromParent();
+        }
+        if (_windowDocuments is null)
+            return;
+
+        if (ReferenceEquals(document, _windowDocuments.Shop))
+            document.Instantiate("Components/ShopWindow.xml", layer);
+        else if (ReferenceEquals(document, _windowDocuments.Inventory))
+            document.Instantiate("Components/InventoryWindow.xml", layer);
+        else if (ReferenceEquals(document, _windowDocuments.Alchemy))
+            document.Instantiate("Components/AlchemyWindow.xml", layer);
+        else if (ReferenceEquals(document, _windowDocuments.Missions))
+            document.Instantiate("Components/MissionsWindow.xml", layer);
+        else if (ReferenceEquals(document, _windowDocuments.Breakthrough))
+        {
+            document.Instantiate("Components/BreakthroughWindow.xml", layer);
+            document.Instantiate("Components/BreakthroughResult.xml", layer);
+        }
+        else if (ReferenceEquals(document, _windowDocuments.Death))
+            document.Instantiate("Components/DeathWindow.xml", layer);
+        else if (ReferenceEquals(document, _windowDocuments.InfoPopup))
+            document.Instantiate("Components/InfoPopup.xml", layer);
+        else if (ReferenceEquals(document, _windowDocuments.EffectPopup))
+            document.Instantiate("Components/EffectPopup.xml", layer);
+    }
+
+    private void InitializeBuiltUi(UiDocument document)
+    {
+        var view = _view!;
         _missionBoardEmpty = null;
         _missionQueueEmpty = null;
         _shopEmpty = null;
@@ -399,43 +464,44 @@ public sealed class GameController(
         _alchemyCore = null;
         BuildAlchemySelection();
 
-        BindClick(_view.ShopButton, () => { OpenWindow(_view.ShopWindow); SyncShop(); });
-        BindClick(_view.AlchemyButton, OpenAlchemy);
-        BindClick(_view.InventoryButton, () => { OpenWindow(_view.InventoryWindow); SyncInventory(); });
-        BindClick(_view.MissionSummaryButton, OpenMissions);
-        BindClick(_view.ActivityMode, ToggleActivityMode);
-        BindClick(_view.Breakthrough, OpenBreakthrough);
-        BindClick(_view.ConfirmBreakthrough, AttemptBreakthrough);
-        BindClick(_view.CancelBreakthrough, () => UnmountWindow(_view.BreakthroughWindow));
-        BindClick(_view.BreakthroughResultOk, () => UnmountWindow(_view.BreakthroughResult));
-        BindClick(_view.Restart, RestartGame);
-        BindClick(_view.InfoPopupOk, ConfirmInfoPopup);
-        BindClick(_view.InfoPopupUse, UseInfoPopupItem);
-        BindClick(_view.InfoPopupSell, SellInfoPopupItem);
-        BindClick(_view.InfoPopupClose, CloseInfoPopup);
-        BindClick(_view.EffectPopupClose, CloseEffectPopup);
-        _view.EffectPopup.Clicked += _ => CloseEffectPopup();
-        _view.CharacterTapTarget.ClickedAt += (_, position) => TapCharacter(position);
-        BindClick(_view.DogTapTarget, ReactDog);
-        BindClick(_view.AvailableMissionsTab, () => ShowMissionPage(false));
-        BindClick(_view.AcceptedMissionsTab, () => ShowMissionPage(true));
-        BindClick(_view.IngredientsTab, () => SelectInventoryCategory(ItemCategory.Ingredient));
-        BindClick(_view.CoresTab, () => SelectInventoryCategory(ItemCategory.Core));
-        BindClick(_view.PillsTab, () => SelectInventoryCategory(ItemCategory.Pill));
-        BindClick(_view.InventoryPagePrevious, () => ChangeInventoryPage(-1));
-        BindClick(_view.InventoryPageNext, () => ChangeInventoryPage(1));
-        BindClick(_view.AlchemyPillTab, () => SetAlchemyMode(AlchemyMode.Pill));
-        BindClick(_view.AlchemyDistillTab, () => SetAlchemyMode(AlchemyMode.Distillation));
-        BindClick(_view.AlchemyPagePrevious, () => ChangeAlchemyPage(-1));
-        BindClick(_view.AlchemyPageNext, () => ChangeAlchemyPage(1));
-        BindClick(_view.AlchemyRarityFilter, () => ToggleAlchemyFilterMenu(_view.AlchemyRarityMenu));
-        BindClick(_view.AlchemyQualityFilter, () => ToggleAlchemyFilterMenu(_view.AlchemyQualityMenu));
-        BindClick(_view.AlchemyTypeFilter, () => ToggleAlchemyFilterMenu(_view.AlchemyTypeMenu));
-        BindClick(_view.AlchemyCraft, CraftAlchemy);
-        BindClick(_view.InventoryUse, UseSelectedItem);
-        BindClick(_view.InventorySell, SellSelectedItem);
-        _view.WindowBackdrop.Clicked += _ => { };
-        foreach (var close in _view.WindowCloseButtons)
+        BindClick(view.ShopButton, () => { OpenWindow(view.ShopWindow); SyncShop(); });
+        BindClick(view.AlchemyButton, OpenAlchemy);
+        BindClick(view.InventoryButton, () => { OpenWindow(view.InventoryWindow); SyncInventory(); });
+        BindClick(view.MissionSummaryButton, OpenMissions);
+        BindClick(view.ActivityMode, ToggleActivityMode);
+        BindClick(view.Breakthrough, OpenBreakthrough);
+        BindClick(view.ConfirmBreakthrough, AttemptBreakthrough);
+        BindClick(view.CancelBreakthrough, () => UnmountWindow(view.BreakthroughWindow));
+        BindClick(view.BreakthroughResultOk, () => UnmountWindow(view.BreakthroughResult));
+        BindClick(view.Restart, RestartGame);
+        BindClick(view.InfoPopupOk, ConfirmInfoPopup);
+        BindClick(view.InfoPopupUse, UseInfoPopupItem);
+        BindClick(view.InfoPopupSell, SellInfoPopupItem);
+        BindClick(view.InfoPopupClose, CloseInfoPopup);
+        BindClick(view.EffectPopupClose, CloseEffectPopup);
+        view.EffectPopup.Clicked += _ => CloseEffectPopup();
+        view.CharacterTapTarget.ClickedAt += (_, position) => TapCharacter(position);
+        BindClick(view.DogTapTarget, ReactDog);
+        BindClick(view.AvailableMissionsTab, () => ShowMissionPage(false));
+        BindClick(view.AcceptedMissionsTab, () => ShowMissionPage(true));
+        BindClick(view.IngredientsTab, () => SelectInventoryCategory(ItemCategory.Ingredient));
+        BindClick(view.CoresTab, () => SelectInventoryCategory(ItemCategory.Core));
+        BindClick(view.PillsTab, () => SelectInventoryCategory(ItemCategory.Pill));
+        BindClick(view.InventoryPagePrevious, () => ChangeInventoryPage(-1));
+        BindClick(view.InventoryPageNext, () => ChangeInventoryPage(1));
+        BindClick(view.AlchemyPillTab, () => SetAlchemyMode(AlchemyMode.Pill));
+        BindClick(view.AlchemyDistillTab, () => SetAlchemyMode(AlchemyMode.Distillation));
+        BindClick(view.AlchemyPagePrevious, () => ChangeAlchemyPage(-1));
+        BindClick(view.AlchemyPageNext, () => ChangeAlchemyPage(1));
+        BindClick(view.AlchemyRarityFilter, () => ToggleAlchemyFilterMenu(view.AlchemyRarityMenu));
+        BindClick(view.AlchemyQualityFilter, () => ToggleAlchemyFilterMenu(view.AlchemyQualityMenu));
+        BindClick(view.AlchemyTypeFilter, () => ToggleAlchemyFilterMenu(view.AlchemyTypeMenu));
+        BindClick(view.AlchemyCraft, CraftAlchemy);
+        BindClick(view.InventoryUse, UseSelectedItem);
+        BindClick(view.InventorySell, SellSelectedItem);
+        foreach (var backdrop in view.WindowBackdrops)
+            backdrop.Clicked += _ => { };
+        foreach (var close in view.WindowCloseButtons)
             close.Clicked += _ => CloseWindows();
 
         BuildAlchemyFilterMenus();
@@ -473,14 +539,18 @@ public sealed class GameController(
         if (result.TickNumber % database.Balance.AutoSaveEveryTicks == 0)
             Save();
 
-        ApplyStateToView();
-        if (IsWindowOpen(_view!.ShopWindow) || result.NewYearStarted)
+        if (HasOpenWindow())
+            _deferredHudRefresh = true;
+        else
+            ApplyStateToView();
+        if (result.NewYearStarted)
             SyncShop();
-        if (IsWindowOpen(_view.InventoryWindow) || result.MissionCompleted)
+        if (result.MissionCompleted)
             SyncInventory();
-        if (IsWindowOpen(_view.MissionsWindow))
+        var view = _view!;
+        if (IsWindowOpen(view.MissionsWindow))
             SyncMissions();
-        if (_openEffectType is not null && IsWindowOpen(_view.EffectPopup))
+        if (_openEffectType is not null && IsWindowOpen(view.EffectPopup))
             UpdateEffectPopup();
         if (result.SpiritualPowerGained != 0m)
             SpawnFloatingValue(result.SpiritualPowerGained, string.Empty, "spirit-value");
@@ -632,7 +702,12 @@ public sealed class GameController(
         if (_view is null)
             return;
         _yearCandleAnimationSeconds += deltaTime;
-        var frame = (int)(_yearCandleAnimationSeconds / 0.14f) % 6;
+#if ANDROID
+        const float frameDuration = 0.22f;
+#else
+        const float frameDuration = 0.14f;
+#endif
+        var frame = (int)(_yearCandleAnimationSeconds / frameDuration) % 6;
         if (frame == _yearCandleFlameFrame)
             return;
         _yearCandleFlameFrame = frame;
@@ -651,14 +726,33 @@ public sealed class GameController(
         var capVisibility = Math.Clamp((remaining - 0.06f) / 0.10f, 0f, 1f);
         var capOverlap = 6f * capVisibility;
         var capTop = Math.Max(fullWaxTop, waxTop - capOverlap);
-        _view!.YearCandleWax.Progress = remaining;
-        _view.YearCandleCap.Style.Set("top", ToPixelString(capTop));
-        _view.YearCandleCap.Style.Opacity = capVisibility.ToString("0.###", CultureInfo.InvariantCulture);
-        _view.YearCandleFlame.Style.Set("top", ToPixelString(capTop - 45f));
+        var waxPixel = (int)MathF.Round(waxHeight);
+        var capPixel = (int)MathF.Round(capTop - fullWaxTop);
+        var capOpacity = capVisibility.ToString("0.#", CultureInfo.InvariantCulture);
+        if (_yearCandleWaxPixel != waxPixel)
+        {
+            _yearCandleWaxPixel = waxPixel;
+            _view!.YearCandleWax.Progress = waxPixel / maximumWaxHeight;
+        }
+        if (_yearCandleCapPixel != capPixel)
+        {
+            _yearCandleCapPixel = capPixel;
+            var transform = ToTranslateYString(capPixel);
+            _view!.YearCandleCap.Style.Set("transform", transform);
+            _view.YearCandleFlame.Style.Set("transform", transform);
+        }
+        if (_yearCandleCapOpacity != capOpacity)
+        {
+            _yearCandleCapOpacity = capOpacity;
+            _view!.YearCandleCap.Style.Opacity = capOpacity;
+        }
     }
 
-    private static string ToPixelString(float value) =>
-        $"{MathF.Round(value).ToString(CultureInfo.InvariantCulture)}px";
+    private static string ToTranslateYString(float value) =>
+        string.Concat(
+            "translateY(",
+            MathF.Round(value).ToString(CultureInfo.InvariantCulture),
+            "px)");
 
     private void UpdateHud()
     {
@@ -669,7 +763,8 @@ public sealed class GameController(
         var powerBars = required <= 0m ? 1m : Math.Max(0m, character.SpiritualPower / required);
         UpdateYearCandleProgress();
         _view!.Money.Value = character.Money.ToString("N0", CultureInfo.InvariantCulture);
-        _view.ModalMoney.Value = _view.Money.Value;
+        foreach (var modalMoney in _view.ModalMoneyTexts)
+            modalMoney.Value = _view.Money.Value;
         _view.Age.Value = Format(character.Age.TotalYears);
         _view.MaximumAge.Value = Format(cultivation.GetMaximumAge(character));
         _view.Realm.Value = $"{stage.Name} · ур. {progress.Level}";
@@ -831,22 +926,34 @@ public sealed class GameController(
 
     private void SyncEffects()
     {
-        var groups = _state.ActiveEffects.Where(effect => !effect.IsExpired)
-            .GroupBy(effect => effect.Type).OrderBy(group => group.Key).ToArray();
-        var signature = string.Join('|', groups.SelectMany(group => group.Select(effect =>
-            $"{effect.Type}:{effect.SourceItemId}:{effect.Value}:{effect.DurationType}")));
-        _view!.Effects.IsVisible = groups.Length > 0;
-        var currentSignature = _view!.Effects.Attributes.GetValueOrDefault("data-signature");
-        if (signature != currentSignature)
+        _activeEffectTypes.Clear();
+        var signature = new HashCode();
+        foreach (var effect in _state.ActiveEffects)
         {
-            _view.Effects.SetAttribute("data-signature", signature);
+            if (effect.IsExpired)
+                continue;
+            signature.Add(effect.Type);
+            signature.Add(effect.SourceItemId);
+            signature.Add(effect.Value);
+            signature.Add(effect.DurationType);
+            if (!_activeEffectTypes.Contains(effect.Type))
+                _activeEffectTypes.Add(effect.Type);
+        }
+        _activeEffectTypes.Sort();
+        var currentSignature = signature.ToHashCode();
+        _view!.Effects.IsVisible = _activeEffectTypes.Count > 0;
+        if (currentSignature != _activeEffectsSignature)
+        {
+            _activeEffectsSignature = currentSignature;
             _view.Effects.Clear();
             _effectWidgets.Clear();
-            if (groups.Length == 0)
+            if (_activeEffectTypes.Count == 0)
                 return;
-            foreach (var group in groups)
+            foreach (var type in _activeEffectTypes)
             {
-                var source = database.GetItem(group.First().SourceItemId);
+                if (!TryGetFirstActiveEffect(type, out var firstEffect))
+                    continue;
+                var source = database.GetItem(firstEffect.SourceItemId);
                 var orb = _document!.CreateButton(attributes: new Dictionary<string, string> { ["class"] = "effect-orb" });
                 var effectDial = (UiRadialProgress)_document.CreateElement("radial-progress", new Dictionary<string, string>
                 {
@@ -855,15 +962,28 @@ public sealed class GameController(
                     ["sprite"] = $"Assets/Textures/GameUIAtlas.atlas#effect-{Path.GetFileNameWithoutExtension(source.Icon)}"
                 });
                 orb.Add(effectDial);
-                var type = group.Key;
                 orb.Clicked += _ => ShowEffectPopup(type);
                 _view.Effects.Add(orb);
                 _effectWidgets[type] = effectDial;
             }
         }
-        foreach (var group in groups)
-            if (_effectWidgets.TryGetValue(group.Key, out var effectDial))
-                effectDial.Progress = CalculateEffectTimer(group.ToArray());
+        foreach (var type in _activeEffectTypes)
+            if (_effectWidgets.TryGetValue(type, out var effectDial))
+                effectDial.Progress = CalculateEffectTimer(type);
+    }
+
+    private bool TryGetFirstActiveEffect(EffectType type, out ActiveEffect active)
+    {
+        foreach (var effect in _state.ActiveEffects)
+        {
+            if (!effect.IsExpired && effect.Type == type)
+            {
+                active = effect;
+                return true;
+            }
+        }
+        active = null!;
+        return false;
     }
 
     private void SyncShop()
@@ -876,7 +996,8 @@ public sealed class GameController(
         {
             if (_shopEmpty is null)
             {
-                _shopEmpty = _document!.CreateText(
+                var document = _view.GetDocumentFor(_view.ShopGrid);
+                _shopEmpty = document.CreateText(
                     "Все товары распроданы. Новые появятся в начале следующего года.",
                     new Dictionary<string, string> { ["class"] = "shop-empty" });
                 _view.ShopGrid.Add(_shopEmpty);
@@ -892,7 +1013,8 @@ public sealed class GameController(
 
     private ShopCardView CreateShopCard(ShopSlot slot)
     {
-        var root = _document!.Instantiate("Components/ShopCard.xml", _view!.ShopGrid, new Dictionary<string, string>
+        var document = _view!.GetDocumentFor(_view.ShopGrid);
+        var root = document.Instantiate("Components/ShopCard.xml", _view.ShopGrid, new Dictionary<string, string>
         {
             ["key"] = slot.SlotId.ToString(), ["icon"] = string.Empty, ["name"] = string.Empty,
             ["effect"] = string.Empty, ["price"] = string.Empty
@@ -995,7 +1117,8 @@ public sealed class GameController(
 
     private InventoryIconView CreateInventoryIcon(ItemInstance item)
     {
-        var root = _document!.Instantiate("Components/InventoryIcon.xml", _view!.InventoryGrid, new Dictionary<string, string>
+        var document = _view!.GetDocumentFor(_view.InventoryGrid);
+        var root = document.Instantiate("Components/InventoryIcon.xml", _view.InventoryGrid, new Dictionary<string, string>
         {
             ["key"] = item.InstanceId.ToString(), ["icon"] = string.Empty, ["quantity"] = string.Empty
         });
@@ -1205,14 +1328,15 @@ public sealed class GameController(
     private void BuildAlchemySelection()
     {
         _view!.AlchemySelection.Clear();
-        _view!.AlchemySelection.Add(_document!.CreateImage(
+        var document = _view.GetDocumentFor(_view.AlchemySelection);
+        _view.AlchemySelection.Add(document.CreateImage(
             "Assets/Textures/UI/alchemy-room.jpg",
             new Dictionary<string, string> { ["class"] = "alchemy-room" }));
-        var furnaceStage = _document.CreatePanel(new Dictionary<string, string>
+        var furnaceStage = document.CreatePanel(new Dictionary<string, string>
         {
             ["class"] = "alchemy-furnace-stage"
         });
-        furnaceStage.Add(_document.CreateImage(
+        furnaceStage.Add(document.CreateImage(
             "Assets/Textures/UI/alchemy-furnace.png",
             new Dictionary<string, string> { ["class"] = "alchemy-furnace" }));
         _view.AlchemySelection.Add(furnaceStage);
@@ -1221,22 +1345,22 @@ public sealed class GameController(
         EnsureAlchemySlots();
         for (var index = 0; index < database.Alchemy.MaximumIngredients; index++)
         {
-            var slot = _document!.CreateButton(attributes: new Dictionary<string, string>
+            var slot = document.CreateButton(attributes: new Dictionary<string, string>
             {
                 ["class"] = $"alchemy-slot alchemy-outer-slot slot-{index + 1}"
             });
-            var icon = (UiImage)_document.CreateElement("image");
+            var icon = (UiImage)document.CreateElement("image");
             icon.Style.Set("visibility", "hidden");
             slot.Add(icon);
-            var qualityHost = _document.CreatePanel(new Dictionary<string, string>
+            var qualityHost = document.CreatePanel(new Dictionary<string, string>
             {
                 ["class"] = "alchemy-slot-quality item-icon-quality"
             });
-            var quality = CreateQualityStars(qualityHost);
+            var quality = CreateQualityStars(document, qualityHost);
             quality.SetQuality(0m);
             qualityHost.Style.Set("visibility", "hidden");
             slot.Add(qualityHost);
-            var label = _document.CreateText((index + 1).ToString(CultureInfo.InvariantCulture),
+            var label = document.CreateText((index + 1).ToString(CultureInfo.InvariantCulture),
                 new Dictionary<string, string> { ["class"] = "alchemy-slot-index" });
             slot.Add(label);
             var slotIndex = index;
@@ -1246,20 +1370,20 @@ public sealed class GameController(
             _renderedAlchemySlots.Add(null);
         }
 
-        var coreSlot = _document!.CreateButton(attributes: new Dictionary<string, string>
+        var coreSlot = document.CreateButton(attributes: new Dictionary<string, string>
         {
             ["class"] = "alchemy-slot alchemy-core-slot"
         });
-        var coreIcon = (UiImage)_document.CreateElement("image");
+        var coreIcon = (UiImage)document.CreateElement("image");
         coreSlot.Add(coreIcon);
-        var coreQualityHost = _document.CreatePanel(new Dictionary<string, string>
+        var coreQualityHost = document.CreatePanel(new Dictionary<string, string>
         {
             ["class"] = "alchemy-slot-quality item-icon-quality"
         });
-        var coreQuality = CreateQualityStars(coreQualityHost);
+        var coreQuality = CreateQualityStars(document, coreQualityHost);
         coreQuality.SetQuality(0m);
         coreSlot.Add(coreQualityHost);
-        var coreLabel = _document.CreateText("ЯДРО",
+        var coreLabel = document.CreateText("ЯДРО",
             new Dictionary<string, string> { ["class"] = "alchemy-core-label" });
         coreSlot.Add(coreLabel);
         coreSlot.Clicked += _ =>
@@ -1348,7 +1472,8 @@ public sealed class GameController(
 
     private InventoryIconView CreateAlchemyIngredientIcon(ItemInstance item)
     {
-        var root = _document!.Instantiate("Components/InventoryIcon.xml", _view!.AlchemyIngredients,
+        var document = _view!.GetDocumentFor(_view.AlchemyIngredients);
+        var root = document.Instantiate("Components/InventoryIcon.xml", _view.AlchemyIngredients,
             new Dictionary<string, string>
             {
                 ["key"] = item.InstanceId.ToString(), ["icon"] = string.Empty,
@@ -1458,7 +1583,8 @@ public sealed class GameController(
 
     private void AddAlchemyFilterOption(UiPanel menu, string label, int value, Action<int> select)
     {
-        var option = _document!.CreateButton(label, new Dictionary<string, string>
+        var document = _view!.GetDocumentFor(menu);
+        var option = document.CreateButton(label, new Dictionary<string, string>
         {
             ["class"] = "alchemy-filter-option",
             ["data-filter-value"] = value.ToString(CultureInfo.InvariantCulture)
@@ -1641,7 +1767,8 @@ public sealed class GameController(
             _missionCards.Update(Array.Empty<string>(), id => id);
             if (_missionBoardEmpty is null)
             {
-                _missionBoardEmpty = _document!.CreateText(
+                var document = _view.GetDocumentFor(_view.MissionsList);
+                _missionBoardEmpty = document.CreateText(
                     "Все поручения приняты. Новые появятся в начале следующего года.",
                     new Dictionary<string, string> { ["class"] = "mission-board-empty" });
                 _view.MissionsList.Add(_missionBoardEmpty);
@@ -1658,7 +1785,8 @@ public sealed class GameController(
 
     private MissionCardView CreateMissionCard(string missionId)
     {
-        var root = _document!.Instantiate("Components/MissionCard.xml", _view!.MissionsList, new Dictionary<string, string>
+        var document = _view!.GetDocumentFor(_view.MissionsList);
+        var root = document.Instantiate("Components/MissionCard.xml", _view.MissionsList, new Dictionary<string, string>
         {
             ["key"] = missionId, ["name"] = string.Empty,
             ["description"] = string.Empty, ["duration"] = string.Empty
@@ -1705,7 +1833,8 @@ public sealed class GameController(
             _missionQueueItems.Update(Array.Empty<ActiveMission>(), mission => mission.InstanceId);
             if (_missionQueueEmpty is null)
             {
-                _missionQueueEmpty = _document!.CreateText(
+                var document = _view.GetDocumentFor(_view.MissionQueue);
+                _missionQueueEmpty = document.CreateText(
                     "Принятых миссий пока нет.",
                     new Dictionary<string, string> { ["class"] = "queue-empty" });
                 _view.MissionQueue.Add(_missionQueueEmpty);
@@ -1722,7 +1851,8 @@ public sealed class GameController(
 
     private MissionQueueItemView CreateMissionQueueItem(ActiveMission mission)
     {
-        var root = _document!.Instantiate("Components/MissionQueueItem.xml", _view!.MissionQueue, new Dictionary<string, string>
+        var document = _view!.GetDocumentFor(_view.MissionQueue);
+        var root = document.Instantiate("Components/MissionQueueItem.xml", _view.MissionQueue, new Dictionary<string, string>
         {
             ["key"] = mission.InstanceId.ToString(), ["number"] = string.Empty,
             ["name"] = string.Empty, ["progress"] = string.Empty
@@ -1807,21 +1937,36 @@ public sealed class GameController(
     {
         if (_openEffectType is not { } type)
             return;
-        var active = _state.ActiveEffects.Where(effect => effect.Type == type).ToArray();
-        if (active.Length == 0)
+        var hasActive = false;
+        var hasUntilBreakthrough = false;
+        var hasTemporary = false;
+        var minimumRemainingTicks = int.MaxValue;
+        var description = string.Empty;
+        foreach (var effect in _state.ActiveEffects)
+        {
+            if (effect.Type != type)
+                continue;
+            hasActive = true;
+            hasUntilBreakthrough |= effect.IsUntilBreakthroughAttempt;
+            hasTemporary |= !effect.IsPermanent;
+            if (!effect.IsPermanent)
+                minimumRemainingTicks = Math.Min(minimumRemainingTicks, Math.Max(0, effect.RemainingTicks ?? 0));
+            var itemDescription = DescribeEffect(
+                new ItemEffectDefinition { Type = effect.Type, Operation = effect.Operation, Value = effect.Value },
+                1m,
+                effect.DurationType == ItemDurationType.Temporary);
+            description = description.Length == 0 ? itemDescription : $"{description}; {itemDescription}";
+        }
+        if (!hasActive)
         {
             _view!.EffectPopupEffect.Value = $"{EffectName(type)}: осталось 0 недель";
             return;
         }
-        var duration = active.Any(effect => effect.IsUntilBreakthroughAttempt)
+        var duration = hasUntilBreakthrough
             ? "к следующей попытке прорыва"
-            : active.All(effect => effect.IsPermanent)
+            : !hasTemporary
                 ? string.Empty
-                : $"на {FormatDuration(active.Where(effect => !effect.IsPermanent).Min(effect => Math.Max(0, effect.RemainingTicks ?? 0)))}";
-        var description = string.Join("; ", active.Select(effect => DescribeEffect(
-            new ItemEffectDefinition { Type = effect.Type, Operation = effect.Operation, Value = effect.Value },
-            1m,
-            effect.DurationType == ItemDurationType.Temporary)));
+                : $"на {FormatDuration(minimumRemainingTicks)}";
         _view!.EffectPopupEffect.Value = $"{description}{(string.IsNullOrEmpty(duration) ? string.Empty : $" · {duration}")}";
     }
 
@@ -1832,15 +1977,29 @@ public sealed class GameController(
         _openEffectType = null;
     }
 
-    private float CalculateEffectTimer(IReadOnlyList<ActiveEffect> active)
+    private float CalculateEffectTimer(EffectType type)
     {
-        if (active.Any(effect => effect.IsUntilBreakthroughAttempt) || active.All(effect => effect.IsPermanent))
-            return 1f;
-        return (float)active.Where(effect => !effect.IsPermanent).Min(effect =>
+        var hasActive = false;
+        var hasTemporary = false;
+        var minimum = 1f;
+        foreach (var effect in _state.ActiveEffects)
         {
+            if (effect.Type != type || effect.IsExpired)
+                continue;
+            hasActive = true;
+            if (effect.IsUntilBreakthroughAttempt)
+                return 1f;
+            if (effect.IsPermanent)
+                continue;
+            hasTemporary = true;
             var total = Math.Max(1, database.GetItem(effect.SourceItemId).TemporaryDurationTicks);
-            return Math.Clamp((effect.RemainingTicks ?? 0) / (decimal)total, 0m, 1m);
-        });
+            minimum = Math.Min(
+                minimum,
+                (float)Math.Clamp((effect.RemainingTicks ?? 0) / (decimal)total, 0m, 1m));
+        }
+        if (!hasActive || !hasTemporary)
+            return 1f;
+        return minimum;
     }
 
     private void OpenWindow(UiPanel window)
@@ -1852,8 +2011,8 @@ public sealed class GameController(
     {
         if (exclusive)
             CloseWindows();
-        if (window.Parent is null)
-            _windowLayer!.Add(window);
+        var document = _view!.GetWindowDocument(window);
+        document.IsVisible = true;
         window.IsVisible = true;
         SetPaintVisibility(window, true);
         window.AddClass(WindowOpenClass);
@@ -1862,10 +2021,9 @@ public sealed class GameController(
 
     private void UnmountWindow(UiPanel window)
     {
-        // Keep layout and geometry warm while the window fades. The transition
-        // end hides it through the renderer's composite visibility fast path.
         window.IsVisible = true;
         window.RemoveClass(WindowOpenClass);
+        SetPaintVisibility(window, false);
         UpdateWindowLayerState();
     }
 
@@ -1873,8 +2031,6 @@ public sealed class GameController(
     {
         foreach (var window in _view!.Windows)
         {
-            if (window.Parent is null)
-                _windowLayer!.Add(window);
             window.AddClass(WindowFadeClass);
             window.RemoveClass(WindowOpenClass);
             window.TransitionEnded -= HandleWindowFadeEnded;
@@ -1882,12 +2038,17 @@ public sealed class GameController(
             window.IsVisible = true;
             SetPaintVisibility(window, false);
         }
-        _view.WindowBackdrop.AddClass(WindowFadeClass);
-        _view.WindowBackdrop.RemoveClass(WindowOpenClass);
-        _view.WindowBackdrop.TransitionEnded -= HandleWindowFadeEnded;
-        _view.WindowBackdrop.TransitionEnded += HandleWindowFadeEnded;
-        _view.WindowBackdrop.IsVisible = true;
-        SetPaintVisibility(_view.WindowBackdrop, false);
+        foreach (var backdrop in _view.WindowBackdrops)
+        {
+            backdrop.AddClass(WindowFadeClass);
+            backdrop.RemoveClass(WindowOpenClass);
+            backdrop.TransitionEnded -= HandleWindowFadeEnded;
+            backdrop.TransitionEnded += HandleWindowFadeEnded;
+            backdrop.IsVisible = true;
+            SetPaintVisibility(backdrop, false);
+        }
+        foreach (var windowDocument in _view.WindowDocuments.All)
+            windowDocument.IsVisible = false;
     }
 
     private void HandleWindowFadeEnded(UiElement element, UiTransitionEvent transition)
@@ -1903,6 +2064,9 @@ public sealed class GameController(
     private static bool IsWindowOpen(UiElement window) =>
         !string.Equals(window.Style["visibility"], "hidden", StringComparison.OrdinalIgnoreCase);
 
+    private bool HasOpenWindow() =>
+        _view is not null && _view.Windows.Any(IsWindowOpen);
+
     private void CloseWindows()
     {
         if (_view is null)
@@ -1915,6 +2079,11 @@ public sealed class GameController(
         _infoPopupUseAction = null;
         _infoPopupSellAction = null;
         UpdateWindowLayerState();
+        if (_deferredHudRefresh)
+        {
+            _deferredHudRefresh = false;
+            ApplyStateToView();
+        }
     }
 
     private void CloseInfoPopup()
@@ -1974,23 +2143,34 @@ public sealed class GameController(
         if (_view is null)
             return;
 
-        var hasTargetWindow = _view.Windows.Any(window => window.Classes.Contains(WindowOpenClass));
-        if (hasTargetWindow)
+        foreach (var windowDocument in _view.WindowDocuments.All)
         {
-            if (_view.WindowBackdrop.Parent is null)
-                _view.WindowLayer.Insert(0, _view.WindowBackdrop);
-            _view.WindowBackdrop.IsVisible = true;
-            SetPaintVisibility(_view.WindowBackdrop, true);
-            _view.WindowBackdrop.AddClass(WindowOpenClass);
-        }
-        else
-        {
-            _view.WindowBackdrop.RemoveClass(WindowOpenClass);
-        }
+            var hasTargetWindow = _view.Windows.Any(window =>
+                ReferenceEquals(_view.GetWindowDocument(window), windowDocument) &&
+                window.Classes.Contains(WindowOpenClass));
+            var backdrop = windowDocument.Query<UiPanel>("#window-backdrop");
+            if (backdrop is not null)
+            {
+                backdrop.IsVisible = true;
+                if (hasTargetWindow)
+                {
+                    SetPaintVisibility(backdrop, true);
+                    backdrop.AddClass(WindowOpenClass);
+                }
+                else
+                {
+                    backdrop.RemoveClass(WindowOpenClass);
+                    SetPaintVisibility(backdrop, false);
+                }
+            }
 
-        var hasVisibleSurface = _view.Windows.Any(IsWindowOpen) ||
-                                IsWindowOpen(_view.WindowBackdrop);
-        _view.WindowLayer.SetAttribute("class", hasVisibleSurface ? "modal-active" : string.Empty);
+            var hasVisibleSurface = _view.Windows.Any(window =>
+                ReferenceEquals(_view.GetWindowDocument(window), windowDocument) &&
+                IsWindowOpen(window)) || backdrop is not null && IsWindowOpen(backdrop);
+            windowDocument.GetElementById<UiPanel>("window-layer")
+                .SetAttribute("class", hasVisibleSurface ? "modal-active" : string.Empty);
+            windowDocument.IsVisible = hasVisibleSurface;
+        }
     }
 
     private void BuildFloatingUi(UiDocument document)
@@ -2178,7 +2358,8 @@ public sealed class GameController(
     private void AddRewardIcon(UiElement parent, ItemConfig item, string badge)
     {
         var tile = AddRewardIcon(parent, item.Icon, badge);
-        var qualityHost = _document!.CreatePanel(new Dictionary<string, string>
+        var document = _view!.GetDocumentFor(parent);
+        var qualityHost = document.CreatePanel(new Dictionary<string, string>
         {
             ["class"] = "reward-quality item-icon-quality"
         });
@@ -2222,20 +2403,27 @@ public sealed class GameController(
 
     private UiElement AddRewardIcon(UiElement parent, string source, string badge)
     {
-        var tile = _document!.CreateElement("panel", new Dictionary<string, string> { ["class"] = "reward-icon-tile" });
-        tile.Add(_document.CreateElement("image", new Dictionary<string, string>
+        var document = _view!.GetDocumentFor(parent);
+        var tile = document.CreateElement("panel", new Dictionary<string, string> { ["class"] = "reward-icon-tile" });
+        tile.Add(document.CreateElement("image", new Dictionary<string, string>
         {
             ["class"] = "reward-item-icon",
             ["sprite"] = AtlasSprite(source)
         }));
-        tile.Add(_document.CreateElement("text", new Dictionary<string, string> { ["class"] = "reward-icon-badge" }, badge));
+        tile.Add(document.CreateElement("text", new Dictionary<string, string> { ["class"] = "reward-icon-badge" }, badge));
         parent.Add(tile);
         return tile;
     }
 
     private QualityStarsView CreateQualityStars(UiElement host)
     {
-        var stars = _document!.Instantiate("Components/QualityStars.xml", host);
+        var document = _view?.GetDocumentFor(host) ?? _document!;
+        return CreateQualityStars(document, host);
+    }
+
+    private static QualityStarsView CreateQualityStars(UiDocument document, UiElement host)
+    {
+        var stars = document.Instantiate("Components/QualityStars.xml", host);
         return new QualityStarsView(stars);
     }
 

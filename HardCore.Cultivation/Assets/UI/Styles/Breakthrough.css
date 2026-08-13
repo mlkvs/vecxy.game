@@ -1,0 +1,28 @@
+.breakthrough-dialog {
+    width: 520px;
+    padding: 32px;
+    align-items: center;
+    background-color: #152119fc;
+    border: 3px solid #f1bd59;
+    border-radius: 34px;
+    box-shadow: 0 14px 24px #000000dd;
+}
+
+.breakthrough-dialog > image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.breakthrough-title {
+    margin-top: 14px;
+    font-size: 31px;
+    text-align: center;
+}
+
+.breakthrough-chance {
+    margin-top: 10px;
+    color: #56d5a0;
+    font-size: 62px;
+    text-align: center;
+}

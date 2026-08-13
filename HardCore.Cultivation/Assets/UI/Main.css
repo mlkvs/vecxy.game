@@ -300,15 +300,6 @@ button:disabled { opacity: 0.38; }
 .nav-button:hover .nav-icon-shell { background-color: var(--jade-dark); border-color: var(--jade); }
 .nav-icon-shell image { width: 36px; height: 36px; object-fit: contain; }
 
-#window-layer { position: absolute; inset: 0; align-items: center; justify-content: center; pointer-events: none; }
-#window-layer.modal-active { pointer-events: auto; }
-#window-backdrop {
-    position: absolute;
-    inset: 0;
-    pointer-events: auto;
-    background-color: #040806c2;
-}
-
 /* Compact main HUD */
 #hud { gap: 10px; }
 .top-card { height: 72px; }

@@ -1,0 +1,10 @@
+<ui class="screen" styles="Main.css, Styles/Windows.css, Styles/Cards.css, Styles/InfoPopup.css"
+    scale-mode="fit" reference-width="620" reference-height="1180">
+    <panel id="window-layer">
+        <panel id="window-backdrop" hidden="true" />
+        <panel id="modal-money-stat" class="top-stat horizontal money-stat modal-money-stat">
+            <panel class="top-stat-icon-shell"><image class="top-stat-icon" sprite="Assets/Textures/GameUIAtlas.atlas#money" /></panel>
+            <panel class="top-stat-copy"><text class="top-stat-label">БАЛАНС</text><text id="modal-money-text" class="top-stat-value">1000</text></panel>
+        </panel>
+    </panel>
+</ui>

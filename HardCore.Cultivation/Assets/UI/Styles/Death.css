@@ -1,0 +1,20 @@
+.death-overlay {
+    pointer-events: auto;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 34px;
+    background-color: #050906e8;
+}
+
+.death-dialog {
+    width: 100%;
+    max-width: 620px;
+    padding: 34px;
+    align-items: center;
+    background-color: #151c17fc;
+    border: 3px solid #b85b4e;
+    border-radius: 36px;
+    box-shadow: 0 14px 20px 0 #000000f2;
+}

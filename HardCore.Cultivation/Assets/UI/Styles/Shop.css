@@ -1,0 +1,20 @@
+.shop-window {
+    top: 235px;
+    bottom: 235px;
+}
+
+.shop-window .window-body {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.shop-window .shop-content {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.shop-window .shop-grid {
+    padding-left: 2px;
+    padding-right: 2px;
+    column-gap: 12px;
+}

@@ -1,3 +1,22 @@
+#window-layer {
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+#window-layer.modal-active {
+    pointer-events: auto;
+}
+
+#window-backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: auto;
+    background-color: #040806c2;
+}
+
 .window {
     pointer-events: auto; position: absolute; inset: 14px;
     padding: 22px; background-color: #0b120dfc; border: 3px solid #f1bd5988;

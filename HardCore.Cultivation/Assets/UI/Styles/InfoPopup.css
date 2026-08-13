@@ -1,0 +1,22 @@
+.info-popup-card {
+    position: relative;
+    width: 100%;
+    max-width: 610px;
+    max-height: 1020px;
+    padding: 22px;
+    background-color: #0b120dfc;
+    border: 3px solid #f1bd5988;
+    border-radius: 34px;
+    box-shadow: 0 12px 18px 0 #020604e8;
+}
+
+.info-popup-actions {
+    margin-top: 20px;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.info-popup-actions > .wide-action {
+    flex: 1;
+    min-width: 0;
+}

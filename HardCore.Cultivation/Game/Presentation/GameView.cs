@@ -2,13 +2,49 @@ using Vecxy.UI;
 
 namespace HardCore.Cultivation.Game.Presentation;
 
+internal sealed class GameWindowDocuments
+{
+    public GameWindowDocuments(
+        UiDocument shop,
+        UiDocument inventory,
+        UiDocument alchemy,
+        UiDocument missions,
+        UiDocument breakthrough,
+        UiDocument death,
+        UiDocument infoPopup,
+        UiDocument effectPopup)
+    {
+        Shop = shop;
+        Inventory = inventory;
+        Alchemy = alchemy;
+        Missions = missions;
+        Breakthrough = breakthrough;
+        Death = death;
+        InfoPopup = infoPopup;
+        EffectPopup = effectPopup;
+        All = [shop, inventory, alchemy, missions, breakthrough, death, infoPopup, effectPopup];
+    }
+
+    public UiDocument Shop { get; }
+    public UiDocument Inventory { get; }
+    public UiDocument Alchemy { get; }
+    public UiDocument Missions { get; }
+    public UiDocument Breakthrough { get; }
+    public UiDocument Death { get; }
+    public UiDocument InfoPopup { get; }
+    public UiDocument EffectPopup { get; }
+    public IReadOnlyList<UiDocument> All { get; }
+}
+
 internal sealed class GameView
 {
-    public GameView(UiDocument document)
+    private readonly List<WindowSurface> _surfaces = [];
+
+    public GameView(UiDocument document, GameWindowDocuments windowDocuments)
     {
         Document = document;
-        WindowLayer = Panel("window-layer");
-        WindowBackdrop = Panel("window-backdrop");
+        WindowDocuments = windowDocuments;
+
         CharacterTapTarget = Button("character-tap-target");
         DogTapTarget = Button("dog-tap-target");
         MissionSummaryButton = Button("mission-summary-button");
@@ -16,7 +52,6 @@ internal sealed class GameView
         YearCandleCap = Image("year-candle-cap");
         YearCandleFlame = Image("year-candle-flame");
         Money = Text("money-text");
-        ModalMoney = Text("modal-money-text");
         Age = Text("age-text");
         MaximumAge = Text("maximum-age-text");
         Realm = Text("realm-text");
@@ -56,108 +91,120 @@ internal sealed class GameView
         ShopButton = Button("shop-button");
         AlchemyButton = Button("alchemy-button");
         InventoryButton = Button("inventory-button");
-        ShopWindow = Panel("shop-window");
-        ShopGrid = Panel("shop-grid");
 
-        AlchemyWindow = Panel("alchemy-window");
-        AlchemyPillTab = Button("alchemy-pill-tab");
-        AlchemyDistillTab = Button("alchemy-distill-tab");
-        AlchemySelection = Panel("alchemy-selection");
-        AlchemyRarityFilter = Button("alchemy-rarity-filter");
-        AlchemyQualityFilter = Button("alchemy-quality-filter");
-        AlchemyTypeFilter = Button("alchemy-type-filter");
-        AlchemyRarityMenu = Panel("alchemy-rarity-menu");
-        AlchemyQualityMenu = Panel("alchemy-quality-menu");
-        AlchemyTypeMenu = Panel("alchemy-type-menu");
-        AlchemyIngredients = Panel("alchemy-ingredients");
-        AlchemyPagePrevious = Button("alchemy-page-previous");
-        AlchemyPageLabel = Text("alchemy-page-label");
-        AlchemyPageNext = Button("alchemy-page-next");
-        AlchemyCraft = Button("alchemy-craft-button");
+        ShopWindow = Register(windowDocuments.Shop, "shop-window");
+        ShopGrid = Panel(windowDocuments.Shop, "shop-grid");
 
-        InventoryWindow = Panel("inventory-window");
-        InventoryCount = Text("inventory-count");
-        InventoryGrid = Panel("inventory-grid");
-        InventoryPagePrevious = Button("inventory-page-previous");
-        InventoryPageLabel = Text("inventory-page-label");
-        InventoryPageNext = Button("inventory-page-next");
-        IngredientsTab = Button("ingredients-tab");
-        CoresTab = Button("cores-tab");
-        PillsTab = Button("pills-tab");
-        InventoryDetails = Panel("inventory-details");
-        InventoryDetailIconWell = Panel("inventory-detail-icon-well");
-        InventoryDetailIcon = Image("inventory-detail-icon");
-        InventoryDetailQuality = Panel("inventory-detail-quality");
-        InventoryDetailName = Text("inventory-detail-name");
-        InventoryDetailRarity = Text("inventory-detail-rarity");
-        InventoryDetailEffect = Text("inventory-detail-effect");
-        InventoryUse = Button("inventory-use-button");
-        InventorySell = Button("inventory-sell-button");
+        AlchemyWindow = Register(windowDocuments.Alchemy, "alchemy-window");
+        AlchemyPillTab = Button(windowDocuments.Alchemy, "alchemy-pill-tab");
+        AlchemyDistillTab = Button(windowDocuments.Alchemy, "alchemy-distill-tab");
+        AlchemySelection = Panel(windowDocuments.Alchemy, "alchemy-selection");
+        AlchemyRarityFilter = Button(windowDocuments.Alchemy, "alchemy-rarity-filter");
+        AlchemyQualityFilter = Button(windowDocuments.Alchemy, "alchemy-quality-filter");
+        AlchemyTypeFilter = Button(windowDocuments.Alchemy, "alchemy-type-filter");
+        AlchemyRarityMenu = Panel(windowDocuments.Alchemy, "alchemy-rarity-menu");
+        AlchemyQualityMenu = Panel(windowDocuments.Alchemy, "alchemy-quality-menu");
+        AlchemyTypeMenu = Panel(windowDocuments.Alchemy, "alchemy-type-menu");
+        AlchemyIngredients = Panel(windowDocuments.Alchemy, "alchemy-ingredients");
+        AlchemyPagePrevious = Button(windowDocuments.Alchemy, "alchemy-page-previous");
+        AlchemyPageLabel = Text(windowDocuments.Alchemy, "alchemy-page-label");
+        AlchemyPageNext = Button(windowDocuments.Alchemy, "alchemy-page-next");
+        AlchemyCraft = Button(windowDocuments.Alchemy, "alchemy-craft-button");
 
-        MissionsWindow = Panel("missions-window");
-        AvailableMissionsTab = Button("available-missions-tab");
-        AcceptedMissionsTab = Button("accepted-missions-tab");
-        AvailableMissionsPage = Panel("available-missions-page");
-        AcceptedMissionsPage = Panel("accepted-missions-page");
-        MissionQueueCount = Text("mission-queue-count");
-        MissionRefresh = Text("mission-refresh");
-        MissionQueue = Panel("mission-queue");
-        MissionsList = Panel("missions-list");
+        InventoryWindow = Register(windowDocuments.Inventory, "inventory-window");
+        InventoryCount = Text(windowDocuments.Inventory, "inventory-count");
+        InventoryGrid = Panel(windowDocuments.Inventory, "inventory-grid");
+        InventoryPagePrevious = Button(windowDocuments.Inventory, "inventory-page-previous");
+        InventoryPageLabel = Text(windowDocuments.Inventory, "inventory-page-label");
+        InventoryPageNext = Button(windowDocuments.Inventory, "inventory-page-next");
+        IngredientsTab = Button(windowDocuments.Inventory, "ingredients-tab");
+        CoresTab = Button(windowDocuments.Inventory, "cores-tab");
+        PillsTab = Button(windowDocuments.Inventory, "pills-tab");
+        InventoryDetails = Panel(windowDocuments.Inventory, "inventory-details");
+        InventoryDetailIconWell = Panel(windowDocuments.Inventory, "inventory-detail-icon-well");
+        InventoryDetailIcon = Image(windowDocuments.Inventory, "inventory-detail-icon");
+        InventoryDetailQuality = Panel(windowDocuments.Inventory, "inventory-detail-quality");
+        InventoryDetailName = Text(windowDocuments.Inventory, "inventory-detail-name");
+        InventoryDetailRarity = Text(windowDocuments.Inventory, "inventory-detail-rarity");
+        InventoryDetailEffect = Text(windowDocuments.Inventory, "inventory-detail-effect");
+        InventoryUse = Button(windowDocuments.Inventory, "inventory-use-button");
+        InventorySell = Button(windowDocuments.Inventory, "inventory-sell-button");
 
-        BreakthroughWindow = Panel("breakthrough-window");
-        BreakthroughChance = Text("breakthrough-chance");
-        BreakthroughCost = Text("breakthrough-cost");
-        ConfirmBreakthrough = Button("confirm-breakthrough");
-        CancelBreakthrough = Button("cancel-breakthrough");
-        BreakthroughResult = Panel("breakthrough-result");
-        BreakthroughResultTitle = Text("breakthrough-result-title");
-        BreakthroughResultText = Text("breakthrough-result-text");
-        BreakthroughResultOk = Button("breakthrough-result-ok");
+        MissionsWindow = Register(windowDocuments.Missions, "missions-window");
+        AvailableMissionsTab = Button(windowDocuments.Missions, "available-missions-tab");
+        AcceptedMissionsTab = Button(windowDocuments.Missions, "accepted-missions-tab");
+        AvailableMissionsPage = Panel(windowDocuments.Missions, "available-missions-page");
+        AcceptedMissionsPage = Panel(windowDocuments.Missions, "accepted-missions-page");
+        MissionQueueCount = Text(windowDocuments.Missions, "mission-queue-count");
+        MissionRefresh = Text(windowDocuments.Missions, "mission-refresh");
+        MissionQueue = Panel(windowDocuments.Missions, "mission-queue");
+        MissionsList = Panel(windowDocuments.Missions, "missions-list");
 
-        DeathWindow = Panel("death-window");
-        DeathAge = Text("death-age");
-        DeathStage = Text("death-stage");
-        DeathYear = Text("death-year");
-        Restart = Button("restart-button");
+        BreakthroughWindow = Register(windowDocuments.Breakthrough, "breakthrough-window");
+        BreakthroughChance = Text(windowDocuments.Breakthrough, "breakthrough-chance");
+        BreakthroughCost = Text(windowDocuments.Breakthrough, "breakthrough-cost");
+        ConfirmBreakthrough = Button(windowDocuments.Breakthrough, "confirm-breakthrough");
+        CancelBreakthrough = Button(windowDocuments.Breakthrough, "cancel-breakthrough");
+        BreakthroughResult = Register(windowDocuments.Breakthrough, "breakthrough-result");
+        BreakthroughResultTitle = Text(windowDocuments.Breakthrough, "breakthrough-result-title");
+        BreakthroughResultText = Text(windowDocuments.Breakthrough, "breakthrough-result-text");
+        BreakthroughResultOk = Button(windowDocuments.Breakthrough, "breakthrough-result-ok");
 
-        InfoPopup = Panel("info-popup");
-        InfoPopupCard = Panel("info-popup-card");
-        InfoPopupIconWell = Panel("info-popup-icon-well");
-        InfoPopupIcon = Image("info-popup-icon");
-        InfoPopupKind = Text("info-popup-kind");
-        InfoPopupTitle = Text("info-popup-title");
-        InfoPopupDescription = Text("info-popup-description");
-        InfoPopupEffect = Text("info-popup-effect");
-        InfoPopupStatLabel1 = Text("info-popup-stat-label-1");
-        InfoPopupPriceIcon = Image("info-popup-price-icon");
-        InfoPopupStatValue1 = Text("info-popup-stat-value-1");
-        InfoPopupStatLabel2 = Text("info-popup-stat-label-2");
-        InfoPopupQuality = Panel("info-popup-quality");
-        InfoPopupStatValue2 = Text("info-popup-stat-value-2");
-        InfoPopupStatLabel3 = Text("info-popup-stat-label-3");
-        InfoPopupStatValue3 = Text("info-popup-stat-value-3");
-        InfoPopupDetails = Text("info-popup-details");
-        InfoPopupClose = Button("info-popup-close");
-        InfoPopupUse = Button("info-popup-use");
-        InfoPopupSell = Button("info-popup-sell");
-        InfoPopupOk = Button("info-popup-ok");
+        DeathWindow = Register(windowDocuments.Death, "death-window");
+        DeathAge = Text(windowDocuments.Death, "death-age");
+        DeathStage = Text(windowDocuments.Death, "death-stage");
+        DeathYear = Text(windowDocuments.Death, "death-year");
+        Restart = Button(windowDocuments.Death, "restart-button");
 
-        EffectPopup = Panel("effect-popup");
-        EffectPopupCard = Panel("effect-popup-card");
-        EffectPopupEffect = Text("effect-popup-effect");
-        EffectPopupClose = Button("effect-popup-close");
-        // Every top-level subtree in the window layer is a mountable surface,
-        // including dialogs and popups that intentionally do not use .window.
-        Windows = WindowLayer.Children
-            .OfType<UiPanel>()
-            .Where(panel => panel.Id is not "window-backdrop" and not "modal-money-stat")
+        InfoPopup = Register(windowDocuments.InfoPopup, "info-popup");
+        InfoPopupCard = Panel(windowDocuments.InfoPopup, "info-popup-card");
+        InfoPopupIconWell = Panel(windowDocuments.InfoPopup, "info-popup-icon-well");
+        InfoPopupIcon = Image(windowDocuments.InfoPopup, "info-popup-icon");
+        InfoPopupKind = Text(windowDocuments.InfoPopup, "info-popup-kind");
+        InfoPopupTitle = Text(windowDocuments.InfoPopup, "info-popup-title");
+        InfoPopupDescription = Text(windowDocuments.InfoPopup, "info-popup-description");
+        InfoPopupEffect = Text(windowDocuments.InfoPopup, "info-popup-effect");
+        InfoPopupStatLabel1 = Text(windowDocuments.InfoPopup, "info-popup-stat-label-1");
+        InfoPopupPriceIcon = Image(windowDocuments.InfoPopup, "info-popup-price-icon");
+        InfoPopupStatValue1 = Text(windowDocuments.InfoPopup, "info-popup-stat-value-1");
+        InfoPopupStatLabel2 = Text(windowDocuments.InfoPopup, "info-popup-stat-label-2");
+        InfoPopupQuality = Panel(windowDocuments.InfoPopup, "info-popup-quality");
+        InfoPopupStatValue2 = Text(windowDocuments.InfoPopup, "info-popup-stat-value-2");
+        InfoPopupStatLabel3 = Text(windowDocuments.InfoPopup, "info-popup-stat-label-3");
+        InfoPopupStatValue3 = Text(windowDocuments.InfoPopup, "info-popup-stat-value-3");
+        InfoPopupDetails = Text(windowDocuments.InfoPopup, "info-popup-details");
+        InfoPopupClose = Button(windowDocuments.InfoPopup, "info-popup-close");
+        InfoPopupUse = Button(windowDocuments.InfoPopup, "info-popup-use");
+        InfoPopupSell = Button(windowDocuments.InfoPopup, "info-popup-sell");
+        InfoPopupOk = Button(windowDocuments.InfoPopup, "info-popup-ok");
+
+        EffectPopup = Register(windowDocuments.EffectPopup, "effect-popup");
+        EffectPopupCard = Panel(windowDocuments.EffectPopup, "effect-popup-card");
+        EffectPopupEffect = Text(windowDocuments.EffectPopup, "effect-popup-effect");
+        EffectPopupClose = Button(windowDocuments.EffectPopup, "effect-popup-close");
+
+        Windows = _surfaces.Select(surface => surface.Panel).ToArray();
+        WindowLayers = windowDocuments.All.Select(doc => Panel(doc, "window-layer")).ToArray();
+        WindowBackdrops = windowDocuments.All
+            .Select(doc => doc.Query<UiPanel>("#window-backdrop"))
+            .Where(backdrop => backdrop is not null)
+            .Cast<UiPanel>()
             .ToArray();
-        WindowCloseButtons = document.QueryAll(".window-close").OfType<UiButton>().ToArray();
+        ModalMoneyTexts = windowDocuments.All
+            .Select(doc => doc.Query<UiText>("#modal-money-text"))
+            .Where(text => text is not null)
+            .Cast<UiText>()
+            .ToArray();
+        WindowCloseButtons = windowDocuments.All
+            .SelectMany(doc => doc.QueryAll(".window-close").OfType<UiButton>())
+            .ToArray();
     }
 
     public UiDocument Document { get; }
-    public UiPanel WindowLayer { get; }
-    public UiPanel WindowBackdrop { get; }
+    public GameWindowDocuments WindowDocuments { get; }
+    public IReadOnlyList<UiPanel> WindowLayers { get; }
+    public IReadOnlyList<UiPanel> WindowBackdrops { get; }
+    public IReadOnlyList<UiText> ModalMoneyTexts { get; }
     public UiButton CharacterTapTarget { get; }
     public UiButton DogTapTarget { get; }
     public UiButton MissionSummaryButton { get; }
@@ -165,7 +212,6 @@ internal sealed class GameView
     public UiImage YearCandleCap { get; }
     public UiImage YearCandleFlame { get; }
     public UiText Money { get; }
-    public UiText ModalMoney { get; }
     public UiText Age { get; }
     public UiText MaximumAge { get; }
     public UiText Realm { get; }
@@ -289,10 +335,43 @@ internal sealed class GameView
     public IReadOnlyList<UiPanel> Windows { get; }
     public IReadOnlyList<UiButton> WindowCloseButtons { get; }
 
+    public UiDocument GetWindowDocument(UiPanel panel)
+    {
+        foreach (var surface in _surfaces)
+            if (ReferenceEquals(surface.Panel, panel))
+                return surface.Document;
+        throw new InvalidOperationException($"Window '{panel.Id}' is not registered.");
+    }
+
+    public UiDocument GetDocumentFor(UiElement element)
+    {
+        for (var current = element; current is not null; current = current.Parent)
+        {
+            if (ReferenceEquals(current, Document.Root))
+                return Document;
+            foreach (var document in WindowDocuments.All)
+                if (ReferenceEquals(current, document.Root))
+                    return document;
+        }
+        throw new InvalidOperationException($"Element '{element.Id}' does not belong to a known UI document.");
+    }
+
+    private UiPanel Register(UiDocument document, string id)
+    {
+        var panel = Panel(document, id);
+        _surfaces.Add(new WindowSurface(document, panel));
+        return panel;
+    }
+
     private UiPanel Panel(string id) => Document.GetElementById<UiPanel>(id);
     private UiText Text(string id) => Document.GetElementById<UiText>(id);
     private UiButton Button(string id) => Document.GetElementById<UiButton>(id);
     private UiImage Image(string id) => Document.GetElementById<UiImage>(id);
     private UiProgress Progress(string id) => Document.GetElementById<UiProgress>(id);
-    private UiRadialProgress Radial(string id) => Document.GetElementById<UiRadialProgress>(id);
+    private static UiPanel Panel(UiDocument document, string id) => document.GetElementById<UiPanel>(id);
+    private static UiText Text(UiDocument document, string id) => document.GetElementById<UiText>(id);
+    private static UiButton Button(UiDocument document, string id) => document.GetElementById<UiButton>(id);
+    private static UiImage Image(UiDocument document, string id) => document.GetElementById<UiImage>(id);
+
+    private readonly record struct WindowSurface(UiDocument Document, UiPanel Panel);
 }
