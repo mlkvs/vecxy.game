@@ -106,17 +106,11 @@ internal sealed class GameView
         AlchemyQualityMenu = Panel(windowDocuments.Alchemy, "alchemy-quality-menu");
         AlchemyTypeMenu = Panel(windowDocuments.Alchemy, "alchemy-type-menu");
         AlchemyIngredients = Panel(windowDocuments.Alchemy, "alchemy-ingredients");
-        AlchemyPagePrevious = Button(windowDocuments.Alchemy, "alchemy-page-previous");
-        AlchemyPageLabel = Text(windowDocuments.Alchemy, "alchemy-page-label");
-        AlchemyPageNext = Button(windowDocuments.Alchemy, "alchemy-page-next");
         AlchemyCraft = Button(windowDocuments.Alchemy, "alchemy-craft-button");
 
         InventoryWindow = Register(windowDocuments.Inventory, "inventory-window");
         InventoryCount = Text(windowDocuments.Inventory, "inventory-count");
         InventoryGrid = Panel(windowDocuments.Inventory, "inventory-grid");
-        InventoryPagePrevious = Button(windowDocuments.Inventory, "inventory-page-previous");
-        InventoryPageLabel = Text(windowDocuments.Inventory, "inventory-page-label");
-        InventoryPageNext = Button(windowDocuments.Inventory, "inventory-page-next");
         IngredientsTab = Button(windowDocuments.Inventory, "ingredients-tab");
         CoresTab = Button(windowDocuments.Inventory, "cores-tab");
         PillsTab = Button(windowDocuments.Inventory, "pills-tab");
@@ -262,16 +256,10 @@ internal sealed class GameView
     public UiPanel AlchemyQualityMenu { get; }
     public UiPanel AlchemyTypeMenu { get; }
     public UiPanel AlchemyIngredients { get; }
-    public UiButton AlchemyPagePrevious { get; }
-    public UiText AlchemyPageLabel { get; }
-    public UiButton AlchemyPageNext { get; }
     public UiButton AlchemyCraft { get; }
     public UiPanel InventoryWindow { get; }
     public UiText InventoryCount { get; }
     public UiPanel InventoryGrid { get; }
-    public UiButton InventoryPagePrevious { get; }
-    public UiText InventoryPageLabel { get; }
-    public UiButton InventoryPageNext { get; }
     public UiButton IngredientsTab { get; }
     public UiButton CoresTab { get; }
     public UiButton PillsTab { get; }

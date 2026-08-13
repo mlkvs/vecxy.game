@@ -49,9 +49,11 @@ public sealed class GameController(
     private long _actionToastExpiresAt;
     private const long ActionToastLifetimeMilliseconds = 1850;
     private const float HealthUiRefreshIntervalSeconds = 1f / 15f;
-    private const int ItemPageSize = 12;
     private const string WindowFadeClass = "window-fade-surface";
     private const string WindowOpenClass = "window-fade-open";
+    private const float UiReferenceWidth = 620f;
+    private const float UiReferenceHeight = 1180f;
+    private const float ShopWindowHeight = 640f;
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
@@ -67,7 +69,6 @@ public sealed class GameController(
     private bool _gameOver;
     private ItemCategory _inventoryCategory = ItemCategory.Ingredient;
     private Guid? _selectedInventoryItem;
-    private int _inventoryPage;
     private readonly List<Guid?> _alchemySlots = [];
     private readonly List<AlchemySlotWidget> _alchemySlotWidgets = [];
     private readonly List<Guid?> _renderedAlchemySlots = [];
@@ -78,7 +79,6 @@ public sealed class GameController(
     private int _alchemyRarityFilter;
     private int _alchemyQualityFilter;
     private int _alchemyTypeFilter;
-    private int _alchemyPage;
     private EffectType? _openEffectType;
     private readonly List<FloatingValueWidget> _floatingValues = [];
     private int _floatingValueIndex;
@@ -202,7 +202,7 @@ public sealed class GameController(
             _healthFloatElapsed += deltaTime;
             if (_healthFloatElapsed >= 1f || combatUpdate.RecoveryCompleted)
             {
-                SpawnFloatingValue(_pendingHealthRestored, "HP", "health-value");
+                SpawnFloatingValue(_pendingHealthRestored, string.Empty, "health-value");
                 _pendingHealthRestored = 0m;
                 _healthFloatElapsed = 0f;
             }
@@ -464,7 +464,7 @@ public sealed class GameController(
         _alchemyCore = null;
         BuildAlchemySelection();
 
-        BindClick(view.ShopButton, () => { OpenWindow(view.ShopWindow); SyncShop(); });
+        BindClick(view.ShopButton, OpenShop);
         BindClick(view.AlchemyButton, OpenAlchemy);
         BindClick(view.InventoryButton, () => { OpenWindow(view.InventoryWindow); SyncInventory(); });
         BindClick(view.MissionSummaryButton, OpenMissions);
@@ -487,12 +487,8 @@ public sealed class GameController(
         BindClick(view.IngredientsTab, () => SelectInventoryCategory(ItemCategory.Ingredient));
         BindClick(view.CoresTab, () => SelectInventoryCategory(ItemCategory.Core));
         BindClick(view.PillsTab, () => SelectInventoryCategory(ItemCategory.Pill));
-        BindClick(view.InventoryPagePrevious, () => ChangeInventoryPage(-1));
-        BindClick(view.InventoryPageNext, () => ChangeInventoryPage(1));
         BindClick(view.AlchemyPillTab, () => SetAlchemyMode(AlchemyMode.Pill));
         BindClick(view.AlchemyDistillTab, () => SetAlchemyMode(AlchemyMode.Distillation));
-        BindClick(view.AlchemyPagePrevious, () => ChangeAlchemyPage(-1));
-        BindClick(view.AlchemyPageNext, () => ChangeAlchemyPage(1));
         BindClick(view.AlchemyRarityFilter, () => ToggleAlchemyFilterMenu(view.AlchemyRarityMenu));
         BindClick(view.AlchemyQualityFilter, () => ToggleAlchemyFilterMenu(view.AlchemyQualityMenu));
         BindClick(view.AlchemyTypeFilter, () => ToggleAlchemyFilterMenu(view.AlchemyTypeMenu));
@@ -500,7 +496,9 @@ public sealed class GameController(
         BindClick(view.InventoryUse, UseSelectedItem);
         BindClick(view.InventorySell, SellSelectedItem);
         foreach (var backdrop in view.WindowBackdrops)
-            backdrop.Clicked += _ => { };
+            backdrop.Clicked += _ => CloseAlchemyFilterMenus();
+        view.AlchemySelection.Clicked += _ => CloseAlchemyFilterMenus();
+        view.AlchemyIngredients.Clicked += _ => CloseAlchemyFilterMenus();
         foreach (var close in view.WindowCloseButtons)
             close.Clicked += _ => CloseWindows();
 
@@ -555,7 +553,7 @@ public sealed class GameController(
         if (result.SpiritualPowerGained != 0m)
             SpawnFloatingValue(result.SpiritualPowerGained, string.Empty, "spirit-value");
         if (result.MissionProgressAdded != 0m)
-            SpawnFloatingValue(result.MissionProgressAdded, "ПРОГРЕСС", "mission-value");
+            SpawnFloatingValue(result.MissionProgressAdded, string.Empty, "mission-value");
         var moneyDelta = _state.Character.Money - moneyBefore;
         if (moneyDelta != 0)
             SpawnFloatingValue(moneyDelta, string.Empty, "money-value");
@@ -990,6 +988,7 @@ public sealed class GameController(
     {
         if (_view is null || _shopCards is null)
             return;
+        UpdateShopWindowHeight();
         var availableSlots = _state.Shop.Slots.Where(slot => slot.AvailableQuantity > 0).ToArray();
         _shopCards.Update(availableSlots, slot => slot.SlotId);
         if (availableSlots.Length == 0)
@@ -1009,6 +1008,31 @@ public sealed class GameController(
             _shopEmpty.RemoveFromParent();
             _shopEmpty = null;
         }
+    }
+
+    private void OpenShop()
+    {
+        UpdateShopWindowHeight();
+        OpenWindow(_view!.ShopWindow);
+        SyncShop();
+    }
+
+    private void UpdateShopWindowHeight()
+    {
+        if (_view is null)
+            return;
+
+        var outputWidth = Math.Max(1, renderer.GameOutputWidth);
+        var outputHeight = Math.Max(1, renderer.GameOutputHeight);
+        var scale = Math.Min(outputWidth / UiReferenceWidth, outputHeight / UiReferenceHeight);
+        scale = Math.Max(0.0001f, scale);
+        var canvasHeight = outputHeight / scale;
+        var height = Math.Min(ShopWindowHeight, Math.Max(420f, canvasHeight - 140f));
+        var top = Math.Max(24f, (canvasHeight - height) * 0.5f);
+
+        _view.ShopWindow.Style.Height = $"{height.ToString(CultureInfo.InvariantCulture)}px";
+        _view.ShopWindow.Style["top"] = $"{top.ToString(CultureInfo.InvariantCulture)}px";
+        _view.ShopWindow.Style["bottom"] = "auto";
     }
 
     private ShopCardView CreateShopCard(ShopSlot slot)
@@ -1084,7 +1108,7 @@ public sealed class GameController(
     private void SelectInventoryCategory(ItemCategory category)
     {
         _inventoryCategory = category;
-        _inventoryPage = 0;
+        _view?.InventoryGrid.ScrollTo(Vector2.Zero);
         _selectedInventoryItem = null;
         _view!.InventoryDetails.IsVisible = false;
         SyncInventory();
@@ -1101,13 +1125,7 @@ public sealed class GameController(
         var items = _state.Inventory.Items
             .Where(item => database.GetItem(item.ConfigId).Category == _inventoryCategory)
             .ToArray();
-        var pageCount = PageCount(items.Length);
-        _inventoryPage = Math.Clamp(_inventoryPage, 0, pageCount - 1);
-        _inventoryIcons.Update(
-            items.Skip(_inventoryPage * ItemPageSize).Take(ItemPageSize),
-            item => item.InstanceId);
-        UpdatePager(_view.InventoryPagePrevious, _view.InventoryPageLabel,
-            _view.InventoryPageNext, _inventoryPage, pageCount);
+        _inventoryIcons.Update(items, item => item.InstanceId);
         UpdateInventorySelection();
         if (_selectedInventoryItem is { } selected && _state.Inventory.Find(selected) is not null)
             SelectInventoryItem(selected);
@@ -1130,14 +1148,6 @@ public sealed class GameController(
                 SelectInventoryItem(id);
         };
         return icon;
-    }
-
-    private void ChangeInventoryPage(int delta)
-    {
-        _inventoryPage = Math.Max(0, _inventoryPage + delta);
-        _selectedInventoryItem = null;
-        _view!.InventoryDetails.IsVisible = false;
-        SyncInventory();
     }
 
     private void UpdateInventoryIcon(InventoryIconView icon, ItemInstance item, int _)
@@ -1249,7 +1259,7 @@ public sealed class GameController(
         ResetAlchemySlots();
         _alchemyCore = null;
         _alchemyMode = AlchemyMode.Pill;
-        _alchemyPage = 0;
+        _view?.AlchemyIngredients.ScrollTo(Vector2.Zero);
         CloseAlchemyFilterMenus();
         OpenWindow(_view!.AlchemyWindow);
         SyncAlchemy();
@@ -1258,7 +1268,7 @@ public sealed class GameController(
     private void SetAlchemyMode(AlchemyMode mode)
     {
         _alchemyMode = mode;
-        _alchemyPage = 0;
+        _view?.AlchemyIngredients.ScrollTo(Vector2.Zero);
         ResetAlchemySlots();
         _alchemyCore = null;
         CloseAlchemyFilterMenus();
@@ -1447,9 +1457,16 @@ public sealed class GameController(
     {
         if (_view is null || _alchemyIngredientIcons is null)
             return;
+        var selectedInstanceIds = _alchemySlots
+            .OfType<Guid>()
+            .Append(_alchemyCore ?? Guid.Empty)
+            .Where(id => id != Guid.Empty)
+            .ToHashSet();
         var items = _state.Inventory.Items
                      .Where(item =>
                      {
+                         if (selectedInstanceIds.Contains(item.InstanceId))
+                             return false;
                          var category = database.GetItem(item.ConfigId).Category;
                          return _alchemyMode == AlchemyMode.Pill
                              ? category == ItemCategory.Core || category == ItemCategory.Ingredient && alchemy.GetProperties(item).Count > 0
@@ -1461,13 +1478,7 @@ public sealed class GameController(
                      .ThenByDescending(item => item.Rarity)
                      .ThenByDescending(item => item.Quality)
                      .ToArray();
-        var pageCount = PageCount(items.Length);
-        _alchemyPage = Math.Clamp(_alchemyPage, 0, pageCount - 1);
-        _alchemyIngredientIcons.Update(
-            items.Skip(_alchemyPage * ItemPageSize).Take(ItemPageSize),
-            item => item.InstanceId);
-        UpdatePager(_view.AlchemyPagePrevious, _view.AlchemyPageLabel,
-            _view.AlchemyPageNext, _alchemyPage, pageCount);
+        _alchemyIngredientIcons.Update(items, item => item.InstanceId);
     }
 
     private InventoryIconView CreateAlchemyIngredientIcon(ItemInstance item)
@@ -1487,27 +1498,6 @@ public sealed class GameController(
                 ShowAlchemyItem(id);
         };
         return icon;
-    }
-
-    private void ChangeAlchemyPage(int delta)
-    {
-        _alchemyPage = Math.Max(0, _alchemyPage + delta);
-        SyncAlchemy();
-    }
-
-    private static int PageCount(int itemCount) =>
-        Math.Max(1, (itemCount + ItemPageSize - 1) / ItemPageSize);
-
-    private static void UpdatePager(
-        UiButton previous,
-        UiText label,
-        UiButton next,
-        int page,
-        int pageCount)
-    {
-        previous.IsEnabled = page > 0;
-        next.IsEnabled = page + 1 < pageCount;
-        label.Value = $"{page + 1} / {pageCount}";
     }
 
     private void UpdateAlchemyIngredientIcon(InventoryIconView icon, ItemInstance item, int _)
@@ -1592,7 +1582,7 @@ public sealed class GameController(
         option.Clicked += _ =>
         {
             select(value);
-            _alchemyPage = 0;
+            _view?.AlchemyIngredients.ScrollTo(Vector2.Zero);
             CloseAlchemyFilterMenus();
             SyncAlchemy();
         };
@@ -1630,9 +1620,9 @@ public sealed class GameController(
             3 => "ЭКСТРАКТЫ",
             _ => "ВСЕ"
         };
-        _view!.AlchemyRarityFilter.Label = $"РЕДКОСТЬ: {rarityLabel} ▼";
-        _view.AlchemyQualityFilter.Label = $"КАЧЕСТВО: {qualityLabel} ▼";
-        _view.AlchemyTypeFilter.Label = $"ТИП: {typeLabel} ▼";
+        _view!.AlchemyRarityFilter.Label = $"Редк.: {rarityLabel}";
+        _view.AlchemyQualityFilter.Label = $"Кач.: {qualityLabel}";
+        _view.AlchemyTypeFilter.Label = $"Тип: {typeLabel}";
         _view.AlchemyRarityFilter.ToggleClass("active", _alchemyRarityFilter > 0);
         _view.AlchemyQualityFilter.ToggleClass("active", _alchemyQualityFilter > 0);
         _view.AlchemyTypeFilter.ToggleClass("active", _alchemyTypeFilter > 0);
@@ -1654,6 +1644,7 @@ public sealed class GameController(
 
     private void ShowAlchemyItem(Guid instanceId)
     {
+        CloseAlchemyFilterMenus();
         var item = _state.Inventory.Find(instanceId);
         if (item is null)
             return;
@@ -1710,6 +1701,7 @@ public sealed class GameController(
 
     private void CraftAlchemy()
     {
+        CloseAlchemyFilterMenus();
         var result = alchemy.Craft(_state, CurrentAlchemySelection(), _alchemyMode);
         if (!result.Success || result.Output is not { } output)
         {
@@ -2143,6 +2135,9 @@ public sealed class GameController(
         if (_view is null)
             return;
 
+        if (IsWindowOpen(_view.ShopWindow))
+            UpdateShopWindowHeight();
+
         foreach (var windowDocument in _view.WindowDocuments.All)
         {
             var hasTargetWindow = _view.Windows.Any(window =>
@@ -2214,8 +2209,8 @@ public sealed class GameController(
         _floatingValueIndex = (_floatingValueIndex + 1) % _floatingValues.Count;
         widget.Root.SetAttribute("class",
             $"tick-float {tone} lane-{widget.Lane}{(value < 0m ? " negative" : string.Empty)}");
-        SetPaintVisibility(widget.MoneyIcon, tone == "money-value");
-        widget.Value.Value = string.IsNullOrEmpty(label) ? Signed(value) : $"{Signed(value)} {label}";
+        SetPaintVisibility(widget.MoneyIcon, false);
+        widget.Value.Value = Signed(value);
         _floatingDocument?.RestartAnimation(widget.Root);
     }
 

@@ -7,12 +7,7 @@
             <button id="cores-tab" class="category-tab">ЯДРА ЗВЕРЕЙ</button>
             <button id="pills-tab" class="category-tab">ПИЛЮЛИ</button>
         </panel>
-        <panel id="inventory-grid" class="inventory-grid" />
-        <panel class="item-pagination">
-            <button id="inventory-page-previous" class="item-page-button">‹</button>
-            <text id="inventory-page-label" class="item-page-label">1 / 1</text>
-            <button id="inventory-page-next" class="item-page-button">›</button>
-        </panel>
+        <panel id="inventory-grid" class="inventory-grid" virtualize="true" />
         <panel id="inventory-details" class="inventory-details" hidden="true">
             <panel id="inventory-detail-icon-well" class="inventory-detail-icon-well">
                 <image id="inventory-detail-icon" />

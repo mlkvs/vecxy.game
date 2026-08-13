@@ -11,24 +11,19 @@
         <panel id="alchemy-selection" class="alchemy-selection" />
         <panel class="alchemy-filters">
             <panel class="alchemy-filter-control">
-                <button id="alchemy-rarity-filter" class="alchemy-filter-button">РЕДКОСТЬ: ВСЕ ▼</button>
+                <button id="alchemy-rarity-filter" class="alchemy-filter-button">Редк.: ВСЕ</button>
                 <panel id="alchemy-rarity-menu" class="alchemy-filter-menu" hidden="true" />
             </panel>
             <panel class="alchemy-filter-control">
-                <button id="alchemy-quality-filter" class="alchemy-filter-button">КАЧЕСТВО: ВСЕ ▼</button>
+                <button id="alchemy-quality-filter" class="alchemy-filter-button">Кач.: ВСЕ</button>
                 <panel id="alchemy-quality-menu" class="alchemy-filter-menu" hidden="true" />
             </panel>
             <panel class="alchemy-filter-control">
-                <button id="alchemy-type-filter" class="alchemy-filter-button">ТИП: ВСЕ ▼</button>
+                <button id="alchemy-type-filter" class="alchemy-filter-button">Тип: ВСЕ</button>
                 <panel id="alchemy-type-menu" class="alchemy-filter-menu" hidden="true" />
             </panel>
         </panel>
-        <panel id="alchemy-ingredients" class="alchemy-ingredients" />
-        <panel class="item-pagination">
-            <button id="alchemy-page-previous" class="item-page-button">‹</button>
-            <text id="alchemy-page-label" class="item-page-label">1 / 1</text>
-            <button id="alchemy-page-next" class="item-page-button">›</button>
-        </panel>
+        <panel id="alchemy-ingredients" class="alchemy-ingredients" virtualize="true" />
         <panel class="alchemy-footer">
             <button id="alchemy-craft-button" class="wide-action alchemy-craft" disabled="true">СОЗДАТЬ</button>
         </panel>
