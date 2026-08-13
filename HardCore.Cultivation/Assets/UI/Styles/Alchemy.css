@@ -24,6 +24,33 @@
     overflow: hidden;
 }
 
+.alchemy-filters {
+    height: 52px;
+    gap: 6px;
+}
+
+.alchemy-filter-button {
+    height: 52px;
+    padding: 6px 7px;
+    font-size: 11px;
+    min-font-size: 8px;
+    line-height: 1.05;
+    white-space: normal;
+}
+
+.alchemy-filter-menu {
+    top: 55px;
+    padding: 7px;
+    gap: 5px;
+}
+
+.alchemy-filter-option.selected {
+    color: #07120d;
+    background-color: #7effc3;
+    border: 2px solid #fff3d6;
+    box-shadow: 0 0 12px #56d5a088;
+}
+
 .alchemy-ingredients {
     flex: 1;
     min-height: 140px;

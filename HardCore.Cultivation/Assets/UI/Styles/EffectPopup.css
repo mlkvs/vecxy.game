@@ -16,3 +16,15 @@
     gap: 18px;
     border-bottom: 2px solid #f1bd5944;
 }
+
+.effect-popup-card .info-popup-effect {
+    margin-top: 16px;
+    padding: 18px 20px;
+    min-height: 148px;
+    color: #4e3b29;
+    font-size: 17px;
+    min-font-size: 13px;
+    line-height: 1.18;
+    text-align: left;
+    white-space: normal;
+}

@@ -126,13 +126,14 @@ text {
 .tick-float-layer.floating-overlay { left: 18px; right: 18px; top: 234px; bottom: 292px; }
 .tick-float {
     pointer-events: none; position: absolute; width: 176px; height: 43px; padding: 7px 10px;
-    color: #9ff2c9; background-color: #10251bb8; border: 1px solid #56d5a055; border-radius: 15px;
-    font-size: 19px; text-align: center; opacity: 0; animation: tick-float-rise 1.55s ease-out;
+    color: #9ff2c9; background-color: transparent; border: 0; border-radius: 0; box-shadow: none;
+    font-size: 28px; text-align: center; opacity: 0; animation: tick-float-rise 1.55s ease-out;
 }
-.tick-float.negative { color: #ffad9f; background-color: #321814b8; border-color: #e86d5d77; }
-.tick-float.mission-value { color: #ffe195; background-color: #302614ad; border-color: #f1bd5966; }
+.tick-float.negative { background-color: transparent; border-color: transparent; }
+.tick-float.spirit-value { color: #70ffc1; background-color: transparent; border-color: transparent; }
+.tick-float.mission-value { color: #ffe195; background-color: transparent; border-color: transparent; }
 .tick-float.money-value { color: #ffe7aa; }
-.tick-float.health-value { color: #baffc8; background-color: #12331dbd; border-color: #63e18788; }
+.tick-float.health-value { color: #ff786b; background-color: transparent; border-color: transparent; }
 .tick-float.lane-0 { left: 5%; top: 36%; }
 .tick-float.lane-1 { right: 5%; top: 42%; }
 .tick-float.lane-2 { left: 10%; top: 57%; }

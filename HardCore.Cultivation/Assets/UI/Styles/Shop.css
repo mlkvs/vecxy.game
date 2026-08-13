@@ -1,6 +1,8 @@
 .shop-window {
-    top: 235px;
-    bottom: 235px;
+    top: 270px;
+    bottom: auto;
+    height: 640px;
+    transform: none;
 }
 
 .shop-window .window-body {
@@ -9,12 +11,17 @@
 }
 
 .shop-window .shop-content {
+    flex: 1;
+    flex-shrink: 1;
+    min-height: 0;
     padding-left: 0;
     padding-right: 0;
+    overflow: hidden;
 }
 
 .shop-window .shop-grid {
     padding-left: 2px;
     padding-right: 2px;
     column-gap: 12px;
+    align-content: stretch;
 }

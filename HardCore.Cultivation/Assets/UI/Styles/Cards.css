@@ -2332,6 +2332,8 @@
 }
 
 .alchemy-core-slot.equipment > image {
+    left: 14%;
+    top: 14%;
     width: 72%;
     height: 72%;
     object-fit: contain;
@@ -3650,42 +3652,6 @@
     column-gap: 12px;
 }
 
-/* Item windows keep a bounded card count so opening them never lays out the whole inventory. */
-.item-pagination {
-    flex-shrink: 0;
-    min-height: 42px;
-    margin-top: 6px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
-
-.item-page-button {
-    pointer-events: auto;
-    width: 64px;
-    height: 38px;
-    align-items: center;
-    justify-content: center;
-    color: #49392c;
-    background-color: #ead8b7;
-    border: 2px solid #9b8055;
-    border-radius: 12px;
-    font-size: 25px;
-    text-align: center;
-}
-
-.item-page-button:disabled {
-    opacity: 0.42;
-}
-
-.item-page-label {
-    width: 92px;
-    color: #66553d;
-    font-size: 18px;
-    text-align: center;
-}
-
 .info-popup-kind {
     color: #503b27;
     font-size: 19px;
@@ -3863,4 +3829,119 @@
     width: 23px;
     height: 23px;
     object-fit: contain;
+}
+
+#window-backdrop,
+#window-backdrop.window-fade-surface {
+    background-color: #030201d8;
+}
+
+.tick-float,
+.tick-float.negative,
+.tick-float.health-value,
+.tick-float.money-value,
+.tick-float.spirit-value,
+.tick-float.mission-value {
+    width: 132px;
+    height: 48px;
+    padding: 0;
+    background-image: none;
+    background-color: #00000000;
+    background-size: auto;
+    background-slice: 0;
+    border: 0;
+    border-color: #00000000;
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 28px;
+    text-shadow: 0 3px 4px #000000cc;
+}
+
+.tick-float.health-value {
+    color: #ff786b;
+}
+
+.tick-float.money-value {
+    color: #ffe7aa;
+}
+
+.tick-float.spirit-value {
+    color: #70ffc1;
+}
+
+.tick-float.mission-value {
+    color: #ffe195;
+}
+
+.age-values {
+    gap: 1px;
+}
+
+.age-values .top-stat-value {
+    flex-shrink: 1;
+    font-size: 19px;
+    min-font-size: 13px;
+    text-fit: shrink;
+}
+
+.age-separator {
+    flex-shrink: 0;
+    width: 8px;
+    text-align: center;
+}
+
+/* Active effects on the HUD are just clickable depleting icons. */
+.effects-list {
+    width: 58px;
+    grid-auto-rows: 54px;
+    gap: 6px;
+}
+
+.effect-orb,
+.effect-orb:hover,
+.effect-orb:active,
+.effect-orb:disabled,
+.effect-orb.permanent-effect,
+.effect-orb.permanent-effect:hover,
+.effect-orb.permanent-effect:active,
+.effect-orb.permanent-effect:disabled {
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    background-image: none;
+    background-color: #00000000;
+    background-size: auto;
+    background-slice: 0;
+    border: 0;
+    border-width: 0;
+    border-style: none;
+    border-color: #00000000;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+.effect-ring,
+.effect-ring:hover,
+.effect-ring:active,
+.effect-orb.permanent-effect .effect-ring,
+.effect-orb.permanent-effect .effect-ring:hover,
+.effect-orb.permanent-effect .effect-ring:active {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: auto;
+    bottom: auto;
+    width: 52px;
+    height: 52px;
+    background-image: none;
+    background-color: #00000000;
+    background-size: auto;
+    background-slice: 0;
+    border: 0;
+    border-width: 0;
+    border-style: none;
+    border-color: #00000000;
+    border-radius: 0;
+    box-shadow: none;
 }
