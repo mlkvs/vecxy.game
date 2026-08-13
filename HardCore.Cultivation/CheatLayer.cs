@@ -2,6 +2,7 @@ using Autofac;
 using HardCore.Cultivation.Game.Cheats;
 using JetBrains.Annotations;
 using Vecxy.Engine;
+using Vecxy.Rendering;
 using Vecxy.UI;
 
 namespace HardCore.Cultivation;
@@ -9,6 +10,8 @@ namespace HardCore.Cultivation;
 [UsedImplicitly]
 public sealed class CheatLayer(
     IUiManager ui,
+    IRenderer renderer,
+    IUiDiagnostics uiDiagnostics,
     CheatActionRegistry registry) : AAppLayer
 {
     public sealed class Definition : ADefinition<CheatLayer>
@@ -53,7 +56,12 @@ public sealed class CheatLayer(
         if (_fps is null || _fpsElapsed < 0.25f)
             return;
         var framesPerSecond = _fpsFrames / Math.Max(_fpsElapsed, 0.0001f);
-        _fps.Value = $"{framesPerSecond:0} FPS";
+        var renderStats = renderer.Statistics;
+        var uiStats = uiDiagnostics.Statistics;
+        _fps.Value =
+            $"{framesPerSecond:0} FPS\n" +
+            $"R {renderStats.FrameTimeMilliseconds:0.0}ms D {renderStats.DrawCalls}\n" +
+            $"UI {uiStats.RenderCpu.CurrentMilliseconds:0.0}ms B {uiStats.Batches}";
         _fpsElapsed = 0f;
         _fpsFrames = 0;
     }

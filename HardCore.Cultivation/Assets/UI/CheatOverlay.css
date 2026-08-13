@@ -44,14 +44,14 @@ text {
     z-index: 5000;
     right: 8px;
     top: 8px;
-    width: 92px;
-    height: 28px;
+    width: 142px;
+    height: 66px;
     padding: 3px 8px;
     color: #9ff2c9;
     background-color: #07120ecc;
     border: 1px solid #9ff2c966;
     border-radius: 8px;
-    font-size: 15px;
+    font-size: 13px;
     text-align: right;
 }
 
