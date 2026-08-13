@@ -1,5 +1,5 @@
 <panel id="inventory-window" class="window compact-window inventory-window" hidden="true">
-    <panel class="window-header"><panel><text class="window-title">Рюкзак</text><text class="window-subtitle">Нажмите на предмет, чтобы увидеть описание</text></panel><button class="window-close"><image sprite="Assets/Textures/UIIconsAtlas.atlas#close" /></button></panel>
+    <panel class="window-header"><panel><text class="window-title">Рюкзак</text><text class="window-subtitle">Нажмите на предмет, чтобы увидеть описание</text></panel><button class="window-close"><image sprite="Assets/Textures/GameUIAtlas.atlas#close" /></button></panel>
     <panel class="window-body">
         <panel class="window-toolbar"><text>ПРЕДМЕТЫ</text><text id="inventory-count" class="toolbar-value">0 предметов</text></panel>
         <panel class="category-tabs">
@@ -8,6 +8,11 @@
             <button id="pills-tab" class="category-tab">ПИЛЮЛИ</button>
         </panel>
         <panel id="inventory-grid" class="inventory-grid" />
+        <panel class="item-pagination">
+            <button id="inventory-page-previous" class="item-page-button">‹</button>
+            <text id="inventory-page-label" class="item-page-label">1 / 1</text>
+            <button id="inventory-page-next" class="item-page-button">›</button>
+        </panel>
         <panel id="inventory-details" class="inventory-details" hidden="true">
             <panel id="inventory-detail-icon-well" class="inventory-detail-icon-well">
                 <image id="inventory-detail-icon" />
@@ -20,7 +25,7 @@
             </panel>
             <panel class="inventory-detail-actions">
                 <button id="inventory-use-button" class="compact-action">ИСПОЛЬЗОВАТЬ</button>
-                <button id="inventory-sell-button" class="compact-action secondary currency-action"><image sprite="Assets/Textures/UIIconsAtlas.atlas#money"/><text>ПРОДАТЬ&#10;+0</text></button>
+                <button id="inventory-sell-button" class="compact-action secondary currency-action"><image sprite="Assets/Textures/GameUIAtlas.atlas#money"/><text>ПРОДАТЬ&#10;+0</text></button>
             </panel>
         </panel>
     </panel>

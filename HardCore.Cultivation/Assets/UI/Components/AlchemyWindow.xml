@@ -1,7 +1,7 @@
 <panel id="alchemy-window" class="window compact-window alchemy-window" hidden="true">
     <panel class="window-header">
         <panel><text class="window-title">Алхимия</text><text class="window-subtitle">Соединяйте свойства и очищайте сырьё</text></panel>
-        <button class="window-close"><image sprite="Assets/Textures/UIIconsAtlas.atlas#close" /></button>
+        <button class="window-close"><image sprite="Assets/Textures/GameUIAtlas.atlas#close" /></button>
     </panel>
     <panel class="window-body">
         <panel class="window-tabs alchemy-tabs">
@@ -24,6 +24,11 @@
             </panel>
         </panel>
         <panel id="alchemy-ingredients" class="alchemy-ingredients" />
+        <panel class="item-pagination">
+            <button id="alchemy-page-previous" class="item-page-button">‹</button>
+            <text id="alchemy-page-label" class="item-page-label">1 / 1</text>
+            <button id="alchemy-page-next" class="item-page-button">›</button>
+        </panel>
         <panel class="alchemy-footer">
             <button id="alchemy-craft-button" class="wide-action alchemy-craft" disabled="true">СОЗДАТЬ</button>
         </panel>

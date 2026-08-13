@@ -23,7 +23,7 @@ public class Background(
                 throw new NotImplementedException();
             }
             
-            using var backgroundTexture = assets.Load<TextureAsset>("Textures/Background.png");
+            using var backgroundTexture = assets.Load<TextureAsset>("Textures/Background.jpg");
 
             var backgroundObject = ctx.Scene.CreateObject("Background");
 
@@ -32,7 +32,7 @@ public class Background(
             background.PixelsPerUnit = 1.0f;
             background.SortingLayer = 0;
 
-            using var missionBackgroundTexture = assets.Load<TextureAsset>("Textures/Background_Missions.png");
+            using var missionBackgroundTexture = assets.Load<TextureAsset>("Textures/Background_Missions.jpg");
             var missionBackgroundObject = backgroundObject.CreateChild("Mission background");
             var missionBackground = missionBackgroundObject.AddComponent<SpriteRenderer>();
             missionBackground.SetTexture(missionBackgroundTexture);
@@ -51,8 +51,8 @@ public class Background(
     
     private bool _missionMode;
     private float _missionOpacity;
-    private string _cultivationTexturePath = "Textures/Background.png";
-    private string _missionTexturePath = "Textures/Background_Missions.png";
+    private string _cultivationTexturePath = "Textures/Background.jpg";
+    private string _missionTexturePath = "Textures/Background_Missions.jpg";
 
     public SpriteRenderer SpriteRenderer => cultivationSprite;
 

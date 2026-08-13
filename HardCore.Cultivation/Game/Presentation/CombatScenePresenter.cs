@@ -17,6 +17,9 @@ public sealed class CombatScenePresenter(
     private const float SceneCenterX = 10000f;
     private readonly List<SceneObject> _objects = [];
     private readonly List<SpriteRenderer> _backgroundLayers = [];
+    private readonly Dictionary<string, AssetRef<TextureAsset>> _textureCache =
+        new(StringComparer.Ordinal);
+    private static readonly string[] FighterAnimations = ["idle", "attack", "hurt", "death"];
     private SceneObject? _cameraObject;
     private AnimatedFighter? _hero;
     private AnimatedFighter? _enemy;
@@ -32,6 +35,7 @@ public sealed class CombatScenePresenter(
             return;
         var scene = scenes.ActiveScene ?? throw new InvalidOperationException("The main scene is not loaded.");
         var config = database.Combat;
+        PrewarmCombatTextures();
         RenderTarget = renderer.CreateRenderTexture(config.RenderWidth, config.RenderHeight);
 
         _cameraObject = scene.CreateObject("Combat render camera");
@@ -48,8 +52,8 @@ public sealed class CombatScenePresenter(
 
         var heroObject = CreateFighter(scene, "Combat hero", SceneCenterX - 142f, false, 100);
         var enemyObject = CreateFighter(scene, "Combat enemy", SceneCenterX + 142f, true, 101);
-        _hero = new AnimatedFighter(heroObject.GetComponent<SpriteRenderer>()!, assets, config.HeroSpriteSet);
-        _enemy = new AnimatedFighter(enemyObject.GetComponent<SpriteRenderer>()!, assets, config.HeroSpriteSet);
+        _hero = new AnimatedFighter(heroObject.GetComponent<SpriteRenderer>()!, GetTexture, config.HeroSpriteSet);
+        _enemy = new AnimatedFighter(enemyObject.GetComponent<SpriteRenderer>()!, GetTexture, config.HeroSpriteSet);
         Hide();
     }
 
@@ -130,7 +134,7 @@ public sealed class CombatScenePresenter(
         sceneObject.Transform.Position = new Vector3(x, -154f, 0f);
         sceneObject.Transform.Scale = new Vector3(3f, 3f, 1f);
         var sprite = sceneObject.AddComponent<SpriteRenderer>();
-        using var texture = assets.Load<TextureAsset>($"{database.Combat.HeroSpriteSet}_idle.png");
+        var texture = GetTexture($"{database.Combat.HeroSpriteSet}_idle.png");
         sprite.SetTexture(texture);
         sprite.PixelsPerUnit = 1f;
         sprite.Pivot = new Vector2(0.5f, 0f);
@@ -157,7 +161,7 @@ public sealed class CombatScenePresenter(
         {
             var sceneObject = scene.CreateObject($"Combat background {index + 1}");
             sceneObject.Transform.Position = new Vector3(SceneCenterX, 0f, 1f);
-            using var texture = assets.Load<TextureAsset>(background.Layers[index]);
+            var texture = GetTexture(background.Layers[index]);
             var sprite = sceneObject.AddComponent<SpriteRenderer>();
             sprite.SetTexture(texture);
             sprite.PixelsPerUnit = 1f;
@@ -176,12 +180,48 @@ public sealed class CombatScenePresenter(
                 sceneObject.Destroy();
         _objects.Clear();
         _backgroundLayers.Clear();
+        foreach (var texture in _textureCache.Values)
+            texture.Dispose();
+        _textureCache.Clear();
         RenderTarget?.Dispose();
         RenderTarget = null;
         _cameraObject = null;
+        _hero = null;
+        _enemy = null;
+        _monsterId = null;
+        _backgroundId = null;
     }
 
-    private sealed class AnimatedFighter(SpriteRenderer sprite, IAssetsManager assets, string spriteSet)
+    private void PrewarmCombatTextures()
+    {
+        PrewarmSpriteSet(database.Combat.HeroSpriteSet);
+        foreach (var monster in database.Monsters.Values)
+            PrewarmSpriteSet(monster.SpriteSet);
+        foreach (var background in database.Combat.Backgrounds)
+            foreach (var layer in background.Layers)
+                _ = GetTexture(layer);
+    }
+
+    private void PrewarmSpriteSet(string spriteSet)
+    {
+        foreach (var animation in FighterAnimations)
+            _ = GetTexture($"{spriteSet}_{animation}.png");
+    }
+
+    private AssetRef<TextureAsset> GetTexture(string path)
+    {
+        if (_textureCache.TryGetValue(path, out var texture))
+            return texture;
+        texture = assets.Load<TextureAsset>(path);
+        _textureCache.Add(path, texture);
+        renderer.PreloadTexture(texture);
+        return texture;
+    }
+
+    private sealed class AnimatedFighter(
+        SpriteRenderer sprite,
+        Func<string, AssetRef<TextureAsset>> getTexture,
+        string spriteSet)
     {
         private string _spriteSet = spriteSet;
         private string _animation = string.Empty;
@@ -210,7 +250,7 @@ public sealed class CombatScenePresenter(
             _frameCount = animation == "hurt" ? 2 : 4;
             _frame = 0;
             _elapsed = 0f;
-            using var texture = assets.Load<TextureAsset>($"{_spriteSet}_{animation}.png");
+            var texture = getTexture($"{_spriteSet}_{animation}.png");
             sprite.SetTexture(texture);
             sprite.SetFrame(0, 48, 48);
         }

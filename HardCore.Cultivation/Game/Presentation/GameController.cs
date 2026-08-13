@@ -48,27 +48,40 @@ public sealed class GameController(
     private Action? _infoPopupSellAction;
     private long _actionToastExpiresAt;
     private const long ActionToastLifetimeMilliseconds = 1850;
+    private const float HealthUiRefreshIntervalSeconds = 1f / 15f;
+    private const int ItemPageSize = 12;
+    private const string WindowFadeClass = "window-fade-surface";
+    private const string WindowOpenClass = "window-fade-open";
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
     private UiText? _achievementText;
     private GameState _state = null!;
     private float _elapsedMilliseconds;
+    private float _yearCandleAnimationSeconds;
+    private int _yearCandleFlameFrame = -1;
     private bool _gameOver;
     private ItemCategory _inventoryCategory = ItemCategory.Ingredient;
     private Guid? _selectedInventoryItem;
+    private int _inventoryPage;
     private readonly List<Guid?> _alchemySlots = [];
+    private readonly List<AlchemySlotWidget> _alchemySlotWidgets = [];
+    private readonly List<Guid?> _renderedAlchemySlots = [];
     private Guid? _alchemyCore;
+    private AlchemySlotWidget? _alchemyCoreWidget;
+    private (AlchemyMode Mode, Guid? Core)? _renderedAlchemyCore;
     private AlchemyMode _alchemyMode;
     private int _alchemyRarityFilter;
     private int _alchemyQualityFilter;
     private int _alchemyTypeFilter;
+    private int _alchemyPage;
     private EffectType? _openEffectType;
-    private readonly Dictionary<(string Tone, bool Negative), List<FloatingValueWidget>> _floatingValuePools = [];
-    private readonly Dictionary<(string Tone, bool Negative), int> _floatingValueIndices = [];
+    private readonly List<FloatingValueWidget> _floatingValues = [];
+    private int _floatingValueIndex;
     private readonly Dictionary<EffectType, UiRadialProgress> _effectWidgets = [];
     private UiKeyedCollection<Guid, ShopSlot, ShopCardView>? _shopCards;
     private UiKeyedCollection<Guid, ItemInstance, InventoryIconView>? _inventoryIcons;
+    private UiKeyedCollection<Guid, ItemInstance, InventoryIconView>? _alchemyIngredientIcons;
     private UiKeyedCollection<string, string, MissionCardView>? _missionCards;
     private UiKeyedCollection<Guid, ActiveMission, MissionQueueItemView>? _missionQueueItems;
     private UiText? _missionBoardEmpty;
@@ -76,6 +89,7 @@ public sealed class GameController(
     private UiText? _shopEmpty;
     private decimal _pendingHealthRestored;
     private float _healthFloatElapsed;
+    private float _healthUiElapsed;
     private DogCompanion? _dog;
     private bool _dogConfigured;
     private Rect? _dogTapBounds;
@@ -111,6 +125,7 @@ public sealed class GameController(
 
     public void Update(float deltaTime)
     {
+        UpdateYearCandleAnimation(deltaTime);
         if (_actionToast is not null && Environment.TickCount64 >= _actionToastExpiresAt)
         {
             HideActionToast();
@@ -162,7 +177,14 @@ public sealed class GameController(
         }
         if (combatUpdate.HealthChanged)
         {
-            UpdateHud();
+            _healthUiElapsed += deltaTime;
+            if (_healthUiElapsed >= HealthUiRefreshIntervalSeconds ||
+                combatUpdate.RecoveryCompleted ||
+                _state.Character.Health >= _state.Character.MaximumHealth)
+            {
+                UpdateHud();
+                _healthUiElapsed = 0f;
+            }
             _pendingHealthRestored += combatUpdate.HealthRestored;
             _healthFloatElapsed += deltaTime;
             if (_healthFloatElapsed >= 1f || combatUpdate.RecoveryCompleted)
@@ -191,6 +213,81 @@ public sealed class GameController(
 
     public void Save() => saves.Save(_state);
 
+    public void ChangeMoneyForCheat(long amount)
+    {
+        if (amount >= 0)
+        {
+            _state.Character.AddMoney(amount);
+        }
+        else
+        {
+            var spend = Math.Min(_state.Character.Money, Math.Abs(amount));
+            _state.Character.TrySpendMoney(spend);
+        }
+        CommitCheatChange();
+    }
+
+    public void ChangeSpiritualPowerForCheat(decimal amount)
+    {
+        if (amount >= 0m)
+        {
+            _state.Character.AddSpiritualPower(amount);
+        }
+        else
+        {
+            var spend = Math.Min(_state.Character.SpiritualPower, Math.Abs(amount));
+            if (spend > 0m)
+                _state.Character.TrySpendSpiritualPower(spend);
+        }
+        CommitCheatChange();
+    }
+
+    public void ChangeHealthForCheat(decimal amount)
+    {
+        if (amount >= 0m)
+            _state.Character.Heal(amount);
+        else
+            _state.Character.TakeDamage(Math.Abs(amount));
+        CommitCheatChange();
+    }
+
+    public void ChangeMaximumHealthForCheat(decimal amount)
+    {
+        _state.Character.AdjustMaximumHealthOffset(amount);
+        combat.ConfigureHero(_state.Character);
+        CommitCheatChange();
+    }
+
+    public void ChangeAgeForCheat(decimal years)
+    {
+        _state.Character.Age.Restore(Math.Max(0m, _state.Character.Age.TotalYears + years));
+        _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character);
+        if (!_gameOver && _view is not null)
+            CloseWindows();
+        CommitCheatChange();
+    }
+
+    public void ChangeMaximumAgeForCheat(decimal years)
+    {
+        _state.Character.AdjustMaximumAgeOffset(years);
+        _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character);
+        CommitCheatChange();
+    }
+
+    public void ResetSaveForCheat()
+    {
+        if (File.Exists(saves.SavePath))
+            File.Delete(saves.SavePath);
+        InitializeNewGame();
+        _elapsedMilliseconds = 0f;
+        _healthUiElapsed = 0f;
+        _pendingHealthRestored = 0m;
+        _gameOver = false;
+        _selectedInventoryItem = null;
+        CloseWindows();
+        CommitCheatChange();
+    }
+
     public void Dispose()
     {
         if (_document is not null)
@@ -214,9 +311,16 @@ public sealed class GameController(
         _view = null;
         _shopCards = null;
         _inventoryIcons = null;
+        _alchemyIngredientIcons = null;
+        _alchemySlotWidgets.Clear();
+        _renderedAlchemySlots.Clear();
+        _alchemyCoreWidget = null;
+        _renderedAlchemyCore = null;
         _missionCards = null;
         _missionQueueItems = null;
         _shopEmpty = null;
+        _floatingValues.Clear();
+        _floatingValueIndex = 0;
         _dog = null;
         _dogConfigured = false;
         _dogTapBounds = null;
@@ -234,6 +338,12 @@ public sealed class GameController(
         _state.SetActivityMode(ActivityMode.Cultivation);
         shop.Refresh(_state.Shop);
         missions.Refresh(_state);
+    }
+
+    private void CommitCheatChange()
+    {
+        Save();
+        ApplyStateToView();
     }
 
     private void BuildUi(UiDocument document)
@@ -265,6 +375,11 @@ public sealed class GameController(
             CreateInventoryIcon,
             icon => icon.Card,
             UpdateInventoryIcon);
+        _alchemyIngredientIcons = new UiKeyedCollection<Guid, ItemInstance, InventoryIconView>(
+            _view.AlchemyIngredients,
+            CreateAlchemyIngredientIcon,
+            icon => icon.Card,
+            UpdateAlchemyIngredientIcon);
         _missionCards = new UiKeyedCollection<string, string, MissionCardView>(
             _view.MissionsList,
             CreateMissionCard,
@@ -282,6 +397,7 @@ public sealed class GameController(
         _dogTapBounds = null;
         ResetAlchemySlots();
         _alchemyCore = null;
+        BuildAlchemySelection();
 
         BindClick(_view.ShopButton, () => { OpenWindow(_view.ShopWindow); SyncShop(); });
         BindClick(_view.AlchemyButton, OpenAlchemy);
@@ -306,8 +422,12 @@ public sealed class GameController(
         BindClick(_view.IngredientsTab, () => SelectInventoryCategory(ItemCategory.Ingredient));
         BindClick(_view.CoresTab, () => SelectInventoryCategory(ItemCategory.Core));
         BindClick(_view.PillsTab, () => SelectInventoryCategory(ItemCategory.Pill));
+        BindClick(_view.InventoryPagePrevious, () => ChangeInventoryPage(-1));
+        BindClick(_view.InventoryPageNext, () => ChangeInventoryPage(1));
         BindClick(_view.AlchemyPillTab, () => SetAlchemyMode(AlchemyMode.Pill));
         BindClick(_view.AlchemyDistillTab, () => SetAlchemyMode(AlchemyMode.Distillation));
+        BindClick(_view.AlchemyPagePrevious, () => ChangeAlchemyPage(-1));
+        BindClick(_view.AlchemyPageNext, () => ChangeAlchemyPage(1));
         BindClick(_view.AlchemyRarityFilter, () => ToggleAlchemyFilterMenu(_view.AlchemyRarityMenu));
         BindClick(_view.AlchemyQualityFilter, () => ToggleAlchemyFilterMenu(_view.AlchemyQualityMenu));
         BindClick(_view.AlchemyTypeFilter, () => ToggleAlchemyFilterMenu(_view.AlchemyTypeMenu));
@@ -320,6 +440,11 @@ public sealed class GameController(
 
         BuildAlchemyFilterMenus();
         ApplyStateToView();
+        PrepareRetainedWindows();
+        SyncShop();
+        SyncInventory();
+        SyncAlchemy();
+        SyncMissions();
         if (_gameOver)
             ShowDeathWindow();
         else
@@ -349,13 +474,13 @@ public sealed class GameController(
             Save();
 
         ApplyStateToView();
-        if (_view!.ShopWindow.IsVisible || result.NewYearStarted)
+        if (IsWindowOpen(_view!.ShopWindow) || result.NewYearStarted)
             SyncShop();
-        if (_view.InventoryWindow.IsVisible || result.MissionCompleted)
+        if (IsWindowOpen(_view.InventoryWindow) || result.MissionCompleted)
             SyncInventory();
-        if (_view.MissionsWindow.IsVisible)
+        if (IsWindowOpen(_view.MissionsWindow))
             SyncMissions();
-        if (_openEffectType is not null && _view.EffectPopup.IsVisible)
+        if (_openEffectType is not null && IsWindowOpen(_view.EffectPopup))
             UpdateEffectPopup();
         if (result.SpiritualPowerGained != 0m)
             SpawnFloatingValue(result.SpiritualPowerGained, string.Empty, "spirit-value");
@@ -429,6 +554,7 @@ public sealed class GameController(
         if (_dog is not null && !_dogConfigured)
         {
             _dog.Configure(database.Dog);
+            _dog.PrewarmTextures(renderer);
             _dogConfigured = true;
         }
         _dog?.SetChargeProgress(dogMeditation.GetProgress(_state));
@@ -501,6 +627,39 @@ public sealed class GameController(
         SyncEffects();
     }
 
+    private void UpdateYearCandleAnimation(float deltaTime)
+    {
+        if (_view is null)
+            return;
+        _yearCandleAnimationSeconds += deltaTime;
+        var frame = (int)(_yearCandleAnimationSeconds / 0.14f) % 6;
+        if (frame == _yearCandleFlameFrame)
+            return;
+        _yearCandleFlameFrame = frame;
+        _view.YearCandleFlame.Sprite = $"Assets/Textures/GameUIAtlas.atlas#year-candle-flame-{frame}";
+    }
+
+    private void UpdateYearCandleProgress()
+    {
+        var remaining = 1f - _state.Calendar.TickInYear / (float)_state.Calendar.TicksPerYear;
+        remaining = Math.Clamp(remaining, 0f, 1f);
+        const float maximumWaxHeight = 94f;
+        const float waxBottom = 102f;
+        const float fullWaxTop = waxBottom - maximumWaxHeight;
+        var waxHeight = Math.Max(2f, maximumWaxHeight * remaining);
+        var waxTop = waxBottom - waxHeight;
+        var capVisibility = Math.Clamp((remaining - 0.06f) / 0.10f, 0f, 1f);
+        var capOverlap = 6f * capVisibility;
+        var capTop = Math.Max(fullWaxTop, waxTop - capOverlap);
+        _view!.YearCandleWax.Progress = remaining;
+        _view.YearCandleCap.Style.Set("top", ToPixelString(capTop));
+        _view.YearCandleCap.Style.Opacity = capVisibility.ToString("0.###", CultureInfo.InvariantCulture);
+        _view.YearCandleFlame.Style.Set("top", ToPixelString(capTop - 45f));
+    }
+
+    private static string ToPixelString(float value) =>
+        $"{MathF.Round(value).ToString(CultureInfo.InvariantCulture)}px";
+
     private void UpdateHud()
     {
         var character = _state.Character;
@@ -508,8 +667,8 @@ public sealed class GameController(
         var stage = database.Cultivation.Stages[progress.StageIndex];
         var required = cultivation.GetRequiredPower(progress.StageIndex, progress.Level);
         var powerBars = required <= 0m ? 1m : Math.Max(0m, character.SpiritualPower / required);
-        _view!.YearDial.Progress = 1f - _state.Calendar.TickInYear / (float)_state.Calendar.TicksPerYear;
-        _view.Money.Value = character.Money.ToString("N0", CultureInfo.InvariantCulture);
+        UpdateYearCandleProgress();
+        _view!.Money.Value = character.Money.ToString("N0", CultureInfo.InvariantCulture);
         _view.ModalMoney.Value = _view.Money.Value;
         _view.Age.Value = Format(character.Age.TotalYears);
         _view.MaximumAge.Value = Format(cultivation.GetMaximumAge(character));
@@ -592,6 +751,8 @@ public sealed class GameController(
         _backgroundVisual ??= objects
             .Select(sceneObject => sceneObject.GetComponent<Background>())
             .FirstOrDefault(component => component is not null);
+
+        _characterVisual?.PrewarmTextures(renderer);
 
         var missionMode = !_state.RecoveryRequired && _state.ActivityMode == ActivityMode.Missions;
         var stageIndex = Math.Clamp(_state.Character.Cultivation.StageIndex, 0, database.Cultivation.Stages.Count - 1);
@@ -687,26 +848,22 @@ public sealed class GameController(
             {
                 var source = database.GetItem(group.First().SourceItemId);
                 var orb = _document!.CreateButton(attributes: new Dictionary<string, string> { ["class"] = "effect-orb" });
-                var ring = (UiRadialProgress)_document.CreateElement("radial-progress", new Dictionary<string, string>
+                var effectDial = (UiRadialProgress)_document.CreateElement("radial-progress", new Dictionary<string, string>
                 {
                     ["class"] = "effect-ring",
                     ["clockwise-depletion"] = "true",
-                    ["sprite"] = "Assets/Textures/ChineseUIIconsAtlas.atlas#round-button"
+                    ["sprite"] = $"Assets/Textures/GameUIAtlas.atlas#effect-{Path.GetFileNameWithoutExtension(source.Icon)}"
                 });
-                orb.Add(ring);
-                var effectIcon = _document.CreateImage(source.Icon,
-                    new Dictionary<string, string> { ["class"] = "effect-icon" });
-                effectIcon.Sprite = AtlasSprite(source.Icon);
-                orb.Add(effectIcon);
+                orb.Add(effectDial);
                 var type = group.Key;
                 orb.Clicked += _ => ShowEffectPopup(type);
                 _view.Effects.Add(orb);
-                _effectWidgets[type] = ring;
+                _effectWidgets[type] = effectDial;
             }
         }
         foreach (var group in groups)
-            if (_effectWidgets.TryGetValue(group.Key, out var ring))
-                ring.Progress = CalculateEffectTimer(group.ToArray());
+            if (_effectWidgets.TryGetValue(group.Key, out var effectDial))
+                effectDial.Progress = CalculateEffectTimer(group.ToArray());
     }
 
     private void SyncShop()
@@ -805,6 +962,7 @@ public sealed class GameController(
     private void SelectInventoryCategory(ItemCategory category)
     {
         _inventoryCategory = category;
+        _inventoryPage = 0;
         _selectedInventoryItem = null;
         _view!.InventoryDetails.IsVisible = false;
         SyncInventory();
@@ -818,9 +976,16 @@ public sealed class GameController(
         _view.IngredientsTab.ToggleClass("active", _inventoryCategory == ItemCategory.Ingredient);
         _view.CoresTab.ToggleClass("active", _inventoryCategory == ItemCategory.Core);
         _view.PillsTab.ToggleClass("active", _inventoryCategory == ItemCategory.Pill);
+        var items = _state.Inventory.Items
+            .Where(item => database.GetItem(item.ConfigId).Category == _inventoryCategory)
+            .ToArray();
+        var pageCount = PageCount(items.Length);
+        _inventoryPage = Math.Clamp(_inventoryPage, 0, pageCount - 1);
         _inventoryIcons.Update(
-            _state.Inventory.Items.Where(item => database.GetItem(item.ConfigId).Category == _inventoryCategory),
+            items.Skip(_inventoryPage * ItemPageSize).Take(ItemPageSize),
             item => item.InstanceId);
+        UpdatePager(_view.InventoryPagePrevious, _view.InventoryPageLabel,
+            _view.InventoryPageNext, _inventoryPage, pageCount);
         UpdateInventorySelection();
         if (_selectedInventoryItem is { } selected && _state.Inventory.Find(selected) is not null)
             SelectInventoryItem(selected);
@@ -842,6 +1007,14 @@ public sealed class GameController(
                 SelectInventoryItem(id);
         };
         return icon;
+    }
+
+    private void ChangeInventoryPage(int delta)
+    {
+        _inventoryPage = Math.Max(0, _inventoryPage + delta);
+        _selectedInventoryItem = null;
+        _view!.InventoryDetails.IsVisible = false;
+        SyncInventory();
     }
 
     private void UpdateInventoryIcon(InventoryIconView icon, ItemInstance item, int _)
@@ -953,6 +1126,7 @@ public sealed class GameController(
         ResetAlchemySlots();
         _alchemyCore = null;
         _alchemyMode = AlchemyMode.Pill;
+        _alchemyPage = 0;
         CloseAlchemyFilterMenus();
         OpenWindow(_view!.AlchemyWindow);
         SyncAlchemy();
@@ -961,6 +1135,7 @@ public sealed class GameController(
     private void SetAlchemyMode(AlchemyMode mode)
     {
         _alchemyMode = mode;
+        _alchemyPage = 0;
         ResetAlchemySlots();
         _alchemyCore = null;
         CloseAlchemyFilterMenus();
@@ -1020,18 +1195,18 @@ public sealed class GameController(
         _view.AlchemyDistillTab.ToggleClass("active", _alchemyMode == AlchemyMode.Distillation);
         SyncAlchemyFilters();
 
-        BuildAlchemySlots();
+        UpdateAlchemySlots();
         BuildAlchemyIngredients();
         var preview = alchemy.Preview(_state, CurrentAlchemySelection(), _alchemyMode);
         _view.AlchemyCraft.IsEnabled = preview.CanCraft;
         _view.AlchemyCraft.Label = _alchemyMode == AlchemyMode.Pill ? "СОЗДАТЬ ПИЛЮЛЮ" : "РАФИНИРОВАТЬ";
     }
 
-    private void BuildAlchemySlots()
+    private void BuildAlchemySelection()
     {
         _view!.AlchemySelection.Clear();
-        _view.AlchemySelection.Add(_document!.CreateImage(
-            "Assets/Textures/UI/alchemy-room.png",
+        _view!.AlchemySelection.Add(_document!.CreateImage(
+            "Assets/Textures/UI/alchemy-room.jpg",
             new Dictionary<string, string> { ["class"] = "alchemy-room" }));
         var furnaceStage = _document.CreatePanel(new Dictionary<string, string>
         {
@@ -1041,84 +1216,114 @@ public sealed class GameController(
             "Assets/Textures/UI/alchemy-furnace.png",
             new Dictionary<string, string> { ["class"] = "alchemy-furnace" }));
         _view.AlchemySelection.Add(furnaceStage);
+        _alchemySlotWidgets.Clear();
+        _renderedAlchemySlots.Clear();
         EnsureAlchemySlots();
         for (var index = 0; index < database.Alchemy.MaximumIngredients; index++)
         {
-            var selectedUnit = _alchemySlots[index];
             var slot = _document!.CreateButton(attributes: new Dictionary<string, string>
             {
-                ["class"] = selectedUnit is not null
-                    ? $"alchemy-slot alchemy-outer-slot slot-{index + 1} filled"
-                    : $"alchemy-slot alchemy-outer-slot slot-{index + 1}"
+                ["class"] = $"alchemy-slot alchemy-outer-slot slot-{index + 1}"
             });
-            if (selectedUnit is { } instanceId)
-            {
-                var item = _state.Inventory.Find(instanceId)!;
-                var config = database.GetItem(item.ConfigId);
-                var image = _document.CreateImage(config.Icon);
-                image.Sprite = AtlasSprite(config.Icon);
-                slot.Add(image);
-                var qualityHost = _document.CreatePanel(new Dictionary<string, string>
-                {
-                    ["class"] = "alchemy-slot-quality item-icon-quality"
-                });
-                slot.Add(qualityHost);
-                BuildQualityStars(qualityHost, item.Quality);
-                var slotIndex = index;
-                slot.Clicked += _ => RemoveAlchemyIngredientAt(slotIndex);
-            }
-            else
-            {
-                slot.Add(_document.CreateText((index + 1).ToString(CultureInfo.InvariantCulture),
-                    new Dictionary<string, string> { ["class"] = "alchemy-slot-index" }));
-            }
-            furnaceStage.Add(slot);
-        }
-
-        var coreSlot = _document!.CreateButton(attributes: new Dictionary<string, string>
-        {
-            ["class"] = _alchemyMode == AlchemyMode.Distillation
-                ? "alchemy-slot alchemy-core-slot equipment"
-                : _alchemyCore is null
-                    ? "alchemy-slot alchemy-core-slot"
-                    : "alchemy-slot alchemy-core-slot filled"
-        });
-        if (_alchemyMode == AlchemyMode.Distillation)
-        {
-            coreSlot.Add(_document.CreateElement("image", new Dictionary<string, string>
-            {
-                ["sprite"] = "Assets/Textures/UIIconsAtlas.atlas#alchemy"
-            }));
-        }
-        else if (_alchemyCore is { } coreId && _state.Inventory.Find(coreId) is { } core)
-        {
-            var config = database.GetItem(core.ConfigId);
-            var image = _document.CreateImage(config.Icon);
-            image.Sprite = AtlasSprite(config.Icon);
-            coreSlot.Add(image);
+            var icon = (UiImage)_document.CreateElement("image");
+            icon.Style.Set("visibility", "hidden");
+            slot.Add(icon);
             var qualityHost = _document.CreatePanel(new Dictionary<string, string>
             {
                 ["class"] = "alchemy-slot-quality item-icon-quality"
             });
-            coreSlot.Add(qualityHost);
-            BuildQualityStars(qualityHost, core.Quality);
-            coreSlot.Clicked += _ =>
-            {
-                _alchemyCore = null;
-                SyncAlchemy();
-            };
+            var quality = CreateQualityStars(qualityHost);
+            quality.SetQuality(0m);
+            qualityHost.Style.Set("visibility", "hidden");
+            slot.Add(qualityHost);
+            var label = _document.CreateText((index + 1).ToString(CultureInfo.InvariantCulture),
+                new Dictionary<string, string> { ["class"] = "alchemy-slot-index" });
+            slot.Add(label);
+            var slotIndex = index;
+            slot.Clicked += _ => RemoveAlchemyIngredientAt(slotIndex);
+            furnaceStage.Add(slot);
+            _alchemySlotWidgets.Add(new AlchemySlotWidget(slot, icon, qualityHost, quality, label));
+            _renderedAlchemySlots.Add(null);
         }
-        else
+
+        var coreSlot = _document!.CreateButton(attributes: new Dictionary<string, string>
         {
-            coreSlot.Add(_document.CreateText("ЯДРО", new Dictionary<string, string> { ["class"] = "alchemy-core-label" }));
-        }
+            ["class"] = "alchemy-slot alchemy-core-slot"
+        });
+        var coreIcon = (UiImage)_document.CreateElement("image");
+        coreSlot.Add(coreIcon);
+        var coreQualityHost = _document.CreatePanel(new Dictionary<string, string>
+        {
+            ["class"] = "alchemy-slot-quality item-icon-quality"
+        });
+        var coreQuality = CreateQualityStars(coreQualityHost);
+        coreQuality.SetQuality(0m);
+        coreSlot.Add(coreQualityHost);
+        var coreLabel = _document.CreateText("ЯДРО",
+            new Dictionary<string, string> { ["class"] = "alchemy-core-label" });
+        coreSlot.Add(coreLabel);
+        coreSlot.Clicked += _ =>
+        {
+            if (_alchemyMode != AlchemyMode.Pill || _alchemyCore is null)
+                return;
+            _alchemyCore = null;
+            SyncAlchemy();
+        };
         furnaceStage.Add(coreSlot);
+        _alchemyCoreWidget = new AlchemySlotWidget(
+            coreSlot, coreIcon, coreQualityHost, coreQuality, coreLabel);
+        _renderedAlchemyCore = null;
+        UpdateAlchemySlots();
+    }
+
+    private void UpdateAlchemySlots()
+    {
+        for (var index = 0; index < _alchemySlotWidgets.Count; index++)
+        {
+            var instanceId = _alchemySlots[index];
+            if (_renderedAlchemySlots[index] == instanceId)
+                continue;
+            var widget = _alchemySlotWidgets[index];
+            var item = instanceId is { } id ? _state.Inventory.Find(id) : null;
+            widget.Root.ToggleClass("filled", item is not null);
+            SetPaintVisibility(widget.Icon, item is not null);
+            SetPaintVisibility(widget.QualityHost, item is not null);
+            SetPaintVisibility(widget.Label, item is null);
+            if (item is not null)
+            {
+                widget.Icon.Sprite = AtlasSprite(database.GetItem(item.ConfigId).Icon);
+                widget.Quality.SetQuality(item.Quality);
+            }
+            _renderedAlchemySlots[index] = instanceId;
+        }
+
+        var coreState = (_alchemyMode, _alchemyCore);
+        if (_alchemyCoreWidget is not { } coreWidget || _renderedAlchemyCore == coreState)
+            return;
+        var core = _alchemyMode == AlchemyMode.Pill && _alchemyCore is { } coreId
+            ? _state.Inventory.Find(coreId)
+            : null;
+        var distillation = _alchemyMode == AlchemyMode.Distillation;
+        coreWidget.Root.ToggleClass("equipment", distillation);
+        coreWidget.Root.ToggleClass("filled", core is not null);
+        SetPaintVisibility(coreWidget.Icon, distillation || core is not null);
+        SetPaintVisibility(coreWidget.QualityHost, core is not null);
+        SetPaintVisibility(coreWidget.Label, !distillation && core is null);
+        if (distillation)
+            coreWidget.Icon.Sprite = "Assets/Textures/GameUIAtlas.atlas#alchemy";
+        else if (core is not null)
+        {
+            coreWidget.Icon.Sprite = AtlasSprite(database.GetItem(core.ConfigId).Icon);
+            coreWidget.Quality.SetQuality(core.Quality);
+        }
+        _renderedAlchemyCore = coreState;
     }
 
     private void BuildAlchemyIngredients()
     {
-        _view!.AlchemyIngredients.Clear();
-        foreach (var item in _state.Inventory.Items
+        if (_view is null || _alchemyIngredientIcons is null)
+            return;
+        var items = _state.Inventory.Items
                      .Where(item =>
                      {
                          var category = database.GetItem(item.ConfigId).Category;
@@ -1130,29 +1335,68 @@ public sealed class GameController(
                      .OrderBy(item => database.GetItem(item.ConfigId).Category == ItemCategory.Core ? 0 : 1)
                      .ThenByDescending(item => item.DistillationLevel)
                      .ThenByDescending(item => item.Rarity)
-                     .ThenByDescending(item => item.Quality))
+                     .ThenByDescending(item => item.Quality)
+                     .ToArray();
+        var pageCount = PageCount(items.Length);
+        _alchemyPage = Math.Clamp(_alchemyPage, 0, pageCount - 1);
+        _alchemyIngredientIcons.Update(
+            items.Skip(_alchemyPage * ItemPageSize).Take(ItemPageSize),
+            item => item.InstanceId);
+        UpdatePager(_view.AlchemyPagePrevious, _view.AlchemyPageLabel,
+            _view.AlchemyPageNext, _alchemyPage, pageCount);
+    }
+
+    private InventoryIconView CreateAlchemyIngredientIcon(ItemInstance item)
+    {
+        var root = _document!.Instantiate("Components/InventoryIcon.xml", _view!.AlchemyIngredients,
+            new Dictionary<string, string>
+            {
+                ["key"] = item.InstanceId.ToString(), ["icon"] = string.Empty,
+                ["quantity"] = string.Empty, ["data-item-id"] = item.InstanceId.ToString()
+        });
+        var icon = new InventoryIconView(root);
+        icon.QualityStars = CreateQualityStars(icon.QualityHost);
+        root.Clicked += _ =>
         {
-            var config = database.GetItem(item.ConfigId);
-            var isCore = config.Category == ItemCategory.Core;
-            var selected = isCore
-                ? (_alchemyCore == item.InstanceId ? 1 : 0)
-                : _alchemySlots.Count(value => value == item.InstanceId);
-            var root = _document!.Instantiate("Components/InventoryIcon.xml", _view.AlchemyIngredients,
-                new Dictionary<string, string>
-                {
-                    ["key"] = item.InstanceId.ToString(), ["icon"] = string.Empty,
-                    ["quantity"] = item.Quantity.ToString(CultureInfo.InvariantCulture)
-                });
-            var icon = new InventoryIconView(root);
-            icon.QualityStars = CreateQualityStars(icon.QualityHost);
-            icon.Icon.Sprite = AtlasSprite(config.Icon);
-            icon.QualityStars.SetQuality(item.Quality);
-            icon.Quantity.Value = $"×{item.Quantity}";
-            icon.IconWell.Style.BorderColor = database.GetRarity(item.Rarity).Color;
-            icon.Card.ToggleClass("selected", selected > 0);
-            var instanceId = item.InstanceId;
-            root.Clicked += _ => ShowAlchemyItem(instanceId);
-        }
+            if (TryGetGuidAttribute(root, "data-item-id", out var id))
+                ShowAlchemyItem(id);
+        };
+        return icon;
+    }
+
+    private void ChangeAlchemyPage(int delta)
+    {
+        _alchemyPage = Math.Max(0, _alchemyPage + delta);
+        SyncAlchemy();
+    }
+
+    private static int PageCount(int itemCount) =>
+        Math.Max(1, (itemCount + ItemPageSize - 1) / ItemPageSize);
+
+    private static void UpdatePager(
+        UiButton previous,
+        UiText label,
+        UiButton next,
+        int page,
+        int pageCount)
+    {
+        previous.IsEnabled = page > 0;
+        next.IsEnabled = page + 1 < pageCount;
+        label.Value = $"{page + 1} / {pageCount}";
+    }
+
+    private void UpdateAlchemyIngredientIcon(InventoryIconView icon, ItemInstance item, int _)
+    {
+        var config = database.GetItem(item.ConfigId);
+        var selected = config.Category == ItemCategory.Core
+            ? _alchemyCore == item.InstanceId
+            : _alchemySlots.Contains(item.InstanceId);
+        icon.Card.SetAttribute("data-item-id", item.InstanceId.ToString());
+        icon.Icon.Sprite = AtlasSprite(config.Icon);
+        icon.QualityStars.SetQuality(item.Quality);
+        icon.Quantity.Value = $"×{item.Quantity}";
+        icon.IconWell.Style.BorderColor = database.GetRarity(item.Rarity).Color;
+        icon.Card.ToggleClass("selected", selected);
     }
 
     private bool MatchesAlchemyFilters(ItemInstance item)
@@ -1222,6 +1466,7 @@ public sealed class GameController(
         option.Clicked += _ =>
         {
             select(value);
+            _alchemyPage = 0;
             CloseAlchemyFilterMenus();
             SyncAlchemy();
         };
@@ -1610,15 +1855,53 @@ public sealed class GameController(
         if (window.Parent is null)
             _windowLayer!.Add(window);
         window.IsVisible = true;
+        SetPaintVisibility(window, true);
+        window.AddClass(WindowOpenClass);
         UpdateWindowLayerState();
     }
 
     private void UnmountWindow(UiPanel window)
     {
-        window.IsVisible = false;
-        window.DetachFromParent();
+        // Keep layout and geometry warm while the window fades. The transition
+        // end hides it through the renderer's composite visibility fast path.
+        window.IsVisible = true;
+        window.RemoveClass(WindowOpenClass);
         UpdateWindowLayerState();
     }
+
+    private void PrepareRetainedWindows()
+    {
+        foreach (var window in _view!.Windows)
+        {
+            if (window.Parent is null)
+                _windowLayer!.Add(window);
+            window.AddClass(WindowFadeClass);
+            window.RemoveClass(WindowOpenClass);
+            window.TransitionEnded -= HandleWindowFadeEnded;
+            window.TransitionEnded += HandleWindowFadeEnded;
+            window.IsVisible = true;
+            SetPaintVisibility(window, false);
+        }
+        _view.WindowBackdrop.AddClass(WindowFadeClass);
+        _view.WindowBackdrop.RemoveClass(WindowOpenClass);
+        _view.WindowBackdrop.TransitionEnded -= HandleWindowFadeEnded;
+        _view.WindowBackdrop.TransitionEnded += HandleWindowFadeEnded;
+        _view.WindowBackdrop.IsVisible = true;
+        SetPaintVisibility(_view.WindowBackdrop, false);
+    }
+
+    private void HandleWindowFadeEnded(UiElement element, UiTransitionEvent transition)
+    {
+        if (!transition.Property.Equals("opacity", StringComparison.OrdinalIgnoreCase) ||
+            element.Classes.Contains(WindowOpenClass))
+            return;
+
+        SetPaintVisibility(element, false);
+        UpdateWindowLayerState();
+    }
+
+    private static bool IsWindowOpen(UiElement window) =>
+        !string.Equals(window.Style["visibility"], "hidden", StringComparison.OrdinalIgnoreCase);
 
     private void CloseWindows()
     {
@@ -1678,6 +1961,7 @@ public sealed class GameController(
     {
         InitializeNewGame();
         _elapsedMilliseconds = 0f;
+        _healthUiElapsed = 0f;
         _gameOver = false;
         _selectedInventoryItem = null;
         UnmountWindow(_view!.DeathWindow);
@@ -1690,66 +1974,67 @@ public sealed class GameController(
         if (_view is null)
             return;
 
-        var hasOpenWindow = _view.Windows.Any(window => window.Parent is not null && window.IsVisible);
-        _view.WindowLayer.SetAttribute("class", hasOpenWindow ? "modal-active" : string.Empty);
-        if (hasOpenWindow)
+        var hasTargetWindow = _view.Windows.Any(window => window.Classes.Contains(WindowOpenClass));
+        if (hasTargetWindow)
         {
             if (_view.WindowBackdrop.Parent is null)
                 _view.WindowLayer.Insert(0, _view.WindowBackdrop);
             _view.WindowBackdrop.IsVisible = true;
+            SetPaintVisibility(_view.WindowBackdrop, true);
+            _view.WindowBackdrop.AddClass(WindowOpenClass);
         }
         else
         {
-            _view.WindowBackdrop.IsVisible = false;
-            _view.WindowBackdrop.DetachFromParent();
+            _view.WindowBackdrop.RemoveClass(WindowOpenClass);
         }
+
+        var hasVisibleSurface = _view.Windows.Any(IsWindowOpen) ||
+                                IsWindowOpen(_view.WindowBackdrop);
+        _view.WindowLayer.SetAttribute("class", hasVisibleSurface ? "modal-active" : string.Empty);
     }
 
     private void BuildFloatingUi(UiDocument document)
     {
-        _floatingValuePools.Clear();
-        _floatingValueIndices.Clear();
+        _floatingValues.Clear();
+        _floatingValueIndex = 0;
         _tapFeedback = document.GetElementById<UiPanel>("tap-feedback");
         _achievementEffect = document.GetElementById<UiPanel>("achievement-effect");
         _achievementText = document.GetElementById<UiText>("achievement-text");
         var host = document.GetElementById<UiPanel>("tick-float-layer");
         host.Clear();
-        var lane = 0;
-        foreach (var tone in new[] { "spirit-value", "mission-value", "money-value", "health-value" })
-        foreach (var negative in new[] { false, true })
+        for (var lane = 0; lane < 6; lane++)
         {
-            var key = (tone, negative);
-            var pool = new List<FloatingValueWidget>(3);
-            _floatingValuePools[key] = pool;
-            for (var index = 0; index < 3; index++)
+            var root = document.CreatePanel(new Dictionary<string, string>
             {
-                var root = document.CreatePanel(new Dictionary<string, string>
-                {
-                    ["class"] = $"tick-float {tone} lane-{lane++ % 6}{(negative ? " negative" : string.Empty)}",
-                    ["animation-trigger"] = "manual", ["aria-hidden"] = "true"
-                });
-                if (tone == "money-value")
-                    root.Add(document.CreateImage("Assets/Textures/UIIcons/money.png",
-                        new Dictionary<string, string> { ["class"] = "tick-float-money-icon" }));
-                var valueText = document.CreateText(attributes: new Dictionary<string, string>
-                {
-                    ["class"] = "tick-float-text"
-                });
-                root.Add(valueText);
-                host.Add(root);
-                pool.Add(new FloatingValueWidget(root, valueText));
-            }
+                ["class"] = $"tick-float lane-{lane}",
+                ["animation-trigger"] = "manual", ["aria-hidden"] = "true"
+            });
+            var moneyIcon = (UiImage)document.CreateElement("image", new Dictionary<string, string>
+            {
+                ["class"] = "tick-float-money-icon",
+                ["sprite"] = "Assets/Textures/GameUIAtlas.atlas#money"
+            });
+            SetPaintVisibility(moneyIcon, false);
+            root.Add(moneyIcon);
+            var valueText = document.CreateText(attributes: new Dictionary<string, string>
+            {
+                ["class"] = "tick-float-text"
+            });
+            root.Add(valueText);
+            host.Add(root);
+            _floatingValues.Add(new FloatingValueWidget(root, moneyIcon, valueText, lane));
         }
     }
 
     private void SpawnFloatingValue(decimal value, string label, string tone)
     {
-        if (value == 0m || !_floatingValuePools.TryGetValue((tone, value < 0m), out var pool) || pool.Count == 0)
+        if (value == 0m || _floatingValues.Count == 0)
             return;
-        var key = (tone, value < 0m);
-        var sequence = _floatingValueIndices.GetValueOrDefault(key);
-        _floatingValueIndices[key] = sequence + 1;
-        var widget = pool[Random.Shared.Next(pool.Count)];
+        var widget = _floatingValues[_floatingValueIndex];
+        _floatingValueIndex = (_floatingValueIndex + 1) % _floatingValues.Count;
+        widget.Root.SetAttribute("class",
+            $"tick-float {tone} lane-{widget.Lane}{(value < 0m ? " negative" : string.Empty)}");
+        SetPaintVisibility(widget.MoneyIcon, tone == "money-value");
         widget.Value.Value = string.IsNullOrEmpty(label) ? Signed(value) : $"{Signed(value)} {label}";
         _floatingDocument?.RestartAnimation(widget.Root);
     }
@@ -2104,10 +2389,19 @@ public sealed class GameController(
     {
         var normalized = source.Replace('\\', '/');
         var atlas = normalized.Contains("/Items/", StringComparison.OrdinalIgnoreCase)
-            ? "Assets/Textures/ItemsIconsAtlas.atlas"
-            : "Assets/Textures/UIIconsAtlas.atlas";
+            ? "Assets/Textures/GameUIAtlas.atlas"
+            : "Assets/Textures/GameUIAtlas.atlas";
         return $"{atlas}#{Path.GetFileNameWithoutExtension(normalized)}";
     }
 
-    private sealed record FloatingValueWidget(UiPanel Root, UiText Value);
+    private static void SetPaintVisibility(UiElement element, bool visible) =>
+        element.Style.Set("visibility", visible ? "visible" : "hidden");
+
+    private sealed record FloatingValueWidget(UiPanel Root, UiImage MoneyIcon, UiText Value, int Lane);
+    private sealed record AlchemySlotWidget(
+        UiButton Root,
+        UiImage Icon,
+        UiPanel QualityHost,
+        QualityStarsView Quality,
+        UiText Label);
 }

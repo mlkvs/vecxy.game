@@ -220,8 +220,8 @@ public sealed class CultivationStageConfig
 {
     public string Id { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;
-    public string CultivationBackgroundTexture { get; init; } = "Textures/Background.png";
-    public string MissionBackgroundTexture { get; init; } = "Textures/Background_Missions.png";
+    public string CultivationBackgroundTexture { get; init; } = "Textures/Background.jpg";
+    public string MissionBackgroundTexture { get; init; } = "Textures/Background_Missions.jpg";
     public decimal StageMultiplier { get; init; } = 1m;
     public decimal BaseBreakthroughChance { get; init; }
 }
@@ -449,7 +449,7 @@ public sealed class GameDatabase
     private static CombatConfig CreateDefaultCombat() => new()
     {
         DangerLevels = [new CombatDangerConfig { Level = 1, EncounterChancePercent = 100m }],
-        Backgrounds = [new CombatBackgroundConfig { Id = "forest", Layers = ["Textures/Backgrounds/1/orig.png"] }]
+        Backgrounds = [new CombatBackgroundConfig { Id = "forest", Layers = ["Textures/Backgrounds/1/1.png"] }]
     };
 
     private static AlchemyConfig CreateDefaultAlchemy() => new();

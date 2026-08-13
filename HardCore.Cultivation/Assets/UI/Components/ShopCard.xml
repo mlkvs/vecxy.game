@@ -9,5 +9,5 @@
         </panel>
     </panel>
     <text class="item-effect">{{effect}}</text>
-    <button class="card-action buy-button currency-action"><image sprite="Assets/Textures/UIIconsAtlas.atlas#money"/><text>{{price}}</text></button>
+    <button class="card-action buy-button currency-action"><image sprite="Assets/Textures/GameUIAtlas.atlas#money"/><text>{{price}}</text></button>
 </panel>

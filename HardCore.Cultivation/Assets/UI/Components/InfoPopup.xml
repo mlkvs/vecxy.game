@@ -1,7 +1,7 @@
 <panel id="info-popup" class="info-popup-overlay" hidden="true">
     <panel id="info-popup-card" class="info-popup-card">
         <button id="info-popup-close" class="info-popup-close">
-            <image sprite="Assets/Textures/UIIconsAtlas.atlas#close"/>
+            <image sprite="Assets/Textures/GameUIAtlas.atlas#close"/>
         </button>
         <panel class="info-popup-header">
             <panel id="info-popup-icon-well" class="info-popup-icon-well">
@@ -19,7 +19,7 @@
             <panel class="info-popup-stats">
                 <panel>
                     <text id="info-popup-stat-label-1" class="info-popup-stat-label">ПАРАМЕТР</text>
-                    <panel class="info-popup-stat-value-row"><image id="info-popup-price-icon" sprite="Assets/Textures/UIIconsAtlas.atlas#money" hidden="true"/><text id="info-popup-stat-value-1" class="info-popup-stat-value">—</text></panel>
+                    <panel class="info-popup-stat-value-row"><image id="info-popup-price-icon" sprite="Assets/Textures/GameUIAtlas.atlas#money" hidden="true"/><text id="info-popup-stat-value-1" class="info-popup-stat-value">—</text></panel>
                 </panel>
                 <panel hidden="true">
                     <text id="info-popup-stat-label-2" class="info-popup-stat-label">КАЧЕСТВО</text>
@@ -33,7 +33,7 @@
             <text id="info-popup-details" class="info-popup-details">Дополнительная информация</text>
             <panel class="info-popup-actions">
                 <button id="info-popup-use" class="wide-action" hidden="true">ИСПОЛЬЗОВАТЬ</button>
-                <button id="info-popup-sell" class="wide-action secondary-wide currency-action" hidden="true"><image sprite="Assets/Textures/UIIconsAtlas.atlas#money"/><text>ПРОДАТЬ</text></button>
+                <button id="info-popup-sell" class="wide-action secondary-wide currency-action" hidden="true"><image sprite="Assets/Textures/GameUIAtlas.atlas#money"/><text>ПРОДАТЬ</text></button>
                 <button id="info-popup-ok" class="wide-action">ПОНЯТНО</button>
             </panel>
         </panel>

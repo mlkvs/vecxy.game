@@ -88,8 +88,8 @@ internal sealed class MissionQueueItemView : AUiComponent
 
 internal sealed class QualityStarsView : AUiComponent
 {
-    private const string GrayStar = "Assets/Textures/UIIconsAtlas.atlas#star-gray";
-    private const string RainbowStar = "Assets/Textures/UIIconsAtlas.atlas#star-rainbow";
+    private const string GrayStar = "Assets/Textures/GameUIAtlas.atlas#star-gray";
+    private const string RainbowStar = "Assets/Textures/GameUIAtlas.atlas#star-rainbow";
 
     private readonly IReadOnlyList<UiImage> _emptyStars;
     private readonly IReadOnlyList<UiPanel> _fills;

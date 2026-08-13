@@ -55,8 +55,8 @@ stages:
 
   - id: body_tempering
     name: Закалка тела
-    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/body-tempering.png
-    missionBackgroundTexture: Textures/Backgrounds/Missions/body-tempering.png
+    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/body-tempering.jpg
+    missionBackgroundTexture: Textures/Backgrounds/Missions/body-tempering.jpg
     # Первая стадия, базовая точка отсчёта.
     stageMultiplier: 1.0
     # Высокий шанс, чтобы игрок быстро освоил систему прорыва.
@@ -64,51 +64,51 @@ stages:
 
   - id: qi_gathering
     name: Собирание Ци
-    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/qi-gathering.png
-    missionBackgroundTexture: Textures/Backgrounds/Missions/qi-gathering.png
+    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/qi-gathering.jpg
+    missionBackgroundTexture: Textures/Backgrounds/Missions/qi-gathering.jpg
     # Примерно в 4 раза дороже первой стадии.
     stageMultiplier: 4.0
     baseBreakthroughChance: 65
 
   - id: foundation
     name: Основание фундамента
-    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/foundation.png
-    missionBackgroundTexture: Textures/Backgrounds/Missions/foundation.png
+    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/foundation.jpg
+    missionBackgroundTexture: Textures/Backgrounds/Missions/foundation.jpg
     stageMultiplier: 16.0
     baseBreakthroughChance: 52
 
   - id: golden_core
     name: Золотое ядро
-    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/golden-core.png
-    missionBackgroundTexture: Textures/Backgrounds/Missions/golden-core.png
+    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/golden-core.jpg
+    missionBackgroundTexture: Textures/Backgrounds/Missions/golden-core.jpg
     stageMultiplier: 64.0
     baseBreakthroughChance: 40
 
   - id: nascent_soul
     name: Зарождающаяся душа
-    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/nascent-soul.png
-    missionBackgroundTexture: Textures/Backgrounds/Missions/nascent-soul.png
+    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/nascent-soul.jpg
+    missionBackgroundTexture: Textures/Backgrounds/Missions/nascent-soul.jpg
     stageMultiplier: 256.0
     baseBreakthroughChance: 30
 
   - id: soul_formation
     name: Формирование души
-    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/soul-formation.png
-    missionBackgroundTexture: Textures/Backgrounds/Missions/soul-formation.png
+    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/soul-formation.jpg
+    missionBackgroundTexture: Textures/Backgrounds/Missions/soul-formation.jpg
     stageMultiplier: 1024.0
     baseBreakthroughChance: 22
 
   - id: void_refinement
     name: Очищение пустоты
-    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/void-refinement.png
-    missionBackgroundTexture: Textures/Backgrounds/Missions/void-refinement.png
+    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/void-refinement.jpg
+    missionBackgroundTexture: Textures/Backgrounds/Missions/void-refinement.jpg
     stageMultiplier: 4096.0
     baseBreakthroughChance: 15
 
   - id: immortal_ascension
     name: Вознесение бессмертного
-    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/immortal-ascension.png
-    missionBackgroundTexture: Textures/Backgrounds/Missions/immortal-ascension.png
+    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/immortal-ascension.jpg
+    missionBackgroundTexture: Textures/Backgrounds/Missions/immortal-ascension.jpg
     # Финальная стадия.
     # Для неё шанс 100 не означает лёгкий проход, потому что дальше уже нет стадии выше.
     stageMultiplier: 16384.0

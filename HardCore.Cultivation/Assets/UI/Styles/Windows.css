@@ -239,7 +239,10 @@
     border: 2px dashed #ffffff35; border-radius: 50%;
 }
 .alchemy-slot.filled { background-color: #20372b; border-style: solid; border-color: #56d5a0; }
-.alchemy-slot image { width: 85%; height: 85%; object-fit: contain; }
+.alchemy-slot > image {
+    pointer-events: none; position: absolute; left: 7.5%; top: 7.5%;
+    width: 85%; height: 85%; object-fit: contain;
+}
 .alchemy-slot-quality { left: 5%; top: 77%; width: 90%; height: 18px; }
 .alchemy-slot-quality .quality-star,
 .alchemy-slot-quality .quality-star-empty,
@@ -257,8 +260,13 @@
 .alchemy-core-slot.filled { border-color: #f1bd59; box-shadow: 0 0 18px 3px #f1bd5944; }
 .alchemy-core-slot.equipment { pointer-events: none; border-style: solid; border-color: #56d5a0; background-color: #173126; }
 .alchemy-core-slot image { width: 85%; height: 85%; }
-.alchemy-core-label { width: 72px; color: #f1bd59; font-size: 13px; text-align: center; }
-.alchemy-slot-index { color: #7c887f; font-size: 18px; text-align: center; }
+.alchemy-core-label,
+.alchemy-slot-index {
+    pointer-events: none; position: absolute; inset: 0; width: 100%; height: 100%;
+    text-align: center; vertical-align: middle;
+}
+.alchemy-core-label { color: #f1bd59; font-size: 13px; }
+.alchemy-slot-index { color: #7c887f; font-size: 18px; }
 .alchemy-source-heading {
     flex-shrink: 0; min-height: 34px; margin-top: 8px; flex-direction: row;
     align-items: center; justify-content: space-between; color: #56d5a0; font-size: 15px;

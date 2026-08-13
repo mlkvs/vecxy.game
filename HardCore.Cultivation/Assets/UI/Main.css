@@ -317,7 +317,7 @@ button:disabled { opacity: 0.38; }
 .top-stat-icon-shell { width: 38px; height: 38px; }
 .top-stat-icon { width: 28px; height: 28px; }
 .top-stat-value { font-size: 22px; }
-.calendar-slot { width: 78px; }
+.calendar-slot { width: 90px; }
 .calendar-dial { position: relative; flex-shrink: 0; width: 66px; height: 66px; align-items: center; justify-content: center; }
 .calendar-ring { position: absolute; inset: 0; color: var(--gold); border: 7px solid #4a4537; border-radius: 50%; }
 .calendar-dial image { width: 38px; height: 38px; object-fit: contain; }

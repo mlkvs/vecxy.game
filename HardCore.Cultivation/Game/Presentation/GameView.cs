@@ -12,7 +12,9 @@ internal sealed class GameView
         CharacterTapTarget = Button("character-tap-target");
         DogTapTarget = Button("dog-tap-target");
         MissionSummaryButton = Button("mission-summary-button");
-        YearDial = Radial("year-dial");
+        YearCandleWax = Progress("year-candle-wax");
+        YearCandleCap = Image("year-candle-cap");
+        YearCandleFlame = Image("year-candle-flame");
         Money = Text("money-text");
         ModalMoney = Text("modal-money-text");
         Age = Text("age-text");
@@ -68,11 +70,17 @@ internal sealed class GameView
         AlchemyQualityMenu = Panel("alchemy-quality-menu");
         AlchemyTypeMenu = Panel("alchemy-type-menu");
         AlchemyIngredients = Panel("alchemy-ingredients");
+        AlchemyPagePrevious = Button("alchemy-page-previous");
+        AlchemyPageLabel = Text("alchemy-page-label");
+        AlchemyPageNext = Button("alchemy-page-next");
         AlchemyCraft = Button("alchemy-craft-button");
 
         InventoryWindow = Panel("inventory-window");
         InventoryCount = Text("inventory-count");
         InventoryGrid = Panel("inventory-grid");
+        InventoryPagePrevious = Button("inventory-page-previous");
+        InventoryPageLabel = Text("inventory-page-label");
+        InventoryPageNext = Button("inventory-page-next");
         IngredientsTab = Button("ingredients-tab");
         CoresTab = Button("cores-tab");
         PillsTab = Button("pills-tab");
@@ -153,7 +161,9 @@ internal sealed class GameView
     public UiButton CharacterTapTarget { get; }
     public UiButton DogTapTarget { get; }
     public UiButton MissionSummaryButton { get; }
-    public UiRadialProgress YearDial { get; }
+    public UiProgress YearCandleWax { get; }
+    public UiImage YearCandleCap { get; }
+    public UiImage YearCandleFlame { get; }
     public UiText Money { get; }
     public UiText ModalMoney { get; }
     public UiText Age { get; }
@@ -206,10 +216,16 @@ internal sealed class GameView
     public UiPanel AlchemyQualityMenu { get; }
     public UiPanel AlchemyTypeMenu { get; }
     public UiPanel AlchemyIngredients { get; }
+    public UiButton AlchemyPagePrevious { get; }
+    public UiText AlchemyPageLabel { get; }
+    public UiButton AlchemyPageNext { get; }
     public UiButton AlchemyCraft { get; }
     public UiPanel InventoryWindow { get; }
     public UiText InventoryCount { get; }
     public UiPanel InventoryGrid { get; }
+    public UiButton InventoryPagePrevious { get; }
+    public UiText InventoryPageLabel { get; }
+    public UiButton InventoryPageNext { get; }
     public UiButton IngredientsTab { get; }
     public UiButton CoresTab { get; }
     public UiButton PillsTab { get; }

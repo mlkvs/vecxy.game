@@ -8,7 +8,10 @@ using Vecxy.Scene;
 
 namespace HardCore.Cultivation.Game;
 
-public class Character(IAssetsManager assets, SpriteRenderer sprite, float referenceTextureHeight) : AComponent
+public class Character(
+    IAssetsManager assets,
+    SpriteRenderer sprite,
+    float referenceTextureHeight) : AComponent
 {
     [UsedImplicitly]
     public class Prototype(IAssetsManager assets) : APrototype<Character, Prototype.Options>
@@ -91,6 +94,7 @@ public class Character(IAssetsManager assets, SpriteRenderer sprite, float refer
                 assets,
                 sprite,
                 characterTexture.Value.Height));
+            character.PrewarmTextures();
                 
             return character;
 
@@ -105,11 +109,39 @@ public class Character(IAssetsManager assets, SpriteRenderer sprite, float refer
     
     private Vector3 _origin;
     private float _elapsed;
+    private readonly Dictionary<string, AssetRef<TextureAsset>> _textureCache =
+        new(StringComparer.Ordinal);
+    private bool _gpuPrewarmed;
 
     public float Amplitude { get; set; } = 24.0f;
     public float PeriodSeconds { get; set; } = 3.6f;
 
     private bool _missionMode;
+
+    private void PrewarmTextures()
+    {
+        _ = GetTexture("Textures/Character.png");
+        _ = GetTexture("Textures/Character_Missions_Transparent.png");
+    }
+
+    public void PrewarmTextures(IRenderer renderer)
+    {
+        if (_gpuPrewarmed)
+            return;
+        PrewarmTextures();
+        foreach (var texture in _textureCache.Values)
+            renderer.PreloadTexture(texture);
+        _gpuPrewarmed = true;
+    }
+
+    private AssetRef<TextureAsset> GetTexture(string path)
+    {
+        if (_textureCache.TryGetValue(path, out var texture))
+            return texture;
+        texture = assets.Load<TextureAsset>(path);
+        _textureCache.Add(path, texture);
+        return texture;
+    }
 
     public void SetMissionMode(bool missionMode)
     {
@@ -117,11 +149,18 @@ public class Character(IAssetsManager assets, SpriteRenderer sprite, float refer
             return;
 
         _missionMode = missionMode;
-        using var texture = assets.Load<TextureAsset>(missionMode
+        var texture = GetTexture(missionMode
             ? "Textures/Character_Missions_Transparent.png"
             : "Textures/Character.png");
         sprite.SetTexture(texture);
         sprite.PixelsPerUnit = texture.Value.Height / referenceTextureHeight;
+    }
+
+    public override void OnDestroy()
+    {
+        foreach (var texture in _textureCache.Values)
+            texture.Dispose();
+        _textureCache.Clear();
     }
 
     public override void Start()
@@ -149,6 +188,9 @@ public sealed class DogCompanion(
     private Vector3 _origin;
     private Vector3 _baseScale;
     private bool _missionMode;
+    private readonly Dictionary<string, AssetRef<TextureAsset>> _textureCache =
+        new(StringComparer.Ordinal);
+    private bool _gpuPrewarmed;
 
     public override void Start()
     {
@@ -165,10 +207,24 @@ public sealed class DogCompanion(
         _origin = Transform.Position;
         _baseScale = Transform.Scale;
 
+        _ = GetTexture(config.MeditatingTexture);
+        _ = GetTexture(config.ChargedTexture);
+        _ = GetTexture(config.MissionMeditatingTexture);
+        _ = GetTexture(config.MissionChargedTexture);
+
         ApplyTextures(
             _missionMode ? config.MissionMeditatingTexture : config.MeditatingTexture,
             _missionMode ? config.MissionChargedTexture : config.ChargedTexture);
         SetChargeProgress(_chargeProgress);
+    }
+
+    public void PrewarmTextures(IRenderer renderer)
+    {
+        if (_gpuPrewarmed)
+            return;
+        foreach (var texture in _textureCache.Values)
+            renderer.PreloadTexture(texture);
+        _gpuPrewarmed = true;
     }
 
     public void SetMissionMode(bool missionMode)
@@ -185,12 +241,29 @@ public sealed class DogCompanion(
 
     private void ApplyTextures(string meditatingPath, string chargedPath)
     {
-        using var meditatingTexture = assets.Load<TextureAsset>(meditatingPath);
+        var meditatingTexture = GetTexture(meditatingPath);
         baseSprite.SetTexture(meditatingTexture);
-        using var chargedTexture = assets.Load<TextureAsset>(chargedPath);
+        var chargedTexture = GetTexture(chargedPath);
         chargedSprite.SetTexture(chargedTexture);
         foreach (var glow in glowSprites)
             glow.SetTexture(chargedTexture);
+    }
+
+    private AssetRef<TextureAsset> GetTexture(string path)
+    {
+        if (_textureCache.TryGetValue(path, out var texture))
+            return texture;
+        texture = assets.Load<TextureAsset>(path);
+        _textureCache.Add(path, texture);
+        return texture;
+    }
+
+    public override void OnDestroy()
+    {
+        foreach (var texture in _textureCache.Values)
+            texture.Dispose();
+        _textureCache.Clear();
+        _gpuPrewarmed = false;
     }
 
     public void SetChargeProgress(float progress)

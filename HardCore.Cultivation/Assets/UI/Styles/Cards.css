@@ -713,7 +713,6 @@
 .alchemy-source-heading,
 .alchemy-filters,
 .alchemy-ingredients {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'card-frame');
     background-size: fill;
     background-color: transparent;
     border: 0;
@@ -723,7 +722,6 @@
 
 .window {
     color: #4b3b2b;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'window-frame');
     background-size: fill;
     background-color: transparent;
     border: 0;
@@ -747,7 +745,6 @@
 .mission-duration-row,
 .mission-reward-row {
     color: #4b3b2b;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'card-frame');
     background-size: fill;
     background-color: transparent;
     border: 0;
@@ -769,7 +766,6 @@
 .alchemy-filter-button,
 .alchemy-filter-option {
     color: #4a3826;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
     background-size: fill;
     background-color: transparent;
     border: 0;
@@ -800,7 +796,6 @@
 .alchemy-filter-option.selected,
 .activity-toggle.missions {
     color: #265a48;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
     background-color: #b9e2c777;
     border: 0;
 }
@@ -811,7 +806,6 @@
 .compact-action.secondary,
 .queue-remove {
     color: #8c493f;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
     background-color: #f2c0b177;
     border: 0;
 }
@@ -831,7 +825,6 @@
 .reward-icon-tile,
 .alchemy-slot,
 .queue-control {
-    background-image: sprite('../Textures/ChineseUIIconsAtlas.atlas', 'slot-frame');
     background-size: fill;
     background-color: transparent;
     border: 0;
@@ -840,7 +833,6 @@
 
 .progress-track {
     padding: 3px 12px;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'progress-frame');
     background-size: fill;
     background-color: transparent;
     border: 0;
@@ -971,7 +963,6 @@
 }
 
 .inventory-icon-card.selected {
-    background-image: sprite('../Textures/ChineseUIIconsAtlas.atlas', 'slot-frame');
     background-color: #f7d99966;
     border: 0;
     box-shadow: 0 0 14px 4px #f1bf6caa;
@@ -993,7 +984,6 @@
 .alchemy-slot.filled,
 .alchemy-core-slot.filled,
 .alchemy-core-slot.equipment {
-    background-image: sprite('../Textures/ChineseUIIconsAtlas.atlas', 'slot-frame');
     background-color: #d8eddf66;
     border: 0;
     box-shadow: 0 0 13px 2px #e7c77f99;
@@ -1001,7 +991,6 @@
 
 .alchemy-filter-menu {
     padding: 10px;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'card-frame');
     background-size: fill;
     background-color: transparent;
     border: 0;
@@ -1025,7 +1014,6 @@
 .tick-float,
 .combat-damage-float {
     color: #4a3826;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
     background-size: fill;
     background-color: transparent;
     border: 0;
@@ -1052,7 +1040,6 @@
     min-height: 92px;
     padding: 13px 66px 13px;
     align-items: center;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'title-plaque');
     background-size: fill;
     background-color: #00000000;
     border: 0;
@@ -1092,7 +1079,6 @@
 .window-toolbar,
 .mission-board-heading,
 .alchemy-source-heading {
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'title-plaque');
     background-size: fill;
     background-color: #00000000;
     border: 0;
@@ -1154,7 +1140,6 @@
 .category-tab,
 .alchemy-filter-button,
 .alchemy-filter-option {
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'title-plaque');
 }
 
 .bottom-nav {
@@ -1219,7 +1204,6 @@
     padding: 17px 22px 14px;
     gap: 0;
     color: #4b3b2b;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'card-frame');
     background-size: fill;
     background-color: #00000000;
     border: 0;
@@ -1250,19 +1234,16 @@
 }
 
 .progress-fill {
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'energy-fill');
     background-size: fill;
     border-radius: 14px;
 }
 
 .progress-fill.health-fill {
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'health-fill');
     background-size: fill;
     background-color: #e9685c;
 }
 
 .mission-fill {
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'energy-fill');
     background-size: fill;
 }
 
@@ -1282,7 +1263,6 @@
 .mission-card,
 .queue-item,
 .item-card {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'simple-panel');
     background-size: fill;
     background-color: #00000000;
     border: 0;
@@ -1294,7 +1274,6 @@
 .breakthrough-dialog,
 .breakthrough-result-card,
 .death-dialog {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'window-frame');
     background-size: fill;
     background-color: #00000000;
     border: 0;
@@ -1303,7 +1282,6 @@
 
 .window-close,
 .info-popup-close {
-    background-image: sprite('../Textures/ChineseUIIconsAtlas.atlas', 'close-button');
     background-size: fill;
     background-color: #00000000;
     border: 0;
@@ -1319,7 +1297,6 @@
 .calendar-dial,
 .effect-orb,
 .death-icon-shell {
-    background-image: sprite('../Textures/ChineseUIIconsAtlas.atlas', 'round-button');
     background-size: fill;
 }
 
@@ -1437,6 +1414,16 @@
     margin: 0;
 }
 
+.inventory-quality-value {
+    padding: 1px 4px;
+    color: #6a4b20;
+    background-color: #f8efd9e8;
+    border: 1px solid #ae8a4e88;
+    border-radius: 5px;
+    font-size: 12px;
+    text-align: center;
+}
+
 .shop-item-quality .quality-stars {
     flex-shrink: 0;
     gap: 0;
@@ -1551,7 +1538,6 @@
 .alchemy-filter-option,
 .alchemy-craft {
     color: #4a3826;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
     background-size: fill;
     background-color: #00000000;
     border: 0;
@@ -1565,7 +1551,6 @@
 .alchemy-filter-option:hover,
 .alchemy-craft:hover {
     color: #285c49;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
     background-color: #cce8d388;
     border: 0;
     box-shadow: none;
@@ -1576,7 +1561,6 @@
 .alchemy-filter-option:active,
 .alchemy-craft:active {
     color: #70453d;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
     background-color: #efc7b499;
     border: 0;
     box-shadow: none;
@@ -1586,7 +1570,6 @@
 .alchemy-filter-button.active,
 .alchemy-filter-option.selected {
     color: #285c49;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
     background-color: #b9dfc899;
     border: 0;
     box-shadow: none;
@@ -1594,7 +1577,6 @@
 
 .alchemy-craft:disabled {
     color: #8a7964;
-    background-image: sprite('../Textures/ChineseUIControlsAtlas.atlas', 'button-frame');
     background-color: #d8d0be77;
     border: 0;
     box-shadow: none;
@@ -1606,7 +1588,6 @@
     max-height: 230px;
     padding: 13px 12px;
     gap: 6px;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'simple-panel');
     background-size: fill;
     background-color: #00000000;
     border: 0;
@@ -1633,7 +1614,7 @@
     height: auto;
     padding: 94px 62px 60px;
     color: #493b2c;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -1767,7 +1748,7 @@
     min-height: 370px;
     padding: 66px 68px 58px;
     color: #493b2c;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -2022,7 +2003,7 @@
 .result-dialog,
 .death-dialog,
 .death-stats {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -2103,7 +2084,7 @@
 .alchemy-filter-option,
 .queue-control {
     color: #40362b;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -2128,7 +2109,7 @@
 .alchemy-filter-option:hover,
 .queue-control:hover {
     color: #255c48;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-color: #00000000;
     border: 0;
     box-shadow: none;
@@ -2151,7 +2132,7 @@
 .alchemy-filter-option:active,
 .queue-control:active {
     color: #75483f;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-color: #00000000;
     border: 0;
     box-shadow: none;
@@ -2165,7 +2146,7 @@
 .alchemy-filter-option.selected,
 .activity-toggle.missions {
     color: #205943;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-color: #00000000;
     border: 0;
     box-shadow: 0 0 0 2px #5f967b;
@@ -2174,7 +2155,7 @@
 .window-close,
 .info-popup-close {
     padding: 8px;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -2194,7 +2175,7 @@
 
 .window-close:hover,
 .info-popup-close:hover {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-color: #00000000;
     opacity: 1;
     transform: scale(1.04);
@@ -2203,7 +2184,7 @@
 .alchemy-tabs .window-tab:hover,
 .alchemy-craft:hover {
     color: #205943;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #f7f0d899;
@@ -2213,7 +2194,7 @@
 
 .alchemy-tabs .window-tab:active,
 .alchemy-craft:active {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -2222,7 +2203,7 @@
 }
 
 .alchemy-tabs .window-tab.active {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #eef7e6aa;
@@ -2259,7 +2240,7 @@
 .info-popup-icon-well,
 .alchemy-slot,
 .reward-icon-tile {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -2272,7 +2253,7 @@
 }
 
 .inventory-icon-card:hover {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-color: #00000000;
     border: 2px solid #6e9b82;
     box-shadow: none;
@@ -2280,7 +2261,7 @@
 }
 
 .inventory-icon-card.selected {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-color: #00000000;
     border: 3px solid #c28a34;
     box-shadow: 0 0 0 2px #fff2c8;
@@ -2568,10 +2549,11 @@
 .mission-combat-marker {
     position: absolute;
     z-index: 6;
-    top: 1px;
+    top: 50%;
     width: 12px;
     height: 12px;
     margin-left: -6px;
+    margin-top: -6px;
     background-color: #c13e37;
     border: 2px solid #f4dfbf;
     border-radius: 50%;
@@ -2769,7 +2751,7 @@
 .effect-orb,
 .effect-orb.permanent-effect {
     background-image: none;
-    background-color: #f0e1c2;
+    background-color: #00000000;
     border-width: 2px;
     border-style: solid;
     border-color: #9b8055;
@@ -3025,7 +3007,7 @@
 .activity-toggle.missions,
 .alchemy-tabs .window-tab.active {
     color: #49392c;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -3039,7 +3021,7 @@
 .alchemy-slot.filled,
 .alchemy-core-slot.filled,
 .alchemy-core-slot.equipment {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-color: #00000000;
     border-width: 3px;
     box-shadow: none;
@@ -3083,7 +3065,7 @@
 .effect-popup-header {
     min-height: 88px;
     padding: 8px 54px 10px 8px;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -3292,7 +3274,7 @@
 .window-close:hover,
 .info-popup-close:hover {
     color: #205943;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #f7f0d899;
@@ -3325,7 +3307,7 @@
 .alchemy-craft:disabled,
 .activity-toggle.recovery,
 .secondary-wide {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     box-shadow: none;
@@ -3333,7 +3315,7 @@
 
 .tick-float,
 .combat-damage-float {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
 }
@@ -3492,7 +3474,7 @@
 .info-popup-body {
     margin-top: 8px;
     padding: 12px 14px 14px;
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -3553,7 +3535,7 @@
 .info-popup-close:hover,
 .alchemy-tabs .window-tab:hover,
 .alchemy-craft:hover {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -3581,7 +3563,7 @@
 .info-popup-close:active,
 .alchemy-tabs .window-tab:active,
 .alchemy-craft:active {
-    background-image: sprite('../Textures/ChineseUIFramesAtlas.atlas', 'panel-slice');
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
     background-size: fill;
     background-slice: 12px;
     background-color: #00000000;
@@ -3633,6 +3615,20 @@
     border-color: #668a70;
 }
 
+/* Every retained modal surface fades through compositor opacity. */
+.window-fade-surface {
+    opacity: 0;
+    transition: opacity 0.16s ease-in-out;
+}
+
+.window-fade-surface.window-fade-open {
+    opacity: 1;
+}
+
+#window-backdrop.window-fade-surface {
+    transition: opacity 0.14s ease-in-out;
+}
+
 .shop-window {
     top: 235px;
     bottom: 235px;
@@ -3652,6 +3648,42 @@
     padding-left: 2px;
     padding-right: 2px;
     column-gap: 12px;
+}
+
+/* Item windows keep a bounded card count so opening them never lays out the whole inventory. */
+.item-pagination {
+    flex-shrink: 0;
+    min-height: 42px;
+    margin-top: 6px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.item-page-button {
+    pointer-events: auto;
+    width: 64px;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+    color: #49392c;
+    background-color: #ead8b7;
+    border: 2px solid #9b8055;
+    border-radius: 12px;
+    font-size: 25px;
+    text-align: center;
+}
+
+.item-page-button:disabled {
+    opacity: 0.42;
+}
+
+.item-page-label {
+    width: 92px;
+    color: #66553d;
+    font-size: 18px;
+    text-align: center;
 }
 
 .info-popup-kind {
@@ -3696,6 +3728,18 @@
 }
 
 /* The complete round effect panel depletes clockwise; the icon stays readable above it. */
+.side-tools {
+    right: 0;
+    top: 72px;
+    align-items: center;
+}
+
+.effects-list {
+    width: 62px;
+    align-self: center;
+    justify-items: center;
+}
+
 .effect-ring,
 .effect-orb.permanent-effect .effect-ring {
     position: absolute;
@@ -3718,20 +3762,74 @@
     height: 56px;
     padding: 0;
     background-image: none;
-    background-color: #00000000;
+    background-color: #f0e1c2;
     border: 0;
     border-radius: 28px;
     box-shadow: none;
     overflow: hidden;
 }
 
-.effect-icon {
+/* The year dial is only the depleting dragon image, without a plate or track. */
+.calendar-dial,
+.calendar-ring {
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+}
+
+.calendar-dial.year-candle {
+    position: relative;
+    top: 50px;
+    width: 90px;
+    height: 125px;
+    overflow: visible;
+}
+
+.year-candle-wax {
+    position: absolute;
+    z-index: 1;
+    left: 33px;
+    top: 8px;
+    width: 24px;
+    height: 94px;
+    object-fit: fill;
+}
+
+.calendar-dial .year-candle-cap {
     position: absolute;
     z-index: 2;
-    left: 12px;
-    top: 12px;
-    width: 32px;
-    height: 32px;
+    left: 33px;
+    top: 8px;
+    width: 24px;
+    height: 14px;
+    object-fit: fill;
+}
+
+.calendar-dial .year-candle-holder {
+    position: absolute;
+    left: 4px;
+    top: 88px;
+    width: 82px;
+    height: 33.31px;
+    object-fit: contain;
+}
+
+.calendar-dial .year-candle-holder-back {
+    z-index: 0;
+}
+
+.calendar-dial .year-candle-holder-front {
+    z-index: 3;
+}
+
+.calendar-dial .year-candle-flame {
+    position: absolute;
+    z-index: 4;
+    left: 23px;
+    top: -37px;
+    width: 44px;
+    height: 48px;
     object-fit: contain;
 }
 
@@ -3759,7 +3857,9 @@
 }
 
 .tick-float-money-icon {
-    flex-shrink: 0;
+    position: absolute;
+    left: 12px;
+    top: 10px;
     width: 23px;
     height: 23px;
     object-fit: contain;

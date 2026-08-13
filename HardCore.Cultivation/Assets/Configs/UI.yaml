@@ -34,5 +34,5 @@ enableShadows: false
 # Подключённые атласы спрайтов.
 # Обычно геймдизайнер меняет эти значения только если меняется пайплайн арта.
 spriteAtlases:
-  items: Assets/Textures/ItemsIconsAtlas.atlas
-  ui: Assets/Textures/UIIconsAtlas.atlas
+  items: Assets/Textures/GameUIAtlas.atlas
+  ui: Assets/Textures/GameUIAtlas.atlas

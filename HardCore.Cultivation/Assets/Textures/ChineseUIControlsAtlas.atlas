@@ -1,8 +1,0 @@
-{
-  "width": 2048,
-  "padding": 4,
-  "sources": {
-    "energy-fill": "UI/Chinese/energy-fill.png",
-    "health-fill": "UI/Chinese/health-fill.png"
-  }
-}
