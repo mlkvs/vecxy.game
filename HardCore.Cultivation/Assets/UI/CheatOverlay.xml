@@ -8,6 +8,9 @@
                 <text class="cheat-title">ЧИТЫ</text>
                 <button id="cheat-close" class="cheat-close">×</button>
             </panel>
+            <panel class="cheat-system">
+                <button id="cheat-fps-toggle" class="cheat-action">FPS: выключено</button>
+            </panel>
             <panel id="cheat-groups" class="cheat-groups" />
             <text id="cheat-status" class="cheat-status">Готово</text>
         </panel>

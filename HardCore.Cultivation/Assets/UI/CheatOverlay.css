@@ -98,6 +98,16 @@ text {
     font-size: 28px;
 }
 
+.cheat-system {
+    margin-top: 10px;
+    margin-bottom: 12px;
+    flex-direction: row;
+}
+
+.cheat-system .cheat-action {
+    width: 100%;
+}
+
 .cheat-groups {
     max-height: 830px;
     overflow-y: auto;

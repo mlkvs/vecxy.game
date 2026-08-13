@@ -27,8 +27,11 @@ public sealed class CheatLayer(
     private UiPanel? _overlay;
     private UiText? _status;
     private UiText? _fps;
+    private UiButton? _fpsToggle;
     private float _fpsElapsed;
     private int _fpsFrames;
+
+    public bool ShowFpsPanel { get; private set; }
 
     public override void OnInitialize()
     {
@@ -47,10 +50,18 @@ public sealed class CheatLayer(
         _overlay = null;
         _status = null;
         _fps = null;
+        _fpsToggle = null;
     }
 
     public override void OnUpdate(float deltaTime)
     {
+        if (!ShowFpsPanel)
+        {
+            _fpsElapsed = 0f;
+            _fpsFrames = 0;
+            return;
+        }
+
         _fpsElapsed += deltaTime;
         _fpsFrames++;
         if (_fps is null || _fpsElapsed < 0.25f)
@@ -73,12 +84,15 @@ public sealed class CheatLayer(
         _overlay = document.GetElementById<UiPanel>("cheat-overlay");
         _status = document.GetElementById<UiText>("cheat-status");
         _fps = document.GetElementById<UiText>("cheat-fps");
+        _fpsToggle = document.GetElementById<UiButton>("cheat-fps-toggle");
         var groups = document.GetElementById<UiPanel>("cheat-groups");
         groups.Clear();
         foreach (var group in registry.Actions.GroupBy(action => action.Group))
             AddGroup(document, groups, group.Key, group);
         trigger.Clicked += _ => ShowOverlay(true);
         close.Clicked += _ => ShowOverlay(false);
+        _fpsToggle.Clicked += _ => ToggleFpsPanel();
+        UpdateFpsPanel();
         ShowOverlay(false);
     }
 
@@ -120,5 +134,19 @@ public sealed class CheatLayer(
         _overlay.IsVisible = visible;
         if (visible && _status is not null)
             _status.Value = $"{registry.Actions.Count} cheats";
+    }
+
+    private void ToggleFpsPanel()
+    {
+        ShowFpsPanel = !ShowFpsPanel;
+        UpdateFpsPanel();
+    }
+
+    private void UpdateFpsPanel()
+    {
+        if (_fps is not null)
+            _fps.IsVisible = ShowFpsPanel;
+        if (_fpsToggle is not null)
+            _fpsToggle.Label = ShowFpsPanel ? "FPS: включено" : "FPS: выключено";
     }
 }
