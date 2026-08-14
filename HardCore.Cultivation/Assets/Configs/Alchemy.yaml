@@ -93,6 +93,9 @@ contaminationModifierCurve:
 
 # Каталог алхимических свойств. baseValue — сила при 100% совпадении и potency=1
 # ДО множителя из формулы количества ингредиентов и качества выше.
+# Алхимические пилюли временные: для постоянной атаки и максимума здоровья
+# используйте готовые Core-предметы из Items.yaml. Мгновенное исцеление также
+# задаётся готовыми Instant-пилюлями, чтобы не создавать временный эффект без действия.
 properties:
   - id: purification
     displayName: Очищение
@@ -128,6 +131,27 @@ properties:
     effectType: HealthRegeneration
     operation: AdditivePercent
     baseValue: 65
+
+  - id: jade_body
+    displayName: Нефритовое тело
+    pillName: Пилюля нефритового тела
+    effectType: MaximumHealth
+    operation: AdditivePercent
+    baseValue: 18
+
+  - id: blade_intent
+    displayName: Намерение клинка
+    pillName: Пилюля острого намерения
+    effectType: Attack
+    operation: AdditivePercent
+    baseValue: 20
+
+  - id: wind_step
+    displayName: Шаг ветра
+    pillName: Пилюля шага ветра
+    effectType: AttackSpeed
+    operation: AdditivePercent
+    baseValue: 24
 
   - id: swiftness
     displayName: Стремительность

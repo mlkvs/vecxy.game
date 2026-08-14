@@ -31,7 +31,11 @@
 # - MissionProgress     — ускорение миссий
 # - HealthRegeneration  — восстановление здоровья в секунду;
 #   база задаётся через healthRegenerationPerSecond в Combat.yaml
-# - PurifyContamination — мгновенно сбрасывает загрязнение персонажа до 0%
+# - MaximumHealth       — максимум здоровья
+# - Attack              — сила атаки
+# - AttackSpeed         — атак в секунду
+# - HealthRestore       — мгновенно восстанавливает здоровье; используйте только с Instant
+# - PurifyContamination — мгновенно снимает заданный процент загрязнения; используйте только с Instant
 #
 # operation:
 # - Flat                  — плоское добавление
@@ -112,6 +116,61 @@ items:
         operation: AdditivePercent
         value: 100
 
+  - id: healing_dew
+    name: Роса живой крови
+    description: Сразу затягивает раны и восстанавливает здоровье.
+    icon: Assets/Textures/Items/spirit-dew.png
+    category: Pill
+    durationType: Instant
+    # Количество HP до влияния качества экземпляра.
+    basePrice: 140
+    shopWeight: 14
+    effects:
+      - type: HealthRestore
+        operation: Flat
+        value: 35
+
+  - id: jade_body_core
+    name: Ядро нефритового тела
+    description: Навсегда укрепляет тело и повышает запас здоровья.
+    icon: Assets/Textures/Items/insight-core.png
+    category: Core
+    durationType: Permanent
+    basePrice: 620
+    shopWeight: 5
+    effects:
+      # Постоянный Flat-бонус к максимуму HP.
+      - type: MaximumHealth
+        operation: Flat
+        value: 20
+
+  - id: windblade_core
+    name: Ядро ветрового клинка
+    description: Навсегда усиливает силу обычной атаки.
+    icon: Assets/Textures/Items/breakthrough-seal.png
+    category: Core
+    durationType: Permanent
+    basePrice: 680
+    shopWeight: 4
+    effects:
+      - type: Attack
+        operation: Flat
+        value: 1.5
+
+  - id: gale_step_pill
+    name: Пилюля порыва ветра
+    description: На короткое время ускоряет атаки.
+    icon: Assets/Textures/Items/focus-pill.png
+    category: Pill
+    durationType: Temporary
+    temporaryDurationTicks: 24
+    basePrice: 230
+    shopWeight: 9
+    effects:
+      - type: AttackSpeed
+        operation: AdditivePercent
+        value: 35
+
   # ------------------------------------------------------------
   # ПРЕДМЕТЫ ДЛЯ ПРОРЫВА
   # ------------------------------------------------------------
@@ -180,7 +239,7 @@ items:
   # ------------------------------------------------------------
   - id: purity_pill
     name: Пилюля чистоты
-    description: Редкая очищающая пилюля, полностью выводящая загрязнение из тела.
+    description: Редкая очищающая пилюля, выводящая часть загрязнения из тела.
     icon: Assets/Textures/Items/still-age-pill.png
     category: Pill
     durationType: Instant
@@ -400,6 +459,8 @@ items:
     description: Ценный материал для будущей алхимии.
     icon: Assets/Textures/Items/crimson-beast-core.png
     category: Ingredient
+    # Стихия участвует в совместимости смеси из Alchemy.yaml.
+    element: Fire
     durationType: Instant
     basePrice: 75
     shopWeight: 20
@@ -410,16 +471,17 @@ items:
         potency: 1.15
       - propertyId: swiftness
         potency: 0.90
-      - propertyId: clarity
-        potency: 0.75
       - propertyId: insight
         potency: 0.65
+      - propertyId: blade_intent
+        potency: 0.85
 
   - id: azure_spirit_core
     name: Лазурное духовное яйцо
     description: Редкий материал, насыщенный ци.
     icon: Assets/Textures/Items/azure-spirit-core.png
     category: Ingredient
+    element: Water
     durationType: Instant
     basePrice: 160
     shopWeight: 9
@@ -438,6 +500,7 @@ items:
     description: Запредельно редкий ингредиент.
     icon: Assets/Textures/Items/celestial-orb.png
     category: Ingredient
+    element: Void
     durationType: Instant
     basePrice: 1200
     shopWeight: 2
@@ -456,6 +519,7 @@ items:
     description: Свежий алхимический ингредиент, выращенный в источнике духовной силы.
     icon: Assets/Textures/Items/jade-lotus.png
     category: Ingredient
+    element: Earth
     durationType: Instant
     basePrice: 110
     shopWeight: 17
@@ -466,14 +530,15 @@ items:
         potency: 1.10
       - propertyId: clarity
         potency: 1.00
-      - propertyId: spirit_flow
-        potency: 0.85
+      - propertyId: jade_body
+        potency: 1.05
 
   - id: phoenix_feather
     name: Перо огненного голубя
     description: Редкий жаростойкий материал для пилюль и талисманов высшего порядка.
     icon: Assets/Textures/Items/phoenix-feather.png
     category: Ingredient
+    element: Air
     durationType: Instant
     basePrice: 330
     shopWeight: 7
@@ -484,14 +549,15 @@ items:
         potency: 1.05
       - propertyId: insight
         potency: 1.00
-      - propertyId: clarity
-        potency: 0.85
+      - propertyId: wind_step
+        potency: 1.15
 
   - id: purity_herb
     name: Трава чистоты
     description: Редкий ингредиент, выводящий скверну из алхимической смеси.
     icon: Assets/Textures/Items/jade-lotus.png
     category: Ingredient
+    element: Void
     durationType: Instant
     basePrice: 260
     # Вес повышен, чтобы ингредиент регулярно появлялся и в лавке, и в наградах миссий.

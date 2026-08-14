@@ -53,7 +53,12 @@ public sealed class GameController(
     private const string WindowOpenClass = "window-fade-open";
     private const float UiReferenceWidth = 620f;
     private const float UiReferenceHeight = 1180f;
-    private const float ShopWindowHeight = 640f;
+    private const int ShopRowCount = 3;
+    private const float ShopCardMinimumHeight = 172f;
+    private const float ShopGridRowGap = 10f;
+    // Header, window/body padding, content margin, and a small safety buffer.
+    private const float ShopWindowChromeHeight = 150f;
+    private const float ShopViewportMargin = 48f;
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
@@ -111,7 +116,10 @@ public sealed class GameController(
             InitializeNewGame();
         if (_state.Shop.Slots.Count == 0)
             shop.Refresh(_state.Shop);
-        if (_state.MissionBoard.MissionIds.Count == 0)
+        if (_state.MissionBoard.MissionIds.Count == 0 ||
+            _state.MissionBoard.MissionIds.Any(id =>
+                Math.Abs(database.GetCultivationStageIndex(database.GetMission(id).StageId) -
+                         _state.Character.Cultivation.StageIndex) > 1))
             missions.Refresh(_state);
         combat.ConfigureHero(_state.Character, _state.Character.MaximumHealth <= 0m);
         combatScene.Initialize();
@@ -755,7 +763,7 @@ public sealed class GameController(
         var healthFraction = character.MaximumHealth <= 0m ? 0m : character.Health / character.MaximumHealth;
         _view.HeroHealthProgress.Progress = (float)Math.Clamp(healthFraction, 0m, 1m);
         _view.HeroRecoveryThreshold.IsVisible = false;
-        _view.HeroHealthText.Value = $"{healthFraction * 100m:0.#}%";
+        _view.HeroHealthText.Value = $"{Format(character.Health)} / {Format(character.MaximumHealth)}";
         _view.HeroContaminationProgress.Progress = (float)Math.Clamp(character.Contamination, 0m, 1m);
         _view.HeroContaminationText.Value = FormatContamination(character.Contamination);
         _view.Breakthrough.IsEnabled = progress.CanAttemptBreakthrough &&
@@ -845,10 +853,14 @@ public sealed class GameController(
             return;
         }
         var config = database.GetMission(mission.MissionConfigId);
-        var dangerLevel = config.DangerLevel ?? mission.Encounter?.DangerLevel ?? 0;
-        _view!.MissionDangerIndicator.IsVisible = dangerLevel > 0;
-        for (var index = 0; index < _view.MissionDangerBars.Count; index++)
-            _view.MissionDangerBars[index].IsVisible = index < dangerLevel;
+        var difficulty = GetMissionDifficulty(config);
+        _view!.MissionDangerIndicator.IsVisible = true;
+        _view.MissionDifficulty.Value = difficulty.Label;
+        _view.MissionDifficulty.ToggleClass("difficulty-very-easy", difficulty.CssClass == "difficulty-very-easy");
+        _view.MissionDifficulty.ToggleClass("difficulty-easy", difficulty.CssClass == "difficulty-easy");
+        _view.MissionDifficulty.ToggleClass("difficulty-equal", difficulty.CssClass == "difficulty-equal");
+        _view.MissionDifficulty.ToggleClass("difficulty-dangerous", difficulty.CssClass == "difficulty-dangerous");
+        _view.MissionDifficulty.ToggleClass("difficulty-suicidal", difficulty.CssClass == "difficulty-suicidal");
         var encounter = mission.Encounter;
         var pendingEncounter = encounter is { Resolved: false } && mission.Combat is null;
         _view.MissionCombatMarker.IsVisible = pendingEncounter;
@@ -881,10 +893,11 @@ public sealed class GameController(
         if (combatScene.RenderTarget is not null)
             _view.MissionCombatPreview.Texture = combatScene.RenderTarget.ColorTexture;
         var monster = database.GetMonster(active.MonsterConfigId);
-        var enemyStats = combat.GetEnemyStats(_state.Character, active.DangerLevel);
-        _view.CombatHeroAttackStat.Value = Format(combat.GetHeroAttack(_state.Character));
+        var missionStage = database.GetCultivationStageIndex(database.GetMission(_state.CurrentMission!.MissionConfigId).StageId);
+        var enemyStats = combat.GetEnemyStats(missionStage, active.DangerLevel);
+        _view.CombatHeroAttackStat.Value = Format(combat.GetHeroAttack(_state.Character, _state.ActiveEffects));
         _view.CombatHeroDefenseStat.Value = Format(combat.GetHeroDefense(_state.Character));
-        _view.CombatHeroSpeedStat.Value = Format(combat.GetHeroAttacksPerSecond(_state.Character));
+        _view.CombatHeroSpeedStat.Value = Format(combat.GetHeroAttacksPerSecond(_state.Character, _state.ActiveEffects));
         _view.CombatEnemyAttackStat.Value = Format(enemyStats.Attack);
         _view.CombatEnemyDefenseStat.Value = Format(monster.Defense);
         _view.CombatEnemySpeedStat.Value = Format(enemyStats.AttacksPerSecond);
@@ -1034,7 +1047,10 @@ public sealed class GameController(
         var scale = Math.Min(outputWidth / UiReferenceWidth, outputHeight / UiReferenceHeight);
         scale = Math.Max(0.0001f, scale);
         var canvasHeight = outputHeight / scale;
-        var height = Math.Min(ShopWindowHeight, Math.Max(420f, canvasHeight - 140f));
+        var requiredContentHeight = ShopRowCount * ShopCardMinimumHeight +
+                                    (ShopRowCount - 1) * ShopGridRowGap;
+        var preferredHeight = ShopWindowChromeHeight + requiredContentHeight;
+        var height = Math.Min(preferredHeight, Math.Max(420f, canvasHeight - ShopViewportMargin));
         var top = Math.Max(24f, (canvasHeight - height) * 0.5f);
 
         _view.ShopWindow.Style.Height = $"{height.ToString(CultureInfo.InvariantCulture)}px";
@@ -1343,9 +1359,6 @@ public sealed class GameController(
         var preview = alchemy.Preview(_state, CurrentAlchemySelection(), _alchemyMode);
         _view.AlchemyCraft.IsEnabled = preview.CanCraft;
         _view.AlchemyCraft.Label = _alchemyMode == AlchemyMode.Pill ? "СОЗДАТЬ ПИЛЮЛЮ" : "РАФИНИРОВАТЬ";
-        _view.AlchemyPreviewContamination.Value = preview.Output is null
-            ? "Загрязнение результата: —"
-            : $"Загрязнение результата: {FormatContamination(preview.Output.Contamination)}";
     }
 
     private void BuildAlchemySelection()
@@ -1809,12 +1822,30 @@ public sealed class GameController(
         var mission = database.GetMission(missionId);
         card.Name.Value = mission.Name;
         card.Description.Value = mission.Description;
-        card.Danger.IsVisible = mission.DangerLevel is not null;
-        card.Danger.Value = mission.DangerLevel is { } danger
-            ? $"ОПАСНОСТЬ {new string('I', danger)}"
-            : string.Empty;
+        var difficulty = GetMissionDifficulty(mission);
+        card.Danger.IsVisible = true;
+        card.Danger.Value = difficulty.Label;
+        card.Danger.ToggleClass("difficulty-very-easy", difficulty.CssClass == "difficulty-very-easy");
+        card.Danger.ToggleClass("difficulty-easy", difficulty.CssClass == "difficulty-easy");
+        card.Danger.ToggleClass("difficulty-equal", difficulty.CssClass == "difficulty-equal");
+        card.Danger.ToggleClass("difficulty-dangerous", difficulty.CssClass == "difficulty-dangerous");
+        card.Danger.ToggleClass("difficulty-suicidal", difficulty.CssClass == "difficulty-suicidal");
         card.Duration.Value = $"{mission.MinimumDurationTicks}–{mission.MaximumDurationTicks} недель";
         card.Start.IsEnabled = _state.MissionQueue.Count < database.Balance.MaximumMissionQueueSize;
+    }
+
+    private (string Label, string CssClass) GetMissionDifficulty(MissionConfig mission)
+    {
+        var delta = database.GetCultivationStageIndex(mission.StageId) - _state.Character.Cultivation.StageIndex;
+        if (delta < 0)
+            return mission.DangerLevel.GetValueOrDefault() >= 2
+                ? ("ЛЕГКО", "difficulty-easy")
+                : ("ОЧЕНЬ ЛЕГКО", "difficulty-very-easy");
+        if (delta == 0)
+            return ("НАРАВНЕ", "difficulty-equal");
+        return mission.DangerLevel.GetValueOrDefault() >= 3
+            ? ("САМОУБИЙСТВО", "difficulty-suicidal")
+            : ("ОПАСНО", "difficulty-dangerous");
     }
 
     private void StartMission(string missionId)
@@ -1924,6 +1955,8 @@ public sealed class GameController(
         if (result.Success)
         {
             PlaySound("Sounds/breakthrough.wav", 0.7f);
+            missions.Refresh(_state);
+            SyncMissionBoard();
             ShowAchievement("УСПЕШНЫЙ ПРОРЫВ");
             ShowActionFeedback($"Предел жизни увеличен до {Format(cultivation.GetMaximumAge(_state.Character))} лет.",
                 "Assets/Textures/UIIcons/age.png", true, info: true);
@@ -2531,6 +2564,12 @@ public sealed class GameController(
             EffectType.MissionProgress => $"Скорость выполнения миссий {SignedUi(value)}%",
             EffectType.HealthRegeneration when effect.Operation == ModifierOperation.Flat => $"Регенерация здоровья {SignedUi(value)}/с",
             EffectType.HealthRegeneration => $"Регенерация здоровья {SignedUi(value)}%",
+            EffectType.MaximumHealth when effect.Operation == ModifierOperation.Flat => $"Максимум здоровья {SignedUi(value)}",
+            EffectType.MaximumHealth => $"Максимум здоровья {SignedUi(value)}%",
+            EffectType.Attack when effect.Operation == ModifierOperation.Flat => $"Атака {SignedUi(value)}",
+            EffectType.Attack => $"Атака {SignedUi(value)}%",
+            EffectType.AttackSpeed => $"Скорость атаки {SignedUi(value)}%",
+            EffectType.HealthRestore => $"Восстанавливает {Format(value)} здоровья",
             EffectType.LongevityYears => $"Предел жизни {SignedUi(value)} лет",
             EffectType.PurifyContamination => $"Очищает от загрязнения на {Format(value)}%",
             _ => $"Эффект {SignedUi(value)}%"
@@ -2568,6 +2607,10 @@ public sealed class GameController(
         EffectType.BreakthroughChance => "Шанс прорыва", EffectType.SpiritualPowerGain => "Духовная сила",
         EffectType.MissionProgress => "Выполнение миссий",
         EffectType.HealthRegeneration => "Регенерация здоровья",
+        EffectType.MaximumHealth => "Максимум здоровья",
+        EffectType.Attack => "Атака",
+        EffectType.AttackSpeed => "Скорость атаки",
+        EffectType.HealthRestore => "Исцеление",
         EffectType.Contamination => "Загрязнение",
         EffectType.LongevityYears => "Предел жизни",
         EffectType.PurifyContamination => "Очищение",

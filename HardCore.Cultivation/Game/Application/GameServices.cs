@@ -149,6 +149,8 @@ public sealed class ItemEffectService(GameDatabase database)
                 var value = effect.Value * strength;
                 if (effect.Type == EffectType.SpiritualPowerGain)
                     state.Character.AddSpiritualPower(Math.Max(0m, value));
+                else if (effect.Type == EffectType.HealthRestore)
+                    state.Character.Heal(Math.Max(0m, value));
                 else if (effect.Type == EffectType.PurifyContamination)
                     state.Character.RemoveContamination(item.PurificationPercent > 0m ? item.PurificationPercent / 100m : value / 100m);
                 else
@@ -254,7 +256,10 @@ public sealed class MissionService(
 {
     public void Refresh(GameState state)
     {
-        var candidates = database.Missions.Values.ToList();
+        var currentStage = state.Character.Cultivation.StageIndex;
+        var candidates = database.Missions.Values
+            .Where(mission => Math.Abs(database.GetCultivationStageIndex(mission.StageId) - currentStage) <= 1)
+            .ToList();
         var offers = new List<string>(database.MissionBoardSlotCount);
         while (offers.Count < database.MissionBoardSlotCount && candidates.Count > 0)
         {
@@ -649,50 +654,53 @@ public sealed class CombatService(GameDatabase database)
 {
     private const decimal DefeatSurvivalHealth = 0.1m;
 
-    private CharacterStats GetHeroStats(CharacterState character)
+    private CharacterStats GetHeroStats(CharacterState character, IEnumerable<ActiveEffect>? activeEffects = null)
     {
         var stats = database.CultivationBalance.GetCurrent(character.Cultivation, database.Cultivation);
-        var effects = ContaminationCalculator.GetEffects(character.Contamination, database.Balance);
+        var contamination = ContaminationCalculator.GetEffects(character.Contamination, database.Balance);
+        var effects = activeEffects?.Where(effect => !effect.IsExpired).ToArray() ?? [];
+        decimal Apply(decimal baseValue, EffectType type) => ModifierCalculator.Calculate(
+            ModifierCalculator.Calculate(baseValue, effects, type), contamination, type);
         return new CharacterStats(
-            ModifierCalculator.Calculate(stats.MaximumHealth, effects, EffectType.MaximumHealth),
-            ModifierCalculator.Calculate(stats.HealthRegeneration, effects, EffectType.HealthRegeneration),
-            ModifierCalculator.Calculate(stats.Attack, effects, EffectType.Attack),
-            ModifierCalculator.Calculate(stats.AttacksPerSecond, effects, EffectType.AttackSpeed),
+            Apply(stats.MaximumHealth, EffectType.MaximumHealth),
+            Apply(stats.HealthRegeneration, EffectType.HealthRegeneration),
+            Apply(stats.Attack, EffectType.Attack),
+            Apply(stats.AttacksPerSecond, EffectType.AttackSpeed),
             stats.LongevityYears);
     }
 
-    public decimal GetHeroMaximumHealth(CharacterState character) =>
+    public decimal GetHeroMaximumHealth(CharacterState character, IEnumerable<ActiveEffect>? activeEffects = null) =>
         Math.Max(
             1m,
-            GetHeroStats(character).MaximumHealth +
+            GetHeroStats(character, activeEffects).MaximumHealth +
             character.MaximumHealthOffset);
 
-    public decimal GetHeroAttack(CharacterState character) =>
-        GetHeroStats(character).Attack;
+    public decimal GetHeroAttack(CharacterState character, IEnumerable<ActiveEffect>? activeEffects = null) =>
+        Math.Max(0m, GetHeroStats(character, activeEffects).Attack);
 
-    public decimal GetHeroHealthRegeneration(CharacterState character) => GetHeroStats(character).HealthRegeneration;
-    public decimal GetHeroAttacksPerSecond(CharacterState character) => GetHeroStats(character).AttacksPerSecond;
-    public decimal GetHeroDps(CharacterState character) => GetHeroAttack(character) * GetHeroAttacksPerSecond(character);
+    public decimal GetHeroHealthRegeneration(CharacterState character, IEnumerable<ActiveEffect>? activeEffects = null) =>
+        Math.Max(0m, GetHeroStats(character, activeEffects).HealthRegeneration);
+    public decimal GetHeroAttacksPerSecond(CharacterState character, IEnumerable<ActiveEffect>? activeEffects = null) =>
+        Math.Max(0.01m, GetHeroStats(character, activeEffects).AttacksPerSecond);
+    public decimal GetHeroDps(CharacterState character, IEnumerable<ActiveEffect>? activeEffects = null) =>
+        GetHeroAttack(character, activeEffects) * GetHeroAttacksPerSecond(character, activeEffects);
 
     public decimal GetHeroDefense(CharacterState character) =>
         database.Combat.HeroBaseDefense +
         character.Cultivation.StageIndex * database.Combat.HeroDefensePerStage +
         (character.Cultivation.StageIndex * 9 + character.Cultivation.Level - 1) * database.Combat.HeroDefensePerLevel;
 
-    public void ConfigureHero(CharacterState character, bool fillIfUninitialized = false) =>
-        character.ConfigureMaximumHealth(GetHeroMaximumHealth(character), fillIfUninitialized);
+    public void ConfigureHero(CharacterState character, bool fillIfUninitialized = false, IEnumerable<ActiveEffect>? activeEffects = null) =>
+        character.ConfigureMaximumHealth(GetHeroMaximumHealth(character, activeEffects), fillIfUninitialized);
 
     public CombatUpdate Update(GameState state, float deltaTime)
     {
         var result = new CombatUpdate();
-        ConfigureHero(state.Character);
+        ConfigureHero(state.Character, activeEffects: state.ActiveEffects);
         var mission = state.CurrentMission;
         if (mission?.Combat is null && state.Character.Health < state.Character.MaximumHealth && deltaTime > 0f)
         {
-            var regeneration = Math.Max(0m, ModifierCalculator.Calculate(
-                GetHeroHealthRegeneration(state.Character),
-                state.ActiveEffects.Where(effect => !effect.IsExpired),
-                EffectType.HealthRegeneration));
+            var regeneration = GetHeroHealthRegeneration(state.Character, state.ActiveEffects);
             var before = state.Character.Health;
             state.Character.Heal(regeneration * (decimal)Math.Clamp(deltaTime, 0f, 0.25f));
             result.HealthRestored = state.Character.Health - before;
@@ -705,7 +713,8 @@ public sealed class CombatService(GameDatabase database)
             mission.CurrentProgress >= encounter.TriggerProgress)
         {
             var monster = database.GetMonster(encounter.MonsterConfigId);
-            var maximumHealth = GetEnemyStats(state.Character, encounter.DangerLevel).MaximumHealth;
+            var encounterStage = database.GetCultivationStageIndex(database.GetMission(mission.MissionConfigId).StageId);
+            var maximumHealth = GetEnemyStats(encounterStage, encounter.DangerLevel).MaximumHealth;
             var combat = new ActiveCombat
             {
                 MonsterConfigId = monster.Id,
@@ -740,13 +749,14 @@ public sealed class CombatService(GameDatabase database)
 
         active.AdvanceCooldowns(Math.Clamp(deltaTime, 0f, 0.25f));
         var monsterConfig = database.GetMonster(active.MonsterConfigId);
-        var enemyStats = GetEnemyStats(state.Character, active.DangerLevel);
+        var missionStage = database.GetCultivationStageIndex(database.GetMission(mission.MissionConfigId).StageId);
+        var enemyStats = GetEnemyStats(missionStage, active.DangerLevel);
 
         while (active.HeroCooldown <= 0f && active.Phase == CombatPhase.Fighting)
         {
-            var damage = Math.Max(1m, GetHeroAttack(state.Character) - monsterConfig.Defense);
+            var damage = Math.Max(1m, GetHeroAttack(state.Character, state.ActiveEffects) - monsterConfig.Defense);
             var appliedDamage = active.DamageEnemy(damage);
-            active.ResetCooldown(CombatActor.Hero, 1f / (float)GetHeroAttacksPerSecond(state.Character));
+            active.ResetCooldown(CombatActor.Hero, 1f / (float)GetHeroAttacksPerSecond(state.Character, state.ActiveEffects));
             result.Events.Add(new CombatEvent(CombatEventType.HeroAttack, appliedDamage));
             result.Events.Add(new CombatEvent(CombatEventType.EnemyHurt, appliedDamage));
             if (active.EnemyHealth <= 0m)
@@ -774,17 +784,14 @@ public sealed class CombatService(GameDatabase database)
         return result;
     }
 
-    public CharacterStats GetEnemyStats(CharacterState character, int dangerLevel)
+    public CharacterStats GetEnemyStats(int missionStageIndex, int dangerLevel)
     {
         var danger = database.GetDanger(dangerLevel);
         var source = danger.StatReference == StageStatReference.StageStart
-            ? database.CultivationBalance.GetStart(character.Cultivation.StageIndex)
-            : database.CultivationBalance.GetEnd(character.Cultivation.StageIndex);
+            ? database.CultivationBalance.GetStart(missionStageIndex)
+            : database.CultivationBalance.GetEnd(missionStageIndex);
         return source * danger.StatMultiplier;
     }
-
-    public string GetMissionRank(CharacterState character, int dangerLevel) =>
-        database.Cultivation.Stages[character.Cultivation.StageIndex].MissionRankBase + database.GetDanger(dangerLevel).RankSuffix;
 }
 
 public sealed class TickProcessor(

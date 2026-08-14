@@ -68,7 +68,7 @@ internal sealed class GameView
         MissionProgressText = Text("mission-progress-text");
         MissionProgress = Progress("mission-progress");
         MissionDangerIndicator = Panel("mission-danger-indicator");
-        MissionDangerBars = document.QueryAll(".mission-danger-bar").OfType<UiPanel>().ToArray();
+        MissionDifficulty = Text("mission-difficulty");
         MissionCombatMarker = Panel("mission-combat-marker");
         MissionNormalState = Panel("mission-normal-state");
         MissionCombatState = Panel("mission-combat-state");
@@ -101,7 +101,6 @@ internal sealed class GameView
         AlchemyPillTab = Button(windowDocuments.Alchemy, "alchemy-pill-tab");
         AlchemyDistillTab = Button(windowDocuments.Alchemy, "alchemy-distill-tab");
         AlchemySelection = Panel(windowDocuments.Alchemy, "alchemy-selection");
-        AlchemyPreviewContamination = Text(windowDocuments.Alchemy, "alchemy-preview-contamination");
         AlchemyRarityFilter = Button(windowDocuments.Alchemy, "alchemy-rarity-filter");
         AlchemyQualityFilter = Button(windowDocuments.Alchemy, "alchemy-quality-filter");
         AlchemyTypeFilter = Button(windowDocuments.Alchemy, "alchemy-type-filter");
@@ -225,7 +224,7 @@ internal sealed class GameView
     public UiText MissionProgressText { get; }
     public UiProgress MissionProgress { get; }
     public UiPanel MissionDangerIndicator { get; }
-    public IReadOnlyList<UiPanel> MissionDangerBars { get; }
+    public UiText MissionDifficulty { get; }
     public UiPanel MissionCombatMarker { get; }
     public UiPanel MissionNormalState { get; }
     public UiPanel MissionCombatState { get; }
@@ -255,7 +254,6 @@ internal sealed class GameView
     public UiButton AlchemyPillTab { get; }
     public UiButton AlchemyDistillTab { get; }
     public UiPanel AlchemySelection { get; }
-    public UiText AlchemyPreviewContamination { get; }
     public UiButton AlchemyRarityFilter { get; }
     public UiButton AlchemyQualityFilter { get; }
     public UiButton AlchemyTypeFilter { get; }

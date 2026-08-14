@@ -141,6 +141,8 @@ public sealed class MissionsConfig : IYamlConfig
 public sealed class MissionConfig
 {
     public string Id { get; init; } = string.Empty;
+    // The board offers only the player's stage and its adjacent stage pools.
+    public string StageId { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public int MinimumDurationTicks { get; init; } = 1;
@@ -198,7 +200,6 @@ public sealed class CombatDangerConfig
     public decimal EncounterChancePercent { get; init; }
     public StageStatReference StatReference { get; init; }
     public decimal StatMultiplier { get; init; } = 1m;
-    public string RankSuffix { get; init; } = string.Empty;
 }
 
 public sealed class CombatBackgroundConfig
@@ -261,7 +262,6 @@ public sealed class CultivationStageConfig
     public string MissionBackgroundTexture { get; init; } = "Textures/Background_Missions.jpg";
     public decimal RecursiveCoefficient { get; init; }
     public decimal SpiritualPowerMultiplier { get; init; } = 1m;
-    public string MissionRankBase { get; init; } = string.Empty;
     public CharacterStats StatsPerLevel { get; init; }
     public CharacterStats BreakthroughBonus { get; init; }
     public decimal BaseBreakthroughChance { get; init; }
@@ -367,6 +367,12 @@ public sealed class GameDatabase
         ? mission
         : throw new KeyNotFoundException($"Unknown mission: {id}");
 
+    public int GetCultivationStageIndex(string id)
+    {
+        var index = Cultivation.Stages.FindIndex(stage => stage.Id == id);
+        return index >= 0 ? index : throw new KeyNotFoundException($"Unknown cultivation stage: {id}");
+    }
+
     public MonsterConfig GetMonster(string id) => _monsters.TryGetValue(id, out var monster)
         ? monster
         : throw new KeyNotFoundException($"Unknown monster: {id}");
@@ -411,7 +417,7 @@ public sealed class GameDatabase
         if (Cultivation.InitialRequiredPower.Count != 2 || Cultivation.InitialRequiredPower.Any(value => value <= 0m) ||
             Cultivation.StageEntryCoefficient <= 0m || Cultivation.BreakthroughChancePerExtraPowerBar < 0m ||
             Cultivation.Stages.Count == 0 || Cultivation.Stages.Select(stage => stage.Id).Distinct(StringComparer.Ordinal).Count() != Cultivation.Stages.Count ||
-            Cultivation.Stages.Any(stage => stage.RecursiveCoefficient <= 0m || stage.SpiritualPowerMultiplier <= 0m || string.IsNullOrWhiteSpace(stage.MissionRankBase)))
+            Cultivation.Stages.Any(stage => stage.RecursiveCoefficient <= 0m || stage.SpiritualPowerMultiplier <= 0m))
             throw new InvalidDataException("Cultivation coefficients and initial costs are invalid.");
         if (Cultivation.Stages.Any(stage =>
                 string.IsNullOrWhiteSpace(stage.CultivationBackgroundTexture) ||
@@ -472,6 +478,9 @@ public sealed class GameDatabase
                 throw new InvalidDataException($"Temporary item has no duration: {item.Id}");
             if (item.AlchemyProperties.Count > 4)
                 throw new InvalidDataException($"Item has more than four alchemy properties: {item.Id}");
+            if (item.Effects.Any(effect => effect.Type is EffectType.HealthRestore or EffectType.PurifyContamination) &&
+                item.DurationType != ItemDurationType.Instant)
+                throw new InvalidDataException($"Instant-only effect is configured on a non-instant item: {item.Id}");
             foreach (var property in item.AlchemyProperties)
             {
                 _ = GetAlchemyProperty(property.PropertyId);
@@ -484,10 +493,12 @@ public sealed class GameDatabase
         {
             if (mission.MinimumDurationTicks <= 0 ||
                 mission.MaximumDurationTicks < mission.MinimumDurationTicks ||
-                mission.BoardWeight <= 0m)
+                mission.BoardWeight <= 0m ||
+                string.IsNullOrWhiteSpace(mission.StageId))
             {
                 throw new InvalidDataException($"Invalid mission balance: {mission.Id}");
             }
+            _ = GetCultivationStageIndex(mission.StageId);
             if (mission.DangerLevel is { } danger)
             {
                 _ = GetDanger(danger);

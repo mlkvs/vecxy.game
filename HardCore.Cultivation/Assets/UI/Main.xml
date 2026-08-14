@@ -34,8 +34,7 @@
             <button id="mission-summary-button" class="mission-float glass-panel">
                 <panel class="float-heading"><image sprite="Assets/Textures/GameUIAtlas.atlas#missions" /><text>ТЕКУЩАЯ МИССИЯ</text></panel>
                 <panel id="mission-danger-indicator" class="mission-danger-indicator" hidden="true">
-                    <panel class="mission-danger-bar"/><panel class="mission-danger-bar"/><panel class="mission-danger-bar"/>
-                    <panel class="mission-danger-bar"/><panel class="mission-danger-bar"/>
+                    <text id="mission-difficulty" class="mission-difficulty">НАРАВНЕ</text>
                 </panel>
                 <text id="mission-name" class="float-title">Нет активной миссии</text>
                 <panel id="mission-normal-state">
@@ -87,7 +86,7 @@
                     <panel class="progress-track hero-health-track">
                         <progress id="hero-health-progress" class="progress-fill health-fill" />
                         <panel id="hero-recovery-threshold" class="hero-recovery-threshold" hidden="true" />
-                        <text id="hero-health-text" class="cultivation-progress-text">100%</text>
+                        <text id="hero-health-text" class="cultivation-progress-text">100 / 100</text>
                     </panel>
                     <panel class="progress-track hero-contamination-track">
                         <progress id="hero-contamination-progress" class="progress-fill contamination-fill" />

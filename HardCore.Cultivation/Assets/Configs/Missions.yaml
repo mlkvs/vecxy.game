@@ -35,6 +35,8 @@ missions:
   # description — описание в карточке миссии
   # minimumDurationTicks / maximumDurationTicks — диапазон длительности
   # boardWeight — шанс появления на доске
+  # stageId — стадия пула: на доске видны текущая стадия игрока и соседние.
+  #   Стадия также задаёт базовую силу врага в боевой миссии.
   # dangerLevel — необязательный level из Combat.yaml
   # possibleMonsterIds — id из Monsters.yaml; выбор учитывает selectionWeight
   # possibleBackgroundIds — id фонов из Combat.yaml; все имеют равный шанс
@@ -47,6 +49,7 @@ missions:
   # В безопасной миссии dangerLevel и possible* лучше вообще не указывать.
 
   - id: gather_mist_herbs
+    stageId: body_tempering
     name: Сад туманной долины
     description: Соберите ингредиенты до рассеивания утреннего тумана.
     minimumDurationTicks: 8
@@ -59,6 +62,7 @@ missions:
       money: 35
 
   - id: hunt_crimson_beast
+    stageId: golden_core
     name: След багрового зверя
     description: Выследите духовного зверя и извлеките его ядро.
     minimumDurationTicks: 24
@@ -74,6 +78,7 @@ missions:
       money: 120
 
   - id: guard_mountain_pass
+    stageId: golden_core
     name: Страж горного прохода
     description: Защитите караван секты на опасном перевале.
     minimumDurationTicks: 40
@@ -89,6 +94,7 @@ missions:
       money: 260
 
   - id: collect_jade_lotus
+    stageId: qi_gathering
     name: Цветение нефритового лотоса
     description: Доберитесь до горного источника и соберите лотосы до закрытия бутонов.
     minimumDurationTicks: 10
@@ -101,6 +107,7 @@ missions:
       money: 55
 
   - id: cleanse_spirit_cave
+    stageId: qi_gathering
     name: Очищение пещеры духов
     description: Развейте скверну в заброшенной пещере и восстановите защитные печати.
     minimumDurationTicks: 18
@@ -116,6 +123,7 @@ missions:
       money: 95
 
   - id: escort_alchemy_caravan
+    stageId: nascent_soul
     name: Караван алхимиков
     description: Проведите повозки с редкими реагентами через земли горных разбойников.
     minimumDurationTicks: 28
@@ -131,6 +139,7 @@ missions:
       money: 175
 
   - id: map_ancient_ruins
+    stageId: void_refinement
     name: Карта древних руин
     description: Исследуйте разрушенный дворец и отметьте безопасные проходы для секты.
     minimumDurationTicks: 46
@@ -146,6 +155,7 @@ missions:
       money: 310
 
   - id: hunt_thunder_bird
+    stageId: soul_formation
     name: Охота на громовую птицу
     description: Найдите гнездо небесного хищника и добудьте материал, пережив грозу.
     minimumDurationTicks: 32
@@ -161,6 +171,7 @@ missions:
       money: 220
 
   - id: meditate_waterfall
+    stageId: body_tempering
     name: Медитация у водопада
     description: Сохраните концентрацию под ледяным потоком и принесите записи наставнику.
     minimumDurationTicks: 6
@@ -173,6 +184,7 @@ missions:
       money: 30
 
   - id: defend_sect_trial
+    stageId: immortal_ascension
     name: Испытание внешней секты
     description: Возглавьте учеников на долгом испытании и защитите их от духовных зверей.
     minimumDurationTicks: 64

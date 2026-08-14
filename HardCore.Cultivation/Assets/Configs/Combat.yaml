@@ -63,19 +63,16 @@ dangerLevels:
     encounterChancePercent: 35
     statReference: StageStart
     statMultiplier: 0.90
-    rankSuffix: "-"
   - level: 2
     name: Medium
     encounterChancePercent: 65
     statReference: StageEnd
     statMultiplier: 0.45
-    rankSuffix: ""
   - level: 3
     name: Strong
     encounterChancePercent: 90
     statReference: StageEnd
     statMultiplier: 0.90
-    rankSuffix: "+"
 
 # БОЕВЫЕ ФОНЫ
 # id используется в possibleBackgroundIds из Missions.yaml.
