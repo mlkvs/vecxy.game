@@ -91,7 +91,6 @@ public sealed class GameController(
     private bool _applicationPaused;
     private bool _backgroundMusicPaused;
     private bool _privacyPolicyReadToEnd;
-    private bool _privacyPolicyChecked;
     private int _batchedTapCount;
     private decimal _batchedTapPower;
     private float _tapBatchElapsed;
@@ -587,7 +586,6 @@ public sealed class GameController(
         BindClick(view.SettingsMusicToggle, ToggleMusic);
         BindClick(view.SettingsSoundsToggle, ToggleSounds);
         BindClick(view.SettingsPrivacyPolicy, OpenPrivacyPolicy);
-        BindClick(view.PrivacyPolicyCheckbox, TogglePrivacyPolicyCheckbox);
         BindClick(view.PrivacyPolicyAccept, ConfirmPrivacyPolicy);
         view.EffectPopup.Clicked += _ => CloseEffectPopup();
         view.CharacterTapTarget.ClickedAt += (_, position) => TapCharacter(position);
@@ -2344,7 +2342,6 @@ public sealed class GameController(
 
         _view.PrivacyPolicyScroll.ScrollTo(Vector2.Zero);
         _privacyPolicyReadToEnd = _state.Settings.PrivacyPolicyAccepted;
-        _privacyPolicyChecked = _state.Settings.PrivacyPolicyAccepted;
         SyncPrivacyPolicyControls();
         MountWindow(_view.PrivacyPolicyWindow, exclusive: true);
     }
@@ -2368,30 +2365,13 @@ public sealed class GameController(
         SyncPrivacyPolicyControls();
     }
 
-    private void TogglePrivacyPolicyCheckbox()
-    {
-        if (!_privacyPolicyReadToEnd || _state.Settings.PrivacyPolicyAccepted)
-            return;
-
-        _privacyPolicyChecked = !_privacyPolicyChecked;
-        SyncPrivacyPolicyControls();
-    }
-
     private void SyncPrivacyPolicyControls()
     {
         if (_view is null)
             return;
 
         var accepted = _state.Settings.PrivacyPolicyAccepted;
-        var ready = accepted || (_privacyPolicyReadToEnd && _privacyPolicyChecked);
-        _view.PrivacyPolicyCheckbox.Label = _privacyPolicyChecked ? "[x] ПРИНИМАЮ ПОЛИТИКУ" : "[ ] ПРИНИМАЮ ПОЛИТИКУ";
-        _view.PrivacyPolicyCheckbox.IsEnabled = accepted || _privacyPolicyReadToEnd;
-        _view.PrivacyPolicyCheckbox.ToggleClass("is-checked", _privacyPolicyChecked);
-        _view.PrivacyPolicyReadStatus.Value = accepted
-            ? "Политика уже принята."
-            : _privacyPolicyReadToEnd
-                ? "Подтвердите согласие с политикой."
-                : "Долистайте текст до конца, чтобы подтвердить согласие.";
+        var ready = accepted || _privacyPolicyReadToEnd;
         _view.PrivacyPolicyAccept.Label = accepted ? "ЗАКРЫТЬ" : "ПРИНЯТЬ";
         _view.PrivacyPolicyAccept.IsEnabled = ready;
         _view.PrivacyPolicyAccept.ToggleClass("is-disabled", !ready);
@@ -2399,7 +2379,7 @@ public sealed class GameController(
 
     private void ConfirmPrivacyPolicy()
     {
-        if (!_state.Settings.PrivacyPolicyAccepted && (!_privacyPolicyReadToEnd || !_privacyPolicyChecked))
+        if (!_state.Settings.PrivacyPolicyAccepted && !_privacyPolicyReadToEnd)
             return;
         if (!_state.Settings.PrivacyPolicyAccepted)
         {

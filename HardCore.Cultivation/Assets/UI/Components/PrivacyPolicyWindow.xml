@@ -2,7 +2,6 @@
     <panel class="privacy-policy-card">
         <text class="privacy-policy-title">Политика конфиденциальности</text>
         <panel id="privacy-policy-scroll" class="privacy-policy-scroll">
-            <text class="privacy-policy-updated">Версия 1.0 от 15 августа 2026 года</text>
             <text class="privacy-policy-heading">1. Общие положения</text>
             <text class="privacy-policy-text">HardCore Cultivation уважает конфиденциальность игроков. Эта политика объясняет, какие данные обрабатываются при использовании игры и для чего это необходимо.</text>
             <text class="privacy-policy-heading">2. Какие данные обрабатываются</text>
@@ -18,8 +17,6 @@
             <text class="privacy-policy-heading">7. Контакты</text>
             <text class="privacy-policy-text">По вопросам обработки данных: melkov.dev@yandex.ru</text>
         </panel>
-        <text id="privacy-policy-read-status" class="privacy-policy-read-status">Долистайте текст до конца, чтобы подтвердить согласие.</text>
-        <button id="privacy-policy-checkbox" class="privacy-policy-checkbox" disabled="true">[ ] ПРИНИМАЮ ПОЛИТИКУ</button>
         <button id="privacy-policy-accept" class="privacy-policy-accept" disabled="true">ПРИНЯТЬ</button>
     </panel>
 </panel>

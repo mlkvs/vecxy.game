@@ -195,8 +195,6 @@ internal sealed class GameView
 
         PrivacyPolicyWindow = Register(windowDocuments.PrivacyPolicy, "privacy-policy-window");
         PrivacyPolicyScroll = Panel(windowDocuments.PrivacyPolicy, "privacy-policy-scroll");
-        PrivacyPolicyCheckbox = Button(windowDocuments.PrivacyPolicy, "privacy-policy-checkbox");
-        PrivacyPolicyReadStatus = Text(windowDocuments.PrivacyPolicy, "privacy-policy-read-status");
         PrivacyPolicyAccept = Button(windowDocuments.PrivacyPolicy, "privacy-policy-accept");
 
         Windows = _surfaces.Select(surface => surface.Panel).ToArray();
@@ -353,8 +351,6 @@ internal sealed class GameView
     public UiText SettingsBuildVersion { get; }
     public UiPanel PrivacyPolicyWindow { get; }
     public UiPanel PrivacyPolicyScroll { get; }
-    public UiButton PrivacyPolicyCheckbox { get; }
-    public UiText PrivacyPolicyReadStatus { get; }
     public UiButton PrivacyPolicyAccept { get; }
     public IReadOnlyList<UiPanel> Windows { get; }
     public IReadOnlyList<UiButton> WindowCloseButtons { get; }

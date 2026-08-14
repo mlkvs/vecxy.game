@@ -43,8 +43,8 @@
     pointer-events: auto;
     background-color: #fff0ce99;
     border: 2px solid #b8915288;
-    scrollbar-width: 12px;
-    scrollbar-color: #71613e #ead4a4;
+    scrollbar-width: 0px;
+    scrollbar-color: transparent transparent;
 }
 
 .privacy-policy-scroll > text {
@@ -58,24 +58,6 @@
 .privacy-policy-updated { color: #897c68; font-size: 22px; text-align: center; }
 .privacy-policy-heading { margin-top: 24px; color: #4a3826; font-family: "Rubik UI"; font-size: 32px; }
 .privacy-policy-text { margin-top: 12px; color: #5d4b36; font-size: 28px; }
-
-.privacy-policy-read-status { width: 100%; min-height: 38px; margin-top: 12px; color: #897c68; font-size: 17px; text-align: center; white-space: normal; }
-.privacy-policy-checkbox {
-    pointer-events: auto;
-    width: 100%;
-    min-height: 56px;
-    margin-top: 8px;
-    align-items: center;
-    justify-content: center;
-    color: #4a3826;
-    background-color: #fff0ce99;
-    border: 2px solid #b8915288;
-    font-family: "Rubik UI";
-    font-size: 19px;
-    text-align: center;
-}
-.privacy-policy-checkbox.is-checked { color: #285c49; background-color: #cce8d388; border-color: #285c49; }
-.privacy-policy-checkbox:disabled { opacity: 0.55; }
 
 .privacy-policy-accept {
     pointer-events: auto;

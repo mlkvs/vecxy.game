@@ -54,7 +54,7 @@ game:
 googlePlay:
   # Android versionCode. Increase this positive integer for EVERY Google Play upload,
   # including internal, closed and production tracks. It must never be decreased.
-  versionCode: 45
+  versionCode: 1
   # Android versionName shown to players in Google Play. It may use semantic versioning,
   # for example "1.1.0" or "1.1.0-beta.2". Usually it matches game.version.
   bundleVersion: "1.0.0"
