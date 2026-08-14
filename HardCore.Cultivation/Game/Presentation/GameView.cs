@@ -12,7 +12,8 @@ internal sealed class GameWindowDocuments
         UiDocument breakthrough,
         UiDocument death,
         UiDocument infoPopup,
-        UiDocument effectPopup)
+        UiDocument effectPopup,
+        UiDocument settings)
     {
         Shop = shop;
         Inventory = inventory;
@@ -22,7 +23,8 @@ internal sealed class GameWindowDocuments
         Death = death;
         InfoPopup = infoPopup;
         EffectPopup = effectPopup;
-        All = [shop, inventory, alchemy, missions, breakthrough, death, infoPopup, effectPopup];
+        Settings = settings;
+        All = [shop, inventory, alchemy, missions, breakthrough, death, infoPopup, effectPopup, settings];
     }
 
     public UiDocument Shop { get; }
@@ -33,6 +35,7 @@ internal sealed class GameWindowDocuments
     public UiDocument Death { get; }
     public UiDocument InfoPopup { get; }
     public UiDocument EffectPopup { get; }
+    public UiDocument Settings { get; }
     public IReadOnlyList<UiDocument> All { get; }
 }
 
@@ -89,6 +92,7 @@ internal sealed class GameView
         HeroContaminationProgress = Progress("hero-contamination-progress");
         HeroContaminationText = Text("hero-contamination-text");
         Effects = Panel("effects-list");
+        SettingsButton = Button("settings-button");
 
         ShopButton = Button("shop-button");
         AlchemyButton = Button("alchemy-button");
@@ -180,6 +184,11 @@ internal sealed class GameView
         EffectPopupEffect = Text(windowDocuments.EffectPopup, "effect-popup-effect");
         EffectPopupClose = Button(windowDocuments.EffectPopup, "effect-popup-close");
 
+        SettingsWindow = Register(windowDocuments.Settings, "settings-window");
+        SettingsMusicToggle = Button(windowDocuments.Settings, "settings-music-toggle");
+        SettingsSoundsToggle = Button(windowDocuments.Settings, "settings-sounds-toggle");
+        SettingsBuildVersion = Text(windowDocuments.Settings, "settings-build-version");
+
         Windows = _surfaces.Select(surface => surface.Panel).ToArray();
         WindowLayers = windowDocuments.All.Select(doc => Panel(doc, "window-layer")).ToArray();
         WindowBackdrops = windowDocuments.All
@@ -245,6 +254,7 @@ internal sealed class GameView
     public UiProgress HeroContaminationProgress { get; }
     public UiText HeroContaminationText { get; }
     public UiPanel Effects { get; }
+    public UiButton SettingsButton { get; }
     public UiButton ShopButton { get; }
     public UiButton AlchemyButton { get; }
     public UiButton InventoryButton { get; }
@@ -326,6 +336,10 @@ internal sealed class GameView
     public UiText EffectPopupTitle { get; }
     public UiText EffectPopupEffect { get; }
     public UiButton EffectPopupClose { get; }
+    public UiPanel SettingsWindow { get; }
+    public UiButton SettingsMusicToggle { get; }
+    public UiButton SettingsSoundsToggle { get; }
+    public UiText SettingsBuildVersion { get; }
     public IReadOnlyList<UiPanel> Windows { get; }
     public IReadOnlyList<UiButton> WindowCloseButtons { get; }
 

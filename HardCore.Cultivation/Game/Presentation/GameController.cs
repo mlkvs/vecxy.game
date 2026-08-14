@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Numerics;
 using System.Collections.Generic;
+using System.Reflection;
 using HardCore.Cultivation.Game.Application;
 using HardCore.Cultivation.Game.Domain;
 using HardCore.Cultivation.Game.Infrastructure;
@@ -59,6 +60,7 @@ public sealed class GameController(
     // Header, window/body padding, content margin, and a small safety buffer.
     private const float ShopWindowChromeHeight = 150f;
     private const float ShopViewportMargin = 48f;
+    private const string BackgroundMusicPath = "Musics/Main.mp3";
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
@@ -114,6 +116,7 @@ public sealed class GameController(
     {
         if (!saves.TryLoad(out _state))
             InitializeNewGame();
+        ApplyMusicSetting();
         if (_state.Shop.Slots.Count == 0)
             shop.Refresh(_state.Shop);
         if (_state.MissionBoard.MissionIds.Count == 0 ||
@@ -412,7 +415,8 @@ public sealed class GameController(
             ui.Load("UI/BreakthroughDocument.xml"),
             ui.Load("UI/DeathWindowDocument.xml"),
             ui.Load("UI/InfoPopupDocument.xml"),
-            ui.Load("UI/EffectPopupDocument.xml"));
+            ui.Load("UI/EffectPopupDocument.xml"),
+            ui.Load("UI/SettingsWindowDocument.xml"));
 
     private void HandleWindowDocumentReloaded(UiDocument document)
     {
@@ -451,6 +455,8 @@ public sealed class GameController(
             document.Instantiate("Components/InfoPopup.xml", layer);
         else if (ReferenceEquals(document, _windowDocuments.EffectPopup))
             document.Instantiate("Components/EffectPopup.xml", layer);
+        else if (ReferenceEquals(document, _windowDocuments.Settings))
+            document.Instantiate("Components/SettingsWindow.xml", layer);
     }
 
     private void InitializeBuiltUi(UiDocument document)
@@ -468,6 +474,7 @@ public sealed class GameController(
         BindClick(view.ShopButton, OpenShop);
         BindClick(view.AlchemyButton, OpenAlchemy);
         BindClick(view.InventoryButton, () => { OpenWindow(view.InventoryWindow); SyncInventory(); });
+        BindClick(view.SettingsButton, OpenSettings);
         BindClick(view.MissionSummaryButton, OpenMissions);
         BindClick(view.ActivityMode, ToggleActivityMode);
         BindClick(view.Breakthrough, OpenBreakthrough);
@@ -480,6 +487,8 @@ public sealed class GameController(
         BindClick(view.InfoPopupSell, SellInfoPopupItem);
         BindClick(view.InfoPopupClose, CloseInfoPopup);
         BindClick(view.EffectPopupClose, CloseEffectPopup);
+        BindClick(view.SettingsMusicToggle, ToggleMusic);
+        BindClick(view.SettingsSoundsToggle, ToggleSounds);
         view.EffectPopup.Clicked += _ => CloseEffectPopup();
         view.CharacterTapTarget.ClickedAt += (_, position) => TapCharacter(position);
         BindClick(view.DogTapTarget, ReactDog);
@@ -2057,6 +2066,57 @@ public sealed class GameController(
         MountWindow(window, exclusive: true);
     }
 
+    private void OpenSettings()
+    {
+        SyncSettings();
+        OpenWindow(_view!.SettingsWindow);
+    }
+
+    private void ToggleMusic()
+    {
+        _state.Settings.ToggleMusic();
+        ApplyMusicSetting();
+        Save();
+        SyncSettings();
+        PlaySound("Sounds/ui-click.wav", 0.45f);
+    }
+
+    private void ToggleSounds()
+    {
+        _state.Settings.ToggleSounds();
+        Save();
+        SyncSettings();
+        PlaySound("Sounds/ui-click.wav", 0.45f);
+    }
+
+    private void SyncSettings()
+    {
+        if (_view is null)
+            return;
+        SetSettingsToggle(_view.SettingsMusicToggle, "МУЗЫКА", _state.Settings.MusicEnabled);
+        SetSettingsToggle(_view.SettingsSoundsToggle, "ЗВУКИ", _state.Settings.SoundsEnabled);
+        var version = typeof(GameController).Assembly.GetName().Version?.ToString(3) ?? "0.1.0";
+        _view.SettingsBuildVersion.Value = $"Версия {version}";
+    }
+
+    private void ApplyMusicSetting()
+    {
+        try
+        {
+            if (_state.Settings.MusicEnabled)
+                audio.Play(BackgroundMusicPath, loop: true, volume: 0.35f);
+            else
+                audio.Stop(BackgroundMusicPath, loop: true);
+        }
+        catch { }
+    }
+
+    private static void SetSettingsToggle(UiButton button, string label, bool enabled)
+    {
+        button.Label = $"{label}: {(enabled ? "ВКЛ" : "ВЫКЛ")}";
+        button.ToggleClass("is-disabled", !enabled);
+    }
+
     private void MountWindow(UiPanel window, bool exclusive)
     {
         if (exclusive)
@@ -2630,6 +2690,8 @@ public sealed class GameController(
 
     private void PlaySound(string path, float volume)
     {
+        if (!_state.Settings.SoundsEnabled)
+            return;
         try { audio.Play(path, volume: volume); } catch { }
     }
 

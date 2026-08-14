@@ -26,6 +26,9 @@
                     <image id="year-candle-flame" class="year-candle-flame" sprite="Assets/Textures/GameUIAtlas.atlas#year-candle-flame-0" />
                 </panel>
             </panel>
+            <button id="settings-button" class="settings-button" aria-label="Настройки">
+                <image sprite="Assets/Textures/GameUIAtlas.atlas#settings" />
+            </button>
         </panel>
 
         <panel class="character-space">

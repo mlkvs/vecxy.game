@@ -1,0 +1,11 @@
+<panel id="settings-window" class="window settings-window" hidden="true">
+    <panel class="window-header">
+        <panel><text class="window-title">Настройки</text></panel>
+        <button class="window-close"><image sprite="Assets/Textures/GameUIAtlas.atlas#close" /></button>
+    </panel>
+    <panel class="settings-content">
+        <button id="settings-music-toggle" class="settings-toggle">МУЗЫКА: ВКЛ</button>
+        <button id="settings-sounds-toggle" class="settings-toggle">ЗВУКИ: ВКЛ</button>
+        <text id="settings-build-version" class="settings-build-version">Версия 0.1.0</text>
+    </panel>
+</panel>

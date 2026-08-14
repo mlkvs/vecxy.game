@@ -3,6 +3,7 @@
     <VecxyApplicationId>game.vecxy.hardcorecultivation</VecxyApplicationId>
     <VecxyApplicationTitle>HardCore Cultivation</VecxyApplicationTitle>
     <VecxyApplicationVersion>0.1.0</VecxyApplicationVersion>
+    <Version>0.1.0</Version>
   </PropertyGroup>
 
   <Import Project="..\Engine\Vecxy\Code\Vecxy.Platforms\build\Vecxy.Platforms.props" />

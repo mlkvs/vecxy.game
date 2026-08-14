@@ -693,6 +693,7 @@ public sealed class GameState
     public ShopState Shop { get; } = new();
     public MissionBoardState MissionBoard { get; } = new();
     public DogMeditationState DogMeditation { get; } = new();
+    public GameSettings Settings { get; } = new();
     public IReadOnlyList<ActiveMission> MissionQueue => _missionQueue;
     public ActiveMission? CurrentMission => _missionQueue.FirstOrDefault();
     public List<ActiveEffect> ActiveEffects { get; } = [];
@@ -742,6 +743,21 @@ public sealed class GameState
             (_missionQueue[targetIndex], _missionQueue[currentIndex]);
         return true;
     }
+}
+
+public sealed class GameSettings
+{
+    public bool MusicEnabled { get; private set; } = true;
+    public bool SoundsEnabled { get; private set; } = true;
+
+    public void Restore(bool musicEnabled, bool soundsEnabled)
+    {
+        MusicEnabled = musicEnabled;
+        SoundsEnabled = soundsEnabled;
+    }
+
+    public void ToggleMusic() => MusicEnabled = !MusicEnabled;
+    public void ToggleSounds() => SoundsEnabled = !SoundsEnabled;
 }
 
 public readonly record struct TickModifiers(

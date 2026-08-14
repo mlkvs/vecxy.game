@@ -8,7 +8,7 @@ namespace HardCore.Cultivation.Game.Infrastructure;
 
 public sealed class GameSaveSystem(GameDatabase database)
 {
-    public const int CurrentVersion = 15;
+    public const int CurrentVersion = 16;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -27,6 +27,11 @@ public sealed class GameSaveSystem(GameDatabase database)
             ActivityMode = state.ActivityMode,
             RecoveryRequired = state.RecoveryRequired,
             DogMeditationSeconds = state.DogMeditation.ElapsedSeconds,
+            Settings = new GameSettingsSaveData
+            {
+                MusicEnabled = state.Settings.MusicEnabled,
+                SoundsEnabled = state.Settings.SoundsEnabled
+            },
             Character = new CharacterSaveData
             {
                 SpiritualPower = state.Character.SpiritualPower,
@@ -120,6 +125,9 @@ public sealed class GameSaveSystem(GameDatabase database)
 
             state.Calendar.Restore(data.TotalTicks);
             state.SetActivityMode(data.ActivityMode);
+            state.Settings.Restore(
+                data.Version >= 16 ? data.Settings.MusicEnabled : true,
+                data.Version >= 16 ? data.Settings.SoundsEnabled : true);
             state.Character.Restore(
                 data.Character.SpiritualPower,
                 data.Character.Money,
@@ -356,6 +364,7 @@ public sealed class SaveData
     public ActivityMode ActivityMode { get; init; } = ActivityMode.Cultivation;
     public bool RecoveryRequired { get; init; }
     public float DogMeditationSeconds { get; init; }
+    public GameSettingsSaveData Settings { get; init; } = new();
     public CharacterSaveData Character { get; init; } = new();
     public List<ItemSaveData> Inventory { get; init; } = [];
     public List<MissionSaveData> MissionQueue { get; init; } = [];
@@ -364,6 +373,12 @@ public sealed class SaveData
     public MissionSaveData? Mission { get; init; }
     public ShopSaveData Shop { get; init; } = new();
     public List<EffectSaveData> ActiveEffects { get; init; } = [];
+}
+
+public sealed class GameSettingsSaveData
+{
+    public bool MusicEnabled { get; init; } = true;
+    public bool SoundsEnabled { get; init; } = true;
 }
 
 public sealed class CharacterSaveData
