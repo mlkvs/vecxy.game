@@ -749,15 +749,18 @@ public sealed class GameSettings
 {
     public bool MusicEnabled { get; private set; } = true;
     public bool SoundsEnabled { get; private set; } = true;
+    public bool PrivacyPolicyAccepted { get; private set; }
 
-    public void Restore(bool musicEnabled, bool soundsEnabled)
+    public void Restore(bool musicEnabled, bool soundsEnabled, bool privacyPolicyAccepted = false)
     {
         MusicEnabled = musicEnabled;
         SoundsEnabled = soundsEnabled;
+        PrivacyPolicyAccepted = privacyPolicyAccepted;
     }
 
     public void ToggleMusic() => MusicEnabled = !MusicEnabled;
     public void ToggleSounds() => SoundsEnabled = !SoundsEnabled;
+    public void AcceptPrivacyPolicy() => PrivacyPolicyAccepted = true;
 }
 
 public readonly record struct TickModifiers(

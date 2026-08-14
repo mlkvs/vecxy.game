@@ -13,7 +13,8 @@ internal sealed class GameWindowDocuments
         UiDocument death,
         UiDocument infoPopup,
         UiDocument effectPopup,
-        UiDocument settings)
+        UiDocument settings,
+        UiDocument privacyPolicy)
     {
         Shop = shop;
         Inventory = inventory;
@@ -24,7 +25,8 @@ internal sealed class GameWindowDocuments
         InfoPopup = infoPopup;
         EffectPopup = effectPopup;
         Settings = settings;
-        All = [shop, inventory, alchemy, missions, breakthrough, death, infoPopup, effectPopup, settings];
+        PrivacyPolicy = privacyPolicy;
+        All = [shop, inventory, alchemy, missions, breakthrough, death, infoPopup, effectPopup, settings, privacyPolicy];
     }
 
     public UiDocument Shop { get; }
@@ -36,6 +38,7 @@ internal sealed class GameWindowDocuments
     public UiDocument InfoPopup { get; }
     public UiDocument EffectPopup { get; }
     public UiDocument Settings { get; }
+    public UiDocument PrivacyPolicy { get; }
     public IReadOnlyList<UiDocument> All { get; }
 }
 
@@ -187,7 +190,14 @@ internal sealed class GameView
         SettingsWindow = Register(windowDocuments.Settings, "settings-window");
         SettingsMusicToggle = Button(windowDocuments.Settings, "settings-music-toggle");
         SettingsSoundsToggle = Button(windowDocuments.Settings, "settings-sounds-toggle");
+        SettingsPrivacyPolicy = Button(windowDocuments.Settings, "settings-privacy-policy");
         SettingsBuildVersion = Text(windowDocuments.Settings, "settings-build-version");
+
+        PrivacyPolicyWindow = Register(windowDocuments.PrivacyPolicy, "privacy-policy-window");
+        PrivacyPolicyScroll = Panel(windowDocuments.PrivacyPolicy, "privacy-policy-scroll");
+        PrivacyPolicyCheckbox = Button(windowDocuments.PrivacyPolicy, "privacy-policy-checkbox");
+        PrivacyPolicyReadStatus = Text(windowDocuments.PrivacyPolicy, "privacy-policy-read-status");
+        PrivacyPolicyAccept = Button(windowDocuments.PrivacyPolicy, "privacy-policy-accept");
 
         Windows = _surfaces.Select(surface => surface.Panel).ToArray();
         WindowLayers = windowDocuments.All.Select(doc => Panel(doc, "window-layer")).ToArray();
@@ -339,7 +349,13 @@ internal sealed class GameView
     public UiPanel SettingsWindow { get; }
     public UiButton SettingsMusicToggle { get; }
     public UiButton SettingsSoundsToggle { get; }
+    public UiButton SettingsPrivacyPolicy { get; }
     public UiText SettingsBuildVersion { get; }
+    public UiPanel PrivacyPolicyWindow { get; }
+    public UiPanel PrivacyPolicyScroll { get; }
+    public UiButton PrivacyPolicyCheckbox { get; }
+    public UiText PrivacyPolicyReadStatus { get; }
+    public UiButton PrivacyPolicyAccept { get; }
     public IReadOnlyList<UiPanel> Windows { get; }
     public IReadOnlyList<UiButton> WindowCloseButtons { get; }
 

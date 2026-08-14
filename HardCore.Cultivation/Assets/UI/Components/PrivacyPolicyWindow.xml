@@ -1,0 +1,25 @@
+<panel id="privacy-policy-window" class="privacy-policy-overlay" hidden="true">
+    <panel class="privacy-policy-card">
+        <text class="privacy-policy-title">Политика конфиденциальности</text>
+        <panel id="privacy-policy-scroll" class="privacy-policy-scroll">
+            <text class="privacy-policy-updated">Версия 1.0 от 15 августа 2026 года</text>
+            <text class="privacy-policy-heading">1. Общие положения</text>
+            <text class="privacy-policy-text">HardCore Cultivation уважает конфиденциальность игроков. Эта политика объясняет, какие данные обрабатываются при использовании игры и для чего это необходимо.</text>
+            <text class="privacy-policy-heading">2. Какие данные обрабатываются</text>
+            <text class="privacy-policy-text">Игра хранит прогресс, настройки звука и факт принятия политики локально на устройстве. Для технической аналитики могут обрабатываться обезличенные данные: версия игры, модель устройства, версия операционной системы, сведения о сессиях, производительности и игровых действиях.</text>
+            <text class="privacy-policy-heading">3. Аналитика</text>
+            <text class="privacy-policy-text">Для анализа стабильности и улучшения игрового процесса используется Яндекс AppMetrica. Сервис получает технические и статистические данные в соответствии со своей политикой конфиденциальности.</text>
+            <text class="privacy-policy-heading">4. Использование данных</text>
+            <text class="privacy-policy-text">Данные используются для сохранения прогресса, исправления ошибок, оценки производительности и развития игрового баланса. Мы не продаем персональные данные игроков.</text>
+            <text class="privacy-policy-heading">5. Передача данных</text>
+            <text class="privacy-policy-text">Технические данные могут передаваться Яндекс AppMetrica только для работы аналитики. Игра не требует создания учетной записи и не запрашивает имя, номер телефона или адрес электронной почты.</text>
+            <text class="privacy-policy-heading">6. Ваш выбор</text>
+            <text class="privacy-policy-text">Вы можете удалить локальные данные игры средствами операционной системы. Продолжая использовать игру после принятия этой политики, вы соглашаетесь с описанной обработкой данных.</text>
+            <text class="privacy-policy-heading">7. Контакты</text>
+            <text class="privacy-policy-text">По вопросам обработки данных: melkov.dev@yandex.ru</text>
+        </panel>
+        <text id="privacy-policy-read-status" class="privacy-policy-read-status">Долистайте текст до конца, чтобы подтвердить согласие.</text>
+        <button id="privacy-policy-checkbox" class="privacy-policy-checkbox" disabled="true">[ ] ПРИНИМАЮ ПОЛИТИКУ</button>
+        <button id="privacy-policy-accept" class="privacy-policy-accept" disabled="true">ПРИНЯТЬ</button>
+    </panel>
+</panel>

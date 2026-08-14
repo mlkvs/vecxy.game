@@ -90,6 +90,8 @@ public sealed class GameController(
     private bool _gameOver;
     private bool _applicationPaused;
     private bool _backgroundMusicPaused;
+    private bool _privacyPolicyReadToEnd;
+    private bool _privacyPolicyChecked;
     private int _batchedTapCount;
     private decimal _batchedTapPower;
     private float _tapBatchElapsed;
@@ -182,6 +184,7 @@ public sealed class GameController(
 
     public void Update(float deltaTime)
     {
+        UpdatePrivacyPolicyReadState();
         _tapBatchElapsed += deltaTime;
         if (_tapBatchElapsed >= 30f)
             FlushTapBatch();
@@ -502,7 +505,8 @@ public sealed class GameController(
             ui.Load("UI/DeathWindowDocument.xml"),
             ui.Load("UI/InfoPopupDocument.xml"),
             ui.Load("UI/EffectPopupDocument.xml"),
-            ui.Load("UI/SettingsWindowDocument.xml"));
+            ui.Load("UI/SettingsWindowDocument.xml"),
+            ui.Load("UI/PrivacyPolicyDocument.xml"));
 
     private void HandleWindowDocumentReloaded(UiDocument document)
     {
@@ -543,6 +547,8 @@ public sealed class GameController(
             document.Instantiate("Components/EffectPopup.xml", layer);
         else if (ReferenceEquals(document, _windowDocuments.Settings))
             document.Instantiate("Components/SettingsWindow.xml", layer);
+        else if (ReferenceEquals(document, _windowDocuments.PrivacyPolicy))
+            document.Instantiate("Components/PrivacyPolicyWindow.xml", layer);
     }
 
     private void InitializeBuiltUi(UiDocument document)
@@ -580,6 +586,9 @@ public sealed class GameController(
         BindClick(view.EffectPopupClose, CloseEffectPopup);
         BindClick(view.SettingsMusicToggle, ToggleMusic);
         BindClick(view.SettingsSoundsToggle, ToggleSounds);
+        BindClick(view.SettingsPrivacyPolicy, OpenPrivacyPolicy);
+        BindClick(view.PrivacyPolicyCheckbox, TogglePrivacyPolicyCheckbox);
+        BindClick(view.PrivacyPolicyAccept, ConfirmPrivacyPolicy);
         view.EffectPopup.Clicked += _ => CloseEffectPopup();
         view.CharacterTapTarget.ClickedAt += (_, position) => TapCharacter(position);
         BindClick(view.DogTapTarget, ReactDog);
@@ -614,6 +623,8 @@ public sealed class GameController(
             ShowDeathWindow();
         else
             CloseWindows();
+        if (!_state.Settings.PrivacyPolicyAccepted)
+            OpenPrivacyPolicy();
     }
 
     private void ProcessWeek()
@@ -2286,8 +2297,8 @@ public sealed class GameController(
         var outputHeight = Math.Max(1, renderer.GameOutputHeight);
         var scale = Math.Max(0.0001f, Math.Min(outputWidth / UiReferenceWidth, outputHeight / UiReferenceHeight));
         var canvasHeight = outputHeight / scale;
-        var contentHeight = SettingsContentTopPadding + SettingsToggleHeight * 2f +
-                            SettingsContentGap * 2f + SettingsVersionHeight;
+        var contentHeight = SettingsContentTopPadding + SettingsToggleHeight * 3f +
+                            SettingsContentGap * 3f + SettingsVersionHeight;
         var height = SettingsHeaderHeight + SettingsWindowVerticalPadding + contentHeight;
         var top = Math.Max(24f, (canvasHeight - height) * 0.5f);
 
@@ -2324,6 +2335,80 @@ public sealed class GameController(
         SetSettingsToggle(_view.SettingsMusicToggle, "МУЗЫКА", _state.Settings.MusicEnabled);
         SetSettingsToggle(_view.SettingsSoundsToggle, "ЗВУКИ", _state.Settings.SoundsEnabled);
         _view.SettingsBuildVersion.Value = $"Версия {buildInfo.DisplayVersion}";
+    }
+
+    private void OpenPrivacyPolicy()
+    {
+        if (_view is null)
+            return;
+
+        _view.PrivacyPolicyScroll.ScrollTo(Vector2.Zero);
+        _privacyPolicyReadToEnd = _state.Settings.PrivacyPolicyAccepted;
+        _privacyPolicyChecked = _state.Settings.PrivacyPolicyAccepted;
+        SyncPrivacyPolicyControls();
+        MountWindow(_view.PrivacyPolicyWindow, exclusive: true);
+    }
+
+    private void UpdatePrivacyPolicyReadState()
+    {
+        if (_view is null || _state.Settings.PrivacyPolicyAccepted ||
+            !IsWindowOpen(_view.PrivacyPolicyWindow) || _privacyPolicyReadToEnd)
+        {
+            return;
+        }
+
+        var scroll = _view.PrivacyPolicyScroll;
+        if (scroll.Bounds.Height <= 1f || scroll.ScrollExtent.Y <= 1f)
+            return;
+        var maximumOffset = Math.Max(0f, scroll.ScrollExtent.Y - scroll.Bounds.Height);
+        if (maximumOffset > 1f && scroll.ScrollOffset.Y < maximumOffset - 1f)
+            return;
+
+        _privacyPolicyReadToEnd = true;
+        SyncPrivacyPolicyControls();
+    }
+
+    private void TogglePrivacyPolicyCheckbox()
+    {
+        if (!_privacyPolicyReadToEnd || _state.Settings.PrivacyPolicyAccepted)
+            return;
+
+        _privacyPolicyChecked = !_privacyPolicyChecked;
+        SyncPrivacyPolicyControls();
+    }
+
+    private void SyncPrivacyPolicyControls()
+    {
+        if (_view is null)
+            return;
+
+        var accepted = _state.Settings.PrivacyPolicyAccepted;
+        var ready = accepted || (_privacyPolicyReadToEnd && _privacyPolicyChecked);
+        _view.PrivacyPolicyCheckbox.Label = _privacyPolicyChecked ? "[x] ПРИНИМАЮ ПОЛИТИКУ" : "[ ] ПРИНИМАЮ ПОЛИТИКУ";
+        _view.PrivacyPolicyCheckbox.IsEnabled = accepted || _privacyPolicyReadToEnd;
+        _view.PrivacyPolicyCheckbox.ToggleClass("is-checked", _privacyPolicyChecked);
+        _view.PrivacyPolicyReadStatus.Value = accepted
+            ? "Политика уже принята."
+            : _privacyPolicyReadToEnd
+                ? "Подтвердите согласие с политикой."
+                : "Долистайте текст до конца, чтобы подтвердить согласие.";
+        _view.PrivacyPolicyAccept.Label = accepted ? "ЗАКРЫТЬ" : "ПРИНЯТЬ";
+        _view.PrivacyPolicyAccept.IsEnabled = ready;
+        _view.PrivacyPolicyAccept.ToggleClass("is-disabled", !ready);
+    }
+
+    private void ConfirmPrivacyPolicy()
+    {
+        if (!_state.Settings.PrivacyPolicyAccepted && (!_privacyPolicyReadToEnd || !_privacyPolicyChecked))
+            return;
+        if (!_state.Settings.PrivacyPolicyAccepted)
+        {
+            _state.Settings.AcceptPrivacyPolicy();
+            Save();
+        }
+
+        UnmountWindow(_view!.PrivacyPolicyWindow);
+        PlaySound("Sounds/ui-click.wav", 0.45f);
     }
 
     private void ApplyMusicSetting()

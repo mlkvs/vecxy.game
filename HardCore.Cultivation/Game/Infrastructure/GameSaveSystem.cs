@@ -8,7 +8,7 @@ namespace HardCore.Cultivation.Game.Infrastructure;
 
 public sealed class GameSaveSystem(GameDatabase database)
 {
-    public const int CurrentVersion = 16;
+    public const int CurrentVersion = 17;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -30,7 +30,8 @@ public sealed class GameSaveSystem(GameDatabase database)
             Settings = new GameSettingsSaveData
             {
                 MusicEnabled = state.Settings.MusicEnabled,
-                SoundsEnabled = state.Settings.SoundsEnabled
+                SoundsEnabled = state.Settings.SoundsEnabled,
+                PrivacyPolicyAccepted = state.Settings.PrivacyPolicyAccepted
             },
             Character = new CharacterSaveData
             {
@@ -127,7 +128,8 @@ public sealed class GameSaveSystem(GameDatabase database)
             state.SetActivityMode(data.ActivityMode);
             state.Settings.Restore(
                 data.Version >= 16 ? data.Settings.MusicEnabled : true,
-                data.Version >= 16 ? data.Settings.SoundsEnabled : true);
+                data.Version >= 16 ? data.Settings.SoundsEnabled : true,
+                data.Version >= 17 && data.Settings.PrivacyPolicyAccepted);
             state.Character.Restore(
                 data.Character.SpiritualPower,
                 data.Character.Money,
@@ -379,6 +381,7 @@ public sealed class GameSettingsSaveData
 {
     public bool MusicEnabled { get; init; } = true;
     public bool SoundsEnabled { get; init; } = true;
+    public bool PrivacyPolicyAccepted { get; init; }
 }
 
 public sealed class CharacterSaveData

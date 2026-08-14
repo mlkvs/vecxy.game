@@ -6,6 +6,7 @@
     <panel class="settings-content">
         <button id="settings-music-toggle" class="settings-toggle">МУЗЫКА: ВКЛ</button>
         <button id="settings-sounds-toggle" class="settings-toggle">ЗВУКИ: ВКЛ</button>
+        <button id="settings-privacy-policy" class="settings-toggle">ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</button>
         <text id="settings-build-version" class="settings-build-version">Версия 0.1.0</text>
     </panel>
 </panel>
