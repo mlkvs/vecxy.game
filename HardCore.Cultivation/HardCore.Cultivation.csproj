@@ -4,6 +4,8 @@
     <VecxyApplicationTitle>HardCore Cultivation</VecxyApplicationTitle>
     <VecxyApplicationVersion>1.0.0</VecxyApplicationVersion>
     <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.45</AssemblyVersion>
+    <FileVersion>1.0.0.45</FileVersion>
   </PropertyGroup>
 
   <Import Project="..\Engine\Vecxy\Code\Vecxy.Platforms\build\Vecxy.Platforms.props" />

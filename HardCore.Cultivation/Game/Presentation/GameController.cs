@@ -2121,8 +2121,11 @@ public sealed class GameController(
             return;
         SetSettingsToggle(_view.SettingsMusicToggle, "МУЗЫКА", _state.Settings.MusicEnabled);
         SetSettingsToggle(_view.SettingsSoundsToggle, "ЗВУКИ", _state.Settings.SoundsEnabled);
-        var version = typeof(GameController).Assembly.GetName().Version?.ToString(3) ?? "0.1.0";
-        _view.SettingsBuildVersion.Value = $"Версия {version}";
+        var version = typeof(GameController).Assembly.GetName().Version;
+        var label = version is null
+            ? "1.0.0 #45"
+            : $"{version.Major}.{version.Minor}.{version.Build} #{version.Revision}";
+        _view.SettingsBuildVersion.Value = $"Версия {label}";
     }
 
     private void ApplyMusicSetting()
