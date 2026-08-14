@@ -14,7 +14,7 @@ public sealed class AnalyticsService(IMediator mediator, GameAnalyticsInfo analy
     public void Publish(AnalyticsEvent analyticsEvent)
     {
         ArgumentNullException.ThrowIfNull(analyticsEvent);
-        if (!analytics.IsAppMetricaEnabled)
+        if (OperatingSystem.IsAndroid() && !analytics.IsAppMetricaEnabled)
             return;
 
         // Analytics delivery is asynchronous and must never block gameplay.
