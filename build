@@ -180,6 +180,7 @@ TMPDIR="$temp_dir" dotnet publish "$PROJECT" \
     -p:ApplicationVersion="$build_number" \
     -p:ApplicationDisplayVersion="$version" \
     -p:EmbedAssembliesIntoApk=true \
+    -p:AndroidEnableFastDeployment=false \
     "-p:BuildIconPath=$ROOT_DIR/$icon_path" \
     "${analytics_args[@]}" \
     "${signing_args[@]}"
