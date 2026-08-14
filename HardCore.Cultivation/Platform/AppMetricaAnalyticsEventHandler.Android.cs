@@ -14,6 +14,7 @@ public sealed class AppMetricaAnalyticsEventHandler : IEventHandler<AnalyticsEve
     {
         var analyticsEvent = context.Message;
         AppMetrica.ReportEvent(analyticsEvent.Name, JsonSerializer.Serialize(analyticsEvent.Parameters));
+        global::Android.Util.Log.Info("HardCore.Cultivation", $"[Analytics] {analyticsEvent.Name}");
         return Task.CompletedTask;
     }
 }

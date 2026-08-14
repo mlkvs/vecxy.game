@@ -1,5 +1,4 @@
 #if ANDROID
-using System.Reflection;
 using IO.Appmetrica.Analytics;
 
 namespace HardCore.Cultivation.Platform;
@@ -21,14 +20,40 @@ public class AppMetricaApplication : global::Android.App.Application
     {
         base.OnCreate();
 
-        var apiKey = typeof(AppMetricaApplication).Assembly
-            .GetCustomAttributes<AssemblyMetadataAttribute>()
-            .FirstOrDefault(attribute => attribute.Key == "AppMetricaApiKey")?.Value;
+        var apiKey = ReadApiKey();
         if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            global::Android.Util.Log.Warn("HardCore.Cultivation", "AppMetrica is disabled: appmetrica.apiKey is empty.");
             return;
+        }
 
         var config = AppMetricaConfig.NewConfigBuilder(apiKey).Build();
         AppMetrica.Activate(this, config);
+        global::Android.Util.Log.Info("HardCore.Cultivation", "AppMetrica activated.");
+    }
+
+    private string ReadApiKey()
+    {
+        try
+        {
+            using var stream = Assets!.Open("Configs/Analytics.yaml");
+            using var reader = new StreamReader(stream);
+
+            while (reader.ReadLine() is { } line)
+            {
+                var value = line.Trim();
+                if (!value.StartsWith("apiKey:", StringComparison.Ordinal))
+                    continue;
+
+                return value["apiKey:".Length..].Trim().Trim('\'', '"');
+            }
+        }
+        catch (IOException exception)
+        {
+            global::Android.Util.Log.Warn("HardCore.Cultivation", $"Unable to read Analytics.yaml: {exception.Message}");
+        }
+
+        return string.Empty;
     }
 }
 #endif

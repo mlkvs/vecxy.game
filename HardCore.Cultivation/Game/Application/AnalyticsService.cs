@@ -1,6 +1,5 @@
 using Mediator.Net;
 using Mediator.Net.Contracts;
-using HardCore.Cultivation.Game.Infrastructure;
 
 namespace HardCore.Cultivation.Game.Application;
 
@@ -9,13 +8,11 @@ public interface IAnalyticsService
     void Publish(AnalyticsEvent analyticsEvent);
 }
 
-public sealed class AnalyticsService(IMediator mediator, GameAnalyticsInfo analytics) : IAnalyticsService
+public sealed class AnalyticsService(IMediator mediator) : IAnalyticsService
 {
     public void Publish(AnalyticsEvent analyticsEvent)
     {
         ArgumentNullException.ThrowIfNull(analyticsEvent);
-        if (OperatingSystem.IsAndroid() && !analytics.IsAppMetricaEnabled)
-            return;
 
         // Analytics delivery is asynchronous and must never block gameplay.
         _ = mediator.PublishAsync(analyticsEvent);

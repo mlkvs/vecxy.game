@@ -60,13 +60,13 @@ public sealed class GameLayer
     {
 #if ANDROID
         buildInfo.InitializeFromAssembly();
-        analyticsInfo.InitializeFromAssembly();
 #else
         using var build = configs.LoadConfig<BuildConfig>("Configs/Build.yaml");
-        using var analyticsConfig = configs.LoadConfig<AnalyticsConfig>("Configs/Analytics.yaml");
         buildInfo.Initialize(build.Value);
-        analyticsInfo.Initialize(analyticsConfig.Value);
 #endif
+        // Analytics configuration is available both in IDE runs and in packaged Android assets.
+        using var analyticsConfig = configs.LoadConfig<AnalyticsConfig>("Configs/Analytics.yaml");
+        analyticsInfo.Initialize(analyticsConfig.Value);
         AnalyticsEventExtensions.Bind(analytics);
         new AnalyticsEvent("test_game_started",
             ("version", buildInfo.Version),
