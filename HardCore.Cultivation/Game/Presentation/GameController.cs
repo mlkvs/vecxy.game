@@ -81,6 +81,8 @@ public sealed class GameController(
     private string? _yearCandleCapOpacity;
     private bool _deferredHudRefresh;
     private bool _gameOver;
+    private bool _applicationPaused;
+    private bool _backgroundMusicPaused;
     private ItemCategory _inventoryCategory = ItemCategory.Ingredient;
     private Guid? _selectedInventoryItem;
     private readonly List<Guid?> _alchemySlots = [];
@@ -2130,12 +2132,35 @@ public sealed class GameController(
     {
         try
         {
-            if (_state.Settings.MusicEnabled)
-                audio.Play(BackgroundMusicPath, loop: true, volume: 0.35f);
+            if (_state.Settings.MusicEnabled && !_applicationPaused)
+            {
+                if (_backgroundMusicPaused)
+                    audio.Resume(BackgroundMusicPath, loop: true);
+                else
+                    audio.Play(BackgroundMusicPath, loop: true, volume: 0.35f);
+                _backgroundMusicPaused = false;
+            }
             else
+            {
                 audio.Stop(BackgroundMusicPath, loop: true);
+                _backgroundMusicPaused = false;
+            }
         }
         catch { }
+    }
+
+    public void SetApplicationActive(bool isActive)
+    {
+        _applicationPaused = !isActive;
+        if (!isActive)
+        {
+            _backgroundMusicPaused = _state.Settings.MusicEnabled;
+            if (_backgroundMusicPaused)
+                audio.Pause(BackgroundMusicPath, loop: true);
+            return;
+        }
+
+        ApplyMusicSetting();
     }
 
     private static void SetSettingsToggle(UiButton button, string label, bool enabled)

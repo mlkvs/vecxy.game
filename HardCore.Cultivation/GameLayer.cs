@@ -99,8 +99,8 @@ public sealed class GameLayer
         audio.Preload("Musics/Main.mp3", loop: true);
 
         scenes.LoadScene<MainScene>();
-        audio.Play("Musics/Main.mp3", loop: true, volume: 0.3f);
         game.Initialize();
+        Vecxy.Kernel.PlatformApplicationLifecycle.ActiveChanged += game.SetApplicationActive;
     }
 
     public override void OnUpdate(float deltaTime)
@@ -110,6 +110,7 @@ public sealed class GameLayer
 
     public override void OnUnload()
     {
+        Vecxy.Kernel.PlatformApplicationLifecycle.ActiveChanged -= game.SetApplicationActive;
         game.Save();
         game.Dispose();
         AnalyticsEventExtensions.Unbind();
