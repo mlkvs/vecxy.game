@@ -16,6 +16,9 @@ ANDROID_KEYSTORE_PASSWORD='...' ANDROID_KEY_PASSWORD='...' \
     --keystore ~/.keys/google-play.jks --alias google-play
 ```
 
-`release` builds with `GAME_RELEASE_BUILD`. `--build` is the Google Play version code and must increase for every upload. `--version` changes the display version; it defaults to the version declared in `HardCore.Cultivation.csproj`. Bundles are written to `artifacts/android/<mode>` unless `--output` is set.
+`release` builds with `GAME_RELEASE_BUILD`. `--build` is the Google Play version code and must increase for every upload. `--version` changes the display version; it defaults to the version declared in `HardCore.Cultivation.csproj`. Each invocation produces both formats in `artifacts/android/<mode>` unless `--output` is set:
+
+- `.aab` is the signed package for Google Play;
+- `.apk` is the signed package for testers.
 
 Keystores and generated artifacts are ignored by Git. Do not put passwords into shell history, scripts, or project files.

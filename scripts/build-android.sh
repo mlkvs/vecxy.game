@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build a signed Android App Bundle for Google Play.
+# Build signed Android packages: an App Bundle for Google Play and an APK for testers.
 # Secrets are intentionally read only from environment variables, never CLI arguments.
 set -Eeuo pipefail
 
@@ -94,11 +94,13 @@ dotnet publish "$PROJECT" \
     --output "$output_dir" \
     -p:VecxyPlatform=Android \
     -p:GameBuildFlavor="$flavor" \
-    -p:AndroidPackageFormats=aab \
+    -p:AndroidPackageFormats=aab%3Bapk \
     -p:ApplicationVersion="$build_number" \
     -p:ApplicationDisplayVersion="$version" \
     "${signing_args[@]}"
 
-bundle="$(find "$output_dir" -maxdepth 1 -type f -name '*.aab' -print -quit)"
+bundle="$(find "$output_dir" -type f -name '*.aab' -print -quit)"
+apk="$(find "$output_dir" -type f -name '*.apk' -print -quit)"
 [[ -n "$bundle" ]] || fail "publish completed without an .aab file"
-printf 'Created bundle: %s\n' "$bundle"
+[[ -n "$apk" ]] || fail "publish completed without an .apk file"
+printf 'Google Play bundle: %s\nTest APK: %s\n' "$bundle" "$apk"
