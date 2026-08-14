@@ -26,6 +26,14 @@ build:
   # Prepared for a future desktop implementation. It has no effect while platform
   # is android, but keeping desktop-only symbols here makes platform switching clear.
   definesDesktop: ""
+  # Optional symbols used by `./build dev` in addition to common and platform symbols.
+  # Use this for development-only tooling, diagnostics, or test integrations.
+  # Example: "ENABLE_CHEATS,USE_TEST_BACKEND".
+  definesDev: ""
+  # Optional symbols used by `./build release` in addition to common and platform symbols.
+  # Use this for a production-only provider or features intentionally excluded from dev.
+  # Example: "USE_PRODUCTION_SERVICES".
+  definesRelease: ""
 
 desktop:
   # .NET runtime identifier for a desktop package. Common values are linux-x64,

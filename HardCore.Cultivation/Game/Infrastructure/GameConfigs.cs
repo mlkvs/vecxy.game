@@ -19,6 +19,8 @@ public sealed class BuildTargetConfig
     public string DefinesCommon { get; init; } = string.Empty;
     public string DefinesAndroid { get; init; } = string.Empty;
     public string DefinesDesktop { get; init; } = string.Empty;
+    public string DefinesDev { get; init; } = string.Empty;
+    public string DefinesRelease { get; init; } = string.Empty;
 }
 
 public sealed class BuildGameConfig
@@ -63,9 +65,14 @@ public sealed class GameBuildInfo
         Version = config.Game.Version;
         VersionCode = config.GooglePlay.VersionCode;
         BundleVersion = config.GooglePlay.BundleVersion;
-        Defines = config.Build.Platform.Equals("android", StringComparison.OrdinalIgnoreCase)
-            ? JoinDefines(config.Build.DefinesCommon, config.Build.DefinesAndroid)
-            : JoinDefines(config.Build.DefinesCommon, config.Build.DefinesDesktop);
+        var platformDefines = config.Build.Platform.Equals("android", StringComparison.OrdinalIgnoreCase)
+            ? config.Build.DefinesAndroid
+            : config.Build.DefinesDesktop;
+#if DEBUG
+        Defines = JoinDefines(config.Build.DefinesCommon, platformDefines, config.Build.DefinesDev);
+#else
+        Defines = JoinDefines(config.Build.DefinesCommon, platformDefines, config.Build.DefinesRelease);
+#endif
     }
 
     public void InitializeFromAssembly()
