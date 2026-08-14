@@ -114,6 +114,12 @@ build_defines="${build_defines//,/%3B}"
 output_dir="${output_dir:-$ROOT_DIR/artifacts/$platform/$mode}"
 temp_dir="$output_dir/.tmp"
 
+# A previous build run through sudo can leave artifacts owned by another user.
+# Fail before compiling, with an actionable command, rather than failing inside rm.
+if [[ -d "$output_dir" && ! -w "$output_dir" ]]; then
+    fail "cannot replace artifacts in $output_dir; run: sudo chown -R $(id -un):$(id -gn) '$output_dir'"
+fi
+
 signing_args=()
 if [[ "$platform" == android && ( "$mode" == release || -n "$keystore" || -n "$alias_name" ) ]]; then
     [[ -n "$keystore" && -f "$keystore" ]] || fail "a readable --keystore is required"
@@ -195,6 +201,8 @@ bundle_artifact="$output_dir/$(basename "$bundle")"
 apk_artifact="$output_dir/$(basename "$apk")"
 cp "$bundle" "$bundle_artifact"
 cp "$apk" "$apk_artifact"
+# Keep artifacts usable by the account that invoked the build even when a tool changes file modes.
+chmod u+rw "$bundle_artifact" "$apk_artifact"
 rm -rf "$publish_dir"
 rm -rf "$temp_dir"
 
