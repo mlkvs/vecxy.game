@@ -115,10 +115,10 @@ text {
     padding: 0; margin-left: auto; border: 0;
 }
 .settings-button {
-    flex-shrink: 0; width: 58px; height: 58px; align-items: center; justify-content: center;
+    flex-shrink: 0; width: 96px; height: 96px; align-items: center; justify-content: center;
     background-color: transparent; border: 0;
 }
-.settings-button image { width: 42px; height: 42px; object-fit: contain; }
+.settings-button image { width: 84px; height: 84px; object-fit: contain; }
 .settings-button:hover { background-color: #ffffff12; }
 .calendar-block {
     flex-shrink: 0; width: 172px; align-items: flex-end; padding-left: 16px;
