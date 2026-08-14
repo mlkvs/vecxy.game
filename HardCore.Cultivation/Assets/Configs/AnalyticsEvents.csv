@@ -5,7 +5,7 @@
 Экран открыт;screen_view;Открыт игровой экран или поп-ап;UI;"{\"screen\":\"shop\",\"source\":\"main\"}"
 Нажатие UI;ui_action;Значимое нажатие интерфейса;UI;"{\"screen\":\"main\",\"control\":\"open_inventory\"}"
 Пакет тапов;tap_batch;Агрегация тапов за 30 секунд или при смене экрана;Тапы;"{\"count\":124,\"duration_sec\":30,\"spiritual_power_gained\":124,\"stage\":2}"
-Прирост духовной силы;spiritual_power_gained;Сводка прироста духовной силы;Прогрессия;"{\"amount\":18.5,\"source\":\"tick\",\"stage\":3}"
+Прирост духовной силы;spiritual_power_gained;Агрегированный за 30 секунд прирост духовной силы;Прогрессия;"{\"amount\":18.5,\"source\":\"tick_batch\",\"occurrences\":30,\"stage\":3}"
 Попытка прорыва;breakthrough_attempted;Игрок начал прорыв;Прогрессия;"{\"from_stage\":2,\"to_stage\":3,\"chance\":0.65}"
 Успешный прорыв;breakthrough_succeeded;Игрок перешёл на новую стадию;Прогрессия;"{\"from_stage\":2,\"to_stage\":3,\"attempt_number\":2}"
 Неудачный прорыв;breakthrough_failed;Прорыв не удался;Прогрессия;"{\"from_stage\":2,\"to_stage\":3,\"chance\":0.65}"

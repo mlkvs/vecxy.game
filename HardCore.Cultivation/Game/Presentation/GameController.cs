@@ -93,6 +93,9 @@ public sealed class GameController(
     private int _batchedTapCount;
     private decimal _batchedTapPower;
     private float _tapBatchElapsed;
+    private int _batchedSpiritualPowerTicks;
+    private decimal _batchedSpiritualPower;
+    private float _spiritualPowerBatchElapsed;
     private decimal _combatHeroDamage;
     private decimal _combatEnemyDamage;
     private int _combatHeroHits;
@@ -182,6 +185,9 @@ public sealed class GameController(
         _tapBatchElapsed += deltaTime;
         if (_tapBatchElapsed >= 30f)
             FlushTapBatch();
+        _spiritualPowerBatchElapsed += deltaTime;
+        if (_spiritualPowerBatchElapsed >= 30f)
+            FlushSpiritualPowerBatch();
         UpdateYearCandleAnimation(deltaTime);
         if (_actionToast is not null && Environment.TickCount64 >= _actionToastExpiresAt)
         {
@@ -386,6 +392,7 @@ public sealed class GameController(
     public void Dispose()
     {
         FlushTapBatch();
+        FlushSpiritualPowerBatch();
         if (_document is not null)
         {
             _document.Reloaded -= BuildUi;
@@ -662,7 +669,8 @@ public sealed class GameController(
             UpdateEffectPopup();
         if (result.SpiritualPowerGained != 0m)
         {
-            Track(new SpiritualPowerGainedEvent("tick", result.SpiritualPowerGained));
+            _batchedSpiritualPower += result.SpiritualPowerGained;
+            _batchedSpiritualPowerTicks++;
             SpawnFloatingValue(result.SpiritualPowerGained, string.Empty, "spirit-value");
         }
         if (result.MissionProgressAdded != 0m)
@@ -2345,6 +2353,7 @@ public sealed class GameController(
         if (!isActive)
         {
             FlushTapBatch();
+            FlushSpiritualPowerBatch();
             Track(new AppBackgroundedEvent());
             _backgroundMusicPaused = _state.Settings.MusicEnabled;
             if (_backgroundMusicPaused)
@@ -2364,6 +2373,17 @@ public sealed class GameController(
         _batchedTapCount = 0;
         _batchedTapPower = 0m;
         _tapBatchElapsed = 0f;
+    }
+
+    private void FlushSpiritualPowerBatch()
+    {
+        if (_batchedSpiritualPowerTicks == 0)
+            return;
+        Track(new SpiritualPowerGainedEvent("tick_batch", _batchedSpiritualPower,
+            _batchedSpiritualPowerTicks, _state.Character.Cultivation.StageIndex));
+        _batchedSpiritualPowerTicks = 0;
+        _batchedSpiritualPower = 0m;
+        _spiritualPowerBatchElapsed = 0f;
     }
 
     private static void SetSettingsToggle(UiButton button, string label, bool enabled)

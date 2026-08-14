@@ -38,10 +38,11 @@ public sealed class TapBatchEvent(int count, decimal spiritualPower, int stage) 
     public override IReadOnlyDictionary<string, object?> Parameters => CreateParameters(("count", count), ("spiritual_power", spiritualPower), ("stage", stage));
 }
 
-public sealed class SpiritualPowerGainedEvent(string source, decimal amount) : AnalyticsEvent
+public sealed class SpiritualPowerGainedEvent(string source, decimal amount, int occurrences, int stage) : AnalyticsEvent
 {
     public override string Name => "spiritual_power_gained";
-    public override IReadOnlyDictionary<string, object?> Parameters => CreateParameters(("source", source), ("amount", amount));
+    public override IReadOnlyDictionary<string, object?> Parameters => CreateParameters(
+        ("source", source), ("amount", amount), ("occurrences", occurrences), ("stage", stage));
 }
 
 public sealed class CultivationLevelGainedEvent(string source, int levels, int stage, int level) : AnalyticsEvent
