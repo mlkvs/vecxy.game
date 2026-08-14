@@ -7,8 +7,18 @@ public enum EffectType
     BreakthroughChance,
     SpiritualPowerGain,
     MissionProgress,
-    HealthRegeneration
+    HealthRegeneration,
+    MaximumHealth,
+    Attack,
+    AttackSpeed,
+    HealthRestore,
+    Contamination,
+    LongevityYears,
+    PurifyContamination
 }
+
+public enum Element { Fire, Water, Earth, Air, Void }
+public enum StageStatReference { StageStart, StageEnd }
 
 public enum ActivityMode
 {
@@ -169,6 +179,7 @@ public sealed class CharacterState
     public decimal MaximumAgeOffsetYears { get; private set; }
     public decimal MaximumHealth { get; private set; } = 100m;
     public decimal Health { get; private set; } = 100m;
+    public decimal Contamination { get; private set; }
 
     public void AddSpiritualPower(decimal amount)
     {
@@ -200,6 +211,17 @@ public sealed class CharacterState
     }
 
     public void AddMoney(long amount) => Money = checked(Money + amount);
+
+    public void AddContamination(decimal amount)
+    {
+        if (amount < 0m)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        Contamination = Math.Clamp(Contamination + amount, 0m, 1m);
+    }
+
+    public void RestoreContamination(decimal contamination) => Contamination = Math.Clamp(contamination, 0m, 1m);
+    public void ClearContamination() => Contamination = 0m;
+    public void RemoveContamination(decimal amount) => Contamination = Math.Max(0m, Contamination - Math.Max(0m, amount));
 
     public void RestoreCheatOffsets(decimal maximumHealthOffset, decimal maximumAgeOffsetYears)
     {
@@ -400,6 +422,7 @@ public sealed record MissionItemRewardRoll
 {
     public ItemRarity Rarity { get; init; }
     public decimal Quality { get; init; }
+    public decimal Contamination { get; init; }
 }
 
 public sealed record MissionReward
@@ -419,6 +442,8 @@ public sealed class ItemInstance
     public required string ConfigId { get; init; }
     public ItemRarity Rarity { get; init; }
     public decimal Quality { get; init; }
+    public decimal Contamination { get; init; }
+    public decimal PurificationPercent { get; init; }
     public string? CustomName { get; init; }
     public string? CustomDescription { get; init; }
     public string? AlchemyOriginId { get; init; }
@@ -455,6 +480,8 @@ public sealed class ItemInstance
             ConfigId = ConfigId,
             Rarity = Rarity,
             Quality = Quality,
+            Contamination = Contamination,
+            PurificationPercent = PurificationPercent,
             CustomName = CustomName,
             CustomDescription = CustomDescription,
             AlchemyOriginId = AlchemyOriginId,
@@ -472,6 +499,8 @@ public sealed class ItemInstance
         ConfigId == other.ConfigId &&
         Rarity == other.Rarity &&
         Quality == other.Quality &&
+        Contamination == other.Contamination &&
+        PurificationPercent == other.PurificationPercent &&
         CustomName == other.CustomName &&
         CustomDescription == other.CustomDescription &&
         AlchemyOriginId == other.AlchemyOriginId &&

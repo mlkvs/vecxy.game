@@ -9,6 +9,7 @@
             <button id="alchemy-distill-tab" class="window-tab">РАФИНИРОВАНИЕ</button>
         </panel>
         <panel id="alchemy-selection" class="alchemy-selection" />
+        <text id="alchemy-preview-contamination" class="alchemy-preview-contamination">Загрязнение результата: —</text>
         <panel class="alchemy-filters">
             <panel class="alchemy-filter-control">
                 <button id="alchemy-rarity-filter" class="alchemy-filter-button">Редк.: ВСЕ</button>

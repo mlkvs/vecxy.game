@@ -57,6 +57,22 @@ public static class ModifierCalculator
         }
         return (baseValue + flat) * (1m + additivePercent) * multiplicative;
     }
+
+    public static decimal Calculate(decimal baseValue, IEnumerable<ItemEffectDefinition> effects, EffectType targetType)
+    {
+        var flat = 0m;
+        var additivePercent = 0m;
+        var multiplicative = 1m;
+        foreach (var effect in effects.Where(effect => effect.Type == targetType))
+            switch (effect.Operation)
+            {
+                case ModifierOperation.Flat: flat += effect.Value; break;
+                case ModifierOperation.AdditivePercent: additivePercent += effect.Value / 100m; break;
+                case ModifierOperation.MultiplicativePercent: multiplicative *= 1m + effect.Value / 100m; break;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        return (baseValue + flat) * (1m + additivePercent) * multiplicative;
+    }
 }
 
 public sealed class ItemGenerator(GameDatabase database, IRandomSource random)
@@ -78,11 +94,18 @@ public sealed class ItemGenerator(GameDatabase database, IRandomSource random)
             InstanceId = Guid.NewGuid(),
             ConfigId = configId,
             Rarity = rarity,
-            Quality = band.Index - 1 + step / 10m
+            Quality = band.Index - 1 + step / 10m,
+            Contamination = RollContamination()
         };
         if (quantity > 1)
             item.AddQuantity(quantity - 1);
         return item;
+    }
+
+    private decimal RollContamination()
+    {
+        var band = WeightedRandom.Select(database.Balance.ContaminationBands, value => value.Weight, random);
+        return band.Maximum == band.Minimum ? band.Minimum : random.NextDecimal(band.Minimum, band.Maximum);
     }
 }
 
@@ -91,17 +114,18 @@ public sealed class ItemEffectService(GameDatabase database)
     public TickModifiers CalculateModifiers(GameState state)
     {
         var effects = state.ActiveEffects.Where(effect => !effect.IsExpired).ToArray();
+        var contamination = ContaminationCalculator.GetEffects(state.Character.Contamination, database.Balance);
         var tickEfficiency = Math.Max(
             database.Balance.MinimumTickEfficiency,
-            ModifierCalculator.Calculate(1m, effects, EffectType.TickEfficiency));
+            ModifierCalculator.Calculate(ModifierCalculator.Calculate(1m, effects, EffectType.TickEfficiency), contamination, EffectType.TickEfficiency));
         var aging = Math.Max(
             database.Balance.MinimumAgingMultiplier,
-            ModifierCalculator.Calculate(1m, effects, EffectType.AgingSpeed));
+            ModifierCalculator.Calculate(ModifierCalculator.Calculate(1m, effects, EffectType.AgingSpeed), contamination, EffectType.AgingSpeed));
         var spiritual = Math.Max(0m,
-            ModifierCalculator.Calculate(1m, effects, EffectType.SpiritualPowerGain));
+            ModifierCalculator.Calculate(ModifierCalculator.Calculate(1m, effects, EffectType.SpiritualPowerGain), contamination, EffectType.SpiritualPowerGain));
         var mission = Math.Max(0m,
-            ModifierCalculator.Calculate(1m, effects, EffectType.MissionProgress));
-        var breakthrough = ModifierCalculator.Calculate(0m, effects, EffectType.BreakthroughChance);
+            ModifierCalculator.Calculate(ModifierCalculator.Calculate(1m, effects, EffectType.MissionProgress), contamination, EffectType.MissionProgress));
+        var breakthrough = ModifierCalculator.Calculate(ModifierCalculator.Calculate(0m, effects, EffectType.BreakthroughChance), contamination, EffectType.BreakthroughChance);
         return new TickModifiers(tickEfficiency, aging, spiritual, mission, breakthrough);
     }
 
@@ -125,6 +149,8 @@ public sealed class ItemEffectService(GameDatabase database)
                 var value = effect.Value * strength;
                 if (effect.Type == EffectType.SpiritualPowerGain)
                     state.Character.AddSpiritualPower(Math.Max(0m, value));
+                else if (effect.Type == EffectType.PurifyContamination)
+                    state.Character.RemoveContamination(item.PurificationPercent > 0m ? item.PurificationPercent / 100m : value / 100m);
                 else
                     return TransactionResult.Fail("Этот мгновенный эффект пока не поддерживается.");
             }
@@ -148,6 +174,8 @@ public sealed class ItemEffectService(GameDatabase database)
         }
 
         state.Inventory.Remove(item.InstanceId, 1);
+        if (config.Category == ItemCategory.Pill)
+            state.Character.AddContamination(item.Contamination * database.Balance.ContaminationAbsorptionPerPill);
         return TransactionResult.Ok(0, $"Использовано: {item.CustomName ?? config.Name}");
     }
 
@@ -191,9 +219,20 @@ public sealed class ItemPriceCalculator(GameDatabase database)
     public long GetValue(ItemInstance item)
     {
         var config = database.GetItem(item.ConfigId);
-        var quality = QualityPriceCurve.Evaluate(item.Quality, database.Balance.QualityPriceCurve);
+        var quality = GetQualityMultiplier(item.Quality, config.Category);
         var rarity = database.GetRarity(item.Rarity).PriceMultiplier;
-        return Round(config.BasePrice * quality * rarity);
+        var contamination = new PiecewiseLinearCurve<ContaminationCurvePoint>(
+            database.Alchemy.ContaminationModifierCurve,
+            point => point.Contamination,
+            point => point.Multiplier).Evaluate(Math.Clamp(item.Contamination, 0m, 1m));
+        return Round(config.BasePrice * quality * rarity * contamination);
+    }
+
+    private decimal GetQualityMultiplier(decimal quality, ItemCategory category)
+    {
+        if (quality < 1m && database.Balance.LowQualityPriceMultipliers.TryGetValue(category, out var low))
+            return new PiecewiseLinearCurve<PriceCurvePoint>([low, database.Balance.QualityPriceCurve.MinBy(point => point.Quality)!], point => point.Quality, point => point.Multiplier).Evaluate(quality);
+        return QualityPriceCurve.Evaluate(quality, database.Balance.QualityPriceCurve);
     }
 
     public long GetBuyPrice(ItemInstance item, ShopState shop) =>
@@ -307,7 +346,8 @@ public sealed class MissionService(
                     .Select(_ => new MissionItemRewardRoll
                     {
                         Rarity = reward.ItemRarity,
-                        Quality = reward.ItemQuality
+                        Quality = reward.ItemQuality,
+                        Contamination = itemGenerator.Generate(reward.ItemConfigId!).Contamination
                     })
                     .ToList();
             foreach (var roll in rolls)
@@ -317,7 +357,8 @@ public sealed class MissionService(
                     InstanceId = Guid.NewGuid(),
                     ConfigId = reward.ItemConfigId!,
                     Rarity = roll.Rarity,
-                    Quality = roll.Quality
+                    Quality = roll.Quality,
+                    Contamination = roll.Contamination
                 });
             }
         }
@@ -372,7 +413,12 @@ public sealed class MissionService(
     {
         var rolls = Enumerable.Range(0, quantity)
             .Select(_ => itemGenerator.Generate(configId))
-            .Select(item => new MissionItemRewardRoll { Rarity = item.Rarity, Quality = item.Quality })
+            .Select(item => new MissionItemRewardRoll
+            {
+                Rarity = item.Rarity,
+                Quality = item.Quality,
+                Contamination = item.Contamination
+            })
             .ToList();
         return new MissionReward
         {
@@ -457,24 +503,20 @@ public sealed class ShopTransactionService(ItemPriceCalculator prices)
 
 public sealed class CultivationService(GameDatabase database, IRandomSource random)
 {
-    private static readonly decimal[] LongevityStageBonuses = [20m, 40m, 80m, 150m, 250m, 400m, 600m, 1000m];
-
     public decimal GetRequiredPower(int stageIndex, int level)
     {
         if (level is < 1 or > 10)
             throw new ArgumentOutOfRangeException(nameof(level));
-        var stage = database.Cultivation.Stages[stageIndex];
-        return database.Cultivation.BaseRequiredPower *
-               database.Cultivation.LevelMultipliers[level - 1] *
-               stage.StageMultiplier;
+        return database.CultivationBalance.GetCost(stageIndex, level);
     }
 
     public decimal GetMaximumAge(CharacterState character)
     {
         ArgumentNullException.ThrowIfNull(character);
-        var unlockedStages = Math.Clamp(character.Cultivation.StageIndex, 0, LongevityStageBonuses.Length);
-        var bonus = LongevityStageBonuses.Take(unlockedStages).Sum();
-        return Math.Max(1m, database.Balance.MaximumAgeYears + bonus + character.MaximumAgeOffsetYears);
+        var baseLongevity = database.CultivationBalance.GetCurrent(character.Cultivation, database.Cultivation).LongevityYears;
+        var longevity = ModifierCalculator.Calculate(baseLongevity,
+            ContaminationCalculator.GetEffects(character.Contamination, database.Balance), EffectType.LongevityYears);
+        return Math.Max(1m, longevity + character.MaximumAgeOffsetYears);
     }
 
     public TransactionResult TryAdvanceLevel(CharacterState character)
@@ -514,8 +556,13 @@ public sealed class CultivationService(GameDatabase database, IRandomSource rand
             ? 0m
             : Math.Max(0m, character.SpiritualPower / required - 1m);
         var overchargeBonus = extraPowerBars * database.Cultivation.BreakthroughChancePerExtraPowerBar;
+        var chanceWithItems = ModifierCalculator.Calculate(baseChance, effects, EffectType.BreakthroughChance);
+        var chanceWithContamination = ModifierCalculator.Calculate(
+            chanceWithItems,
+            ContaminationCalculator.GetEffects(character.Contamination, database.Balance),
+            EffectType.BreakthroughChance);
         return Math.Clamp(
-            ModifierCalculator.Calculate(baseChance, effects, EffectType.BreakthroughChance) + overchargeBonus,
+            chanceWithContamination + overchargeBonus,
             0m,
             database.Balance.MaximumBreakthroughChance);
     }
@@ -602,27 +649,35 @@ public sealed class CombatService(GameDatabase database)
 {
     private const decimal DefeatSurvivalHealth = 0.1m;
 
-    private int CompletedCultivationLevels(CharacterState character) =>
-        character.Cultivation.StageIndex * (database.Cultivation.LevelMultipliers.Count - 1) +
-        character.Cultivation.Level - 1;
+    private CharacterStats GetHeroStats(CharacterState character)
+    {
+        var stats = database.CultivationBalance.GetCurrent(character.Cultivation, database.Cultivation);
+        var effects = ContaminationCalculator.GetEffects(character.Contamination, database.Balance);
+        return new CharacterStats(
+            ModifierCalculator.Calculate(stats.MaximumHealth, effects, EffectType.MaximumHealth),
+            ModifierCalculator.Calculate(stats.HealthRegeneration, effects, EffectType.HealthRegeneration),
+            ModifierCalculator.Calculate(stats.Attack, effects, EffectType.Attack),
+            ModifierCalculator.Calculate(stats.AttacksPerSecond, effects, EffectType.AttackSpeed),
+            stats.LongevityYears);
+    }
 
     public decimal GetHeroMaximumHealth(CharacterState character) =>
         Math.Max(
             1m,
-            database.Combat.HeroBaseHealth +
-            character.Cultivation.StageIndex * database.Combat.HeroHealthPerStage +
-            CompletedCultivationLevels(character) * database.Combat.HeroHealthPerLevel +
+            GetHeroStats(character).MaximumHealth +
             character.MaximumHealthOffset);
 
     public decimal GetHeroAttack(CharacterState character) =>
-        database.Combat.HeroBaseAttack +
-        character.Cultivation.StageIndex * database.Combat.HeroAttackPerStage +
-        CompletedCultivationLevels(character) * database.Combat.HeroAttackPerLevel;
+        GetHeroStats(character).Attack;
+
+    public decimal GetHeroHealthRegeneration(CharacterState character) => GetHeroStats(character).HealthRegeneration;
+    public decimal GetHeroAttacksPerSecond(CharacterState character) => GetHeroStats(character).AttacksPerSecond;
+    public decimal GetHeroDps(CharacterState character) => GetHeroAttack(character) * GetHeroAttacksPerSecond(character);
 
     public decimal GetHeroDefense(CharacterState character) =>
         database.Combat.HeroBaseDefense +
         character.Cultivation.StageIndex * database.Combat.HeroDefensePerStage +
-        CompletedCultivationLevels(character) * database.Combat.HeroDefensePerLevel;
+        (character.Cultivation.StageIndex * 9 + character.Cultivation.Level - 1) * database.Combat.HeroDefensePerLevel;
 
     public void ConfigureHero(CharacterState character, bool fillIfUninitialized = false) =>
         character.ConfigureMaximumHealth(GetHeroMaximumHealth(character), fillIfUninitialized);
@@ -635,7 +690,7 @@ public sealed class CombatService(GameDatabase database)
         if (mission?.Combat is null && state.Character.Health < state.Character.MaximumHealth && deltaTime > 0f)
         {
             var regeneration = Math.Max(0m, ModifierCalculator.Calculate(
-                database.Combat.HealthRegenerationPerSecond,
+                GetHeroHealthRegeneration(state.Character),
                 state.ActiveEffects.Where(effect => !effect.IsExpired),
                 EffectType.HealthRegeneration));
             var before = state.Character.Health;
@@ -650,8 +705,7 @@ public sealed class CombatService(GameDatabase database)
             mission.CurrentProgress >= encounter.TriggerProgress)
         {
             var monster = database.GetMonster(encounter.MonsterConfigId);
-            var multiplier = database.GetDanger(encounter.DangerLevel).MonsterPowerMultiplier;
-            var maximumHealth = decimal.Round(monster.MaximumHealth * multiplier, 2);
+            var maximumHealth = GetEnemyStats(state.Character, encounter.DangerLevel).MaximumHealth;
             var combat = new ActiveCombat
             {
                 MonsterConfigId = monster.Id,
@@ -686,13 +740,13 @@ public sealed class CombatService(GameDatabase database)
 
         active.AdvanceCooldowns(Math.Clamp(deltaTime, 0f, 0.25f));
         var monsterConfig = database.GetMonster(active.MonsterConfigId);
-        var dangerMultiplier = database.GetDanger(active.DangerLevel).MonsterPowerMultiplier;
+        var enemyStats = GetEnemyStats(state.Character, active.DangerLevel);
 
         while (active.HeroCooldown <= 0f && active.Phase == CombatPhase.Fighting)
         {
-            var damage = Math.Max(1m, GetHeroAttack(state.Character) - monsterConfig.Defense * dangerMultiplier);
+            var damage = Math.Max(1m, GetHeroAttack(state.Character) - monsterConfig.Defense);
             var appliedDamage = active.DamageEnemy(damage);
-            active.ResetCooldown(CombatActor.Hero, 1f / database.Combat.HeroAttacksPerSecond);
+            active.ResetCooldown(CombatActor.Hero, 1f / (float)GetHeroAttacksPerSecond(state.Character));
             result.Events.Add(new CombatEvent(CombatEventType.HeroAttack, appliedDamage));
             result.Events.Add(new CombatEvent(CombatEventType.EnemyHurt, appliedDamage));
             if (active.EnemyHealth <= 0m)
@@ -705,9 +759,9 @@ public sealed class CombatService(GameDatabase database)
 
         while (active.EnemyCooldown <= 0f && active.Phase == CombatPhase.Fighting)
         {
-            var damage = Math.Max(1m, monsterConfig.Attack * dangerMultiplier - GetHeroDefense(state.Character));
+            var damage = Math.Max(1m, enemyStats.Attack - GetHeroDefense(state.Character));
             var appliedDamage = state.Character.TakeDamage(damage);
-            active.ResetCooldown(CombatActor.Enemy, 1f / monsterConfig.AttacksPerSecond);
+            active.ResetCooldown(CombatActor.Enemy, 1f / (float)enemyStats.AttacksPerSecond);
             result.Events.Add(new CombatEvent(CombatEventType.EnemyAttack, appliedDamage));
             result.Events.Add(new CombatEvent(CombatEventType.HeroHurt, appliedDamage));
             if (state.Character.Health <= 0m)
@@ -719,6 +773,18 @@ public sealed class CombatService(GameDatabase database)
         }
         return result;
     }
+
+    public CharacterStats GetEnemyStats(CharacterState character, int dangerLevel)
+    {
+        var danger = database.GetDanger(dangerLevel);
+        var source = danger.StatReference == StageStatReference.StageStart
+            ? database.CultivationBalance.GetStart(character.Cultivation.StageIndex)
+            : database.CultivationBalance.GetEnd(character.Cultivation.StageIndex);
+        return source * danger.StatMultiplier;
+    }
+
+    public string GetMissionRank(CharacterState character, int dangerLevel) =>
+        database.Cultivation.Stages[character.Cultivation.StageIndex].MissionRankBase + database.GetDanger(dangerLevel).RankSuffix;
 }
 
 public sealed class TickProcessor(
@@ -742,7 +808,7 @@ public sealed class TickProcessor(
         }
         else if (state.ActivityMode == ActivityMode.Cultivation)
         {
-            spiritualPower = database.Balance.BaseSpiritualPowerPerTick *
+            spiritualPower = database.Balance.BaseSpiritualPowerPerTick * database.Cultivation.Stages[state.Character.Cultivation.StageIndex].SpiritualPowerMultiplier *
                              modifiers.TickEfficiency *
                              modifiers.SpiritualPowerMultiplier;
             state.Character.AddSpiritualPower(spiritualPower);
@@ -771,7 +837,7 @@ public sealed class TickProcessor(
     public TapResult ProcessTap(GameState state)
     {
         var modifiers = effects.CalculateModifiers(state);
-        var spiritualPower = database.Balance.BaseSpiritualPowerPerTick *
+        var spiritualPower = database.Balance.BaseSpiritualPowerPerTick * database.Cultivation.Stages[state.Character.Cultivation.StageIndex].SpiritualPowerMultiplier *
                              modifiers.TickEfficiency *
                              modifiers.SpiritualPowerMultiplier;
         state.Character.AddSpiritualPower(spiritualPower);

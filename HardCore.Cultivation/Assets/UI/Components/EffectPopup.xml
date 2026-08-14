@@ -3,6 +3,7 @@
         <button id="effect-popup-close" class="info-popup-close"><image sprite="Assets/Textures/GameUIAtlas.atlas#close"/></button>
         <panel class="effect-popup-header">
             <text class="info-popup-kind">АКТИВНЫЙ ЭФФЕКТ</text>
+            <text id="effect-popup-title" class="effect-popup-title">Эффект</text>
         </panel>
         <panel class="info-popup-body">
             <text id="effect-popup-effect" class="info-popup-effect">Описание эффекта</text>

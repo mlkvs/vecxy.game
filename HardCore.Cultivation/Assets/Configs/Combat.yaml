@@ -26,14 +26,10 @@ heroSpriteSet: Textures/Characters/3 Man/Man
 # Максимальное здоровье: база, отдельный бонус стадии и бонус уровня.
 # Сейчас стадия 1 ур. 1 = 120 HP, стадия 1 ур. 10 = 192 HP,
 # стадия 2 ур. 1 = 232 HP. Сам прорыв добавляет ровно 40 HP.
-heroBaseHealth: 120
-heroHealthPerStage: 40
-heroHealthPerLevel: 8
+heroBaseHealth: 100
 
 # Атака героя рассчитывается по той же формуле прогрессии.
-heroBaseAttack: 18
-heroAttackPerStage: 6
-heroAttackPerLevel: 2
+heroBaseAttack: 1
 
 # Защита вычитается из входящего урона. Атака всегда наносит минимум 1 HP.
 heroBaseDefense: 3
@@ -42,12 +38,12 @@ heroDefensePerLevel: 0.5
 
 # Число атак героя в секунду. Влияет и на симуляцию, и на частоту анимации.
 # Значение должно быть больше 0.
-heroAttacksPerSecond: 1.1
+heroAttacksPerSecond: 1
 
 # Естественное восстановление HP за секунду реального времени ВНЕ боя.
 # 0 отключает базовую регенерацию. Эффекты HealthRegeneration из Items.yaml
 # сначала добавляют Flat-бонусы, а затем применяют проценты.
-healthRegenerationPerSecond: 0.1
+healthRegenerationPerSecond: 1
 
 # Legacy-параметр для совместимости старых сохранений/конфигов.
 # Миссии больше не блокируются после поражения.
@@ -59,18 +55,27 @@ finishDelaySeconds: 1.2
 # УРОВНИ ОПАСНОСТИ
 # level — уникальный номер для dangerLevel в Missions.yaml.
 # encounterChancePercent — шанс боя при принятии миссии, от 0 до 100.
-# monsterPowerMultiplier умножает здоровье, атаку и защиту врага,
-# но не изменяет его скорость атак.
+# statReference выбирает теоретические характеристики стадии, statMultiplier
+# масштабирует HP, regen, attack и скорость. Defense монстра остаётся контентным.
 dangerLevels:
   - level: 1
+    name: Weak
     encounterChancePercent: 35
-    monsterPowerMultiplier: 0.85
+    statReference: StageStart
+    statMultiplier: 0.90
+    rankSuffix: "-"
   - level: 2
+    name: Medium
     encounterChancePercent: 65
-    monsterPowerMultiplier: 1.05
+    statReference: StageEnd
+    statMultiplier: 0.45
+    rankSuffix: ""
   - level: 3
+    name: Strong
     encounterChancePercent: 90
-    monsterPowerMultiplier: 1.30
+    statReference: StageEnd
+    statMultiplier: 0.90
+    rankSuffix: "+"
 
 # БОЕВЫЕ ФОНЫ
 # id используется в possibleBackgroundIds из Missions.yaml.

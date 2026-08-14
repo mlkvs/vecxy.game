@@ -128,6 +128,28 @@
     border-radius: 8px;
 }
 
+.contamination-badge {
+    pointer-events: none;
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    z-index: 81;
+    min-width: 32px;
+    padding: 2px 4px;
+    color: #dce9d7;
+    background-color: #24352be8;
+    border: 1px solid #8fa77d;
+    border-radius: 4px;
+    font-size: 11px;
+    text-align: center;
+}
+
+.contamination-badge.high-contamination {
+    color: #fff0d0;
+    background-color: #6b3828e8;
+    border-color: #ef9d58;
+}
+
 .item-description {
     min-height: 62px;
     margin-top: 14px;
@@ -3048,6 +3070,17 @@
     padding: 7px 2px 0;
 }
 
+/* Third progress bar needs dedicated space above the navigation. */
+.bottom-hud-panel {
+    height: 262px;
+    gap: 8px;
+}
+
+.bottom-hud-panel > .cultivation-bar {
+    min-height: 126px;
+    padding: 4px 10px 14px;
+}
+
 /* Popup sizes follow their content instead of mimicking a full-height window. */
 .info-popup-card,
 .effect-popup-card,
@@ -3899,6 +3932,19 @@
 
 .effect-orb,
 .effect-orb:hover,
+.effect-orb.contamination-effect { background-color: #2c3421; border-color: #a9bd5755; }
+.effect-orb.contamination-effect,
+.effect-orb.contamination-effect:hover,
+.effect-orb.contamination-effect:active,
+.effect-orb.contamination-effect:disabled {
+    background-color: #00000000;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+.effect-orb.contamination-effect .effect-ring { color: #00000000; border: 0; }
+
 .effect-orb:active,
 .effect-orb:disabled,
 .effect-orb.permanent-effect,
@@ -3944,4 +3990,77 @@
     border-color: #00000000;
     border-radius: 0;
     box-shadow: none;
+}
+
+/* HUD effects are bare clickable icons; their timers are intentionally not framed. */
+.effect-orb,
+.effect-orb:hover,
+.effect-orb:active,
+.effect-orb:disabled,
+.effect-orb.permanent-effect,
+.effect-orb.permanent-effect:hover,
+.effect-orb.permanent-effect:active,
+.effect-orb.permanent-effect:disabled,
+.effect-orb.contamination-effect,
+.effect-orb.contamination-effect:hover,
+.effect-orb.contamination-effect:active,
+.effect-orb.contamination-effect:disabled {
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    outline: 0;
+    overflow: visible;
+}
+
+/* Fresh active-effect layout: the icon itself is the timer, with no container chrome. */
+.effects-list {
+    width: 60px;
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 60px;
+    gap: 7px;
+    align-content: start;
+    justify-items: center;
+    overflow-y: auto;
+}
+
+.status-effect-entry {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+    padding: 4px;
+    pointer-events: auto;
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    border-width: 0;
+    border-style: none;
+    border-radius: 0;
+    box-shadow: none;
+    outline: 0;
+    overflow: visible;
+}
+
+.status-effect-icon {
+    pointer-events: none;
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 48px;
+    height: 48px;
+    background-image: none;
+    background-color: #00000000;
+    border: 0;
+    border-width: 0;
+    border-style: none;
+    border-color: #00000000;
+    border-radius: 0;
+    box-shadow: none;
+    color: #00000000;
 }

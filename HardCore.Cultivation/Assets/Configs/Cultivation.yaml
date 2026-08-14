@@ -1,115 +1,90 @@
 # ============================================================
 # ПРОГРЕССИЯ КУЛЬТИВАЦИИ
+# Все стоимости уровней вычисляются в C# из этих исходных параметров.
+# Не добавляйте сюда рассчитанные стоимости уровней.
 # ============================================================
-# Этот файл отвечает за:
-# - стоимость уровней
-# - темп роста между 1..10 уровнями внутри стадии
-# - сложность перехода между стадиями
-# - базовый шанс прорыва
-#
-# Общая логика:
-# requiredPower = baseRequiredPower * levelMultiplier * stageMultiplier
-#
-# Где:
-# - baseRequiredPower — базовая стоимость уровня
-# - levelMultiplier — множитель конкретного уровня внутри стадии
-# - stageMultiplier — множитель самой стадии
-#
-# Следствие:
-# - levelMultiplier управляет "внутренним" ростом цены в рамках стадии
-# - stageMultiplier управляет "внешним" скачком между стадиями
 
-# Базовая стоимость первого уровня в первой стадии.
-# Это главный параметр темпа ранней игры.
-baseRequiredPower: 25
+# Первые две стоимости первой стадии. Меняйте их, чтобы сдвинуть темп ранней игры.
+initialRequiredPower: [100, 200]
 
-# Бонус шанса прорыва за одну ПОЛНУЮ дополнительную шкалу духовной силы.
-# Первая шкала оплачивает сам прорыв и бонуса не даёт. Каждая шкала сверх неё
-# добавляет указанное число процентных пунктов; неполная шкала учитывается
-# пропорционально. Например, при 10 и запасе 2.5 шкалы бонус будет +15%.
-# Итоговый шанс ограничен maximumBreakthroughChance из GameBalance.yaml.
+# Коэффициент входа в каждую следующую стадию. Он применяется только к L1 и L2
+# новой стадии, а не к recursiveCoefficient этой стадии.
+stageEntryCoefficient: 0.70
+
+# Бонус шанса прорыва за каждую полную дополнительную шкалу духовной силы.
 breakthroughChancePerExtraPowerBar: 10
 
-# Множители стоимости для уровней 1..10 внутри одной стадии.
-# В списке ДОЛЖНО быть ровно 10 значений.
-#
-# Пример:
-# - значение 1.0 используется для перехода с уровня 1 на 2
-# - значение 7.5 используется для перехода с уровня 10 / перед прорывом
-#
-# Если хотите сделать прокачку внутри стадии более "плавной",
-# выравнивайте соседние значения.
-levelMultipliers: [1.0, 1.3, 1.7, 2.2, 2.8, 3.5, 4.3, 5.2, 6.2, 7.5]
-
-# Список стадий культивации в порядке прохождения.
-# Последняя стадия считается финальной.
+# Порядок записей - порядок прохождения стадий. id является стабильным ключом
+# для сохранений; не используйте позицию записи как идентификатор стадии.
 stages:
-  # Технический идентификатор стадии. Должен быть уникальным.
-  # name — локализованное имя для UI.
-  # cultivationBackgroundTexture — фон главного экрана во время культивации.
-  # missionBackgroundTexture — альтернативный фон этой же стадии в режиме миссий.
-  # Оба пути задаются относительно папки Assets. Лучше использовать изображения
-  # одинакового размера и пропорций, чтобы фон не менял масштаб при переключении.
-  # stageMultiplier — общий множитель стоимости уровней в этой стадии.
-  # baseBreakthroughChance — базовый шанс успешного прорыва из этой стадии в следующую.
-
   - id: body_tempering
     name: Закалка тела
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/body-tempering.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/body-tempering.jpg
-    # Первая стадия, базовая точка отсчёта.
-    stageMultiplier: 1.0
-    # Высокий шанс, чтобы игрок быстро освоил систему прорыва.
+    # Коэффициент рекурсии L(n) = k * (L(n-1) + L(n-2)).
+    recursiveCoefficient: 0.70
+    # Множитель духовной силы за тик на этой стадии.
+    spiritualPowerMultiplier: 3
+    missionRankBase: E
     baseBreakthroughChance: 80
-
+    statsPerLevel: { maximumHealth: 5, healthRegeneration: 0.1, attack: 0.5, attacksPerSecond: 0.05, longevityYears: 0.5 }
+    breakthroughBonus: { maximumHealth: 50, healthRegeneration: 0.5, attack: 5, attacksPerSecond: 0.5, longevityYears: 12 }
   - id: qi_gathering
     name: Собирание Ци
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/qi-gathering.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/qi-gathering.jpg
-    # Примерно в 4 раза дороже первой стадии.
-    stageMultiplier: 4.0
+    recursiveCoefficient: 0.67
+    spiritualPowerMultiplier: 6
+    missionRankBase: D
     baseBreakthroughChance: 65
-
-  - id: foundation
-    name: Основание фундамента
-    cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/foundation.jpg
-    missionBackgroundTexture: Textures/Backgrounds/Missions/foundation.jpg
-    stageMultiplier: 16.0
-    baseBreakthroughChance: 52
-
+    statsPerLevel: { maximumHealth: 10, healthRegeneration: 0.25, attack: 1, attacksPerSecond: 0.1, longevityYears: 1 }
+    breakthroughBonus: { maximumHealth: 200, healthRegeneration: 0.75, attack: 10, attacksPerSecond: 0.5, longevityYears: 25 }
   - id: golden_core
     name: Золотое ядро
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/golden-core.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/golden-core.jpg
-    stageMultiplier: 64.0
+    recursiveCoefficient: 0.64
+    spiritualPowerMultiplier: 9
+    missionRankBase: C
     baseBreakthroughChance: 40
-
+    statsPerLevel: { maximumHealth: 25, healthRegeneration: 0.35, attack: 2, attacksPerSecond: 0.15, longevityYears: 1.5 }
+    breakthroughBonus: { maximumHealth: 750, healthRegeneration: 2, attack: 20, attacksPerSecond: 0.75, longevityYears: 40 }
   - id: nascent_soul
     name: Зарождающаяся душа
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/nascent-soul.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/nascent-soul.jpg
-    stageMultiplier: 256.0
+    recursiveCoefficient: 0.61
+    spiritualPowerMultiplier: 13
+    missionRankBase: B
     baseBreakthroughChance: 30
-
+    statsPerLevel: { maximumHealth: 50, healthRegeneration: 0.75, attack: 3, attacksPerSecond: 0.2, longevityYears: 2 }
+    breakthroughBonus: { maximumHealth: 1500, healthRegeneration: 5, attack: 40, attacksPerSecond: 1.25, longevityYears: 80 }
   - id: soul_formation
     name: Формирование души
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/soul-formation.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/soul-formation.jpg
-    stageMultiplier: 1024.0
+    recursiveCoefficient: 0.58
+    spiritualPowerMultiplier: 18
+    missionRankBase: A
     baseBreakthroughChance: 22
-
+    statsPerLevel: { maximumHealth: 150, healthRegeneration: 2, attack: 4, attacksPerSecond: 0.25, longevityYears: 3 }
+    breakthroughBonus: { maximumHealth: 2500, healthRegeneration: 10, attack: 80, attacksPerSecond: 2, longevityYears: 125 }
   - id: void_refinement
     name: Очищение пустоты
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/void-refinement.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/void-refinement.jpg
-    stageMultiplier: 4096.0
+    recursiveCoefficient: 0.55
+    spiritualPowerMultiplier: 40
+    missionRankBase: S
     baseBreakthroughChance: 15
-
+    statsPerLevel: { maximumHealth: 250, healthRegeneration: 4, attack: 5, attacksPerSecond: 0.3, longevityYears: 5 }
+    breakthroughBonus: { maximumHealth: 5000, healthRegeneration: 20, attack: 150, attacksPerSecond: 3, longevityYears: 300 }
   - id: immortal_ascension
     name: Вознесение бессмертного
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/immortal-ascension.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/immortal-ascension.jpg
-    # Финальная стадия.
-    # Для неё шанс 100 не означает лёгкий проход, потому что дальше уже нет стадии выше.
-    stageMultiplier: 16384.0
+    recursiveCoefficient: 0.52
+    spiritualPowerMultiplier: 50
+    missionRankBase: SS
     baseBreakthroughChance: 100
+    statsPerLevel: { maximumHealth: 500, healthRegeneration: 8, attack: 10, attacksPerSecond: 0.5, longevityYears: 7.5 }

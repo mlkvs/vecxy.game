@@ -1,4 +1,5 @@
 using HardCore.Cultivation.Game.Domain;
+using HardCore.Cultivation.Game.Application;
 using Vecxy.Assets;
 
 namespace HardCore.Cultivation.Game.Infrastructure;
@@ -19,13 +20,31 @@ public sealed class GameBalanceConfig : IYamlConfig
     public decimal MaximumAgeYears { get; init; } = 80m;
     public int MaximumMissionQueueSize { get; init; } = 6;
     public List<QualityBand> QualityBands { get; init; } = [];
+    public List<ContaminationBand> ContaminationBands { get; init; } = [];
+    public decimal ContaminationAbsorptionPerPill { get; init; } = 1m;
+    public List<ContaminationLevelConfig> ContaminationLevels { get; init; } = [];
     public List<PriceCurvePoint> QualityPriceCurve { get; init; } = [];
+    public Dictionary<ItemCategory, PriceCurvePoint> LowQualityPriceMultipliers { get; init; } = [];
 }
 
 public sealed class QualityBand
 {
     public int Index { get; init; }
     public decimal Weight { get; init; }
+}
+
+public sealed class ContaminationBand
+{
+    public decimal Minimum { get; init; }
+    public decimal Maximum { get; init; }
+    public decimal Weight { get; init; }
+}
+
+public sealed class ContaminationLevelConfig
+{
+    public decimal MinimumContamination { get; init; }
+    public string Name { get; init; } = string.Empty;
+    public List<ItemEffectDefinition> Effects { get; init; } = [];
 }
 
 public sealed class PriceCurvePoint
@@ -61,6 +80,7 @@ public sealed class ItemConfig
     public string Icon { get; init; } = string.Empty;
     public ItemCategory Category { get; init; }
     public ItemDurationType DurationType { get; init; }
+    public Element? Element { get; init; }
     public long BasePrice { get; init; }
     public int TemporaryDurationTicks { get; init; }
     public decimal ShopWeight { get; init; } = 1m;
@@ -72,6 +92,7 @@ public sealed class AlchemyConfig : IYamlConfig
 {
     public bool Enabled { get; init; }
     public string CraftedPillItemId { get; init; } = "crafted_alchemy_pill";
+    public string PurityPillItemId { get; init; } = "purity_pill";
     public string ExtractItemId { get; init; } = "alchemy_extract";
     public int MinimumIngredients { get; init; } = 2;
     public int MaximumIngredients { get; init; } = 5;
@@ -85,7 +106,20 @@ public sealed class AlchemyConfig : IYamlConfig
     public decimal DistillationQualityPerLevel { get; init; } = 0.18m;
     public decimal DistillationPotencyPerLevel { get; init; } = 0.12m;
     public decimal IngredientCharacteristicCoefficient { get; init; } = 8m;
+    public string PurificationPropertyId { get; init; } = "purification";
+    public decimal PurificationMixedRecipeChance { get; init; } = 0.5m;
+    public decimal PurificationMinimumPercent { get; init; } = 25m;
+    public decimal PurificationMaximumPercent { get; init; } = 55m;
+    public decimal ElementCompatibilityCoefficient { get; init; } = 0.15m;
+    public Dictionary<Element, Dictionary<Element, decimal>> ElementCompatibility { get; init; } = [];
+    public List<ContaminationCurvePoint> ContaminationModifierCurve { get; init; } = [];
     public List<AlchemyPropertyConfig> Properties { get; init; } = [];
+}
+
+public sealed class ContaminationCurvePoint
+{
+    public decimal Contamination { get; init; }
+    public decimal Multiplier { get; init; }
 }
 
 public sealed class AlchemyPropertyConfig
@@ -160,8 +194,11 @@ public sealed class CombatConfig : IYamlConfig
 public sealed class CombatDangerConfig
 {
     public int Level { get; init; }
+    public string Name { get; init; } = string.Empty;
     public decimal EncounterChancePercent { get; init; }
-    public decimal MonsterPowerMultiplier { get; init; } = 1m;
+    public StageStatReference StatReference { get; init; }
+    public decimal StatMultiplier { get; init; } = 1m;
+    public string RankSuffix { get; init; } = string.Empty;
 }
 
 public sealed class CombatBackgroundConfig
@@ -210,9 +247,9 @@ public sealed class MissionRewardConfig
 
 public sealed class CultivationConfig : IYamlConfig
 {
-    public decimal BaseRequiredPower { get; init; } = 100m;
+    public List<decimal> InitialRequiredPower { get; init; } = [];
+    public decimal StageEntryCoefficient { get; init; } = 0.7m;
     public decimal BreakthroughChancePerExtraPowerBar { get; init; } = 10m;
-    public List<decimal> LevelMultipliers { get; init; } = [];
     public List<CultivationStageConfig> Stages { get; init; } = [];
 }
 
@@ -222,7 +259,11 @@ public sealed class CultivationStageConfig
     public string Name { get; init; } = string.Empty;
     public string CultivationBackgroundTexture { get; init; } = "Textures/Background.jpg";
     public string MissionBackgroundTexture { get; init; } = "Textures/Background_Missions.jpg";
-    public decimal StageMultiplier { get; init; } = 1m;
+    public decimal RecursiveCoefficient { get; init; }
+    public decimal SpiritualPowerMultiplier { get; init; } = 1m;
+    public string MissionRankBase { get; init; } = string.Empty;
+    public CharacterStats StatsPerLevel { get; init; }
+    public CharacterStats BreakthroughBonus { get; init; }
     public decimal BaseBreakthroughChance { get; init; }
 }
 
@@ -251,6 +292,7 @@ public sealed class GameDatabase
     public CombatConfig Combat { get; private set; } = new();
     public DogConfig Dog { get; private set; } = new();
     public AlchemyConfig Alchemy { get; private set; } = new();
+    public CultivationBalanceSnapshot CultivationBalance { get; private set; } = null!;
     public int MissionBoardSlotCount { get; private set; } = 6;
     public IReadOnlyDictionary<string, ItemConfig> Items => _items;
     public IReadOnlyDictionary<string, MissionConfig> Missions => _missions;
@@ -314,6 +356,7 @@ public sealed class GameDatabase
             AddUnique(_alchemyProperties, property.Id, property, "alchemy property");
 
         Validate();
+        CultivationBalance = new CultivationBalanceSnapshot(Balance, Cultivation);
     }
 
     public ItemConfig GetItem(string id) => _items.TryGetValue(id, out var item)
@@ -352,13 +395,24 @@ public sealed class GameDatabase
             throw new InvalidDataException("Lifetime and mission queue settings are invalid.");
         if (Balance.QualityBands.Count == 0 || Balance.QualityBands.Any(band => band.Index is < 1 or > 5 || band.Weight <= 0m))
             throw new InvalidDataException("Quality bands are invalid.");
+        if (Balance.ContaminationBands.Count == 0 || Balance.ContaminationBands.Any(band =>
+                band.Minimum is < 0m or > 1m || band.Maximum is < 0m or > 1m || band.Maximum < band.Minimum || band.Weight <= 0m) ||
+            Balance.ContaminationAbsorptionPerPill < 0m)
+            throw new InvalidDataException("Contamination generation settings are invalid.");
+        if (Balance.ContaminationLevels.Count != 4 || Balance.ContaminationLevels.Any(level =>
+                level.MinimumContamination is <= 0m or > 1m || string.IsNullOrWhiteSpace(level.Name)) ||
+            Balance.ContaminationLevels.OrderBy(level => level.MinimumContamination)
+                .Select(level => level.MinimumContamination).Distinct().Count() != Balance.ContaminationLevels.Count)
+            throw new InvalidDataException("Contamination requires four uniquely-thresholded levels.");
         if (Balance.QualityPriceCurve.Count < 2)
             throw new InvalidDataException("Quality price curve requires at least two points.");
         if (_rarities.Count != Enum.GetValues<ItemRarity>().Length)
             throw new InvalidDataException("Every item rarity must be configured.");
-        if (Cultivation.BaseRequiredPower <= 0m || Cultivation.BreakthroughChancePerExtraPowerBar < 0m ||
-            Cultivation.LevelMultipliers.Count != 10 || Cultivation.Stages.Count == 0)
-            throw new InvalidDataException("Cultivation requires ten level multipliers and at least one stage.");
+        if (Cultivation.InitialRequiredPower.Count != 2 || Cultivation.InitialRequiredPower.Any(value => value <= 0m) ||
+            Cultivation.StageEntryCoefficient <= 0m || Cultivation.BreakthroughChancePerExtraPowerBar < 0m ||
+            Cultivation.Stages.Count == 0 || Cultivation.Stages.Select(stage => stage.Id).Distinct(StringComparer.Ordinal).Count() != Cultivation.Stages.Count ||
+            Cultivation.Stages.Any(stage => stage.RecursiveCoefficient <= 0m || stage.SpiritualPowerMultiplier <= 0m || string.IsNullOrWhiteSpace(stage.MissionRankBase)))
+            throw new InvalidDataException("Cultivation coefficients and initial costs are invalid.");
         if (Cultivation.Stages.Any(stage =>
                 string.IsNullOrWhiteSpace(stage.CultivationBackgroundTexture) ||
                 string.IsNullOrWhiteSpace(stage.MissionBackgroundTexture)))
@@ -391,13 +445,24 @@ public sealed class GameDatabase
             Alchemy.PillDurationTicks <= 0 || Alchemy.CoreQualityWeight is < 0m or > 1m || Alchemy.MaximumQuality <= 0m ||
             Alchemy.DistillationQualityPerIngredient < 0m || Alchemy.DistillationQualityPerLevel < 0m ||
             Alchemy.DistillationPotencyPerLevel < 0m || Alchemy.IngredientCharacteristicCoefficient < 0m ||
+            Alchemy.PurificationMixedRecipeChance is < 0m or > 1m || Alchemy.PurificationMinimumPercent is < 0m or > 100m ||
+            Alchemy.PurificationMaximumPercent < Alchemy.PurificationMinimumPercent || Alchemy.PurificationMaximumPercent > 100m ||
             _alchemyProperties.Count == 0))
             throw new InvalidDataException("Alchemy settings are invalid.");
         if (Alchemy.Enabled)
         {
             _ = GetItem(Alchemy.CraftedPillItemId);
+            _ = GetItem(Alchemy.PurityPillItemId);
             _ = GetItem(Alchemy.ExtractItemId);
+            _ = GetAlchemyProperty(Alchemy.PurificationPropertyId);
         }
+        if (Balance.QualityPriceCurve.OrderBy(point => point.Quality).Select(point => point.Quality).Distinct().Count() != Balance.QualityPriceCurve.Count ||
+            Balance.QualityPriceCurve.Any(point => point.Multiplier <= 0m))
+            throw new InvalidDataException("Quality price curve must have unique points with positive multipliers.");
+        if (Alchemy.Enabled && (Alchemy.ContaminationModifierCurve.Count < 2 ||
+            Alchemy.ContaminationModifierCurve.Any(point => point.Contamination is < 0m or > 1m || point.Multiplier <= 0m) ||
+            Alchemy.ElementCompatibility.Any(row => row.Value.Any(pair => !Alchemy.ElementCompatibility.TryGetValue(pair.Key, out var reverse) || !reverse.TryGetValue(row.Key, out var value) || value != pair.Value))))
+            throw new InvalidDataException("Alchemy compatibility matrix or contamination curve is invalid.");
 
         foreach (var item in _items.Values)
         {
@@ -436,8 +501,7 @@ public sealed class GameDatabase
         }
 
         foreach (var monster in _monsters.Values)
-            if (monster.MaximumHealth <= 0m || monster.Attack <= 0m || monster.Defense < 0m ||
-                monster.AttacksPerSecond <= 0f || monster.SelectionWeight <= 0m || string.IsNullOrWhiteSpace(monster.SpriteSet))
+            if (monster.Defense < 0m || monster.SelectionWeight <= 0m || string.IsNullOrWhiteSpace(monster.SpriteSet))
                 throw new InvalidDataException($"Invalid monster balance: {monster.Id}");
     }
 

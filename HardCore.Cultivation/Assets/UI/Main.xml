@@ -87,7 +87,11 @@
                     <panel class="progress-track hero-health-track">
                         <progress id="hero-health-progress" class="progress-fill health-fill" />
                         <panel id="hero-recovery-threshold" class="hero-recovery-threshold" hidden="true" />
-                        <text id="hero-health-text" class="cultivation-progress-text">120 / 120</text>
+                        <text id="hero-health-text" class="cultivation-progress-text">100%</text>
+                    </panel>
+                    <panel class="progress-track hero-contamination-track">
+                        <progress id="hero-contamination-progress" class="progress-fill contamination-fill" />
+                        <text id="hero-contamination-text" class="cultivation-progress-text">0%</text>
                     </panel>
                 </panel>
                 <button id="breakthrough-button" class="secondary-button">ПРОРЫВ</button>

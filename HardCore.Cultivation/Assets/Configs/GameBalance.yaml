@@ -64,7 +64,7 @@ startingAgeYears: 12.0
 
 # Базовый предел жизни до бонусов от новых стадий.
 # Финальный предел жизни может быть выше за счёт progression-бонусов.
-maximumAgeYears: 90.0
+maximumAgeYears: 63.0
 
 # Максимальное количество миссий в очереди.
 # Если увеличить слишком сильно, игрок будет реже принимать решения.
@@ -94,22 +94,86 @@ qualityBands:
   - index: 5
     weight: 2
 
+# Распределение загрязнения при генерации каждого нового экземпляра предмета.
+# weight задаёт частоту диапазона, minimum/maximum - границы значения 0..1.
+# Чистые предметы всё ещё возможны, но не являются единственным результатом.
+contaminationBands:
+  - minimum: 0.00
+    maximum: 0.00
+    weight: 35
+  - minimum: 0.01
+    maximum: 0.20
+    weight: 40
+  - minimum: 0.20
+    maximum: 0.55
+    weight: 20
+  - minimum: 0.55
+    maximum: 0.90
+    weight: 5
+
+# Какая доля загрязнения пилюли переходит персонажу при употреблении.
+# 1.0 переносит значение пилюли полностью; итог у персонажа всегда ограничен 0..100%.
+contaminationAbsorptionPerPill: 1.0
+
+# Уровень определяется по minimumContamination. Эффекты уровня заменяют эффекты
+# предыдущего, а не суммируются с ними. Используйте только поддерживаемые type:
+# TickEfficiency, SpiritualPowerGain, HealthRegeneration, MissionProgress,
+# BreakthroughChance, Attack, AttackSpeed, MaximumHealth, LongevityYears и AgingSpeed.
+contaminationLevels:
+  - minimumContamination: 0.01
+    name: Легкое загрязнение
+    effects:
+      - { type: TickEfficiency, operation: AdditivePercent, value: -5 }
+      - { type: HealthRegeneration, operation: AdditivePercent, value: -10 }
+      # Стартовый штраф к пределу жизни. Старение и долголетие - разные параметры.
+      - { type: LongevityYears, operation: Flat, value: -0.5 }
+  - minimumContamination: 0.25
+    name: Умеренное загрязнение
+    effects:
+      - { type: TickEfficiency, operation: AdditivePercent, value: -12 }
+      - { type: HealthRegeneration, operation: AdditivePercent, value: -25 }
+      - { type: MissionProgress, operation: AdditivePercent, value: -10 }
+      - { type: LongevityYears, operation: Flat, value: -0.5 }
+  - minimumContamination: 0.50
+    name: Тяжелое загрязнение
+    effects:
+      - { type: TickEfficiency, operation: AdditivePercent, value: -25 }
+      - { type: SpiritualPowerGain, operation: AdditivePercent, value: -20 }
+      - { type: HealthRegeneration, operation: AdditivePercent, value: -45 }
+      - { type: BreakthroughChance, operation: Flat, value: -5 }
+      - { type: Attack, operation: AdditivePercent, value: -10 }
+      - { type: LongevityYears, operation: Flat, value: -0.5 }
+  - minimumContamination: 0.75
+    name: Критическое загрязнение
+    effects:
+      - { type: TickEfficiency, operation: AdditivePercent, value: -40 }
+      - { type: SpiritualPowerGain, operation: AdditivePercent, value: -35 }
+      - { type: HealthRegeneration, operation: AdditivePercent, value: -70 }
+      - { type: MissionProgress, operation: AdditivePercent, value: -30 }
+      - { type: BreakthroughChance, operation: Flat, value: -12 }
+      - { type: Attack, operation: AdditivePercent, value: -25 }
+      - { type: AttackSpeed, operation: AdditivePercent, value: -20 }
+      - { type: LongevityYears, operation: Flat, value: -0.5 }
+
 # Кривая стоимости предмета от его качества.
 # quality = входное качество предмета.
 # multiplier = множитель к базовой цене предмета.
 #
-# Между точками идёт линейная интерполяция.
-# Это значит:
-# - качество 0.1 будет стоить 25% базовой цены
-# - качество 2.5 будет стоить 100% базовой цены
-# - качество 5.0 будет стоить 300% базовой цены
-#
-# Если хотите сильнее награждать хорошие роллы качества —
-# увеличивайте multiplier у верхних точек.
+# Обычная кривая цены для качества 1..5. Между точками используется линейная интерполяция.
 qualityPriceCurve:
-  - quality: 0.1
-    multiplier: 0.25
-  - quality: 2.5
-    multiplier: 3.0
+  - quality: 1.0
+    multiplier: 1.0
+  - quality: 2.0
+    multiplier: 1.25
+  - quality: 3.0
+    multiplier: 1.75
+  - quality: 4.0
+    multiplier: 2.50
   - quality: 5.0
-    multiplier: 5.0
+    multiplier: 3.50
+
+# Особая цена качества 0.1 по категориям. Для значений 0.1..1.0 код интерполирует
+# к первой точке qualityPriceCurve. Core намеренно не указан: его обычное качество 1..5.
+lowQualityPriceMultipliers:
+  Ingredient: { quality: 0.1, multiplier: 0.20 }
+  Pill: { quality: 0.1, multiplier: 0.50 }

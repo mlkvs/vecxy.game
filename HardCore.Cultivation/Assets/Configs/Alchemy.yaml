@@ -11,6 +11,7 @@ enabled: true
 
 # Технические предметы-результаты должны существовать в Items.yaml.
 craftedPillItemId: crafted_alchemy_pill
+purityPillItemId: purity_pill
 extractItemId: alchemy_extract
 
 # Общий размер смеси.
@@ -62,9 +63,44 @@ distillationPotencyPerLevel: 0.12
 # поэтому свойство, найденное только у трёх из пяти ингредиентов, остаётся слабее.
 ingredientCharacteristicCoefficient: 8.0
 
+# Рецепт очищения: если все внешние ингредиенты имеют purification, пилюля
+# чистоты создаётся гарантированно. В смешанном рецепте применяется шанс ниже.
+purificationPropertyId: purification
+purificationMixedRecipeChance: 0.35
+# Диапазон процента, который создаваемая пилюля снимает ДО передачи своего загрязнения.
+purificationMinimumPercent: 25
+purificationMaximumPercent: 55
+
+# Совместимость применяется только к внешним ингредиентам, не к ядру.
+elementCompatibilityCoefficient: 0.15
+elementCompatibility:
+  Fire: { Fire: 0.5, Water: -1, Earth: 0, Air: 1, Void: 0 }
+  Water: { Fire: -1, Water: 0.5, Earth: 1, Air: 0, Void: 0 }
+  Earth: { Fire: 0, Water: 1, Earth: 0.5, Air: -1, Void: 0 }
+  Air: { Fire: 1, Water: 0, Earth: -1, Air: 0.5, Void: 0 }
+  Void: { Fire: 0, Water: 0, Earth: 0, Air: 0, Void: 0.5 }
+
+# Загрязнение - свойство экземпляра предмета: 0 чистый, 1 загрязнённый.
+# Эта кривая одновременно влияет на силу создаваемых пилюль и intrinsic price
+# предметов до магазинной наценки. Резкий переход 0 -> 0.01 задан балансом
+# намеренно, не сглаживайте его.
+contaminationModifierCurve:
+  - { contamination: 0.0, multiplier: 1.25 }
+  - { contamination: 0.01, multiplier: 0.99 }
+  - { contamination: 0.50, multiplier: 0.50 }
+  - { contamination: 0.75, multiplier: 0.25 }
+  - { contamination: 1.00, multiplier: 0.10 }
+
 # Каталог алхимических свойств. baseValue — сила при 100% совпадении и potency=1
 # ДО множителя из формулы количества ингредиентов и качества выше.
 properties:
+  - id: purification
+    displayName: Очищение
+    pillName: Пилюля чистоты
+    effectType: PurifyContamination
+    operation: Flat
+    baseValue: 0
+
   - id: spirit_flow
     displayName: Поток ци
     pillName: Пилюля духовного потока

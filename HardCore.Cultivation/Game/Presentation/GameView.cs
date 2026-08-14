@@ -86,6 +86,8 @@ internal sealed class GameView
         HeroHealthProgress = Progress("hero-health-progress");
         HeroRecoveryThreshold = Panel("hero-recovery-threshold");
         HeroHealthText = Text("hero-health-text");
+        HeroContaminationProgress = Progress("hero-contamination-progress");
+        HeroContaminationText = Text("hero-contamination-text");
         Effects = Panel("effects-list");
 
         ShopButton = Button("shop-button");
@@ -99,6 +101,7 @@ internal sealed class GameView
         AlchemyPillTab = Button(windowDocuments.Alchemy, "alchemy-pill-tab");
         AlchemyDistillTab = Button(windowDocuments.Alchemy, "alchemy-distill-tab");
         AlchemySelection = Panel(windowDocuments.Alchemy, "alchemy-selection");
+        AlchemyPreviewContamination = Text(windowDocuments.Alchemy, "alchemy-preview-contamination");
         AlchemyRarityFilter = Button(windowDocuments.Alchemy, "alchemy-rarity-filter");
         AlchemyQualityFilter = Button(windowDocuments.Alchemy, "alchemy-quality-filter");
         AlchemyTypeFilter = Button(windowDocuments.Alchemy, "alchemy-type-filter");
@@ -174,6 +177,7 @@ internal sealed class GameView
 
         EffectPopup = Register(windowDocuments.EffectPopup, "effect-popup");
         EffectPopupCard = Panel(windowDocuments.EffectPopup, "effect-popup-card");
+        EffectPopupTitle = Text(windowDocuments.EffectPopup, "effect-popup-title");
         EffectPopupEffect = Text(windowDocuments.EffectPopup, "effect-popup-effect");
         EffectPopupClose = Button(windowDocuments.EffectPopup, "effect-popup-close");
 
@@ -239,6 +243,8 @@ internal sealed class GameView
     public UiProgress HeroHealthProgress { get; }
     public UiPanel HeroRecoveryThreshold { get; }
     public UiText HeroHealthText { get; }
+    public UiProgress HeroContaminationProgress { get; }
+    public UiText HeroContaminationText { get; }
     public UiPanel Effects { get; }
     public UiButton ShopButton { get; }
     public UiButton AlchemyButton { get; }
@@ -249,6 +255,7 @@ internal sealed class GameView
     public UiButton AlchemyPillTab { get; }
     public UiButton AlchemyDistillTab { get; }
     public UiPanel AlchemySelection { get; }
+    public UiText AlchemyPreviewContamination { get; }
     public UiButton AlchemyRarityFilter { get; }
     public UiButton AlchemyQualityFilter { get; }
     public UiButton AlchemyTypeFilter { get; }
@@ -318,6 +325,7 @@ internal sealed class GameView
     public UiButton InfoPopupOk { get; }
     public UiPanel EffectPopup { get; }
     public UiPanel EffectPopupCard { get; }
+    public UiText EffectPopupTitle { get; }
     public UiText EffectPopupEffect { get; }
     public UiButton EffectPopupClose { get; }
     public IReadOnlyList<UiPanel> Windows { get; }

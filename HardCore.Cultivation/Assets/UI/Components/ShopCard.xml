@@ -3,6 +3,7 @@
         <panel class="shop-card-icon-stack">
             <panel class="item-icon-well"><image class="item-icon" /></panel>
             <panel class="item-quality shop-item-quality item-icon-quality" />
+            <text class="contamination-badge" hidden="true">0%</text>
         </panel>
         <panel class="shop-card-heading">
             <text class="item-name">{{name}}</text>

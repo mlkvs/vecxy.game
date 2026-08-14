@@ -8,7 +8,7 @@ namespace HardCore.Cultivation.Game.Infrastructure;
 
 public sealed class GameSaveSystem(GameDatabase database)
 {
-    public const int CurrentVersion = 11;
+    public const int CurrentVersion = 15;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -33,11 +33,13 @@ public sealed class GameSaveSystem(GameDatabase database)
                 Money = state.Character.Money,
                 TotalYears = state.Character.Age.TotalYears,
                 StageIndex = state.Character.Cultivation.StageIndex,
+                StageId = database.Cultivation.Stages[state.Character.Cultivation.StageIndex].Id,
                 Level = state.Character.Cultivation.Level,
                 Health = state.Character.Health,
                 MaximumHealth = state.Character.MaximumHealth,
                 MaximumHealthOffset = state.Character.MaximumHealthOffset,
-                MaximumAgeOffsetYears = state.Character.MaximumAgeOffsetYears
+                MaximumAgeOffsetYears = state.Character.MaximumAgeOffsetYears,
+                Contamination = state.Character.Contamination
             },
             Inventory = state.Inventory.Items.Select(ToItemData).ToList(),
             MissionQueue = state.MissionQueue.Select(mission => new MissionSaveData
@@ -122,8 +124,14 @@ public sealed class GameSaveSystem(GameDatabase database)
                 data.Character.SpiritualPower,
                 data.Character.Money,
                 data.Character.TotalYears);
+            state.Character.RestoreContamination(data.Character.Contamination);
+            var stageIndex = string.IsNullOrWhiteSpace(data.Character.StageId)
+                ? Math.Clamp(data.Character.StageIndex, 0, database.Cultivation.Stages.Count - 1)
+                : database.Cultivation.Stages.FindIndex(stage => stage.Id == data.Character.StageId);
+            if (stageIndex < 0)
+                throw new InvalidDataException($"Unknown saved cultivation stage: {data.Character.StageId}");
             state.Character.Cultivation.Restore(
-                data.Character.StageIndex,
+                stageIndex,
                 data.Character.Level,
                 database.Cultivation.Stages.Count);
             if (data.Version >= 6 && data.Character.MaximumHealth > 0m)
@@ -234,6 +242,8 @@ public sealed class GameSaveSystem(GameDatabase database)
             ConfigId = data.ConfigId,
             Rarity = data.Rarity,
             Quality = data.Quality,
+            Contamination = data.Contamination,
+            PurificationPercent = data.PurificationPercent,
             CustomName = data.CustomName,
             CustomDescription = data.CustomDescription,
             AlchemyOriginId = data.AlchemyOriginId,
@@ -252,6 +262,8 @@ public sealed class GameSaveSystem(GameDatabase database)
         ConfigId = item.ConfigId,
         Rarity = item.Rarity,
         Quality = item.Quality,
+        Contamination = item.Contamination,
+        PurificationPercent = item.PurificationPercent,
         Quantity = item.Quantity,
         CustomName = item.CustomName,
         CustomDescription = item.CustomDescription,
@@ -281,7 +293,8 @@ public sealed class GameSaveSystem(GameDatabase database)
         ItemRolls = reward.ItemRolls.Select(item => new MissionItemRewardRoll
         {
             Rarity = item.Rarity,
-            Quality = item.Quality
+            Quality = item.Quality,
+            Contamination = item.Contamination
         }).ToList()
     };
 
@@ -296,7 +309,8 @@ public sealed class GameSaveSystem(GameDatabase database)
         ItemRolls = reward.ItemRolls.Select(item => new MissionItemRewardRollSaveData
         {
             Rarity = item.Rarity,
-            Quality = item.Quality
+            Quality = item.Quality,
+            Contamination = item.Contamination
         }).ToList()
     };
 
@@ -358,11 +372,13 @@ public sealed class CharacterSaveData
     public long Money { get; init; }
     public decimal TotalYears { get; init; }
     public int StageIndex { get; init; }
+    public string? StageId { get; init; }
     public int Level { get; init; } = 1;
     public decimal Health { get; init; }
     public decimal MaximumHealth { get; init; }
     public decimal MaximumHealthOffset { get; init; }
     public decimal MaximumAgeOffsetYears { get; init; }
+    public decimal Contamination { get; init; }
 }
 
 public sealed class ItemSaveData
@@ -371,6 +387,8 @@ public sealed class ItemSaveData
     public string ConfigId { get; init; } = string.Empty;
     public ItemRarity Rarity { get; init; }
     public decimal Quality { get; init; }
+    public decimal Contamination { get; init; }
+    public decimal PurificationPercent { get; init; }
     public int Quantity { get; init; } = 1;
     public string? CustomName { get; init; }
     public string? CustomDescription { get; init; }
@@ -430,6 +448,7 @@ public sealed class MissionItemRewardRollSaveData
 {
     public ItemRarity Rarity { get; init; }
     public decimal Quality { get; init; }
+    public decimal Contamination { get; init; }
 }
 
 public sealed class ShopSaveData

@@ -83,7 +83,7 @@ public sealed class GameController(
     private readonly List<FloatingValueWidget> _floatingValues = [];
     private int _floatingValueIndex;
     private readonly List<EffectType> _activeEffectTypes = [];
-    private readonly Dictionary<EffectType, UiRadialProgress> _effectWidgets = [];
+    private readonly Dictionary<EffectType, (UiRadialProgress Panel, UiRadialProgress Icon)> _effectWidgets = [];
     private int _activeEffectsSignature = int.MinValue;
     private UiKeyedCollection<Guid, ShopSlot, ShopCardView>? _shopCards;
     private UiKeyedCollection<Guid, ItemInstance, InventoryIconView>? _inventoryIcons;
@@ -755,7 +755,9 @@ public sealed class GameController(
         var healthFraction = character.MaximumHealth <= 0m ? 0m : character.Health / character.MaximumHealth;
         _view.HeroHealthProgress.Progress = (float)Math.Clamp(healthFraction, 0m, 1m);
         _view.HeroRecoveryThreshold.IsVisible = false;
-        _view.HeroHealthText.Value = $"{Format(character.Health)} / {Format(character.MaximumHealth)}";
+        _view.HeroHealthText.Value = $"{healthFraction * 100m:0.#}%";
+        _view.HeroContaminationProgress.Progress = (float)Math.Clamp(character.Contamination, 0m, 1m);
+        _view.HeroContaminationText.Value = FormatContamination(character.Contamination);
         _view.Breakthrough.IsEnabled = progress.CanAttemptBreakthrough &&
                                       progress.StageIndex < database.Cultivation.Stages.Count - 1 &&
                                       character.SpiritualPower >= required;
@@ -879,13 +881,13 @@ public sealed class GameController(
         if (combatScene.RenderTarget is not null)
             _view.MissionCombatPreview.Texture = combatScene.RenderTarget.ColorTexture;
         var monster = database.GetMonster(active.MonsterConfigId);
-        var danger = database.GetDanger(active.DangerLevel);
+        var enemyStats = combat.GetEnemyStats(_state.Character, active.DangerLevel);
         _view.CombatHeroAttackStat.Value = Format(combat.GetHeroAttack(_state.Character));
         _view.CombatHeroDefenseStat.Value = Format(combat.GetHeroDefense(_state.Character));
-        _view.CombatHeroSpeedStat.Value = Format((decimal)database.Combat.HeroAttacksPerSecond);
-        _view.CombatEnemyAttackStat.Value = Format(monster.Attack * danger.MonsterPowerMultiplier);
-        _view.CombatEnemyDefenseStat.Value = Format(monster.Defense * danger.MonsterPowerMultiplier);
-        _view.CombatEnemySpeedStat.Value = Format((decimal)monster.AttacksPerSecond);
+        _view.CombatHeroSpeedStat.Value = Format(combat.GetHeroAttacksPerSecond(_state.Character));
+        _view.CombatEnemyAttackStat.Value = Format(enemyStats.Attack);
+        _view.CombatEnemyDefenseStat.Value = Format(monster.Defense);
+        _view.CombatEnemySpeedStat.Value = Format(enemyStats.AttacksPerSecond);
         _view.EnemyHealthProgress.Progress = (float)(active.EnemyMaximumHealth <= 0m
             ? 0m
             : Math.Clamp(active.EnemyHealth / active.EnemyMaximumHealth, 0m, 1m));
@@ -907,7 +909,21 @@ public sealed class GameController(
             if (!_activeEffectTypes.Contains(effect.Type))
                 _activeEffectTypes.Add(effect.Type);
         }
-        _activeEffectTypes.Sort();
+        var contaminationLevel = ContaminationCalculator.GetLevel(_state.Character.Contamination, database.Balance);
+        if (contaminationLevel is not null)
+        {
+            _activeEffectTypes.Add(EffectType.Contamination);
+            signature.Add(EffectType.Contamination);
+            signature.Add(contaminationLevel.MinimumContamination);
+        }
+        _activeEffectTypes.Sort((left, right) =>
+        {
+            var leftIsPermanent = IsPermanentEffectType(left);
+            var rightIsPermanent = IsPermanentEffectType(right);
+            if (leftIsPermanent != rightIsPermanent)
+                return leftIsPermanent ? -1 : 1;
+            return left.CompareTo(right);
+        });
         var currentSignature = signature.ToHashCode();
         _view!.Effects.IsVisible = _activeEffectTypes.Count > 0;
         if (currentSignature != _activeEffectsSignature)
@@ -919,25 +935,39 @@ public sealed class GameController(
                 return;
             foreach (var type in _activeEffectTypes)
             {
-                if (!TryGetFirstActiveEffect(type, out var firstEffect))
-                    continue;
-                var source = database.GetItem(firstEffect.SourceItemId);
-                var orb = _document!.CreateButton(attributes: new Dictionary<string, string> { ["class"] = "effect-orb" });
-                var effectDial = (UiRadialProgress)_document.CreateElement("radial-progress", new Dictionary<string, string>
+                var effectEntry = (UiRadialProgress)_document!.CreateElement("radial-progress", new Dictionary<string, string>
                 {
-                    ["class"] = "effect-ring",
+                    ["class"] = "status-effect-entry",
+                    ["sprite"] = "Assets/Textures/GameUIAtlas.atlas#panel-slice",
                     ["clockwise-depletion"] = "true",
-                    ["sprite"] = $"Assets/Textures/GameUIAtlas.atlas#effect-{Path.GetFileNameWithoutExtension(source.Icon)}"
+                    ["radial-rect"] = "true"
                 });
-                orb.Add(effectDial);
-                orb.Clicked += _ => ShowEffectPopup(type);
-                _view.Effects.Add(orb);
-                _effectWidgets[type] = effectDial;
+                var effectIcon = (UiRadialProgress)_document.CreateElement("radial-progress", new Dictionary<string, string>
+                {
+                    ["class"] = "status-effect-icon",
+                    ["clockwise-depletion"] = "true"
+                });
+                if (type == EffectType.Contamination)
+                {
+                    effectIcon.SetAttribute("sprite", "Assets/Textures/GameUIAtlas.atlas#contamination-effect");
+                }
+                else if (TryGetFirstActiveEffect(type, out var firstEffect))
+                    effectIcon.SetAttribute("sprite", $"Assets/Textures/GameUIAtlas.atlas#effect-{Path.GetFileNameWithoutExtension(database.GetItem(firstEffect.SourceItemId).Icon)}");
+                else
+                    continue;
+                effectEntry.Add(effectIcon);
+                effectEntry.Clicked += _ => ShowEffectPopup(type);
+                _view.Effects.Add(effectEntry);
+                _effectWidgets[type] = (effectEntry, effectIcon);
             }
         }
         foreach (var type in _activeEffectTypes)
-            if (_effectWidgets.TryGetValue(type, out var effectDial))
-                effectDial.Progress = CalculateEffectTimer(type);
+            if (_effectWidgets.TryGetValue(type, out var effectWidgets))
+            {
+                var progress = CalculateEffectTimer(type);
+                effectWidgets.Panel.Progress = progress;
+                effectWidgets.Icon.Progress = progress;
+            }
     }
 
     private bool TryGetFirstActiveEffect(EffectType type, out ActiveEffect active)
@@ -953,6 +983,13 @@ public sealed class GameController(
         active = null!;
         return false;
     }
+
+    private bool IsPermanentEffectType(EffectType type) =>
+        type == EffectType.Contamination ||
+        _state.ActiveEffects.Any(effect =>
+            effect.Type == type &&
+            !effect.IsExpired &&
+            effect.IsPermanent);
 
     private void SyncShop()
     {
@@ -1037,6 +1074,7 @@ public sealed class GameController(
         card.Icon.Sprite = AtlasSprite(config.Icon);
         card.Name.Value = config.Name;
         card.QualityStars.SetQuality(slot.Item.Quality);
+        SetContaminationBadge(card.Contamination, slot.Item.Contamination);
         card.Effect.Value = DescribeItemEffect(config, slot.Item);
         card.Buy.Label = unitPrice.ToString(CultureInfo.InvariantCulture);
         card.IconWell.Style.BorderColor = rarity.Color;
@@ -1126,6 +1164,7 @@ public sealed class GameController(
         icon.Card.SetAttribute("data-item-id", item.InstanceId.ToString());
         icon.Icon.Sprite = AtlasSprite(config.Icon);
         icon.QualityStars.SetQuality(item.Quality);
+        SetContaminationBadge(icon.Contamination, item.Contamination);
         icon.Quantity.Value = $"×{item.Quantity}";
         icon.IconWell.Style.BorderColor = database.GetRarity(item.Rarity).Color;
         icon.Card.ToggleClass("selected", item.InstanceId == _selectedInventoryItem);
@@ -1147,6 +1186,7 @@ public sealed class GameController(
         _view.InventoryDetailRarity.Value = rarity.DisplayName.ToUpperInvariant();
         _view.InventoryDetailRarity.Style.Color = rarity.Color;
         _view.InventoryDetailEffect.Value = DescribeItemEffect(config, item);
+        _view.InventoryDetailEffect.Value += ContaminationDescription(item.Contamination);
         _view.InventoryUse.IsEnabled = config.Effects.Count > 0 || item.CraftedEffects.Count > 0;
         _view.InventorySell.Label = $"ПРОДАТЬ\n+{prices.GetSellPrice(item, _state.Shop)}";
         _view.InventoryDetails.IsVisible = true;
@@ -1303,6 +1343,9 @@ public sealed class GameController(
         var preview = alchemy.Preview(_state, CurrentAlchemySelection(), _alchemyMode);
         _view.AlchemyCraft.IsEnabled = preview.CanCraft;
         _view.AlchemyCraft.Label = _alchemyMode == AlchemyMode.Pill ? "СОЗДАТЬ ПИЛЮЛЮ" : "РАФИНИРОВАТЬ";
+        _view.AlchemyPreviewContamination.Value = preview.Output is null
+            ? "Загрязнение результата: —"
+            : $"Загрязнение результата: {FormatContamination(preview.Output.Contamination)}";
     }
 
     private void BuildAlchemySelection()
@@ -1479,6 +1522,7 @@ public sealed class GameController(
         icon.Card.SetAttribute("data-item-id", item.InstanceId.ToString());
         icon.Icon.Sprite = AtlasSprite(config.Icon);
         icon.QualityStars.SetQuality(item.Quality);
+        SetContaminationBadge(icon.Contamination, item.Contamination);
         icon.Quantity.Value = $"×{item.Quantity}";
         icon.IconWell.Style.BorderColor = database.GetRarity(item.Rarity).Color;
         icon.Card.ToggleClass("selected", selected);
@@ -1899,6 +1943,18 @@ public sealed class GameController(
     {
         if (_openEffectType is not { } type)
             return;
+        _view!.EffectPopupTitle.Value = type == EffectType.Contamination
+            ? $"Загрязнение Ур. {GetContaminationLevelNumber()}"
+            : EffectName(type);
+        if (type == EffectType.Contamination)
+        {
+            var level = ContaminationCalculator.GetLevel(_state.Character.Contamination, database.Balance);
+            _view.EffectPopupEffect.Value = level is null
+                ? "Загрязнение отсутствует."
+                : $"Загрязнение Ур. {GetContaminationLevelNumber()} · {level.Name}\n" +
+                  string.Join("; ", level.Effects.Select(effect => DescribeEffect(effect, 1m, false)));
+            return;
+        }
         var hasActive = false;
         var hasUntilBreakthrough = false;
         var hasTemporary = false;
@@ -1941,27 +1997,26 @@ public sealed class GameController(
 
     private float CalculateEffectTimer(EffectType type)
     {
-        var hasActive = false;
+        if (type == EffectType.Contamination)
+            return 1f;
+
         var hasTemporary = false;
-        var minimum = 1f;
+        var remainingFraction = 1f;
         foreach (var effect in _state.ActiveEffects)
         {
             if (effect.Type != type || effect.IsExpired)
                 continue;
-            hasActive = true;
-            if (effect.IsUntilBreakthroughAttempt)
+            if (effect.IsUntilBreakthroughAttempt || effect.IsPermanent)
                 return 1f;
-            if (effect.IsPermanent)
-                continue;
+
             hasTemporary = true;
-            var total = Math.Max(1, database.GetItem(effect.SourceItemId).TemporaryDurationTicks);
-            minimum = Math.Min(
-                minimum,
-                (float)Math.Clamp((effect.RemainingTicks ?? 0) / (decimal)total, 0m, 1m));
+            var duration = Math.Max(1, database.GetItem(effect.SourceItemId).TemporaryDurationTicks);
+            remainingFraction = Math.Min(
+                remainingFraction,
+                (float)Math.Clamp((effect.RemainingTicks ?? 0) / (decimal)duration, 0m, 1m));
         }
-        if (!hasActive || !hasTemporary)
-            return 1f;
-        return minimum;
+
+        return hasTemporary ? remainingFraction : 1f;
     }
 
     private void OpenWindow(UiPanel window)
@@ -2292,14 +2347,15 @@ public sealed class GameController(
         var view = _view!;
         view.InfoPopupKind.Value = ItemCategoryName(config.Category);
         view.InfoPopupTitle.Value = item is null ? config.Name : ItemDisplayName(config, item);
-        view.InfoPopupDescription.Value = item?.CustomDescription ?? config.Description;
+        view.InfoPopupDescription.Value = (item?.CustomDescription ?? config.Description) +
+                                         (item is null ? string.Empty : ContaminationDescription(item.Contamination));
         view.InfoPopupEffect.Value = item is null
             ? DescribeItemEffect(config, quality)
             : DescribeItemEffect(config, item);
         view.InfoPopupStatLabel1.Value = sellPrice is null ? "КОЛИЧЕСТВО" : "ЦЕНА ПРОДАЖИ";
         view.InfoPopupPriceIcon.IsVisible = sellPrice is not null;
         view.InfoPopupStatValue1.Value = sellPrice is null ? quantity : $"{sellPrice:N0}";
-        view.InfoPopupStatLabel2.Value = "КАЧЕСТВО";
+        view.InfoPopupStatLabel2.Value = "ЗАГРЯЗНЕНИЕ";
         view.InfoPopupStatLabel3.Value = "РЕДКОСТЬ";
         view.InfoPopupStatValue3.Value = rarity?.DisplayName ?? "Определится при получении";
         view.InfoPopupDetails.Value = context;
@@ -2312,7 +2368,8 @@ public sealed class GameController(
         view.InfoPopupSell.Label = sellPrice is null ? "ПРОДАТЬ" : $"ПРОДАТЬ\n+{sellPrice:N0}";
         view.InfoPopupOk.IsVisible = useAction is null && sellAction is null || action is not null;
         view.InfoPopupQuality.IsVisible = true;
-        view.InfoPopupStatValue2.IsVisible = false;
+        view.InfoPopupStatValue2.Value = item is null ? "—" : FormatContamination(item.Contamination);
+        view.InfoPopupStatValue2.IsVisible = true;
         BuildQualityStars(view.InfoPopupQuality, item?.Quality);
         view.InfoPopupIcon.Sprite = AtlasSprite(config.Icon);
         var accent = rarity?.Color ?? "#56d5a0";
@@ -2404,6 +2461,20 @@ public sealed class GameController(
 
     private static string ItemDisplayName(ItemConfig config, ItemInstance item) => item.CustomName ?? config.Name;
 
+    private static string FormatContamination(decimal contamination) =>
+        $"{Math.Clamp(contamination, 0m, 1m) * 100m:0.#}%";
+
+    private static string ContaminationDescription(decimal contamination) =>
+        $"\nЗагрязнение: {FormatContamination(contamination)}";
+
+    private static void SetContaminationBadge(UiText badge, decimal contamination)
+    {
+        var value = Math.Clamp(contamination, 0m, 1m);
+        badge.Value = FormatContamination(value);
+        badge.IsVisible = value > 0m;
+        badge.ToggleClass("high-contamination", value >= 0.5m);
+    }
+
     private string DescribeItemEffect(ItemConfig config, ItemInstance item)
     {
         var definitions = item.CraftedEffects.Count > 0 ? item.CraftedEffects : config.Effects;
@@ -2460,6 +2531,8 @@ public sealed class GameController(
             EffectType.MissionProgress => $"Скорость выполнения миссий {SignedUi(value)}%",
             EffectType.HealthRegeneration when effect.Operation == ModifierOperation.Flat => $"Регенерация здоровья {SignedUi(value)}/с",
             EffectType.HealthRegeneration => $"Регенерация здоровья {SignedUi(value)}%",
+            EffectType.LongevityYears => $"Предел жизни {SignedUi(value)} лет",
+            EffectType.PurifyContamination => $"Очищает от загрязнения на {Format(value)}%",
             _ => $"Эффект {SignedUi(value)}%"
         };
     }
@@ -2495,8 +2568,16 @@ public sealed class GameController(
         EffectType.BreakthroughChance => "Шанс прорыва", EffectType.SpiritualPowerGain => "Духовная сила",
         EffectType.MissionProgress => "Выполнение миссий",
         EffectType.HealthRegeneration => "Регенерация здоровья",
+        EffectType.Contamination => "Загрязнение",
+        EffectType.LongevityYears => "Предел жизни",
+        EffectType.PurifyContamination => "Очищение",
         _ => type.ToString()
     };
+
+    private int GetContaminationLevelNumber() => database.Balance.ContaminationLevels
+        .OrderBy(level => level.MinimumContamination)
+        .ToList()
+        .FindIndex(level => level.MinimumContamination == ContaminationCalculator.GetLevel(_state.Character.Contamination, database.Balance)?.MinimumContamination) + 1;
 
     private void BindClick(UiButton button, Action action) => button.Clicked += _ =>
     {

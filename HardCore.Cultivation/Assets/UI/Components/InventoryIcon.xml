@@ -2,6 +2,7 @@
     <panel class="inventory-icon-well">
         <image class="inventory-icon" />
         <panel class="inventory-quality item-icon-quality" />
+        <text class="contamination-badge" hidden="true">0%</text>
     </panel>
     <text class="inventory-quantity">×{{quantity}}</text>
 </button>

@@ -2,6 +2,14 @@
     padding-bottom: 16px;
 }
 
+.alchemy-preview-contamination {
+    min-height: 20px;
+    margin: 4px 14px 0;
+    color: #d9b179;
+    font-size: 14px;
+    text-align: center;
+}
+
 .alchemy-tabs {
     flex-shrink: 0;
 }

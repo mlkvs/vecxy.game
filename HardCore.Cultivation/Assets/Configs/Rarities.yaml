@@ -29,42 +29,44 @@ rarities:
 
   - rarity: Uncommon
     displayName: Необычная
-    priceMultiplier: 2
+    priceMultiplier: 4
     shopWeight: 25
     color: "#7ed59a"
 
   - rarity: Rare
     displayName: Редкая
-    priceMultiplier: 4
+    priceMultiplier: 16
     shopWeight: 12
     color: "#72b9ee"
 
   - rarity: Epic
     displayName: Эпическая
-    priceMultiplier: 7
+    priceMultiplier: 64
     shopWeight: 7
     color: "#c68bea"
 
   - rarity: Legendary
     displayName: Легендарная
-    priceMultiplier: 12
+    priceMultiplier: 256
     shopWeight: 3
     color: "#f3ad4e"
 
   - rarity: Mythic
     displayName: Мифическая
-    priceMultiplier: 20
+    priceMultiplier: 1024
     shopWeight: 1.5
     color: "#ef5b50"
 
   - rarity: Divine
     displayName: Божественная
-    priceMultiplier: 30
+    priceMultiplier: 4096
     shopWeight: 0.4
     color: "#f5e99c"
 
   - rarity: Transcendent
     displayName: Запредельная
-    priceMultiplier: 50
-    shopWeight: 0.1
+    # Excel не определяет эту редкость. Пока не будет отдельного решения,
+    # она не генерируется и сохраняет multiplier Divine для старых экземпляров.
+    priceMultiplier: 4096
+    shopWeight: 0
     color: "#69f3e1"

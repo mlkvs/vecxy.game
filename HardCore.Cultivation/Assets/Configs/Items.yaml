@@ -31,6 +31,7 @@
 # - MissionProgress     — ускорение миссий
 # - HealthRegeneration  — восстановление здоровья в секунду;
 #   база задаётся через healthRegenerationPerSecond в Combat.yaml
+# - PurifyContamination — мгновенно сбрасывает загрязнение персонажа до 0%
 #
 # operation:
 # - Flat                  — плоское добавление
@@ -173,6 +174,24 @@ items:
       - type: SpiritualPowerGain
         operation: Flat
         value: 160
+
+  # ------------------------------------------------------------
+  # ОЧИЩЕНИЕ ЗАГРЯЗНЕНИЯ
+  # ------------------------------------------------------------
+  - id: purity_pill
+    name: Пилюля чистоты
+    description: Редкая очищающая пилюля, полностью выводящая загрязнение из тела.
+    icon: Assets/Textures/Items/still-age-pill.png
+    category: Pill
+    durationType: Instant
+    # Рецепт создаёт этот предмет; нулевой вес исключает прямую генерацию в лавке и наградах.
+    basePrice: 420
+    shopWeight: 0
+    effects:
+      # Точный процент записывается в экземпляр при создании в алхимии.
+      - type: PurifyContamination
+        operation: Flat
+        value: 1
 
   # ------------------------------------------------------------
   # УСКОРЕНИЕ МИССИЙ
@@ -467,6 +486,21 @@ items:
         potency: 1.00
       - propertyId: clarity
         potency: 0.85
+
+  - id: purity_herb
+    name: Трава чистоты
+    description: Редкий ингредиент, выводящий скверну из алхимической смеси.
+    icon: Assets/Textures/Items/jade-lotus.png
+    category: Ingredient
+    durationType: Instant
+    basePrice: 260
+    # Вес повышен, чтобы ингредиент регулярно появлялся и в лавке, и в наградах миссий.
+    # Пилюля чистоты по-прежнему не генерируется напрямую: её создаёт алхимия.
+    shopWeight: 25
+    alchemyProperties:
+      # Только ингредиенты с этим свойством гарантированно создают пилюлю чистоты.
+      - propertyId: purification
+        potency: 1
 
   # ------------------------------------------------------------
   # ТЕХНИЧЕСКИЕ РЕЗУЛЬТАТЫ АЛХИМИИ
