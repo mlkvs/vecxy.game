@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build signed Android packages: an App Bundle for Google Play and an APK for testers.
-# Secrets are intentionally read only from environment variables, never CLI arguments.
+# Build settings and credentials are read from Build.yaml and Analytics.yaml by default.
 set -Eeuo pipefail
 
 readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -9,30 +9,41 @@ readonly PROJECT="$ROOT_DIR/HardCore.Cultivation/HardCore.Cultivation.csproj"
 usage() {
     cat <<'EOF'
 Usage:
-  ./scripts/build-android.sh <dev|release> --build <number> [options]
+  ./scripts/build-android.sh <dev|release> [options]
 
 Options:
-  -b, --build NUMBER       Google Play version code (required, positive integer).
-  -v, --version VERSION    Display version. Default: version in the game project.
-  -k, --keystore PATH      Keystore for a signed bundle. Required for release.
-  -a, --alias NAME         Keystore alias. Required for release.
+  -c, --config PATH        Build YAML. Default: Build.yaml.
+      --analytics-config PATH Analytics YAML. Default: Analytics.yaml.
+  -b, --build NUMBER       Override Google Play version code from Build.yaml.
+  -v, --version VERSION    Override bundle version from Build.yaml.
+  -k, --keystore PATH      Override keystore path from Build.yaml.
+  -a, --alias NAME         Override keystore alias from Build.yaml.
   -o, --output PATH        Output directory. Default: artifacts/android/<mode>.
   -h, --help               Show this help.
 
-Environment for signed builds:
-  ANDROID_KEYSTORE_PASSWORD  Keystore password (required for release).
-  ANDROID_KEY_PASSWORD       Key password. Defaults to ANDROID_KEYSTORE_PASSWORD.
-  APPMETRICA_API_KEY         Optional AppMetrica application API key.
-
 Examples:
-  ./scripts/build-android.sh dev --build 45
-  ANDROID_KEYSTORE_PASSWORD='...' ANDROID_KEY_PASSWORD='...' \
-    ./scripts/build-android.sh release --build 45 \
-      --keystore ~/.keys/google-play.jks --alias google-play
+  ./scripts/build-android.sh dev
+  ./scripts/build-android.sh release
+  ./scripts/build-android.sh release --build 46
 EOF
 }
 
 fail() { printf 'Error: %s\n' "$*" >&2; exit 1; }
+
+yaml_value() {
+    local file="$1"
+    local key="$2"
+    awk -F: -v key="$key" '
+        $1 ~ "^[[:space:]]*" key "[[:space:]]*$" {
+            value = $2
+            sub(/^[[:space:]]+/, "", value)
+            sub(/[[:space:]]+$/, "", value)
+            gsub(/^"|"$/, "", value)
+            print value
+            exit
+        }
+    ' "$file"
+}
 
 [[ $# -gt 0 ]] || { usage; exit 1; }
 if [[ "$1" == -h || "$1" == --help ]]; then
@@ -48,14 +59,18 @@ case "$mode" in
     *) fail "mode must be dev or release" ;;
 esac
 
+build_config="$ROOT_DIR/Build.yaml"
+analytics_config="$ROOT_DIR/Analytics.yaml"
 build_number=""
-version="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' "$PROJECT" | head -n 1)"
-keystore="${ANDROID_KEYSTORE_PATH:-}"
-alias_name="${ANDROID_KEY_ALIAS:-}"
+version=""
+keystore=""
+alias_name=""
 output_dir=""
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        -c|--config) build_config="${2:-}"; shift 2 ;;
+        --analytics-config) analytics_config="${2:-}"; shift 2 ;;
         -b|--build) build_number="${2:-}"; shift 2 ;;
         -v|--version) version="${2:-}"; shift 2 ;;
         -k|--keystore) keystore="${2:-}"; shift 2 ;;
@@ -66,8 +81,23 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+[[ -f "$build_config" ]] || fail "build config not found: $build_config"
+[[ -f "$analytics_config" ]] || fail "analytics config not found: $analytics_config"
+game_name="$(yaml_value "$build_config" name)"
+game_version="$(yaml_value "$build_config" version)"
+icon_path="$(yaml_value "$build_config" icon)"
+build_number="${build_number:-$(yaml_value "$build_config" version_code)}"
+version="${version:-$(yaml_value "$build_config" bundle_version)}"
+keystore="${keystore:-$(yaml_value "$build_config" keystore)}"
+alias_name="${alias_name:-$(yaml_value "$build_config" alias)}"
+store_password="$(yaml_value "$build_config" store_password)"
+key_password="$(yaml_value "$build_config" key_password)"
+appmetrica_api_key="$(yaml_value "$analytics_config" api_key)"
+
 [[ "$build_number" =~ ^[1-9][0-9]*$ ]] || fail "--build must be a positive integer"
 [[ -n "$version" ]] || fail "could not determine version; provide --version"
+[[ -n "$game_name" && -n "$game_version" ]] || fail "game name and version are required in $build_config"
+[[ -n "$icon_path" && -f "$ROOT_DIR/$icon_path" ]] || fail "icon file not found: $icon_path"
 output_dir="${output_dir:-$ROOT_DIR/artifacts/android/$mode}"
 temp_dir="$output_dir/.tmp"
 
@@ -75,21 +105,21 @@ signing_args=()
 if [[ "$mode" == release || -n "$keystore" || -n "$alias_name" ]]; then
     [[ -n "$keystore" && -f "$keystore" ]] || fail "a readable --keystore is required"
     [[ -n "$alias_name" ]] || fail "--alias is required for a signed build"
-    [[ -n "${ANDROID_KEYSTORE_PASSWORD:-}" ]] || fail "ANDROID_KEYSTORE_PASSWORD is required"
     keystore="$(cd "$(dirname "$keystore")" && pwd)/$(basename "$keystore")"
-    key_password="${ANDROID_KEY_PASSWORD:-$ANDROID_KEYSTORE_PASSWORD}"
+    [[ -n "$store_password" ]] || fail "store_password is required in $build_config"
+    key_password="${key_password:-$store_password}"
     signing_args=(
         -p:AndroidKeyStore=True
         "-p:AndroidSigningKeyStore=$keystore"
         "-p:AndroidSigningKeyAlias=$alias_name"
-        "-p:AndroidSigningStorePass=$ANDROID_KEYSTORE_PASSWORD"
+        "-p:AndroidSigningStorePass=$store_password"
         "-p:AndroidSigningKeyPass=$key_password"
     )
 fi
 
 analytics_args=()
-if [[ -n "${APPMETRICA_API_KEY:-}" ]]; then
-    analytics_args=("-p:AppMetricaApiKey=$APPMETRICA_API_KEY")
+if [[ -n "$appmetrica_api_key" ]]; then
+    analytics_args=("-p:AppMetricaApiKey=$appmetrica_api_key")
 fi
 
 rm -rf "$output_dir"
@@ -111,6 +141,9 @@ TMPDIR="$temp_dir" dotnet publish "$PROJECT" \
     "-p:JavaOptions=-Djava.io.tmpdir=$temp_dir" \
     -p:ApplicationVersion="$build_number" \
     -p:ApplicationDisplayVersion="$version" \
+    "-p:BuildGameName=$game_name" \
+    "-p:BuildGameVersion=$game_version" \
+    "-p:BuildIconPath=$ROOT_DIR/$icon_path" \
     "${analytics_args[@]}" \
     "${signing_args[@]}"
 
