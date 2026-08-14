@@ -6,6 +6,15 @@ set -Eeuo pipefail
 readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly PROJECT="$ROOT_DIR/HardCore.Cultivation/HardCore.Cultivation.csproj"
 
+# Android packaging writes shared obj/bin paths. A second simultaneous build corrupts
+# those intermediates or fails with a misleading "file is being used" error.
+mkdir -p "$ROOT_DIR/artifacts"
+exec 9>"$ROOT_DIR/artifacts/.build.lock"
+flock -n 9 || {
+    printf 'Error: another build is already running in %s\n' "$ROOT_DIR" >&2
+    exit 1
+}
+
 usage() {
     cat <<'EOF'
 Usage:
