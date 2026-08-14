@@ -1,0 +1,28 @@
+<Project>
+  <!--
+    Build.yaml is the single source of build defines. The root ./build command
+    passes BuildDefines explicitly; this import supplies identical defaults for
+    IDE Build/Run commands, where no shell script participates in MSBuild.
+
+    Debug maps to the dev profile and Release maps to the release profile.
+    The active platform comes from VecxyPlatform: Desktop by default, Android
+    when an Android IDE run configuration passes -p:VecxyPlatform=Android.
+  -->
+  <PropertyGroup>
+    <_BuildConfigPath>$(MSBuildProjectDirectory)/Assets/Configs/Build.yaml</_BuildConfigPath>
+    <_BuildConfigText Condition="Exists('$(_BuildConfigPath)')">$([System.IO.File]::ReadAllText('$(_BuildConfigPath)'))</_BuildConfigText>
+    <_BuildConfigDefinesCommon>$([System.Text.RegularExpressions.Regex]::Match('$(_BuildConfigText)', '(?m)^\s*definesCommon:\s*"?([^"\r\n]*)"?\s*$').Groups[1].Value)</_BuildConfigDefinesCommon>
+    <_BuildConfigDefinesDesktop>$([System.Text.RegularExpressions.Regex]::Match('$(_BuildConfigText)', '(?m)^\s*definesDesktop:\s*"?([^"\r\n]*)"?\s*$').Groups[1].Value)</_BuildConfigDefinesDesktop>
+    <_BuildConfigDefinesAndroid>$([System.Text.RegularExpressions.Regex]::Match('$(_BuildConfigText)', '(?m)^\s*definesAndroid:\s*"?([^"\r\n]*)"?\s*$').Groups[1].Value)</_BuildConfigDefinesAndroid>
+    <_BuildConfigDefinesDev>$([System.Text.RegularExpressions.Regex]::Match('$(_BuildConfigText)', '(?m)^\s*definesDev:\s*"?([^"\r\n]*)"?\s*$').Groups[1].Value)</_BuildConfigDefinesDev>
+    <_BuildConfigDefinesRelease>$([System.Text.RegularExpressions.Regex]::Match('$(_BuildConfigText)', '(?m)^\s*definesRelease:\s*"?([^"\r\n]*)"?\s*$').Groups[1].Value)</_BuildConfigDefinesRelease>
+
+    <GameBuildFlavor Condition="'$(GameBuildFlavor)' == '' and '$(Configuration)' == 'Debug'">Dev</GameBuildFlavor>
+    <GameBuildFlavor Condition="'$(GameBuildFlavor)' == '' and '$(Configuration)' == 'Release'">Release</GameBuildFlavor>
+    <_BuildConfigPlatformDefines Condition="'$(VecxyPlatform)' == 'Android'">$(_BuildConfigDefinesAndroid)</_BuildConfigPlatformDefines>
+    <_BuildConfigPlatformDefines Condition="'$(VecxyPlatform)' != 'Android'">$(_BuildConfigDefinesDesktop)</_BuildConfigPlatformDefines>
+    <_BuildConfigModeDefines Condition="'$(GameBuildFlavor)' == 'Dev'">$(_BuildConfigDefinesDev)</_BuildConfigModeDefines>
+    <_BuildConfigModeDefines Condition="'$(GameBuildFlavor)' == 'Release'">$(_BuildConfigDefinesRelease)</_BuildConfigModeDefines>
+    <BuildDefines Condition="'$(BuildDefines)' == ''">$(_BuildConfigDefinesCommon);$(_BuildConfigPlatformDefines);$(_BuildConfigModeDefines)</BuildDefines>
+  </PropertyGroup>
+</Project>

@@ -10,7 +10,9 @@
     <FileVersion>1.0.0.45</FileVersion>
   </PropertyGroup>
 
-  <!-- Set by ./build; keeps build-only code explicit in C#. -->
+  <Import Project="BuildConfig.props" />
+
+  <!-- Set by ./build or BuildConfig.props; keeps build-only code explicit in C#. -->
   <PropertyGroup Condition="'$(GameBuildFlavor)' == 'Dev'">
     <DefineConstants>$(DefineConstants);GAME_DEV_BUILD</DefineConstants>
   </PropertyGroup>
