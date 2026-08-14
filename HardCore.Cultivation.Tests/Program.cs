@@ -59,7 +59,7 @@ _ = maximumDogMeditation.Update(maximumDogState, 1f);
 Check(maximumDogMeditation.Collect(maximumDogState).Reward == 3000,
     "Dog meditation did not include the configured maximum reward.");
 
-var alchemy = new AlchemyService(database);
+var alchemy = new AlchemyService(database, new MaximumRandom());
 Check(AlchemyCharacteristicFormula.Calculate(1m, 1, 8m) == 9m &&
       AlchemyCharacteristicFormula.Calculate(3m, 2, 8m) == 102m &&
       AlchemyCharacteristicFormula.Calculate(5m, 5, 8m) == 1025m,
@@ -180,7 +180,7 @@ defeatedState.EnqueueMission(defeatedMission);
 _ = combat.Update(defeatedState, 0.1f);
 Check(defeatedState.RecoveryRequired, "Defeat did not enable mandatory recovery.");
 Check(defeatedState.ActivityMode == ActivityMode.Cultivation, "Defeat did not switch to cultivation.");
-Check(combat.GetRecoveryHealthThreshold(defeatedState.Character) == 30m,
+Check(database.Combat.RecoveryHealthPoints == 30m,
     "Defeat recovery threshold must use the configured fixed HP amount.");
 defeatedState.SetActivityMode(ActivityMode.Missions);
 Check(defeatedState.ActivityMode == ActivityMode.Cultivation, "Missions were enabled before full recovery.");
@@ -189,7 +189,7 @@ for (var index = 0; index < 5000 && defeatedState.RecoveryRequired; index++)
     _ = combat.Update(defeatedState, 0.25f);
 Check(defeatedState.Character.Health > healthAfterDefeat, "Health regeneration did not advance gradually.");
 Check(!defeatedState.RecoveryRequired &&
-      defeatedState.Character.Health >= combat.GetRecoveryHealthThreshold(defeatedState.Character) &&
+      defeatedState.Character.Health >= database.Combat.RecoveryHealthPoints &&
       defeatedState.Character.Health < defeatedState.Character.MaximumHealth,
     "Recovery did not complete at the configured partial-health threshold.");
 defeatedState.SetActivityMode(ActivityMode.Missions);
@@ -294,6 +294,14 @@ static GameDatabase BuildDatabase()
             TicksPerYear = 48, RealMillisecondsPerTick = 1000, BaseSpiritualPowerPerTick = 100,
             StartingAgeYears = 16, MaximumAgeYears = 80, MaximumMissionQueueSize = 6,
             QualityBands = [new QualityBand { Index = 1, Weight = 1 }],
+            ContaminationBands = [new ContaminationBand { Minimum = 0m, Maximum = 0m, Weight = 1m }],
+            ContaminationLevels =
+            [
+                new ContaminationLevelConfig { MinimumContamination = 0.25m, Name = "One" },
+                new ContaminationLevelConfig { MinimumContamination = 0.5m, Name = "Two" },
+                new ContaminationLevelConfig { MinimumContamination = 0.75m, Name = "Three" },
+                new ContaminationLevelConfig { MinimumContamination = 1m, Name = "Four" }
+            ],
             QualityPriceCurve = [new PriceCurvePoint { Quality = 0.1m, Multiplier = 1 }, new PriceCurvePoint { Quality = 5, Multiplier = 1 }]
         },
         new RaritiesConfig
@@ -324,7 +332,7 @@ static GameDatabase BuildDatabase()
         },
         new CultivationConfig
         {
-            BaseRequiredPower = 10, LevelMultipliers = Enumerable.Repeat(1m, 10).ToList(),
+            InitialRequiredPower = Enumerable.Repeat(10m, 10).ToList(),
             Stages =
             [
                 new CultivationStageConfig { Id = "one", Name = "One", BaseBreakthroughChance = 50 },
