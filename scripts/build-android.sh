@@ -68,6 +68,7 @@ done
 [[ "$build_number" =~ ^[1-9][0-9]*$ ]] || fail "--build must be a positive integer"
 [[ -n "$version" ]] || fail "could not determine version; provide --version"
 output_dir="${output_dir:-$ROOT_DIR/artifacts/android/$mode}"
+temp_dir="$output_dir/.tmp"
 
 signing_args=()
 if [[ "$mode" == release || -n "$keystore" || -n "$alias_name" ]]; then
@@ -87,39 +88,36 @@ fi
 
 rm -rf "$output_dir"
 mkdir -p "$output_dir"
+mkdir -p "$temp_dir"
 
-publish_package() {
-    local package_format="$1"
-    local package_output="$output_dir/.publish/$package_format"
-    local package
+publish_dir="$output_dir/.publish"
+package_dir="$ROOT_DIR/HardCore.Cultivation/bin/$configuration/net10.0-android/android-arm64"
 
-    rm -rf "$package_output"
-    mkdir -p "$package_output"
+TMPDIR="$temp_dir" dotnet publish "$PROJECT" \
+    --configuration "$configuration" \
+    --framework net10.0-android \
+    --runtime android-arm64 \
+    --output "$publish_dir" \
+    -p:VecxyPlatform=Android \
+    -p:GameBuildFlavor="$flavor" \
+    -p:AndroidPackageFormat=aab \
+    '-p:AndroidPackageFormats=aab%3Bapk' \
+    "-p:JavaOptions=-Djava.io.tmpdir=$temp_dir" \
+    -p:ApplicationVersion="$build_number" \
+    -p:ApplicationDisplayVersion="$version" \
+    "${signing_args[@]}"
 
-    dotnet publish "$PROJECT" \
-        --configuration "$configuration" \
-        --framework net10.0-android \
-        --runtime android-arm64 \
-        --output "$package_output" \
-        -p:VecxyPlatform=Android \
-        -p:GameBuildFlavor="$flavor" \
-        -p:AndroidPackageFormat="$package_format" \
-        -p:ApplicationVersion="$build_number" \
-        -p:ApplicationDisplayVersion="$version" \
-        "${signing_args[@]}"
-
-    package="$(find "$package_output" -type f -name "*-Signed.$package_format" -print -quit)"
-    package="${package:-$(find "$package_output" -type f -name "*.$package_format" -print -quit)}"
-    [[ -n "$package" ]] || fail "publish completed without a .$package_format file"
-    cp "$package" "$output_dir/$(basename "$package")"
-}
-
-publish_package aab
-publish_package apk
-rm -rf "$output_dir/.publish"
-
-bundle="$(find "$output_dir" -type f -name '*.aab' -print -quit)"
-apk="$(find "$output_dir" -type f -name '*.apk' -print -quit)"
+bundle="$(find "$package_dir" -maxdepth 1 -type f -name '*-Signed.aab' -print -quit)"
+bundle="${bundle:-$(find "$package_dir" -maxdepth 1 -type f -name '*.aab' -print -quit)}"
+apk="$(find "$package_dir" -maxdepth 1 -type f -name '*-Signed.apk' -print -quit)"
+apk="${apk:-$(find "$package_dir" -maxdepth 1 -type f -name '*.apk' -print -quit)}"
 [[ -n "$bundle" ]] || fail "publish completed without an .aab file"
 [[ -n "$apk" ]] || fail "publish completed without an .apk file"
-printf 'Google Play bundle: %s\nTest APK: %s\n' "$bundle" "$apk"
+bundle_artifact="$output_dir/$(basename "$bundle")"
+apk_artifact="$output_dir/$(basename "$apk")"
+cp "$bundle" "$bundle_artifact"
+cp "$apk" "$apk_artifact"
+rm -rf "$publish_dir"
+rm -rf "$temp_dir"
+
+printf 'Google Play bundle: %s\nTest APK: %s\n' "$bundle_artifact" "$apk_artifact"
