@@ -4,7 +4,8 @@ using IO.Appmetrica.Analytics;
 
 namespace HardCore.Cultivation.Platform;
 
-[global::Android.App.Application(Name = "game.vecxy.hardcorecultivation.AppMetricaApplication")]
+[global::Android.App.Application]
+[global::Android.Runtime.Preserve(AllMembers = true)]
 public class AppMetricaApplication : global::Android.App.Application
 {
     public AppMetricaApplication()
