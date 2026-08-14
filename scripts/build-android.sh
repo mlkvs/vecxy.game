@@ -103,7 +103,7 @@ publish_package() {
         --output "$package_output" \
         -p:VecxyPlatform=Android \
         -p:GameBuildFlavor="$flavor" \
-        -p:AndroidPackageFormats="$package_format" \
+        -p:AndroidPackageFormat="$package_format" \
         -p:ApplicationVersion="$build_number" \
         -p:ApplicationDisplayVersion="$version" \
         "${signing_args[@]}"
