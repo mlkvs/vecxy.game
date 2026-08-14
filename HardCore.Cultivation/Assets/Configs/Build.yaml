@@ -49,7 +49,7 @@ game:
   version: "1.0.0"
   # Path from the repository root to a square PNG used as Android launcher icon.
   # Use a 512x512 or 1024x1024 image; the build creates Android resource variants.
-  icon: "HardCore.Cultivation/Assets/Textures/Character.png"
+  icon: "HardCore.Cultivation/Assets/Textures/AppIcon.png"
 
 googlePlay:
   # Android versionCode. Increase this positive integer for EVERY Google Play upload,
