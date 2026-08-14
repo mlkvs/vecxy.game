@@ -61,6 +61,13 @@ public sealed class GameController(
     // Header, window/body padding, content margin, and a small safety buffer.
     private const float ShopWindowChromeHeight = 150f;
     private const float ShopViewportMargin = 48f;
+    private const int MissionColumnCount = 2;
+    private const float MissionCardHeight = 215f;
+    private const float MissionCardRowGap = 12f;
+    // Window frame (36), header (90), body margin/padding (42), tabs (56),
+    // board heading (45), mission-list vertical padding (14), and layout safety (17).
+    private const float MissionWindowChromeHeight = 300f;
+    private const float MissionViewportMargin = 48f;
     private const float SettingsHeaderHeight = 90f;
     private const float SettingsContentTopPadding = 22f;
     private const float SettingsToggleHeight = 74f;
@@ -1907,6 +1914,7 @@ public sealed class GameController(
         TrackScreen("missions");
         Track(new MissionsOpenedEvent(_state.Character.Cultivation.StageIndex, _state.MissionBoard.MissionIds.Count));
         SyncMissions();
+        UpdateMissionsWindowHeight();
     }
 
     private void ShowMissionPage(bool accepted)
@@ -1922,6 +1930,27 @@ public sealed class GameController(
     {
         SyncMissionBoard();
         SyncMissionQueue();
+    }
+
+    private void UpdateMissionsWindowHeight()
+    {
+        if (_view is null)
+            return;
+
+        var outputWidth = Math.Max(1, renderer.GameOutputWidth);
+        var outputHeight = Math.Max(1, renderer.GameOutputHeight);
+        var scale = Math.Max(0.0001f, Math.Min(outputWidth / UiReferenceWidth, outputHeight / UiReferenceHeight));
+        var canvasHeight = outputHeight / scale;
+        // The board capacity determines a stable window height for both mission tabs.
+        var rows = Math.Max(1, (int)Math.Ceiling(database.MissionBoardSlotCount / (float)MissionColumnCount));
+        var requiredCardsHeight = rows * MissionCardHeight + (rows - 1) * MissionCardRowGap;
+        var preferredHeight = MissionWindowChromeHeight + requiredCardsHeight;
+        var height = Math.Min(preferredHeight, Math.Max(420f, canvasHeight - MissionViewportMargin));
+        var top = Math.Max(24f, (canvasHeight - height) * 0.5f);
+
+        _view.MissionsWindow.Style.Height = CssPixels(height);
+        _view.MissionsWindow.Style["top"] = CssPixels(top);
+        _view.MissionsWindow.Style["bottom"] = "auto";
     }
 
     private void SyncMissionBoard()
