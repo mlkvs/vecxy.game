@@ -1,8 +1,110 @@
 using HardCore.Cultivation.Game.Domain;
 using HardCore.Cultivation.Game.Application;
+using System.Reflection;
 using Vecxy.Assets;
 
 namespace HardCore.Cultivation.Game.Infrastructure;
+
+// Public build fields shared by the build script and the game. Signing data is intentionally absent.
+public sealed class BuildConfig : IYamlConfig
+{
+    public BuildTargetConfig Build { get; init; } = new();
+    public BuildGameConfig Game { get; init; } = new();
+    public GooglePlayBuildConfig GooglePlay { get; init; } = new();
+}
+
+public sealed class BuildTargetConfig
+{
+    public string Platform { get; init; } = string.Empty;
+    public string DefinesCommon { get; init; } = string.Empty;
+    public string DefinesAndroid { get; init; } = string.Empty;
+    public string DefinesDesktop { get; init; } = string.Empty;
+}
+
+public sealed class BuildGameConfig
+{
+    public string Name { get; init; } = "HardCore Cultivation";
+    public string Version { get; init; } = "1.0.0";
+    public string Icon { get; init; } = string.Empty;
+}
+
+public sealed class GooglePlayBuildConfig
+{
+    public int VersionCode { get; init; }
+    public string BundleVersion { get; init; } = "1.0.0";
+}
+
+public sealed class AnalyticsConfig : IYamlConfig
+{
+    public AppMetricaConfig AppMetrica { get; init; } = new();
+}
+
+public sealed class AppMetricaConfig
+{
+    public string ApiKey { get; init; } = string.Empty;
+}
+
+public sealed class GameBuildInfo
+{
+    public string Platform { get; private set; } = "desktop";
+    public string Name { get; private set; } = "HardCore Cultivation";
+    public string Version { get; private set; } = "1.0.0";
+    public int VersionCode { get; private set; }
+    public string BundleVersion { get; private set; } = "1.0.0";
+    public string Defines { get; private set; } = string.Empty;
+    public string DisplayVersion => VersionCode > 0 ? $"{Version} #{VersionCode}" : Version;
+
+    public void Initialize(BuildConfig config)
+    {
+        ArgumentNullException.ThrowIfNull(config);
+
+        Platform = config.Build.Platform;
+        Name = config.Game.Name;
+        Version = config.Game.Version;
+        VersionCode = config.GooglePlay.VersionCode;
+        BundleVersion = config.GooglePlay.BundleVersion;
+        Defines = config.Build.Platform.Equals("android", StringComparison.OrdinalIgnoreCase)
+            ? JoinDefines(config.Build.DefinesCommon, config.Build.DefinesAndroid)
+            : JoinDefines(config.Build.DefinesCommon, config.Build.DefinesDesktop);
+    }
+
+    public void InitializeFromAssembly()
+    {
+        var metadata = typeof(GameBuildInfo).Assembly
+            .GetCustomAttributes<System.Reflection.AssemblyMetadataAttribute>()
+            .ToDictionary(attribute => attribute.Key, attribute => attribute.Value ?? string.Empty, StringComparer.Ordinal);
+
+        Platform = Get(metadata, "BuildPlatform", "android");
+        Name = Get(metadata, "BuildGameName", Name);
+        Version = Get(metadata, "BuildGameVersion", Version);
+        BundleVersion = Get(metadata, "BuildBundleVersion", Version);
+        Defines = Get(metadata, "BuildDefines", string.Empty);
+        VersionCode = int.TryParse(Get(metadata, "BuildGooglePlayVersionCode", "0"), out var code) ? code : 0;
+    }
+
+    private static string JoinDefines(params string[] values) => string.Join(",", values.Where(value => !string.IsNullOrWhiteSpace(value)));
+    private static string Get(IReadOnlyDictionary<string, string> metadata, string key, string fallback) =>
+        metadata.TryGetValue(key, out var value) && !string.IsNullOrWhiteSpace(value) ? value : fallback;
+}
+
+public sealed class GameAnalyticsInfo
+{
+    public string AppMetricaApiKey { get; private set; } = string.Empty;
+    public bool IsAppMetricaEnabled => !string.IsNullOrWhiteSpace(AppMetricaApiKey);
+
+    public void Initialize(AnalyticsConfig config)
+    {
+        ArgumentNullException.ThrowIfNull(config);
+        AppMetricaApiKey = config.AppMetrica.ApiKey;
+    }
+
+    public void InitializeFromAssembly()
+    {
+        AppMetricaApiKey = typeof(GameAnalyticsInfo).Assembly
+            .GetCustomAttributes<System.Reflection.AssemblyMetadataAttribute>()
+            .FirstOrDefault(attribute => attribute.Key == "AppMetricaApiKey")?.Value ?? string.Empty;
+    }
+}
 
 public sealed class GameBalanceConfig : IYamlConfig
 {

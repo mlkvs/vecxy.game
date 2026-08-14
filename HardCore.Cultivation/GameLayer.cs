@@ -17,6 +17,8 @@ public sealed class GameLayer
     ISceneManager scenes,
     IConfigProvider configs,
     GameDatabase database,
+    GameBuildInfo buildInfo,
+    GameAnalyticsInfo analyticsInfo,
     GameController game,
     IAudioManager audio,
     ILifetimeScope scope
@@ -32,6 +34,8 @@ public sealed class GameLayer
         public override void RegisterLocal(ContainerBuilder builder)
         {
             builder.RegisterType<GameDatabase>().SingleInstance();
+            builder.RegisterType<GameBuildInfo>().SingleInstance();
+            builder.RegisterType<GameAnalyticsInfo>().SingleInstance();
             builder.RegisterType<SystemRandomSource>().As<IRandomSource>().SingleInstance();
             builder.RegisterType<ItemGenerator>().SingleInstance();
             builder.RegisterType<ItemEffectService>().SingleInstance();
@@ -52,6 +56,15 @@ public sealed class GameLayer
 
     public override void OnInitialize()
     {
+#if ANDROID
+        buildInfo.InitializeFromAssembly();
+        analyticsInfo.InitializeFromAssembly();
+#else
+        using var build = configs.LoadConfig<BuildConfig>("Configs/Build.yaml");
+        using var analytics = configs.LoadConfig<AnalyticsConfig>("Configs/Analytics.yaml");
+        buildInfo.Initialize(build.Value);
+        analyticsInfo.Initialize(analytics.Value);
+#endif
         using var balance = configs.LoadConfig<GameBalanceConfig>("Configs/GameBalance.yaml");
         using var rarities = configs.LoadConfig<RaritiesConfig>("Configs/Rarities.yaml");
         using var items = configs.LoadConfig<ItemsConfig>("Configs/Items.yaml");

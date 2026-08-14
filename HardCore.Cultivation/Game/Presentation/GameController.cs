@@ -17,6 +17,7 @@ namespace HardCore.Cultivation.Game.Presentation;
 public sealed class GameController(
     IUiManager ui,
     GameDatabase database,
+    GameBuildInfo buildInfo,
     TickProcessor ticks,
     MissionService missions,
     ShopService shop,
@@ -2121,11 +2122,7 @@ public sealed class GameController(
             return;
         SetSettingsToggle(_view.SettingsMusicToggle, "МУЗЫКА", _state.Settings.MusicEnabled);
         SetSettingsToggle(_view.SettingsSoundsToggle, "ЗВУКИ", _state.Settings.SoundsEnabled);
-        var version = typeof(GameController).Assembly.GetName().Version;
-        var label = version is null
-            ? "1.0.0 #45"
-            : $"{version.Major}.{version.Minor}.{version.Build} #{version.Revision}";
-        _view.SettingsBuildVersion.Value = $"Версия {label}";
+        _view.SettingsBuildVersion.Value = $"Версия {buildInfo.DisplayVersion}";
     }
 
     private void ApplyMusicSetting()

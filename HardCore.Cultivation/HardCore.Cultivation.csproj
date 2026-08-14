@@ -25,15 +25,25 @@
     <BuildIconPath Condition="'$(BuildIconPath)' == ''">$(MSBuildProjectDirectory)/Assets/Textures/Character.png</BuildIconPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- Public build metadata is available to the game at runtime. Signing credentials are never included. -->
+    <AssemblyMetadata Include="BuildPlatform" Value="$(BuildPlatform)" />
+    <AssemblyMetadata Include="BuildGameName" Value="$(BuildGameName)" />
+    <AssemblyMetadata Include="BuildGameVersion" Value="$(BuildGameVersion)" />
+    <AssemblyMetadata Include="BuildGooglePlayVersionCode" Value="$(BuildGooglePlayVersionCode)" />
+    <AssemblyMetadata Include="BuildBundleVersion" Value="$(BuildBundleVersion)" />
+    <AssemblyMetadata Include="BuildDefines" Value="$(BuildDefines)" />
+    <AssemblyMetadata Include="AppMetricaApiKey" Value="$(AppMetricaApiKey)" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(VecxyPlatform)' == 'Android'">
     <PackageReference Include="Net.Android.AppMetrica.Analytics" Version="7.1.1" />
-    <AssemblyMetadata Include="AppMetricaApiKey" Value="$(AppMetricaApiKey)" />
     <AndroidResource Include="$(BuildIconPath)" Link="drawable/app_icon.png" Condition="'$(BuildIconPath)' != ''" />
     <!-- Build credentials live beside game configs but must never be bundled into Android assets. -->
     <AndroidAsset Remove="$(MSBuildProjectDirectory)/Assets/Configs/Build.yaml;$(MSBuildProjectDirectory)/Assets/Configs/Analytics.yaml" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(VecxyPlatform)' == 'Android'">
     <Content Remove="Assets/Configs/Build.yaml;Assets/Configs/Analytics.yaml" />
   </ItemGroup>
 
