@@ -844,7 +844,8 @@ public sealed class TickProcessor(
     public TapResult ProcessTap(GameState state)
     {
         var modifiers = effects.CalculateModifiers(state);
-        var spiritualPower = database.Balance.BaseSpiritualPowerPerTick * database.Cultivation.Stages[state.Character.Cultivation.StageIndex].SpiritualPowerMultiplier *
+        // Taps always start from the same base; stage multipliers apply only to idle ticks.
+        var spiritualPower = database.Balance.BaseSpiritualPowerPerTick *
                              modifiers.TickEfficiency *
                              modifiers.SpiritualPowerMultiplier;
         state.Character.AddSpiritualPower(spiritualPower);

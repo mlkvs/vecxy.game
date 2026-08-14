@@ -257,6 +257,7 @@ Check(!failedResult.Success && failedResult.LevelsLost > 0 && failedResult.Messa
 
 var tapState = new GameState(database.Balance.TicksPerYear);
 tapState.SetActivityMode(ActivityMode.Missions);
+tapState.Character.Cultivation.Restore(1, 1, database.Cultivation.Stages.Count);
 tapState.EnqueueMission(new ActiveMission { MissionConfigId = "mission", RequiredProgress = 10 });
 tapState.ActiveEffects.Add(new ActiveEffect("tap", new ItemEffectDefinition
 {
@@ -265,7 +266,7 @@ tapState.ActiveEffects.Add(new ActiveEffect("tap", new ItemEffectDefinition
     Value = 1
 }, 1, null, ItemDurationType.Permanent, ItemRarity.Common, 1));
 var tapResult = processor.ProcessTap(tapState);
-Check(tapResult.SpiritualPowerGained > 1m, "Tap must grant spiritual power with flat bonuses applied.");
+Check(tapResult.SpiritualPowerGained == 200m, "Tap must ignore stage multiplier and retain item bonuses.");
 Check(tapState.CurrentMission!.CurrentProgress == 0m, "Tap must not advance mission progress.");
 Check(tapState.Calendar.TotalTicks == 0, "Tap must not advance calendar.");
 
@@ -327,7 +328,7 @@ static GameDatabase BuildDatabase()
             Stages =
             [
                 new CultivationStageConfig { Id = "one", Name = "One", BaseBreakthroughChance = 50 },
-                new CultivationStageConfig { Id = "two", Name = "Two", BaseBreakthroughChance = 50 },
+                new CultivationStageConfig { Id = "two", Name = "Two", BaseBreakthroughChance = 50, SpiritualPowerMultiplier = 6 },
                 new CultivationStageConfig { Id = "three", Name = "Three", BaseBreakthroughChance = 50 }
             ]
         },
