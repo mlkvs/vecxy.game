@@ -3,6 +3,9 @@ using HardCore.Cultivation.Game;
 using HardCore.Cultivation.Game.Application;
 using HardCore.Cultivation.Game.Infrastructure;
 using HardCore.Cultivation.Game.Presentation;
+#if ANDROID
+using HardCore.Cultivation.Platform;
+#endif
 using JetBrains.Annotations;
 using Vecxy.Assets;
 using Vecxy.Audio;
@@ -67,6 +70,9 @@ public sealed class GameLayer
         // Analytics configuration is available both in IDE runs and in packaged Android assets.
         using var analyticsConfig = configs.LoadConfig<AnalyticsConfig>("Configs/Analytics.yaml");
         analyticsInfo.Initialize(analyticsConfig.Value);
+#if ANDROID
+        AppMetricaBootstrap.Activate(analyticsInfo.AppMetricaApiKey);
+#endif
         AnalyticsEventExtensions.Bind(analytics);
         new AnalyticsEvent("test_game_started",
             ("version", buildInfo.Version),
