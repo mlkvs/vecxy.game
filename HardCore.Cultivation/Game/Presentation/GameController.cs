@@ -60,6 +60,12 @@ public sealed class GameController(
     // Header, window/body padding, content margin, and a small safety buffer.
     private const float ShopWindowChromeHeight = 150f;
     private const float ShopViewportMargin = 48f;
+    private const float SettingsHeaderHeight = 90f;
+    private const float SettingsContentTopPadding = 22f;
+    private const float SettingsToggleHeight = 74f;
+    private const float SettingsContentGap = 14f;
+    private const float SettingsVersionHeight = 20f;
+    private const float SettingsWindowVerticalPadding = 36f;
     private const string BackgroundMusicPath = "Musics/Main.mp3";
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
     private UiPanel? _tapFeedback;
@@ -2069,7 +2075,27 @@ public sealed class GameController(
     private void OpenSettings()
     {
         SyncSettings();
+        UpdateSettingsWindowHeight();
         OpenWindow(_view!.SettingsWindow);
+    }
+
+    private void UpdateSettingsWindowHeight()
+    {
+        if (_view is null)
+            return;
+
+        var outputWidth = Math.Max(1, renderer.GameOutputWidth);
+        var outputHeight = Math.Max(1, renderer.GameOutputHeight);
+        var scale = Math.Max(0.0001f, Math.Min(outputWidth / UiReferenceWidth, outputHeight / UiReferenceHeight));
+        var canvasHeight = outputHeight / scale;
+        var contentHeight = SettingsContentTopPadding + SettingsToggleHeight * 2f +
+                            SettingsContentGap * 2f + SettingsVersionHeight;
+        var height = SettingsHeaderHeight + SettingsWindowVerticalPadding + contentHeight;
+        var top = Math.Max(24f, (canvasHeight - height) * 0.5f);
+
+        _view.SettingsWindow.Style.Height = CssPixels(height);
+        _view.SettingsWindow.Style["top"] = CssPixels(top);
+        _view.SettingsWindow.Style["bottom"] = "auto";
     }
 
     private void ToggleMusic()
@@ -2255,6 +2281,8 @@ public sealed class GameController(
 
         if (IsWindowOpen(_view.ShopWindow))
             UpdateShopWindowHeight();
+        if (IsWindowOpen(_view.SettingsWindow))
+            UpdateSettingsWindowHeight();
 
         foreach (var windowDocument in _view.WindowDocuments.All)
         {

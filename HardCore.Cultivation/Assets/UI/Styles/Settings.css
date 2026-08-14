@@ -1,13 +1,10 @@
 .settings-window {
     left: 48px;
     right: 48px;
-    top: 330px;
     bottom: auto;
-    height: 420px;
 }
 
 .settings-content {
-    flex: 1;
     padding: 22px 2px 0;
     gap: 14px;
 }
@@ -28,4 +25,4 @@
 
 .settings-toggle.is-disabled { color: #70453d; opacity: 0.72; }
 .settings-toggle:hover { color: #285c49; background-color: #cce8d388; }
-.settings-build-version { margin-top: auto; color: #897c68; font-size: 16px; text-align: center; }
+.settings-build-version { color: #897c68; font-size: 16px; text-align: center; }
