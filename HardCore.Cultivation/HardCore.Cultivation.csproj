@@ -8,6 +8,14 @@
     <FileVersion>1.0.0.45</FileVersion>
   </PropertyGroup>
 
+  <!-- Set by scripts/build-android.sh; keeps build-only code explicit in C#. -->
+  <PropertyGroup Condition="'$(GameBuildFlavor)' == 'Dev'">
+    <DefineConstants>$(DefineConstants);GAME_DEV_BUILD</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(GameBuildFlavor)' == 'Release'">
+    <DefineConstants>$(DefineConstants);GAME_RELEASE_BUILD</DefineConstants>
+  </PropertyGroup>
+
   <Import Project="..\Engine\Vecxy\Code\Vecxy.Platforms\build\Vecxy.Platforms.props" />
 
   <ItemGroup>
