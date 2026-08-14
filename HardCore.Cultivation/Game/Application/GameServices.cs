@@ -622,7 +622,7 @@ public sealed class DogMeditationService(GameDatabase database, IRandomSource ra
         var reward = checked((long)rewardUnits * database.Dog.RewardUnitRubles);
         state.Character.AddMoney(reward);
         state.DogMeditation.Reset();
-        return new(true, reward, $"Собака намедитировала {reward:N0}.");
+        return new(true, reward, $"Собака намедитировала {MoneyFormatter.Format(reward)}.");
     }
 }
 

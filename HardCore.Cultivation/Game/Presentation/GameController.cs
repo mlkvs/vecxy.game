@@ -768,7 +768,7 @@ public sealed class GameController(
         var required = cultivation.GetRequiredPower(progress.StageIndex, progress.Level);
         var powerBars = required <= 0m ? 1m : Math.Max(0m, character.SpiritualPower / required);
         UpdateYearCandleProgress();
-        _view!.Money.Value = character.Money.ToString("N0", CultureInfo.InvariantCulture);
+        _view!.Money.Value = MoneyFormatter.Format(character.Money);
         foreach (var modalMoney in _view.ModalMoneyTexts)
             modalMoney.Value = _view.Money.Value;
         _view.Age.Value = Format(character.Age.TotalYears);
@@ -1107,7 +1107,7 @@ public sealed class GameController(
         card.QualityStars.SetQuality(slot.Item.Quality);
         SetContaminationBadge(card.Contamination, slot.Item.Contamination);
         card.Effect.Value = DescribeItemEffect(config, slot.Item);
-        card.Buy.Label = unitPrice.ToString(CultureInfo.InvariantCulture);
+        card.Buy.Label = MoneyFormatter.Format(unitPrice);
         card.IconWell.Style.BorderColor = rarity.Color;
         card.Buy.IsEnabled = slot.AvailableQuantity > 0 && _state.Character.Money >= unitPrice;
     }
@@ -1133,7 +1133,7 @@ public sealed class GameController(
     private void Buy(Guid slotId, ItemConfig config)
     {
         var result = transactions.Buy(_state, slotId);
-        ShowActionFeedback(result.Success ? $"Куплено: {config.Name} · −{result.TotalPrice:N0}" : result.Message,
+        ShowActionFeedback(result.Success ? $"Куплено: {config.Name} · −{MoneyFormatter.Format(result.TotalPrice)}" : result.Message,
             result.Success ? config.Icon : "Assets/Textures/UIIcons/close.png", result.Success);
         if (result.Success)
         {
@@ -1219,7 +1219,7 @@ public sealed class GameController(
         _view.InventoryDetailEffect.Value = DescribeItemEffect(config, item);
         _view.InventoryDetailEffect.Value += ContaminationDescription(item.Contamination);
         _view.InventoryUse.IsEnabled = config.Effects.Count > 0 || item.CraftedEffects.Count > 0;
-        _view.InventorySell.Label = $"ПРОДАТЬ\n+{prices.GetSellPrice(item, _state.Shop)}";
+        _view.InventorySell.Label = $"ПРОДАТЬ\n+{MoneyFormatter.Format(prices.GetSellPrice(item, _state.Shop))}";
         _view.InventoryDetails.IsVisible = true;
     }
 
@@ -1280,7 +1280,7 @@ public sealed class GameController(
             return;
         var config = database.GetItem(item.ConfigId);
         var result = transactions.Sell(_state, id);
-        ShowActionFeedback(result.Success ? $"Продано: {ItemDisplayName(config, item)} · +{result.TotalPrice:N0}" : result.Message,
+        ShowActionFeedback(result.Success ? $"Продано: {ItemDisplayName(config, item)} · +{MoneyFormatter.Format(result.TotalPrice)}" : result.Message,
             result.Success ? "Assets/Textures/UIIcons/money.png" : "Assets/Textures/UIIcons/close.png", result.Success);
         if (result.Success)
         {
@@ -2359,7 +2359,9 @@ public sealed class GameController(
         widget.Root.SetAttribute("class",
             $"tick-float {tone} lane-{widget.Lane}{(value < 0m ? " negative" : string.Empty)}");
         SetPaintVisibility(widget.MoneyIcon, false);
-        widget.Value.Value = Signed(value);
+        widget.Value.Value = tone == "money-value"
+            ? MoneyFormatter.Format(decimal.ToInt64(value))
+            : Signed(value);
         _floatingDocument?.RestartAnimation(widget.Root);
     }
 
@@ -2478,7 +2480,7 @@ public sealed class GameController(
             : DescribeItemEffect(config, item);
         view.InfoPopupStatLabel1.Value = sellPrice is null ? "КОЛИЧЕСТВО" : "ЦЕНА ПРОДАЖИ";
         view.InfoPopupPriceIcon.IsVisible = sellPrice is not null;
-        view.InfoPopupStatValue1.Value = sellPrice is null ? quantity : $"{sellPrice:N0}";
+        view.InfoPopupStatValue1.Value = sellPrice is null ? quantity : MoneyFormatter.Format(sellPrice.Value);
         view.InfoPopupStatLabel2.Value = "ЗАГРЯЗНЕНИЕ";
         view.InfoPopupStatLabel3.Value = "РЕДКОСТЬ";
         view.InfoPopupStatValue3.Value = rarity?.DisplayName ?? "Определится при получении";
@@ -2489,7 +2491,7 @@ public sealed class GameController(
         _infoPopupSellAction = sellAction;
         view.InfoPopupUse.IsVisible = useAction is not null;
         view.InfoPopupSell.IsVisible = sellAction is not null;
-        view.InfoPopupSell.Label = sellPrice is null ? "ПРОДАТЬ" : $"ПРОДАТЬ\n+{sellPrice:N0}";
+        view.InfoPopupSell.Label = sellPrice is null ? "ПРОДАТЬ" : $"ПРОДАТЬ\n+{MoneyFormatter.Format(sellPrice.Value)}";
         view.InfoPopupOk.IsVisible = useAction is null && sellAction is null || action is not null;
         view.InfoPopupQuality.IsVisible = true;
         view.InfoPopupStatValue2.Value = item is null ? "—" : FormatContamination(item.Contamination);
@@ -2544,7 +2546,7 @@ public sealed class GameController(
         }
 
         if (showMoney)
-            AddRewardIcon(parent, "Assets/Textures/UIIcons/money.png", $"{mission.Reward.Money}");
+            AddRewardIcon(parent, "Assets/Textures/UIIcons/money.png", MoneyFormatter.Format(mission.Reward.Money));
     }
 
     private UiElement AddRewardIcon(UiElement parent, string source, string badge)
