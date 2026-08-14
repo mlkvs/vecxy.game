@@ -19,18 +19,16 @@ public sealed class AnalyticsService(IMediator mediator) : IAnalyticsService
     }
 }
 
-public sealed class AnalyticsEvent : IEvent
+public abstract class AnalyticsEvent : IEvent
 {
-    public AnalyticsEvent(string name, params (string Key, object? Value)[] parameters)
+    public abstract string Name { get; }
+    public abstract IReadOnlyDictionary<string, object?> Parameters { get; }
+
+    protected static IReadOnlyDictionary<string, object?> CreateParameters(params (string Key, object? Value)[] parameters)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        Name = name;
-        Parameters = parameters.ToDictionary(parameter => parameter.Key, parameter => parameter.Value,
+        return parameters.ToDictionary(parameter => parameter.Key, parameter => parameter.Value,
             StringComparer.Ordinal);
     }
-
-    public string Name { get; }
-    public IReadOnlyDictionary<string, object?> Parameters { get; }
 }
 
 public static class AnalyticsEventExtensions
