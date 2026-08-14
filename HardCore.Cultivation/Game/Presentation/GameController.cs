@@ -32,7 +32,8 @@ public sealed class GameController(
     ISceneManager scenes,
     IRenderer renderer,
     IAudioManager audio,
-    GameSaveSystem saves)
+    GameSaveSystem saves,
+    IAnalyticsService analytics)
 {
     private static readonly string[] CultivationPowerColors =
         ["#4daeff", "#56d5a0", "#f1bd59", "#c68bea", "#ef7f59", "#69f3e1"];
@@ -83,6 +84,16 @@ public sealed class GameController(
     private bool _gameOver;
     private bool _applicationPaused;
     private bool _backgroundMusicPaused;
+    private int _batchedTapCount;
+    private decimal _batchedTapPower;
+    private float _tapBatchElapsed;
+    private decimal _combatHeroDamage;
+    private decimal _combatEnemyDamage;
+    private int _combatHeroHits;
+    private int _combatEnemyHits;
+    private bool _combatWasVictory;
+    private string? _combatMissionId;
+    private string? _combatEnemyId;
     private ItemCategory _inventoryCategory = ItemCategory.Ingredient;
     private Guid? _selectedInventoryItem;
     private readonly List<Guid?> _alchemySlots = [];
@@ -123,8 +134,12 @@ public sealed class GameController(
 
     public void Initialize()
     {
-        if (!saves.TryLoad(out _state))
+        var loadedSave = saves.TryLoad(out _state);
+        if (!loadedSave)
+        {
             InitializeNewGame();
+            Track("first_launch", ("platform", buildInfo.Platform), ("app_version", buildInfo.Version));
+        }
         ApplyMusicSetting();
         if (_state.Shop.Slots.Count == 0)
             shop.Refresh(_state.Shop);
@@ -158,6 +173,9 @@ public sealed class GameController(
 
     public void Update(float deltaTime)
     {
+        _tapBatchElapsed += deltaTime;
+        if (_tapBatchElapsed >= 30f)
+            FlushTapBatch();
         UpdateYearCandleAnimation(deltaTime);
         if (_actionToast is not null && Environment.TickCount64 >= _actionToastExpiresAt)
         {
@@ -192,12 +210,57 @@ public sealed class GameController(
         }
         if (combatUpdate.StateChanged)
         {
+            var combatMission = _state.CurrentMission;
+            var combatSnapshot = combatMission?.Combat;
+            if (combatUpdate.Events.Any(value => value.Type == CombatEventType.Started))
+            {
+                _combatWasVictory = false;
+                _combatMissionId = combatMission?.MissionConfigId;
+                _combatEnemyId = combatSnapshot?.MonsterConfigId;
+                Track("combat_started", ("mission_id", combatMission?.MissionConfigId),
+                    ("enemy_id", combatSnapshot?.MonsterConfigId), ("player_health", _state.Character.Health),
+                    ("enemy_health", combatSnapshot?.EnemyHealth));
+            }
+            foreach (var combatEvent in combatUpdate.Events)
+            {
+                if (combatEvent.Type == CombatEventType.EnemyHurt)
+                {
+                    _combatHeroDamage += combatEvent.Amount;
+                    _combatHeroHits++;
+                }
+                else if (combatEvent.Type == CombatEventType.HeroHurt)
+                {
+                    _combatEnemyDamage += combatEvent.Amount;
+                    _combatEnemyHits++;
+                }
+            }
             if (combatUpdate.Events.Any(value => value.Type == CombatEventType.Victory))
+            {
+                _combatWasVictory = true;
                 ShowAchievement("ПОБЕДА");
+            }
             if (combatUpdate.Events.Any(value => value.Type == CombatEventType.Defeat))
+            {
                 ShowAchievement("ПОРАЖЕНИЕ");
+            }
             if (combatUpdate.Events.Any(value => value.Type == CombatEventType.Closed))
             {
+                Track("combat_completed", ("result", _combatWasVictory ? "victory" : "defeat"),
+                    ("mission_id", _combatMissionId), ("enemy_id", _combatEnemyId),
+                    ("player_health_after", _state.Character.Health));
+                if (!_combatWasVictory)
+                    Track("combat_defeat", ("mission_id", _combatMissionId), ("enemy_id", _combatEnemyId),
+                        ("player_stage", _state.Character.Cultivation.StageIndex));
+                Track("combat_damage_batch", ("source", "player"), ("total_damage", _combatHeroDamage),
+                    ("hits", _combatHeroHits));
+                Track("combat_damage_batch", ("source", "enemy"), ("total_damage", _combatEnemyDamage),
+                    ("hits", _combatEnemyHits));
+                _combatHeroDamage = 0m;
+                _combatEnemyDamage = 0m;
+                _combatHeroHits = 0;
+                _combatEnemyHits = 0;
+                _combatMissionId = null;
+                _combatEnemyId = null;
                 ApplyStateToView();
                 SyncMissions();
                 Save();
@@ -237,7 +300,12 @@ public sealed class GameController(
         }
     }
 
-    public void Save() => saves.Save(_state);
+    public void Save()
+    {
+        FlushTapBatch();
+        saves.Save(_state);
+        Track("save_completed", ("tick", _state.Calendar.TotalTicks));
+    }
 
     public void ChangeMoneyForCheat(long amount)
     {
@@ -316,6 +384,7 @@ public sealed class GameController(
 
     public void Dispose()
     {
+        FlushTapBatch();
         if (_document is not null)
         {
             _document.Reloaded -= BuildUi;
@@ -482,7 +551,12 @@ public sealed class GameController(
 
         BindClick(view.ShopButton, OpenShop);
         BindClick(view.AlchemyButton, OpenAlchemy);
-        BindClick(view.InventoryButton, () => { OpenWindow(view.InventoryWindow); SyncInventory(); });
+        BindClick(view.InventoryButton, () =>
+        {
+            TrackScreen("inventory");
+            OpenWindow(view.InventoryWindow);
+            SyncInventory();
+        });
         BindClick(view.SettingsButton, OpenSettings);
         BindClick(view.MissionSummaryButton, OpenMissions);
         BindClick(view.ActivityMode, ToggleActivityMode);
@@ -537,20 +611,41 @@ public sealed class GameController(
     private void ProcessWeek()
     {
         var moneyBefore = _state.Character.Money;
+        var missionIdBeforeTick = _state.CurrentMission?.MissionConfigId;
+        var inventoryBefore = _state.Inventory.Items.Select(item => item.InstanceId).ToHashSet();
+        var activeEffectsBefore = _state.ActiveEffects
+            .Select(effect => (effect.SourceItemId, effect.Type, effect.Value, effect.RemainingTicks))
+            .ToHashSet();
         var result = ticks.ProcessTick(_state);
+        foreach (var item in _state.Inventory.Items.Where(item => !inventoryBefore.Contains(item.InstanceId)))
+            Track("item_received", ("item_id", item.ConfigId), ("quantity", item.Quantity),
+                ("source", result.MissionCompleted ? "mission_reward" : "tick"),
+                ("contamination", item.Contamination));
+        foreach (var removed in activeEffectsBefore.Where(effect => !_state.ActiveEffects.Any(current =>
+                     (current.SourceItemId, current.Type, current.Value, current.RemainingTicks) == effect)))
+            Track("effect_removed", ("effect_id", removed.Type.ToString()), ("reason", "expired"),
+                ("source_item_id", removed.SourceItemId));
         if (result.MissionCompleted)
         {
+            Track("mission_completed", ("mission_id", missionIdBeforeTick), ("result", "completed"),
+                ("health_after", _state.Character.Health));
+            Track("mission_reward_received", ("mission_id", missionIdBeforeTick),
+                ("money_total", _state.Character.Money - moneyBefore));
             PlaySound("Sounds/mission-complete.wav", 0.65f);
             ShowAchievement("МИССИЯ ВЫПОЛНЕНА");
         }
         if (result.LevelsGained > 0)
         {
+            Track("cultivation_level_gained", ("levels", result.LevelsGained),
+                ("stage", _state.Character.Cultivation.StageIndex), ("level", _state.Character.Cultivation.Level));
             PlaySound("Sounds/cultivate.wav", 0.6f);
             ShowAchievement(result.LevelsGained == 1 ? "НОВЫЙ УРОВЕНЬ" : $"+{result.LevelsGained} УРОВНЯ");
         }
         if (result.CharacterDied)
         {
             _gameOver = true;
+            Track("character_died", ("age", _state.Character.Age.TotalYears),
+                ("stage", _state.Character.Cultivation.StageIndex));
             PlaySound("Sounds/death.wav", 0.7f);
         }
         if (result.TickNumber % database.Balance.AutoSaveEveryTicks == 0)
@@ -570,7 +665,10 @@ public sealed class GameController(
         if (_openEffectType is not null && IsWindowOpen(view.EffectPopup))
             UpdateEffectPopup();
         if (result.SpiritualPowerGained != 0m)
+        {
+            Track("spiritual_power_gained", ("source", "tick"), ("amount", result.SpiritualPowerGained));
             SpawnFloatingValue(result.SpiritualPowerGained, string.Empty, "spirit-value");
+        }
         if (result.MissionProgressAdded != 0m)
             SpawnFloatingValue(result.MissionProgressAdded, string.Empty, "mission-value");
         var moneyDelta = _state.Character.Money - moneyBefore;
@@ -598,10 +696,14 @@ public sealed class GameController(
             _floatingDocument?.RestartAnimation(_tapFeedback);
         }
         var result = ticks.ProcessTap(_state);
+        _batchedTapCount++;
+        _batchedTapPower += result.SpiritualPowerGained;
         if (result.SpiritualPowerGained != 0m)
             SpawnFloatingValue(result.SpiritualPowerGained, string.Empty, "spirit-value");
         if (result.LevelsGained > 0)
         {
+            Track("cultivation_level_gained", ("source", "tap"), ("levels", result.LevelsGained),
+                ("stage", _state.Character.Cultivation.StageIndex), ("level", _state.Character.Cultivation.Level));
             ShowAchievement(result.LevelsGained == 1 ? "НОВЫЙ УРОВЕНЬ" : $"+{result.LevelsGained} УРОВНЯ");
             ApplyStateToView();
         }
@@ -613,6 +715,7 @@ public sealed class GameController(
 
     private void ReactDog()
     {
+        Track("dog_meditation_opened", ("available", dogMeditation.GetProgress(_state) >= 1f));
         var result = dogMeditation.Collect(_state);
         SyncDogVisual();
         if (!result.Success)
@@ -687,6 +790,7 @@ public sealed class GameController(
 
     private void SetActivity(ActivityMode mode)
     {
+        Track("ui_action", ("screen", "main"), ("control", "activity_mode"), ("value", mode.ToString()));
         _state.SetActivityMode(mode);
         UpdateActivityButtons();
         Save();
@@ -1050,6 +1154,9 @@ public sealed class GameController(
 
     private void OpenShop()
     {
+        TrackScreen("shop");
+        Track("shop_opened", ("money", _state.Character.Money), ("stage", _state.Character.Cultivation.StageIndex),
+            ("items_count", _state.Shop.Slots.Count));
         UpdateShopWindowHeight();
         OpenWindow(_view!.ShopWindow);
         SyncShop();
@@ -1135,11 +1242,18 @@ public sealed class GameController(
 
     private void Buy(Guid slotId, ItemConfig config)
     {
+        var moneyBefore = _state.Character.Money;
+        var purchasedContamination = _state.Shop.Slots.FirstOrDefault(slot => slot.SlotId == slotId)?.Item.Contamination;
         var result = transactions.Buy(_state, slotId);
+        Track(result.Success ? "shop_purchase_succeeded" : "shop_purchase_failed",
+            ("item_id", config.Id), ("price", result.TotalPrice), ("money_before", moneyBefore),
+            ("money_after", _state.Character.Money), ("reason", result.Success ? null : result.Message));
         ShowActionFeedback(result.Success ? $"Куплено: {config.Name} · −{MoneyFormatter.Format(result.TotalPrice)}" : result.Message,
             result.Success ? config.Icon : "Assets/Textures/UIIcons/close.png", result.Success);
         if (result.Success)
         {
+            Track("item_received", ("item_id", config.Id), ("quantity", 1), ("source", "shop"),
+                ("contamination", purchasedContamination));
             SpawnFloatingValue(-result.TotalPrice, string.Empty, "money-value");
             UpdateHud();
             SyncShop();
@@ -1251,8 +1365,22 @@ public sealed class GameController(
         if (_state.Inventory.Find(id) is not { } item)
             return;
         var config = database.GetItem(item.ConfigId);
+        var contaminationBefore = _state.Character.Contamination;
+        var contaminationLevelBefore = GetContaminationLevelNumber(contaminationBefore);
+        var effectsBefore = _state.ActiveEffects
+            .Select(effect => (effect.SourceItemId, effect.Type, effect.Value, effect.RemainingTicks))
+            .ToHashSet();
         var before = _state.Character.SpiritualPower;
         var result = effects.Use(_state, id);
+        Track(result.Success ? "pill_consumed" : "item_use_failed",
+            ("item_id", item.ConfigId), ("category", config.Category.ToString()),
+            ("contamination", item.Contamination), ("reason", result.Success ? null : result.Message));
+        if (result.Success)
+            TrackContaminationChange(contaminationBefore, contaminationLevelBefore, "pill");
+        foreach (var effect in _state.ActiveEffects.Where(effect =>
+                     !effectsBefore.Contains((effect.SourceItemId, effect.Type, effect.Value, effect.RemainingTicks))))
+            Track("effect_added", ("effect_id", effect.Type.ToString()), ("duration_ticks", effect.RemainingTicks),
+                ("source_item_id", item.ConfigId));
         var levels = result.Success ? cultivation.AdvanceLevelsAutomatically(_state.Character) : 0;
         ShowActionFeedback(result.Message, result.Success ? config.Icon : "Assets/Textures/UIIcons/close.png", result.Success);
         if (_state.Character.SpiritualPower != before)
@@ -1283,6 +1411,9 @@ public sealed class GameController(
             return;
         var config = database.GetItem(item.ConfigId);
         var result = transactions.Sell(_state, id);
+        Track(result.Success ? "shop_sale_succeeded" : "shop_sale_failed",
+            ("item_id", item.ConfigId), ("price", result.TotalPrice),
+            ("reason", result.Success ? null : result.Message));
         ShowActionFeedback(result.Success ? $"Продано: {ItemDisplayName(config, item)} · +{MoneyFormatter.Format(result.TotalPrice)}" : result.Message,
             result.Success ? "Assets/Textures/UIIcons/money.png" : "Assets/Textures/UIIcons/close.png", result.Success);
         if (result.Success)
@@ -1300,6 +1431,9 @@ public sealed class GameController(
 
     private void OpenAlchemy()
     {
+        TrackScreen("alchemy");
+        Track("alchemy_opened", ("inventory_ingredients", _state.Inventory.Items.Count(item =>
+            database.GetItem(item.ConfigId).Category == ItemCategory.Ingredient)));
         ResetAlchemySlots();
         _alchemyCore = null;
         _alchemyMode = AlchemyMode.Pill;
@@ -1747,9 +1881,13 @@ public sealed class GameController(
     private void CraftAlchemy()
     {
         CloseAlchemyFilterMenus();
-        var result = alchemy.Craft(_state, CurrentAlchemySelection(), _alchemyMode);
+        var selection = CurrentAlchemySelection();
+        var preview = alchemy.Preview(_state, selection, _alchemyMode);
+        Track("alchemy_craft_attempted", ("ingredients_count", selection.Count), ("mode", _alchemyMode.ToString()));
+        var result = alchemy.Craft(_state, selection, _alchemyMode);
         if (!result.Success || result.Output is not { } output)
         {
+            Track("alchemy_craft_failed", ("reason", result.Message), ("mode", _alchemyMode.ToString()));
             ShowActionFeedback(result.Message, "Assets/Textures/UIIcons/close.png", false);
             return;
         }
@@ -1760,6 +1898,14 @@ public sealed class GameController(
         SyncAlchemy();
         SyncInventory();
         var config = database.GetItem(output.ConfigId);
+        Track("alchemy_craft_succeeded", ("result_item_id", output.ConfigId),
+            ("result_contamination", output.Contamination), ("mode", mode.ToString()),
+            ("ingredients_count", selection.Sum(value => value.Quantity)));
+        Track("item_received", ("item_id", output.ConfigId), ("quantity", output.Quantity),
+            ("source", "alchemy"), ("contamination", output.Contamination));
+        if (preview.Output is { } expected && expected.ConfigId != output.ConfigId)
+            Track("alchemy_craft_alternate_result", ("result_item_id", output.ConfigId),
+                ("expected_item_id", expected.ConfigId));
         var sellPrice = prices.GetSellPrice(output, _state.Shop);
         var canUse = config.Effects.Count > 0 || output.CraftedEffects.Count > 0;
         ShowItemPopup(
@@ -1775,6 +1921,9 @@ public sealed class GameController(
     private void OpenMissions()
     {
         OpenWindow(_view!.MissionsWindow);
+        TrackScreen("missions");
+        Track("missions_opened", ("stage", _state.Character.Cultivation.StageIndex),
+            ("available_count", _state.MissionBoard.MissionIds.Count));
         SyncMissions();
     }
 
@@ -1869,6 +2018,8 @@ public sealed class GameController(
     private void StartMission(string missionId)
     {
         var result = missions.Start(_state, missionId);
+        Track(result.Success ? "mission_started" : "mission_start_failed",
+            ("mission_id", missionId), ("reason", result.Success ? null : result.Message));
         ShowActionFeedback(result.Message,
             result.Success ? "Assets/Textures/UIIcons/missions.png" : "Assets/Textures/UIIcons/close.png",
             result.Success);
@@ -1958,12 +2109,18 @@ public sealed class GameController(
         _view.BreakthroughCost.Value =
             $"Нужно: {CompactNumberFormatter.Format(required)} · накоплено: {CompactNumberFormatter.Format(_state.Character.SpiritualPower)}\nПосле успеха запас обнулится";
         OpenWindow(_view.BreakthroughWindow);
+        TrackScreen("breakthrough");
     }
 
     private void AttemptBreakthrough()
     {
         UnmountWindow(_view!.BreakthroughWindow);
+        var beforeStage = _state.Character.Cultivation.StageIndex;
         var result = cultivation.AttemptBreakthrough(_state.Character, _state.ActiveEffects);
+        Track("breakthrough_attempted", ("from_stage", beforeStage), ("chance", result.FinalChance));
+        Track(result.Success ? "breakthrough_succeeded" : "breakthrough_failed",
+            ("from_stage", beforeStage), ("to_stage", _state.Character.Cultivation.StageIndex),
+            ("chance", result.FinalChance), ("lost_levels", result.LevelsLost));
         combat.ConfigureHero(_state.Character);
         _view.BreakthroughResultTitle.Value = result.Success ? "ПРОРЫВ УСПЕШЕН" : "ПРОРЫВ НЕ УДАЛСЯ";
         _view.BreakthroughResultText.Value = result.Success
@@ -2075,9 +2232,32 @@ public sealed class GameController(
         MountWindow(window, exclusive: true);
     }
 
+    private void TrackScreen(string screen) =>
+        Track("screen_view", ("screen", screen));
+
+    private void Track(string name, params (string Key, object? Value)[] parameters) =>
+        analytics.Publish(new AnalyticsEvent(name, parameters));
+
+    private void TrackContaminationChange(decimal before, int beforeLevel, string source)
+    {
+        var after = _state.Character.Contamination;
+        if (before == after)
+            return;
+        var afterLevel = GetContaminationLevelNumber(after);
+        Track("contamination_changed", ("before", before), ("after", after), ("source", source),
+            ("level", afterLevel));
+        if (beforeLevel != afterLevel)
+            Track("contamination_level_changed", ("before_level", beforeLevel), ("after_level", afterLevel),
+                ("contamination", after));
+        if (after < before)
+            Track("purification_applied", ("before", before), ("after", after),
+                ("purified_percent", before - after));
+    }
+
     private void OpenSettings()
     {
-        new AnalyticsEvent("test_settings_opened", ("version", buildInfo.Version)).Publish();
+        TrackScreen("settings");
+        Track("settings_opened", ("app_version", buildInfo.Version), ("build", buildInfo.VersionCode));
         SyncSettings();
         UpdateSettingsWindowHeight();
         OpenWindow(_view!.SettingsWindow);
@@ -2104,7 +2284,9 @@ public sealed class GameController(
 
     private void ToggleMusic()
     {
+        var previous = _state.Settings.MusicEnabled;
         _state.Settings.ToggleMusic();
+        Track("music_setting_changed", ("enabled", _state.Settings.MusicEnabled), ("previous_value", previous));
         ApplyMusicSetting();
         Save();
         SyncSettings();
@@ -2113,7 +2295,9 @@ public sealed class GameController(
 
     private void ToggleSounds()
     {
+        var previous = _state.Settings.SoundsEnabled;
         _state.Settings.ToggleSounds();
+        Track("sound_setting_changed", ("enabled", _state.Settings.SoundsEnabled), ("previous_value", previous));
         Save();
         SyncSettings();
         PlaySound("Sounds/ui-click.wav", 0.45f);
@@ -2154,13 +2338,27 @@ public sealed class GameController(
         _applicationPaused = !isActive;
         if (!isActive)
         {
+            FlushTapBatch();
+            Track("app_backgrounded");
             _backgroundMusicPaused = _state.Settings.MusicEnabled;
             if (_backgroundMusicPaused)
                 audio.Pause(BackgroundMusicPath, loop: true);
             return;
         }
 
+        Track("app_foregrounded");
         ApplyMusicSetting();
+    }
+
+    private void FlushTapBatch()
+    {
+        if (_batchedTapCount == 0)
+            return;
+        Track("tap_batch", ("count", _batchedTapCount), ("spiritual_power", _batchedTapPower),
+            ("stage", _state.Character.Cultivation.StageIndex));
+        _batchedTapCount = 0;
+        _batchedTapPower = 0m;
+        _tapBatchElapsed = 0f;
     }
 
     private static void SetSettingsToggle(UiButton button, string label, bool enabled)
@@ -2735,10 +2933,12 @@ public sealed class GameController(
         _ => type.ToString()
     };
 
-    private int GetContaminationLevelNumber() => database.Balance.ContaminationLevels
+    private int GetContaminationLevelNumber() => GetContaminationLevelNumber(_state.Character.Contamination);
+
+    private int GetContaminationLevelNumber(decimal contamination) => database.Balance.ContaminationLevels
         .OrderBy(level => level.MinimumContamination)
         .ToList()
-        .FindIndex(level => level.MinimumContamination == ContaminationCalculator.GetLevel(_state.Character.Contamination, database.Balance)?.MinimumContamination) + 1;
+        .FindIndex(level => level.MinimumContamination == ContaminationCalculator.GetLevel(contamination, database.Balance)?.MinimumContamination) + 1;
 
     private void BindClick(UiButton button, Action action) => button.Clicked += _ =>
     {

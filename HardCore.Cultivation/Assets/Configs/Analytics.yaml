@@ -9,7 +9,7 @@
 # useful for local testing. Use one API key for all versions of this application
 # unless separate test analytics is deliberately required.
 # ============================================================================
-appmetrica:
+appMetrica:
   # AppMetrica application API key. Copy it from AppMetrica -> Settings -> General.
   # This is an application identifier, not a signing key; it is embedded in APK/AAB.
-  apiKey: ""
+  apiKey: "f54659de-8937-4c19-b7c2-207767af43c0"

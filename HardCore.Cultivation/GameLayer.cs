@@ -1,4 +1,5 @@
 using Autofac;
+using System.Diagnostics;
 using HardCore.Cultivation.Game;
 using HardCore.Cultivation.Game.Application;
 using HardCore.Cultivation.Game.Infrastructure;
@@ -28,6 +29,10 @@ public sealed class GameLayer
     ILifetimeScope scope
 ) : AAppLayer
 {
+    private readonly Stopwatch _sessionTimer = new();
+    private float _performanceElapsed;
+    private int _performanceFrames;
+    private float _performanceFrameMilliseconds;
     public sealed class Definition : ADefinition<GameLayer>
     {
         public override void RegisterGlobal(ContainerBuilder builder)
@@ -61,6 +66,7 @@ public sealed class GameLayer
 
     public override void OnInitialize()
     {
+        var startupTimer = Stopwatch.StartNew();
 #if ANDROID
         buildInfo.InitializeFromAssembly();
 #else
@@ -74,10 +80,11 @@ public sealed class GameLayer
         AppMetricaBootstrap.Activate(analyticsInfo.AppMetricaApiKey);
 #endif
         AnalyticsEventExtensions.Bind(analytics);
-        new AnalyticsEvent("test_game_started",
-            ("version", buildInfo.Version),
+        new AnalyticsEvent("app_started",
+            ("app_version", buildInfo.Version),
             ("build", buildInfo.VersionCode),
-            ("platform", buildInfo.Platform)).Publish();
+            ("platform", buildInfo.Platform), ("launch_type", "cold")).Publish();
+        _sessionTimer.Restart();
 
         using var balance = configs.LoadConfig<GameBalanceConfig>("Configs/GameBalance.yaml");
         using var rarities = configs.LoadConfig<RaritiesConfig>("Configs/Rarities.yaml");
@@ -107,16 +114,34 @@ public sealed class GameLayer
         scenes.LoadScene<MainScene>();
         game.Initialize();
         Vecxy.Kernel.PlatformApplicationLifecycle.ActiveChanged += game.SetApplicationActive;
+        startupTimer.Stop();
+        if (startupTimer.ElapsedMilliseconds >= 3000)
+            new AnalyticsEvent("slow_loading_detected", ("phase", "game_initialize"),
+                ("duration_ms", startupTimer.ElapsedMilliseconds), ("platform", buildInfo.Platform)).Publish();
     }
 
     public override void OnUpdate(float deltaTime)
     {
         game.Update(deltaTime);
+        _performanceElapsed += deltaTime;
+        _performanceFrames++;
+        _performanceFrameMilliseconds += deltaTime * 1000f;
+        if (_performanceElapsed < 60f)
+            return;
+        new AnalyticsEvent("performance_sample",
+            ("fps_avg", _performanceFrames / Math.Max(0.001f, _performanceElapsed)),
+            ("frame_ms_avg", _performanceFrameMilliseconds / Math.Max(1, _performanceFrames)),
+            ("memory_mb", GC.GetTotalMemory(false) / 1024 / 1024)).Publish();
+        _performanceElapsed = 0f;
+        _performanceFrames = 0;
+        _performanceFrameMilliseconds = 0f;
     }
 
     public override void OnUnload()
     {
         Vecxy.Kernel.PlatformApplicationLifecycle.ActiveChanged -= game.SetApplicationActive;
+        new AnalyticsEvent("app_session_ended", ("duration_sec", _sessionTimer.Elapsed.TotalSeconds),
+            ("reason", "unload")).Publish();
         game.Save();
         game.Dispose();
         AnalyticsEventExtensions.Unbind();
