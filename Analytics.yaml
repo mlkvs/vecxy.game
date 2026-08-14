@@ -1,4 +1,0 @@
-# Analytics configuration embedded only into Android builds.
-appmetrica:
-  # Copy the application API key from AppMetrica: Settings -> General.
-  api_key: ""

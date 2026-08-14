@@ -1,0 +1,15 @@
+# ============================================================================
+# ANALYTICS BUILD CONFIGURATION
+# ============================================================================
+# `./build` reads this file only for Android builds. It is excluded from the
+# game asset bundle. The AppMetrica API key is compiled into the Android app,
+# as required by AppMetrica, and activates analytics during Application.OnCreate.
+#
+# Leave api_key empty to make a build without AppMetrica activation. This is
+# useful for local testing. Use one API key for all versions of this application
+# unless separate test analytics is deliberately required.
+# ============================================================================
+appmetrica:
+  # AppMetrica application API key. Copy it from AppMetrica -> Settings -> General.
+  # This is an application identifier, not a signing key; it is embedded in APK/AAB.
+  api_key: ""

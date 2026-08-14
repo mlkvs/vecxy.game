@@ -2,13 +2,13 @@
 
 Build settings, signing credentials and analytics are stored in repository YAML files:
 
-- `Build.yaml` defines game name, version, Android icon, Google Play version code, bundle version and keystore credentials;
-- `Analytics.yaml` contains the AppMetrica API key.
+- `HardCore.Cultivation/Assets/Configs/Build.yaml` defines game name, version, Android icon, Google Play version code, bundle version and keystore credentials;
+- `HardCore.Cultivation/Assets/Configs/Analytics.yaml` contains the AppMetrica API key.
 
-Use one script for both build flavours:
+Use the root build command for both build flavours:
 
 ```bash
-./scripts/build-android.sh dev
+./build dev
 ```
 
 `dev` builds a Debug `.aab` with `GAME_DEV_BUILD`. To make a signed development bundle, also provide `--keystore` and `--alias`.
@@ -16,10 +16,10 @@ Use one script for both build flavours:
 Google Play release build:
 
 ```bash
-./scripts/build-android.sh release
+./build release
 ```
 
-`release` builds with `GAME_RELEASE_BUILD`. `--build` overrides the Google Play version code and must increase for every upload. `--version` overrides the bundle version. Each invocation produces both formats in `artifacts/android/<mode>` unless `--output` is set:
+`release` builds with `GAME_RELEASE_BUILD`. `--build` overrides the Google Play version code and must increase for every upload. `--version` overrides the bundle version. `Build.yaml` selects the target platform and supports comma-separated `defines_common` plus `defines_<platform>`. Each invocation produces both formats in `artifacts/android/<mode>` unless `--output` is set:
 
 - `.aab` is the signed package for Google Play;
 - `.apk` is the signed package for testers.

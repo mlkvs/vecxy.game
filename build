@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 # Build signed Android packages: an App Bundle for Google Play and an APK for testers.
-# Build settings and credentials are read from Build.yaml and Analytics.yaml by default.
+# Build settings and credentials are read from Assets/Configs YAML files by default.
 set -Eeuo pipefail
 
-readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly PROJECT="$ROOT_DIR/HardCore.Cultivation/HardCore.Cultivation.csproj"
 
 usage() {
     cat <<'EOF'
 Usage:
-  ./scripts/build-android.sh <dev|release> [options]
+  ./build <dev|release> [options]
 
 Options:
-  -c, --config PATH        Build YAML. Default: Build.yaml.
-      --analytics-config PATH Analytics YAML. Default: Analytics.yaml.
+  -c, --config PATH        Build YAML. Default: HardCore.Cultivation/Assets/Configs/Build.yaml.
+      --analytics-config PATH Analytics YAML. Default: HardCore.Cultivation/Assets/Configs/Analytics.yaml.
   -b, --build NUMBER       Override Google Play version code from Build.yaml.
   -v, --version VERSION    Override bundle version from Build.yaml.
   -k, --keystore PATH      Override keystore path from Build.yaml.
@@ -22,9 +22,9 @@ Options:
   -h, --help               Show this help.
 
 Examples:
-  ./scripts/build-android.sh dev
-  ./scripts/build-android.sh release
-  ./scripts/build-android.sh release --build 46
+  ./build dev
+  ./build release
+  ./build release --build 46
 EOF
 }
 
@@ -59,8 +59,8 @@ case "$mode" in
     *) fail "mode must be dev or release" ;;
 esac
 
-build_config="$ROOT_DIR/Build.yaml"
-analytics_config="$ROOT_DIR/Analytics.yaml"
+build_config="$ROOT_DIR/HardCore.Cultivation/Assets/Configs/Build.yaml"
+analytics_config="$ROOT_DIR/HardCore.Cultivation/Assets/Configs/Analytics.yaml"
 build_number=""
 version=""
 keystore=""
@@ -93,11 +93,17 @@ alias_name="${alias_name:-$(yaml_value "$build_config" alias)}"
 store_password="$(yaml_value "$build_config" store_password)"
 key_password="$(yaml_value "$build_config" key_password)"
 appmetrica_api_key="$(yaml_value "$analytics_config" api_key)"
+platform="$(yaml_value "$build_config" platform)"
+common_defines="$(yaml_value "$build_config" defines_common)"
+platform_defines="$(yaml_value "$build_config" "defines_$platform")"
 
 [[ "$build_number" =~ ^[1-9][0-9]*$ ]] || fail "--build must be a positive integer"
 [[ -n "$version" ]] || fail "could not determine version; provide --version"
 [[ -n "$game_name" && -n "$game_version" ]] || fail "game name and version are required in $build_config"
 [[ -n "$icon_path" && -f "$ROOT_DIR/$icon_path" ]] || fail "icon file not found: $icon_path"
+[[ "$platform" == android ]] || fail "unsupported platform in $build_config: $platform"
+build_defines="${common_defines:+$common_defines,}${platform_defines}"
+build_defines="${build_defines//,/%3B}"
 output_dir="${output_dir:-$ROOT_DIR/artifacts/android/$mode}"
 temp_dir="$output_dir/.tmp"
 
@@ -144,6 +150,7 @@ TMPDIR="$temp_dir" dotnet publish "$PROJECT" \
     "-p:BuildGameName=$game_name" \
     "-p:BuildGameVersion=$game_version" \
     "-p:BuildIconPath=$ROOT_DIR/$icon_path" \
+    "-p:BuildDefines=$build_defines" \
     "${analytics_args[@]}" \
     "${signing_args[@]}"
 

@@ -1,0 +1,55 @@
+# ============================================================================
+# CONFIGURATION OF LOCAL AND RELEASE BUILDS
+# ============================================================================
+# The root command `./build dev` or `./build release` reads this file.
+# It is intentionally kept in the repository together with its signing data.
+# This is a service config, not a game config: it is excluded from APK and AAB
+# assets, so the keystore passwords below are never shipped to players.
+#
+# To make a new Google Play release:
+# 1. Update game.version and google_play.bundle_version when the visible version changes.
+# 2. Increase google_play.version_code. Google Play rejects a repeated or lower value.
+# 3. Run `./build release` from the repository root.
+# ============================================================================
+build:
+  # Target platform. Supported values:
+  # - android: creates a signed .aab for Google Play and a signed .apk for testers.
+  # Desktop is reserved for the shared config format but has no build implementation yet.
+  platform: "android"
+  # Optional comma-separated C# preprocessor symbols added to every target.
+  # Example: "FEATURE_TUTORIAL,ENABLE_DEBUG_MENU".
+  defines_common: ""
+  # Optional symbols used only when platform is android. They are added in addition
+  # to defines_common and the built-in GAME_DEV_BUILD / GAME_RELEASE_BUILD symbols.
+  # Example: "USE_GOOGLE_PLAY,BILLING_ENABLED".
+  defines_android: ""
+  # Prepared for a future desktop implementation. It has no effect while platform
+  # is android, but keeping desktop-only symbols here makes platform switching clear.
+  defines_desktop: ""
+
+game:
+  # Human-readable product name: shown in Android launcher, system settings and game UI.
+  name: "HardCore Cultivation"
+  # Game version shown in the in-game settings window. It is independent from
+  # Google Play version_code, which is a monotonically increasing technical integer.
+  version: "1.0.0"
+  # Path from the repository root to a square PNG used as Android launcher icon.
+  # Use a 512x512 or 1024x1024 image; the build creates Android resource variants.
+  icon: "HardCore.Cultivation/Assets/Textures/Character.png"
+
+google_play:
+  # Android versionCode. Increase this positive integer for EVERY Google Play upload,
+  # including internal, closed and production tracks. It must never be decreased.
+  version_code: 45
+  # Android versionName shown to players in Google Play. It may use semantic versioning,
+  # for example "1.1.0" or "1.1.0-beta.2". Usually it matches game.version.
+  bundle_version: "1.0.0"
+  signing:
+    # Path from repository root to the JKS/keystore used for Google Play signing.
+    keystore: "Build/Keystores/hardcore-cultivation-google-play.jks"
+    # Alias of the key inside the keystore. Verify it with `keytool -list` if changed.
+    alias: "hardcore-cultivation-google-play"
+    # Store password and private-key password. Both values are used only while building.
+    # Changing them does not create a new key. Keep this repository private.
+    store_password: "564c004166b02bb7eb51389decd3fa630d41dc9317bd8f11"
+    key_password: "564c004166b02bb7eb51389decd3fa630d41dc9317bd8f11"

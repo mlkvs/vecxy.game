@@ -10,12 +10,15 @@
     <FileVersion>1.0.0.45</FileVersion>
   </PropertyGroup>
 
-  <!-- Set by scripts/build-android.sh; keeps build-only code explicit in C#. -->
+  <!-- Set by ./build; keeps build-only code explicit in C#. -->
   <PropertyGroup Condition="'$(GameBuildFlavor)' == 'Dev'">
     <DefineConstants>$(DefineConstants);GAME_DEV_BUILD</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GameBuildFlavor)' == 'Release'">
     <DefineConstants>$(DefineConstants);GAME_RELEASE_BUILD</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(BuildDefines)' != ''">
+    <DefineConstants>$(DefineConstants);$(BuildDefines)</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(VecxyPlatform)' == 'Android'">
@@ -26,6 +29,12 @@
     <PackageReference Include="Net.Android.AppMetrica.Analytics" Version="7.1.1" />
     <AssemblyMetadata Include="AppMetricaApiKey" Value="$(AppMetricaApiKey)" />
     <AndroidResource Include="$(BuildIconPath)" Link="drawable/app_icon.png" Condition="'$(BuildIconPath)' != ''" />
+    <!-- Build credentials live beside game configs but must never be bundled into Android assets. -->
+    <AndroidAsset Remove="$(MSBuildProjectDirectory)/Assets/Configs/Build.yaml;$(MSBuildProjectDirectory)/Assets/Configs/Analytics.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Assets/Configs/Build.yaml;Assets/Configs/Analytics.yaml" />
   </ItemGroup>
 
   <Import Project="..\Engine\Vecxy\Code\Vecxy.Platforms\build\Vecxy.Platforms.props" />
