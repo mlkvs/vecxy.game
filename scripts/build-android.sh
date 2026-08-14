@@ -90,22 +90,33 @@ mkdir -p "$output_dir"
 
 publish_package() {
     local package_format="$1"
+    local package_output="$output_dir/.publish/$package_format"
+    local package
+
+    rm -rf "$package_output"
+    mkdir -p "$package_output"
 
     dotnet publish "$PROJECT" \
         --configuration "$configuration" \
         --framework net10.0-android \
         --runtime android-arm64 \
-        --output "$output_dir" \
+        --output "$package_output" \
         -p:VecxyPlatform=Android \
         -p:GameBuildFlavor="$flavor" \
         -p:AndroidPackageFormats="$package_format" \
         -p:ApplicationVersion="$build_number" \
         -p:ApplicationDisplayVersion="$version" \
         "${signing_args[@]}"
+
+    package="$(find "$package_output" -type f -name "*-Signed.$package_format" -print -quit)"
+    package="${package:-$(find "$package_output" -type f -name "*.$package_format" -print -quit)}"
+    [[ -n "$package" ]] || fail "publish completed without a .$package_format file"
+    cp "$package" "$output_dir/$(basename "$package")"
 }
 
 publish_package aab
 publish_package apk
+rm -rf "$output_dir/.publish"
 
 bundle="$(find "$output_dir" -type f -name '*.aab' -print -quit)"
 apk="$(find "$output_dir" -type f -name '*.apk' -print -quit)"
