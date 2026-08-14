@@ -2075,6 +2075,7 @@ public sealed class GameController(
 
     private void OpenSettings()
     {
+        new AnalyticsEvent("test_settings_opened", ("version", buildInfo.Version)).Publish();
         SyncSettings();
         UpdateSettingsWindowHeight();
         OpenWindow(_view!.SettingsWindow);

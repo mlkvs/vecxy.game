@@ -19,6 +19,7 @@ public sealed class GameLayer
     GameDatabase database,
     GameBuildInfo buildInfo,
     GameAnalyticsInfo analyticsInfo,
+    IAnalyticsService analytics,
     GameController game,
     IAudioManager audio,
     ILifetimeScope scope
@@ -36,6 +37,7 @@ public sealed class GameLayer
             builder.RegisterType<GameDatabase>().SingleInstance();
             builder.RegisterType<GameBuildInfo>().SingleInstance();
             builder.RegisterType<GameAnalyticsInfo>().SingleInstance();
+            builder.RegisterType<AnalyticsService>().As<IAnalyticsService>().SingleInstance();
             builder.RegisterType<SystemRandomSource>().As<IRandomSource>().SingleInstance();
             builder.RegisterType<ItemGenerator>().SingleInstance();
             builder.RegisterType<ItemEffectService>().SingleInstance();
@@ -61,10 +63,16 @@ public sealed class GameLayer
         analyticsInfo.InitializeFromAssembly();
 #else
         using var build = configs.LoadConfig<BuildConfig>("Configs/Build.yaml");
-        using var analytics = configs.LoadConfig<AnalyticsConfig>("Configs/Analytics.yaml");
+        using var analyticsConfig = configs.LoadConfig<AnalyticsConfig>("Configs/Analytics.yaml");
         buildInfo.Initialize(build.Value);
-        analyticsInfo.Initialize(analytics.Value);
+        analyticsInfo.Initialize(analyticsConfig.Value);
 #endif
+        AnalyticsEventExtensions.Bind(analytics);
+        new AnalyticsEvent("test_game_started",
+            ("version", buildInfo.Version),
+            ("build", buildInfo.VersionCode),
+            ("platform", buildInfo.Platform)).Publish();
+
         using var balance = configs.LoadConfig<GameBalanceConfig>("Configs/GameBalance.yaml");
         using var rarities = configs.LoadConfig<RaritiesConfig>("Configs/Rarities.yaml");
         using var items = configs.LoadConfig<ItemsConfig>("Configs/Items.yaml");
@@ -104,5 +112,6 @@ public sealed class GameLayer
     {
         game.Save();
         game.Dispose();
+        AnalyticsEventExtensions.Unbind();
     }
 }
