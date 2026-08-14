@@ -22,6 +22,7 @@ Options:
 Environment for signed builds:
   ANDROID_KEYSTORE_PASSWORD  Keystore password (required for release).
   ANDROID_KEY_PASSWORD       Key password. Defaults to ANDROID_KEYSTORE_PASSWORD.
+  APPMETRICA_API_KEY         Optional AppMetrica application API key.
 
 Examples:
   ./scripts/build-android.sh dev --build 45
@@ -86,6 +87,11 @@ if [[ "$mode" == release || -n "$keystore" || -n "$alias_name" ]]; then
     )
 fi
 
+analytics_args=()
+if [[ -n "${APPMETRICA_API_KEY:-}" ]]; then
+    analytics_args=("-p:AppMetricaApiKey=$APPMETRICA_API_KEY")
+fi
+
 rm -rf "$output_dir"
 mkdir -p "$output_dir"
 mkdir -p "$temp_dir"
@@ -105,6 +111,7 @@ TMPDIR="$temp_dir" dotnet publish "$PROJECT" \
     "-p:JavaOptions=-Djava.io.tmpdir=$temp_dir" \
     -p:ApplicationVersion="$build_number" \
     -p:ApplicationDisplayVersion="$version" \
+    "${analytics_args[@]}" \
     "${signing_args[@]}"
 
 bundle="$(find "$package_dir" -maxdepth 1 -type f -name '*-Signed.aab' -print -quit)"

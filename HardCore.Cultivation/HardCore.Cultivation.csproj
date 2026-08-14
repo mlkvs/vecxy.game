@@ -16,6 +16,11 @@
     <DefineConstants>$(DefineConstants);GAME_RELEASE_BUILD</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(VecxyPlatform)' == 'Android'">
+    <PackageReference Include="Net.Android.AppMetrica.Analytics" Version="7.1.1" />
+    <AssemblyMetadata Include="AppMetricaApiKey" Value="$(AppMetricaApiKey)" />
+  </ItemGroup>
+
   <Import Project="..\Engine\Vecxy\Code\Vecxy.Platforms\build\Vecxy.Platforms.props" />
 
   <ItemGroup>
