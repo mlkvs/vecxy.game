@@ -3255,6 +3255,12 @@
     font-size: 17px;
 }
 
+/* Dark lettering stays readable on both the empty track and its colored fill. */
+.cultivation-track > .cultivation-progress-text {
+    color: #33291e;
+    text-shadow: 0 1px 0 #fff4d6cc, 0 0 2px #fff4d6cc;
+}
+
 /* Shop icons stay in normal layout so they cannot disappear behind the well. */
 .shop-card .shop-card-icon-stack {
     flex-shrink: 0;

@@ -796,7 +796,7 @@ public sealed class GameController(
             _view.CultivationProgress.Style.Set("background-color", CultivationPowerColors[0]);
             _view.CultivationOverflowProgress.Progress = 0f;
             _view.CultivationOverflowProgress.Style.Set("background-color", CultivationPowerColors[1]);
-            _view.CultivationProgressText.Value = $"{Format(spiritualPower)} / {Format(required)}";
+            _view.CultivationProgressText.Value = $"{CompactNumberFormatter.Format(spiritualPower)} / {CompactNumberFormatter.Format(required)}";
             return;
         }
 
@@ -809,8 +809,8 @@ public sealed class GameController(
         _view.CultivationOverflowProgress.Style.Set("background-color", nextColor);
         var reservePercent = Math.Max(0m, (powerBars - 1m) * 100m);
         _view.CultivationProgressText.Value = reservePercent > 0m
-            ? $"{Format(spiritualPower)} / {Format(required)} · запас +{Format(reservePercent)}%"
-            : $"{Format(spiritualPower)} / {Format(required)}";
+            ? $"{CompactNumberFormatter.Format(spiritualPower)} / {CompactNumberFormatter.Format(required)} · запас +{Format(reservePercent)}%"
+            : $"{CompactNumberFormatter.Format(spiritualPower)} / {CompactNumberFormatter.Format(required)}";
     }
 
     private void UpdateActivityButtons()
@@ -1953,7 +1953,7 @@ public sealed class GameController(
         var required = cultivation.GetRequiredPower(progress.StageIndex, progress.Level);
         _view!.BreakthroughChance.Value = $"{Format(cultivation.GetBreakthroughChance(_state.Character, _state.ActiveEffects))}%";
         _view.BreakthroughCost.Value =
-            $"Нужно: {Format(required)} · накоплено: {Format(_state.Character.SpiritualPower)}\nПосле успеха запас обнулится";
+            $"Нужно: {CompactNumberFormatter.Format(required)} · накоплено: {CompactNumberFormatter.Format(_state.Character.SpiritualPower)}\nПосле успеха запас обнулится";
         OpenWindow(_view.BreakthroughWindow);
     }
 
@@ -2361,7 +2361,9 @@ public sealed class GameController(
         SetPaintVisibility(widget.MoneyIcon, false);
         widget.Value.Value = tone == "money-value"
             ? MoneyFormatter.Format(decimal.ToInt64(value))
-            : Signed(value);
+            : tone == "spirit-value"
+                ? CompactNumberFormatter.Format(value, includePlusSign: true)
+                : Signed(value);
         _floatingDocument?.RestartAnimation(widget.Root);
     }
 
@@ -2652,7 +2654,7 @@ public sealed class GameController(
             EffectType.AgingSpeed => $"Скорость старения {SignedUi(value)}%",
             EffectType.BreakthroughChance when pluralBreakthroughChance => $"Шансы прорыва {SignedUi(value)}%",
             EffectType.BreakthroughChance => $"Шанс прорыва {SignedUi(value)}%",
-            EffectType.SpiritualPowerGain when effect.Operation == ModifierOperation.Flat => $"Добавляет {Format(value)} духовной силы",
+            EffectType.SpiritualPowerGain when effect.Operation == ModifierOperation.Flat => $"Добавляет {CompactNumberFormatter.Format(value)} духовной силы",
             EffectType.SpiritualPowerGain => $"Получение духовной силы {SignedUi(value)}%",
             EffectType.MissionProgress => $"Скорость выполнения миссий {SignedUi(value)}%",
             EffectType.HealthRegeneration when effect.Operation == ModifierOperation.Flat => $"Регенерация здоровья {SignedUi(value)}/с",
