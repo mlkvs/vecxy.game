@@ -74,6 +74,7 @@ if [[ "$mode" == release || -n "$keystore" || -n "$alias_name" ]]; then
     [[ -n "$keystore" && -f "$keystore" ]] || fail "a readable --keystore is required"
     [[ -n "$alias_name" ]] || fail "--alias is required for a signed build"
     [[ -n "${ANDROID_KEYSTORE_PASSWORD:-}" ]] || fail "ANDROID_KEYSTORE_PASSWORD is required"
+    keystore="$(cd "$(dirname "$keystore")" && pwd)/$(basename "$keystore")"
     key_password="${ANDROID_KEY_PASSWORD:-$ANDROID_KEYSTORE_PASSWORD}"
     signing_args=(
         -p:AndroidKeyStore=True
