@@ -88,17 +88,24 @@ fi
 rm -rf "$output_dir"
 mkdir -p "$output_dir"
 
-dotnet publish "$PROJECT" \
-    --configuration "$configuration" \
-    --framework net10.0-android \
-    --runtime android-arm64 \
-    --output "$output_dir" \
-    -p:VecxyPlatform=Android \
-    -p:GameBuildFlavor="$flavor" \
-    -p:AndroidPackageFormats=aab%3Bapk \
-    -p:ApplicationVersion="$build_number" \
-    -p:ApplicationDisplayVersion="$version" \
-    "${signing_args[@]}"
+publish_package() {
+    local package_format="$1"
+
+    dotnet publish "$PROJECT" \
+        --configuration "$configuration" \
+        --framework net10.0-android \
+        --runtime android-arm64 \
+        --output "$output_dir" \
+        -p:VecxyPlatform=Android \
+        -p:GameBuildFlavor="$flavor" \
+        -p:AndroidPackageFormats="$package_format" \
+        -p:ApplicationVersion="$build_number" \
+        -p:ApplicationDisplayVersion="$version" \
+        "${signing_args[@]}"
+}
+
+publish_package aab
+publish_package apk
 
 bundle="$(find "$output_dir" -type f -name '*.aab' -print -quit)"
 apk="$(find "$output_dir" -type f -name '*.apk' -print -quit)"
