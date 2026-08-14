@@ -24,7 +24,9 @@ stages:
     # Коэффициент рекурсии L(n) = k * (L(n-1) + L(n-2)).
     recursiveCoefficient: 0.70
     # Множитель духовной силы за тик на этой стадии.
-    spiritualPowerMultiplier: 3
+    # Устаревшее поле, оставлено для совместимости: в расчётах не используется.
+    # Сила за тик и тап меняется только пилюлями и другими эффектами.
+    spiritualPowerMultiplier: 1.0
     baseBreakthroughChance: 80
     statsPerLevel: { maximumHealth: 5, healthRegeneration: 0.1, attack: 0.5, attacksPerSecond: 0.05, longevityYears: 0.5 }
     breakthroughBonus: { maximumHealth: 50, healthRegeneration: 0.5, attack: 5, attacksPerSecond: 0.5, longevityYears: 12 }
@@ -33,7 +35,7 @@ stages:
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/qi-gathering.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/qi-gathering.jpg
     recursiveCoefficient: 0.67
-    spiritualPowerMultiplier: 6
+    spiritualPowerMultiplier: 1.0
     baseBreakthroughChance: 65
     statsPerLevel: { maximumHealth: 10, healthRegeneration: 0.25, attack: 1, attacksPerSecond: 0.1, longevityYears: 1 }
     breakthroughBonus: { maximumHealth: 200, healthRegeneration: 0.75, attack: 10, attacksPerSecond: 0.5, longevityYears: 25 }
@@ -42,7 +44,7 @@ stages:
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/golden-core.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/golden-core.jpg
     recursiveCoefficient: 0.64
-    spiritualPowerMultiplier: 9
+    spiritualPowerMultiplier: 1.0
     baseBreakthroughChance: 40
     statsPerLevel: { maximumHealth: 25, healthRegeneration: 0.35, attack: 2, attacksPerSecond: 0.15, longevityYears: 1.5 }
     breakthroughBonus: { maximumHealth: 750, healthRegeneration: 2, attack: 20, attacksPerSecond: 0.75, longevityYears: 40 }
@@ -51,7 +53,7 @@ stages:
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/nascent-soul.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/nascent-soul.jpg
     recursiveCoefficient: 0.61
-    spiritualPowerMultiplier: 13
+    spiritualPowerMultiplier: 1.0
     baseBreakthroughChance: 30
     statsPerLevel: { maximumHealth: 50, healthRegeneration: 0.75, attack: 3, attacksPerSecond: 0.2, longevityYears: 2 }
     breakthroughBonus: { maximumHealth: 1500, healthRegeneration: 5, attack: 40, attacksPerSecond: 1.25, longevityYears: 80 }
@@ -60,7 +62,7 @@ stages:
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/soul-formation.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/soul-formation.jpg
     recursiveCoefficient: 0.58
-    spiritualPowerMultiplier: 18
+    spiritualPowerMultiplier: 1.0
     baseBreakthroughChance: 22
     statsPerLevel: { maximumHealth: 150, healthRegeneration: 2, attack: 4, attacksPerSecond: 0.25, longevityYears: 3 }
     breakthroughBonus: { maximumHealth: 2500, healthRegeneration: 10, attack: 80, attacksPerSecond: 2, longevityYears: 125 }
@@ -69,7 +71,7 @@ stages:
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/void-refinement.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/void-refinement.jpg
     recursiveCoefficient: 0.55
-    spiritualPowerMultiplier: 40
+    spiritualPowerMultiplier: 1.0
     baseBreakthroughChance: 15
     statsPerLevel: { maximumHealth: 250, healthRegeneration: 4, attack: 5, attacksPerSecond: 0.3, longevityYears: 5 }
     breakthroughBonus: { maximumHealth: 5000, healthRegeneration: 20, attack: 150, attacksPerSecond: 3, longevityYears: 300 }
@@ -78,6 +80,6 @@ stages:
     cultivationBackgroundTexture: Textures/Backgrounds/Cultivation/immortal-ascension.jpg
     missionBackgroundTexture: Textures/Backgrounds/Missions/immortal-ascension.jpg
     recursiveCoefficient: 0.52
-    spiritualPowerMultiplier: 50
+    spiritualPowerMultiplier: 1.0
     baseBreakthroughChance: 100
     statsPerLevel: { maximumHealth: 500, healthRegeneration: 8, attack: 10, attacksPerSecond: 0.5, longevityYears: 7.5 }

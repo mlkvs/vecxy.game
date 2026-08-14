@@ -815,7 +815,7 @@ public sealed class TickProcessor(
         }
         else if (state.ActivityMode == ActivityMode.Cultivation)
         {
-            spiritualPower = database.Balance.BaseSpiritualPowerPerTick * database.Cultivation.Stages[state.Character.Cultivation.StageIndex].SpiritualPowerMultiplier *
+            spiritualPower = database.Balance.BaseSpiritualPowerPerTick *
                              modifiers.TickEfficiency *
                              modifiers.SpiritualPowerMultiplier;
             state.Character.AddSpiritualPower(spiritualPower);
