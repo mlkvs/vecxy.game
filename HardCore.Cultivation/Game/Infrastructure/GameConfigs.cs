@@ -482,6 +482,13 @@ public sealed class GameDatabase
         return index >= 0 ? index : throw new KeyNotFoundException($"Unknown cultivation stage: {id}");
     }
 
+    public int GetMissionBoardCapacityForStage(int currentStageIndex)
+    {
+        var availableMissionCount = _missions.Values.Count(mission =>
+            Math.Abs(GetCultivationStageIndex(mission.StageId) - currentStageIndex) <= 1);
+        return Math.Max(1, Math.Min(MissionBoardSlotCount, availableMissionCount));
+    }
+
     public MonsterConfig GetMonster(string id) => _monsters.TryGetValue(id, out var monster)
         ? monster
         : throw new KeyNotFoundException($"Unknown monster: {id}");

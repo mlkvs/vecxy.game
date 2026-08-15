@@ -1958,8 +1958,8 @@ public sealed class GameController(
         var outputHeight = Math.Max(1, renderer.GameOutputHeight);
         var scale = Math.Max(0.0001f, Math.Min(outputWidth / UiReferenceWidth, outputHeight / UiReferenceHeight));
         var canvasHeight = outputHeight / scale;
-        // The board capacity determines a stable window height for both mission tabs.
-        var rows = Math.Max(1, (int)Math.Ceiling(database.MissionBoardSlotCount / (float)MissionColumnCount));
+        var stageCapacity = database.GetMissionBoardCapacityForStage(_state.Character.Cultivation.StageIndex);
+        var rows = Math.Max(1, (int)Math.Ceiling(stageCapacity / (float)MissionColumnCount));
         var requiredCardsHeight = rows * MissionCardHeight + (rows - 1) * MissionCardRowGap;
         var preferredHeight = MissionWindowChromeHeight + requiredCardsHeight;
         var height = Math.Min(preferredHeight, Math.Max(420f, canvasHeight - MissionViewportMargin));

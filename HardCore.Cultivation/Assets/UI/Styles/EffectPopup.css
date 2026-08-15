@@ -9,28 +9,71 @@
 
 .effect-popup-header {
     min-height: 72px;
-    padding: 0 0 14px 2px;
+    padding: 16px 20px 18px;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: 18px;
-    border-bottom: 2px solid #f1bd5944;
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+.effect-popup-card .info-popup-kind {
+    flex: 1;
+    min-width: 0;
+    color: #000000;
+    font-size: 20px;
+    line-height: 1.1;
 }
 
 .effect-popup-title {
-    margin-top: 4px;
-    color: #fff3d6;
-    font-size: 21px;
+    margin-top: 0;
+    color: #000000;
+    font-size: 20px;
+    line-height: 1.1;
+    text-align: right;
+}
+
+.effect-popup-card > .info-popup-close {
+    top: 24px;
+    right: 24px;
+    width: 42px;
+    height: 42px;
+    padding: 6px;
+}
+
+.effect-popup-card > .info-popup-close image {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.effect-popup-card .info-popup-body {
+    margin-top: 12px;
+    padding: 18px 20px 20px;
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
 }
 
 .effect-popup-card .info-popup-effect {
-    margin-top: 16px;
-    padding: 18px 20px;
+    margin-top: 0;
+    padding: 0;
     min-height: 148px;
-    color: #4e3b29;
-    font-size: 17px;
+    color: #000000;
+    font-size: 19px;
     min-font-size: 13px;
-    line-height: 1.18;
+    line-height: 1.28;
     text-align: left;
     white-space: normal;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
 }

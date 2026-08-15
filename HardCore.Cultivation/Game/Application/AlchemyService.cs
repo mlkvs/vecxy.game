@@ -152,10 +152,9 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
 
         var purificationIngredients = ingredients.Where(unit => GetProperties(unit.Item)
             .Any(property => property.PropertyId == database.Alchemy.PurificationPropertyId)).ToArray();
+        var hasPurification = purificationIngredients.Length > 0;
         var allPurification = purificationIngredients.Length == ingredients.Length;
-        var createsPurityPill = allPurification || resolveMixedPurification && purificationIngredients.Length > 0 &&
-            random.NextDecimal(0m, 1m) < database.Alchemy.PurificationMixedRecipeChance;
-        if (createsPurityPill)
+        if (allPurification)
             return CreatePurityPill(units, quality, contamination, resolveMixedPurification);
 
         var effects = new List<(ItemEffectDefinition Effect, AlchemyPropertyConfig Property, int Matches)>();
@@ -190,8 +189,10 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             .Take(database.Alchemy.MaximumPillEffects)
             .ToArray();
         if (selectedEffects.Length == 0)
-            return AlchemyPreview.Fail(
-                $"Ни одно свойство не повторяется хотя бы {database.Alchemy.MinimumPropertyMatches} раза.");
+            return hasPurification
+                ? CreatePurityPill(units, quality, contamination, resolveMixedPurification)
+                : AlchemyPreview.Fail(
+                    $"Ни одно свойство не повторяется хотя бы {database.Alchemy.MinimumPropertyMatches} раза.");
 
         var rarity = AverageRarity(units.Select(value => value.Item.Rarity));
         var name = selectedEffects.Length == 1
@@ -209,6 +210,18 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             Contamination = contamination,
             CraftedEffects = selectedEffects.Select(value => value.Effect).ToList()
         };
+        if (hasPurification)
+        {
+            if (!resolveMixedPurification)
+                return new AlchemyPreview(
+                    true,
+                    $"Смесь с шансом {database.Alchemy.PurificationMixedRecipeChance:P0} даст обычную пилюлю, иначе получится пилюля чистоты.",
+                    CreatePurityPill(units, quality, contamination, randomizePercent: false).Output,
+                    ["Очищение", .. selectedEffects.Select(value => value.Property.DisplayName)]);
+            if (random.NextDecimal(0m, 1m) >= database.Alchemy.PurificationMixedRecipeChance)
+                return CreatePurityPill(units, quality, contamination, randomizePercent: true);
+        }
+
         return new AlchemyPreview(
             true,
             selectedEffects.Length == 1 ? "Смесь устойчива." : "Свойства образуют многокомпонентную пилюлю.",
