@@ -255,33 +255,45 @@ items:
   # ------------------------------------------------------------
   # УСКОРЕНИЕ МИССИЙ
   # ------------------------------------------------------------
-  - id: mission_talisman
-    name: Талисман странника
-    description: Помогает быстрее находить путь и выполнять поручения секты.
+  - id: core_earth
+    name: Ядро копателя
+    description: Вырвано из тела дикого зверя, ингредиент для алхимии
     icon: Assets/Textures/Items/mission-talisman.png
     category: Core
-    durationType: Temporary
-    temporaryDurationTicks: 36
-    basePrice: 180
-    shopWeight: 12
-    effects:
-      - type: MissionProgress
-        operation: AdditivePercent
-        value: 35
+    basePrice: 150
+    shopWeight: 9
 
-  - id: swift_scroll
-    name: Свиток быстрого пути
-    description: Открывает короткие духовные тропы и ускоряет выполнение поручений секты.
+  - id: core_water
+    name: Ядро ныряльщика
+    description: Вырвано из тела дикого зверя, ингредиент для алхимии
     icon: Assets/Textures/Items/swift-scroll.png
     category: Core
-    durationType: Temporary
-    temporaryDurationTicks: 18
-    basePrice: 280
+    basePrice: 150
     shopWeight: 9
-    effects:
-      - type: MissionProgress
-        operation: AdditivePercent
-        value: 60
+    
+  - id: core_wind
+    name: Ядро летуна
+    description: Вырвано из тела дикого зверя, ингредиент для алхимии
+    icon: Assets/Textures/Items/swift-scroll.png
+    category: Core
+    basePrice: 150
+    shopWeight: 9   
+    
+  - id: core_fire
+    name: Ядро горельца
+    description: Вырвано из тела дикого зверя, ингредиент для алхимии
+    icon: Assets/Textures/Items/swift-scroll.png
+    category: Core
+    basePrice: 150
+    shopWeight: 9
+    
+  - id: swift_scroll
+    name: Ядро пожирателя
+    description: Вырвано из тела дикого зверя, ингредиент для алхимии
+    icon: Assets/Textures/Items/swift-scroll.png
+    category: Core
+    basePrice: 250
+    shopWeight: 9
 
   # ------------------------------------------------------------
   # ВРЕМЕННЫЕ ПРЕДМЕТЫ СТАРЕНИЯ
