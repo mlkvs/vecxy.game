@@ -36,6 +36,20 @@
     object-fit: contain;
 }
 
+.item-element {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+}
+
+.item-element-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
 .item-heading {
     flex: 1;
     min-width: 0;
