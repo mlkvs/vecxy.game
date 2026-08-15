@@ -234,7 +234,11 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             cores[0].Config.Element,
             ingredients.Select(unit => unit.Config.Element),
             database.Alchemy);
-        var contamination = ingredients.Average(unit => Math.Clamp(unit.Item.Contamination, 0m, 1m));
+        var contamination = ingredients.Average(unit =>
+            unit.Config.Category == ItemCategory.Ingredient &&
+            unit.Config.AlchemyProperties.Any(property => property.PropertyId == database.Alchemy.PurificationPropertyId)
+                ? 0m
+                : Math.Clamp(unit.Item.Contamination, 0m, 1m));
         var contaminationModifier = new PiecewiseLinearCurve<ContaminationCurvePoint>(database.Alchemy.ContaminationModifierCurve,
             point => point.Contamination, point => point.Multiplier).Evaluate(contamination);
 

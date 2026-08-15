@@ -245,14 +245,17 @@ public sealed class GameSaveSystem(GameDatabase database)
 
     private ItemInstance FromItemData(ItemSaveData data)
     {
-        _ = database.GetItem(data.ConfigId);
+        var config = database.GetItem(data.ConfigId);
         var item = new ItemInstance
         {
             InstanceId = data.InstanceId,
             ConfigId = data.ConfigId,
             Rarity = data.Rarity,
             Quality = data.Quality,
-            Contamination = data.Contamination,
+            Contamination = config.Category == ItemCategory.Ingredient &&
+                            config.AlchemyProperties.Any(property => property.PropertyId == database.Alchemy.PurificationPropertyId)
+                ? 0m
+                : Math.Clamp(data.Contamination, 0m, 1m),
             PurificationPercent = data.PurificationPercent,
             CustomName = data.CustomName,
             CustomDescription = data.CustomDescription,

@@ -162,6 +162,22 @@ Check(pillSale.Success && pillSale.TotalPrice == pillSellPrice &&
 var pillUse = effectService.Use(alchemyState, craftedPill.InstanceId);
 Check(pillUse.Success && alchemyState.ActiveEffects.Count > 0,
     "Crafted pill could not be used from its result popup.");
+var purificationState = new GameState(database.Balance.TicksPerYear);
+purificationState.Character.AddContamination(0.4m);
+var purificationPill = new ItemInstance
+{
+    InstanceId = Guid.NewGuid(),
+    ConfigId = "purity_pill",
+    Rarity = ItemRarity.Common,
+    Quality = 1m,
+    Contamination = 0.1m,
+    PurificationPercent = 50m,
+    CraftedEffects = [new ItemEffectDefinition { Type = EffectType.PurifyContamination, Operation = ModifierOperation.Flat, Value = 50m }]
+};
+purificationState.Inventory.Add(purificationPill);
+var purificationUse = effectService.Use(purificationState, purificationPill.InstanceId);
+Check(purificationUse.Success && purificationState.Character.Contamination == 0m,
+    "Purification did not apply pill contamination before removing contamination.");
 
 var distillationState = new GameState(database.Balance.TicksPerYear);
 var rawA = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Common, Quality = 1m };
@@ -364,8 +380,8 @@ static GameDatabase BuildDatabase()
                     AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "clarity" }] },
                 new ItemConfig { Id = "crafted_alchemy_pill", Name = "Pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
                     TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
-                new ItemConfig { Id = "purity_pill", Name = "Purity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
-                    TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
+                new ItemConfig { Id = "purity_pill", Name = "Purity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Instant,
+                    BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "alchemy_extract", Name = "Extract", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant,
                     BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "attempt", Name = "Attempt", Category = ItemCategory.Core, DurationType = ItemDurationType.UntilBreakthroughAttempt, BasePrice = 10,

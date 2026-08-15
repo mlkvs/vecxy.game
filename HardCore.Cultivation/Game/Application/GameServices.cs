@@ -95,17 +95,27 @@ public sealed class ItemGenerator(GameDatabase database, IRandomSource random)
             ConfigId = configId,
             Rarity = rarity,
             Quality = band.Index - 1 + step / 10m,
-            Contamination = RollContamination()
+            Contamination = RollContamination(configId)
         };
         if (quantity > 1)
             item.AddQuantity(quantity - 1);
         return item;
     }
 
-    private decimal RollContamination()
+    public decimal NormalizeContamination(string configId, decimal contamination)
+    {
+        var config = database.GetItem(configId);
+        return config.Category == ItemCategory.Ingredient &&
+               config.AlchemyProperties.Any(property => property.PropertyId == database.Alchemy.PurificationPropertyId)
+            ? 0m
+            : Math.Clamp(contamination, 0m, 1m);
+    }
+
+    public decimal RollContamination(string configId)
     {
         var band = WeightedRandom.Select(database.Balance.ContaminationBands, value => value.Weight, random);
-        return band.Maximum == band.Minimum ? band.Minimum : random.NextDecimal(band.Minimum, band.Maximum);
+        var contamination = band.Maximum == band.Minimum ? band.Minimum : random.NextDecimal(band.Minimum, band.Maximum);
+        return NormalizeContamination(configId, contamination);
     }
 }
 
@@ -142,6 +152,10 @@ public sealed class ItemEffectService(GameDatabase database)
             ? 1m
             : ItemBalanceFormula.GetEffectStrength(item, config, database);
 
+        var hasPurification = definitions.Any(effect => effect.Type == EffectType.PurifyContamination);
+        if (hasPurification && config.Category == ItemCategory.Pill)
+            state.Character.AddContamination(item.Contamination * database.Balance.ContaminationAbsorptionPerPill);
+
         if (config.DurationType == ItemDurationType.Instant)
         {
             foreach (var effect in definitions)
@@ -176,7 +190,7 @@ public sealed class ItemEffectService(GameDatabase database)
         }
 
         state.Inventory.Remove(item.InstanceId, 1);
-        if (config.Category == ItemCategory.Pill)
+        if (config.Category == ItemCategory.Pill && !hasPurification)
             state.Character.AddContamination(item.Contamination * database.Balance.ContaminationAbsorptionPerPill);
         return TransactionResult.Ok(0, $"Использовано: {item.CustomName ?? config.Name}");
     }
@@ -363,7 +377,7 @@ public sealed class MissionService(
                     {
                         Rarity = reward.ItemRarity,
                         Quality = reward.ItemQuality,
-                        Contamination = itemGenerator.Generate(reward.ItemConfigId!).Contamination
+                        Contamination = itemGenerator.RollContamination(reward.ItemConfigId!)
                     })
                     .ToList();
             foreach (var roll in rolls)
@@ -374,7 +388,7 @@ public sealed class MissionService(
                     ConfigId = reward.ItemConfigId!,
                     Rarity = roll.Rarity,
                     Quality = roll.Quality,
-                    Contamination = roll.Contamination
+                    Contamination = itemGenerator.NormalizeContamination(reward.ItemConfigId!, roll.Contamination)
                 });
             }
         }
