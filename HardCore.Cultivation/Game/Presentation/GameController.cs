@@ -2915,14 +2915,14 @@ public sealed class GameController(
         host.IsVisible = element.HasValue;
         if (element is not { } value)
             return;
-        icon.Sprite = ElementIcon(value);
+        icon.Sprite = AtlasSprite(ElementIcon(value));
     }
 
     private static void SetElementIcon(UiImage icon, Element? element)
     {
         SetPaintVisibility(icon, element.HasValue);
         if (element is { } value)
-            icon.Sprite = ElementIcon(value);
+            icon.Sprite = AtlasSprite(ElementIcon(value));
     }
 
     private static string ElementIcon(Element element) => element switch
