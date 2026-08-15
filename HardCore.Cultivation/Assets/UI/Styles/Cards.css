@@ -3659,20 +3659,6 @@
     border-color: #668a70;
 }
 
-/* Every retained modal surface fades through compositor opacity. */
-.window-fade-surface {
-    opacity: 0;
-    transition: opacity 0.16s ease-in-out;
-}
-
-.window-fade-surface.window-fade-open {
-    opacity: 1;
-}
-
-#window-backdrop.window-fade-surface {
-    transition: opacity 0.14s ease-in-out;
-}
-
 .shop-window {
     top: 235px;
     bottom: 235px;

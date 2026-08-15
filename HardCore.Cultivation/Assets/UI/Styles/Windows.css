@@ -14,7 +14,69 @@
     position: absolute;
     inset: 0;
     pointer-events: auto;
-    background-color: #040806c2;
+    background-color: #030201d8;
+}
+
+/* Every retained window starts outside the right edge. On close it crosses the
+   screen and is reset to the right only after the leftward animation ends. */
+.window-fade-surface {
+    opacity: 0;
+    transition: opacity 0.01s linear 0.18s;
+}
+
+.window-fade-surface.window-fade-open {
+    opacity: 1;
+    transition: opacity 0.01s linear 0s;
+}
+
+.window.window-fade-surface {
+    transform: translateX(110%);
+    transition: transform 0.18s cubic-bezier(0.22, 0.68, 0.24, 1), opacity 0.01s linear 0.18s;
+}
+
+.window.window-fade-surface.window-exit-to-left {
+    transform: translateX(-110%);
+}
+
+.window.window-fade-surface.window-fade-open {
+    transform: translateX(0);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1) 0.12s, opacity 0.01s linear 0s;
+}
+
+.info-popup-overlay.window-fade-surface > .info-popup-card,
+.info-popup-overlay.window-fade-surface > .effect-popup-card,
+.info-popup-overlay.window-fade-surface > .breakthrough-dialog,
+.death-overlay.window-fade-surface > .death-dialog,
+.privacy-policy-overlay.window-fade-surface > .privacy-policy-card {
+    transform: translateX(110%);
+    transition: transform 0.18s cubic-bezier(0.22, 0.68, 0.24, 1);
+}
+
+.info-popup-overlay.window-exit-to-left > .info-popup-card,
+.info-popup-overlay.window-exit-to-left > .effect-popup-card,
+.info-popup-overlay.window-exit-to-left > .breakthrough-dialog,
+.death-overlay.window-exit-to-left > .death-dialog,
+.privacy-policy-overlay.window-exit-to-left > .privacy-policy-card {
+    transform: translateX(-110%);
+}
+
+.info-popup-overlay.window-fade-open > .info-popup-card,
+.info-popup-overlay.window-fade-open > .effect-popup-card,
+.info-popup-overlay.window-fade-open > .breakthrough-dialog,
+.death-overlay.window-fade-open > .death-dialog,
+.privacy-policy-overlay.window-fade-open > .privacy-policy-card {
+    transform: translateX(0);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1) 0.12s;
+}
+
+#window-backdrop.window-fade-surface {
+    opacity: 0;
+    transition: opacity 0.14s ease-in 0.18s;
+}
+
+#window-backdrop.window-fade-surface.window-fade-open {
+    opacity: 1;
+    transition: opacity 0.12s ease-out 0s;
 }
 
 .window {
@@ -104,7 +166,7 @@
 }
 .death-overlay {
     pointer-events: auto; position: absolute; inset: 0; align-items: center; justify-content: center;
-    padding: 34px; background-color: #050906e8;
+    padding: 34px; background-color: transparent;
 }
 .death-dialog {
     width: 100%; max-width: 620px; padding: 34px; align-items: center;
@@ -144,7 +206,7 @@
 
 .info-popup-overlay {
     pointer-events: auto; position: absolute; inset: 0; z-index: 1100;
-    padding: 38px; align-items: center; justify-content: center; background-color: #030805dc;
+    padding: 38px; align-items: center; justify-content: center; background-color: transparent;
 }
 .effect-popup-overlay { z-index: 1000; }
 .info-popup-card {

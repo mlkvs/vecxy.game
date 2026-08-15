@@ -53,6 +53,7 @@ public sealed class GameController(
     private const float HealthUiRefreshIntervalSeconds = 1f / 15f;
     private const string WindowFadeClass = "window-fade-surface";
     private const string WindowOpenClass = "window-fade-open";
+    private const string WindowExitToLeftClass = "window-exit-to-left";
     private const float UiReferenceWidth = 620f;
     private const float UiReferenceHeight = 1180f;
     private const int ShopRowCount = 3;
@@ -2465,15 +2466,28 @@ public sealed class GameController(
         document.IsVisible = true;
         window.IsVisible = true;
         SetPaintVisibility(window, true);
+        window.RemoveClass(WindowExitToLeftClass);
         window.AddClass(WindowOpenClass);
         UpdateWindowLayerState();
     }
 
     private void UnmountWindow(UiPanel window)
     {
+        if (window.Classes.Contains(WindowExitToLeftClass))
+            return;
+
+        if (!window.Classes.Contains(WindowOpenClass))
+        {
+            window.RemoveClass(WindowExitToLeftClass);
+            window.RemoveClass(WindowOpenClass);
+            SetPaintVisibility(window, false);
+            UpdateWindowLayerState();
+            return;
+        }
+
         window.IsVisible = true;
+        window.AddClass(WindowExitToLeftClass);
         window.RemoveClass(WindowOpenClass);
-        SetPaintVisibility(window, false);
         UpdateWindowLayerState();
     }
 
@@ -2482,6 +2496,7 @@ public sealed class GameController(
         foreach (var window in _view!.Windows)
         {
             window.AddClass(WindowFadeClass);
+            window.RemoveClass(WindowExitToLeftClass);
             window.RemoveClass(WindowOpenClass);
             window.TransitionEnded -= HandleWindowFadeEnded;
             window.TransitionEnded += HandleWindowFadeEnded;
@@ -2507,6 +2522,7 @@ public sealed class GameController(
             element.Classes.Contains(WindowOpenClass))
             return;
 
+        element.RemoveClass(WindowExitToLeftClass);
         SetPaintVisibility(element, false);
         UpdateWindowLayerState();
     }
@@ -2615,7 +2631,6 @@ public sealed class GameController(
                 else
                 {
                     backdrop.RemoveClass(WindowOpenClass);
-                    SetPaintVisibility(backdrop, false);
                 }
             }
 
