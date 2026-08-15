@@ -66,7 +66,9 @@ public sealed record AlchemyCraftResult(
     bool Success,
     string Message,
     IReadOnlyList<ItemInstance> Outputs,
-    int ProducedQuantity)
+    int ProducedQuantity,
+    bool IngredientsDestroyed = false,
+    decimal SuccessChancePercent = 0m)
 {
     public ItemInstance? Output => Outputs.FirstOrDefault();
     public static AlchemyCraftResult Fail(string message) => new(false, message, [], 0);
@@ -99,20 +101,35 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         var resolved = Resolve(state, selection);
         if (resolved.Error is not null)
             return AlchemyCraftResult.Fail(resolved.Error);
+        var validation = mode == AlchemyMode.Pill
+            ? PreviewPill(resolved.Units, resolveMixedPurification: false)
+            : PreviewDistillation(resolved.Units);
+        if (!validation.CanCraft || validation.Output is null)
+            return AlchemyCraftResult.Fail(validation.Message);
+
+        var successChance = CalculateSuccessChance(resolved.Units, mode);
+        if (random.NextDecimal(0m, 100m) >= successChance)
+        {
+            if (!RemoveSelected(state, selection))
+                return AlchemyCraftResult.Fail("Состав инвентаря изменился. Соберите смесь заново.");
+            return new AlchemyCraftResult(
+                false,
+                $"Неудача: шанс успеха был {successChance:0.#}%. Все ингредиенты уничтожены.",
+                [],
+                0,
+                IngredientsDestroyed: true,
+                SuccessChancePercent: successChance);
+        }
+
+        if (!RemoveSelected(state, selection))
+            return AlchemyCraftResult.Fail("Состав инвентаря изменился. Соберите смесь заново.");
+
         var previews = mode == AlchemyMode.Pill
             ? CreatePillBatch(resolved.Units)
             : [PreviewDistillation(resolved.Units)];
         var failedPreview = previews.FirstOrDefault(preview => !preview.CanCraft || preview.Output is null);
         if (failedPreview is not null)
-            return AlchemyCraftResult.Fail(failedPreview.Message);
-
-        foreach (var selected in selection
-                     .GroupBy(value => value.InstanceId)
-                     .Select(group => new AlchemySelection(group.Key, group.Sum(value => value.Quantity))))
-        {
-            if (!state.Inventory.Remove(selected.InstanceId, selected.Quantity))
-                return AlchemyCraftResult.Fail("Состав инвентаря изменился. Соберите смесь заново.");
-        }
+            throw new InvalidOperationException($"Validated alchemy recipe became invalid: {failedPreview.Message}");
 
         var storedOutputs = new List<ItemInstance>();
         foreach (var preview in previews)
@@ -127,7 +144,31 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         var first = storedOutputs[0];
         var producedQuantity = previews.Count;
         var name = first.CustomName ?? database.GetItem(first.ConfigId).Name;
-        return new AlchemyCraftResult(true, $"Создано: {name} x{producedQuantity}", storedOutputs, producedQuantity);
+        return new AlchemyCraftResult(true, $"Создано: {name} x{producedQuantity}", storedOutputs, producedQuantity,
+            SuccessChancePercent: successChance);
+    }
+
+    private decimal CalculateSuccessChance(IReadOnlyList<IngredientUnit> units, AlchemyMode mode)
+    {
+        var ingredients = units.Where(unit => unit.Config.Category == ItemCategory.Ingredient).ToArray();
+        var coreQuality = mode == AlchemyMode.Pill
+            ? units.Single(unit => unit.Config.Category == ItemCategory.Core).Item.Quality
+            : 0m;
+        return Math.Min(
+            database.Alchemy.MaximumCraftSuccessChance,
+            database.Alchemy.CraftSuccessChancePerQuality * (coreQuality + ingredients.Average(unit => unit.Item.Quality)));
+    }
+
+    private static bool RemoveSelected(GameState state, IReadOnlyCollection<AlchemySelection> selection)
+    {
+        foreach (var selected in selection
+                     .GroupBy(value => value.InstanceId)
+                     .Select(group => new AlchemySelection(group.Key, group.Sum(value => value.Quantity))))
+        {
+            if (!state.Inventory.Remove(selected.InstanceId, selected.Quantity))
+                return false;
+        }
+        return true;
     }
 
     public IReadOnlyList<AlchemyPropertyAmount> GetProperties(ItemInstance item)

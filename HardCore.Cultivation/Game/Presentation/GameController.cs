@@ -1899,6 +1899,16 @@ public sealed class GameController(
         if (!result.Success || result.Output is not { } output)
         {
             Track(new AlchemyCraftFailedEvent(result.Message, _alchemyMode.ToString()));
+            if (result.IngredientsDestroyed)
+            {
+                ResetAlchemySlots();
+                _alchemyCore = null;
+                Save();
+                SyncAlchemy();
+                SyncInventory();
+                ShowAlchemyFailurePopup(result.Message, _alchemyMode, result.SuccessChancePercent);
+                return;
+            }
             ShowActionFeedback(result.Message, "Assets/Textures/UIIcons/close.png", false);
             return;
         }
@@ -2828,6 +2838,35 @@ public sealed class GameController(
         view.InfoPopupIcon.Sprite = AtlasSprite(config.Icon);
         var accent = rarity?.Color ?? "#56d5a0";
         view.InfoPopupIconWell.Style.BorderColor = accent;
+        MountWindow(view.InfoPopup, exclusive: false);
+    }
+
+    private void ShowAlchemyFailurePopup(string message, AlchemyMode mode, decimal successChancePercent)
+    {
+        var view = _view!;
+        view.InfoPopupKind.Value = "АЛХИМИЯ";
+        view.InfoPopupTitle.Value = mode == AlchemyMode.Pill ? "СОЗДАНИЕ НЕ УДАЛОСЬ" : "РАФИНИРОВАНИЕ НЕ УДАЛОСЬ";
+        view.InfoPopupDescription.Value = "Реакция сорвалась. Все предметы из алхимической схемы разрушены.";
+        view.InfoPopupEffect.Value = "Ингредиенты потеряны";
+        view.InfoPopupStatLabel1.Value = "ШАНС УСПЕХА";
+        view.InfoPopupStatValue1.Value = $"{successChancePercent:0.#}%";
+        view.InfoPopupPriceIcon.IsVisible = false;
+        view.InfoPopupStatLabel2.Value = "РЕЗУЛЬТАТ";
+        view.InfoPopupStatValue2.Value = "НЕУДАЧА";
+        view.InfoPopupStatValue2.IsVisible = true;
+        view.InfoPopupStatLabel3.Value = "ПРЕДМЕТЫ";
+        view.InfoPopupStatValue3.Value = "УНИЧТОЖЕНЫ";
+        view.InfoPopupDetails.Value = message;
+        view.InfoPopupOk.Label = "ПОНЯТНО";
+        _infoPopupAction = null;
+        _infoPopupUseAction = null;
+        _infoPopupSellAction = null;
+        view.InfoPopupUse.IsVisible = false;
+        view.InfoPopupSell.IsVisible = false;
+        view.InfoPopupOk.IsVisible = true;
+        view.InfoPopupQuality.IsVisible = false;
+        view.InfoPopupIcon.Sprite = AtlasSprite("Assets/Textures/UIIcons/close.png");
+        view.InfoPopupIconWell.Style.BorderColor = "#d85a5a";
         MountWindow(view.InfoPopup, exclusive: false);
     }
 

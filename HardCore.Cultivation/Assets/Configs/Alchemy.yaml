@@ -63,6 +63,12 @@ maximumQuality: 5.0
 distillationQualityPerIngredient: 0.12
 distillationQualityPerLevel: 0.18
 
+# Вероятность успеха создания: min(95%, 10 * (качество ядра + среднее качество
+# ингредиентов)). При рафинировании ядра нет, поэтому учитывается только среднее
+# качество сырья. Неудача уничтожает все предметы, положенные в алхимию.
+craftSuccessChancePerQuality: 10
+maximumCraftSuccessChance: 95
+
 # Итоговая сила эффекта созданной пилюли соответствует таблице баланса:
 # baseValue * coverage * qualityPriceCurve(quality) * rarityMultiplier.
 # Количество ингредиентов определяет доступность рецепта и coverage свойства,

@@ -102,7 +102,7 @@ _ = maximumDogMeditation.Update(maximumDogState, 1f);
 Check(maximumDogMeditation.Collect(maximumDogState).Reward == 3000,
     "Dog meditation did not include the configured maximum reward.");
 
-var alchemy = new AlchemyService(database, new MaximumRandom());
+var alchemy = new AlchemyService(database, new FirstMinimumThenMaximumRandom());
 Check(AlchemyResultRankFormula.Calculate(
           3m, [2m, 4m], 0.6m, 0.4m, 1.5m, 0.3m, 2m, 0m, 0.1m, 5m) == 3m,
     "Alchemy result rank formula does not apply the weighted average and maximum component.");
@@ -179,6 +179,18 @@ var purificationUse = effectService.Use(purificationState, purificationPill.Inst
 Check(purificationUse.Success && purificationState.Character.Contamination == 0m,
     "Purification did not apply pill contamination before removing contamination.");
 
+var failedPillState = new GameState(database.Balance.TicksPerYear);
+var failedPillCore = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "attempt", Rarity = ItemRarity.Common, Quality = 1m };
+var failedPillIngredient = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Common, Quality = 1m };
+failedPillIngredient.AddQuantity(1);
+failedPillState.Inventory.Add(failedPillCore);
+failedPillState.Inventory.Add(failedPillIngredient);
+var failedPill = new AlchemyService(database, new MaximumRandom()).Craft(failedPillState,
+    [new(failedPillCore.InstanceId, 1), new(failedPillIngredient.InstanceId, 2)], AlchemyMode.Pill);
+Check(!failedPill.Success && failedPill.IngredientsDestroyed && failedPill.SuccessChancePercent == 20m &&
+      failedPillState.Inventory.Items.Count == 0,
+    "A failed pill craft did not destroy every selected item.");
+
 var distillationState = new GameState(database.Balance.TicksPerYear);
 var rawA = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Common, Quality = 1m };
 var rawB = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Rare, Quality = 2m };
@@ -186,12 +198,13 @@ var rawC = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredien
 distillationState.Inventory.Add(rawA);
 distillationState.Inventory.Add(rawB);
 distillationState.Inventory.Add(rawC);
-var minimumRefiningPreview = alchemy.Preview(distillationState,
+var distillationAlchemy = new AlchemyService(database, new FirstMinimumThenMaximumRandom());
+var minimumRefiningPreview = distillationAlchemy.Preview(distillationState,
     [new(rawA.InstanceId, 1), new(rawB.InstanceId, 1)],
     AlchemyMode.Distillation);
 Check(minimumRefiningPreview.CanCraft,
     "Two matching ingredients were rejected by refining.");
-var distillation = alchemy.Craft(distillationState,
+var distillation = distillationAlchemy.Craft(distillationState,
     [new(rawA.InstanceId, 1), new(rawB.InstanceId, 1), new(rawC.InstanceId, 1)],
     AlchemyMode.Distillation);
 Check(distillation.Success && distillation.Output is { DistillationLevel: 1, Rarity: ItemRarity.Rare } &&
@@ -199,12 +212,22 @@ Check(distillation.Success && distillation.Output is { DistillationLevel: 1, Rar
     "Distillation did not improve quality and average rarity.");
 var extract = distillation.Output!;
 distillationState.Inventory.Add(extract.Copy(2));
-var powerful = alchemy.Preview(distillationState,
+var powerful = distillationAlchemy.Preview(distillationState,
     [new(extract.InstanceId, 3)], AlchemyMode.Distillation);
 Check(powerful.CanCraft && powerful.Output is { DistillationLevel: 2 } &&
       powerful.Output.AlchemyProperties.Select(value => value.PropertyId)
           .SequenceEqual(extract.AlchemyProperties.Select(value => value.PropertyId)),
     "Repeated distillation did not preserve the extract properties.");
+
+var failedDistillationState = new GameState(database.Balance.TicksPerYear);
+var failedDistillationInput = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Common, Quality = 1m };
+failedDistillationInput.AddQuantity(1);
+failedDistillationState.Inventory.Add(failedDistillationInput);
+var failedDistillation = new AlchemyService(database, new MaximumRandom()).Craft(failedDistillationState,
+    [new(failedDistillationInput.InstanceId, 2)], AlchemyMode.Distillation);
+Check(!failedDistillation.Success && failedDistillation.IngredientsDestroyed && failedDistillation.SuccessChancePercent == 10m &&
+      failedDistillationState.Inventory.Items.Count == 0,
+    "A failed distillation did not destroy every selected item.");
 
 var savePath = Path.Combine(Path.GetTempPath(), $"cultivation-alchemy-{Guid.NewGuid():N}.json");
 var saveSystem = new GameSaveSystem(database) { SavePath = savePath };
@@ -454,4 +477,21 @@ sealed class MaximumRandom : IRandomSource
 {
     public int NextInt(int minInclusive, int maxExclusive) => maxExclusive - 1;
     public decimal NextDecimal(decimal minInclusive, decimal maxExclusive) => maxExclusive - 0.0001m;
+}
+
+sealed class FirstMinimumThenMaximumRandom : IRandomSource
+{
+    private bool _firstDecimal = true;
+
+    public int NextInt(int minInclusive, int maxExclusive) => maxExclusive - 1;
+
+    public decimal NextDecimal(decimal minInclusive, decimal maxExclusive)
+    {
+        if (_firstDecimal)
+        {
+            _firstDecimal = false;
+            return minInclusive;
+        }
+        return maxExclusive - 0.0001m;
+    }
 }

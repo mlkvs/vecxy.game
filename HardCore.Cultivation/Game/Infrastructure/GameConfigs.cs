@@ -225,6 +225,8 @@ public sealed class AlchemyConfig : IYamlConfig
     public decimal MaximumQuality { get; init; } = 5m;
     public decimal DistillationQualityPerIngredient { get; init; } = 0.12m;
     public decimal DistillationQualityPerLevel { get; init; } = 0.18m;
+    public decimal CraftSuccessChancePerQuality { get; init; } = 10m;
+    public decimal MaximumCraftSuccessChance { get; init; } = 95m;
     public string PurificationPropertyId { get; init; } = "purification";
     public decimal PurificationMixedRecipeChance { get; init; } = 0.5m;
     public decimal PurificationMinimumPercent { get; init; } = 25m;
@@ -585,6 +587,7 @@ public sealed class GameDatabase
             Alchemy.MinimumPropertyFraction is <= 0m or > 1m || Alchemy.MaximumPillEffects is < 1 or > 4 ||
             Alchemy.PillDurationTicks <= 0 || Alchemy.MaximumQuality <= 0m ||
             Alchemy.DistillationQualityPerIngredient < 0m || Alchemy.DistillationQualityPerLevel < 0m ||
+            Alchemy.CraftSuccessChancePerQuality < 0m || Alchemy.MaximumCraftSuccessChance is < 0m or > 100m ||
             Alchemy.PurificationMixedRecipeChance is < 0m or > 1m || Alchemy.PurificationMinimumPercent is < 0m or > 100m ||
             Alchemy.PurificationMaximumPercent < Alchemy.PurificationMinimumPercent || Alchemy.PurificationMaximumPercent > 100m ||
             Alchemy.PillOutputQuantityChances.Count == 0 ||
