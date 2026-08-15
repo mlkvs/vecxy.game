@@ -75,6 +75,15 @@ public static class ElementCompatibilityCalculator
 
 public static class ContaminationCalculator
 {
+    /// <summary>Combines independent contamination probabilities as 1 - product(1 - p).</summary>
+    public static decimal Combine(IEnumerable<decimal> probabilities)
+    {
+        var cleanProbability = 1m;
+        foreach (var probability in probabilities)
+            cleanProbability *= 1m - Math.Clamp(probability, 0m, 1m);
+        return 1m - cleanProbability;
+    }
+
     public static ContaminationLevelConfig? GetLevel(decimal contamination, GameBalanceConfig balance) =>
         balance.ContaminationLevels
             .Where(level => contamination >= level.MinimumContamination)

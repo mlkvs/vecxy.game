@@ -54,6 +54,10 @@ var spreadsheetQualityBalance = new GameBalanceConfig
 Check(ItemBalanceFormula.GetQualityMultiplier(spreadsheetQualityBalance, ItemCategory.Pill, 0.1m) == 0.5m &&
       ItemBalanceFormula.GetQualityMultiplier(spreadsheetQualityBalance, ItemCategory.Pill, 5m) == 3.5m,
     "Item effect quality multipliers do not match the spreadsheet.");
+Check(ContaminationCalculator.Combine(Enumerable.Repeat(0.2m, 6)) == 0.737856m &&
+      ContaminationCalculator.Combine([]) == 0m &&
+      ContaminationCalculator.Combine([0.2m]) == 0.2m,
+    "Contamination probability formula is incorrect.");
 
 var state = new GameState(database.Balance.TicksPerYear);
 state.EnqueueMission(new ActiveMission { MissionConfigId = "mission", RequiredProgress = 10 });

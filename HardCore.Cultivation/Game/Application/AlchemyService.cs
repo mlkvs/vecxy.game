@@ -275,11 +275,11 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             cores[0].Config.Element,
             ingredients.Select(unit => unit.Config.Element),
             database.Alchemy);
-        var contamination = ingredients.Average(unit =>
+        var contamination = ContaminationCalculator.Combine(ingredients.Select(unit =>
             unit.Config.Category == ItemCategory.Ingredient &&
             unit.Config.AlchemyProperties.Any(property => property.PropertyId == database.Alchemy.PurificationPropertyId)
                 ? 0m
-                : Math.Clamp(unit.Item.Contamination, 0m, 1m));
+                : Math.Clamp(unit.Item.Contamination, 0m, 1m)));
         var contaminationModifier = new PiecewiseLinearCurve<ContaminationCurvePoint>(database.Alchemy.ContaminationModifierCurve,
             point => point.Contamination, point => point.Multiplier).Evaluate(contamination);
 
@@ -440,7 +440,8 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             .OrderBy(value => value.PropertyId, StringComparer.Ordinal)
             .ToList();
         var averageQuality = units.Average(value => value.Item.Quality);
-        var contamination = units.Average(value => Math.Clamp(value.Item.Contamination, 0m, 1m));
+        var contamination = ContaminationCalculator.Combine(
+            units.Select(value => Math.Clamp(value.Item.Contamination, 0m, 1m)));
         var quality = averageQuality +
                       database.Alchemy.DistillationQualityPerIngredient * units.Count +
                       database.Alchemy.DistillationQualityPerLevel * level;
