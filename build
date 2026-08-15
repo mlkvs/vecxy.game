@@ -176,7 +176,8 @@ if [[ "$platform" == desktop ]]; then
         --self-contained true \
         --output "$output_dir" \
         -p:VecxyPlatform=Desktop \
-        -p:ErrorOnDuplicatePublishOutputFiles=false
+        -p:ErrorOnDuplicatePublishOutputFiles=false \
+        9>&-
     printf 'Desktop build: %s\n' "$output_dir"
     exit 0
 fi
@@ -198,7 +199,8 @@ TMPDIR="$temp_dir" dotnet publish "$PROJECT" \
     -p:AndroidEnableFastDeployment=false \
     "-p:BuildIconPath=$ROOT_DIR/$icon_path" \
     "${analytics_args[@]}" \
-    "${signing_args[@]}"
+    "${signing_args[@]}" \
+    9>&-
 
 bundle="$(find "$package_dir" -maxdepth 1 -type f -name '*-Signed.aab' -print -quit)"
 bundle="${bundle:-$(find "$package_dir" -maxdepth 1 -type f -name '*.aab' -print -quit)}"
