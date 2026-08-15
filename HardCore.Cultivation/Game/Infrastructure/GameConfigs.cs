@@ -204,9 +204,7 @@ public sealed class AlchemyConfig : IYamlConfig
     public string ExtractItemId { get; init; } = "alchemy_extract";
     public int MinimumIngredients { get; init; } = 2;
     public int MaximumIngredients { get; init; } = 6;
-    public int MinimumPropertyMatches { get; init; } = 2;
-    public decimal MinimumPropertyFraction { get; init; } = 0.6m;
-    public int MaximumPillEffects { get; init; } = 4;
+    public int MaximumPillEffects { get; init; } = 1;
     public int PillDurationTicks { get; init; } = 48;
     public List<AlchemyOutputQuantityChance> PillOutputQuantityChances { get; init; } =
     [
@@ -584,8 +582,7 @@ public sealed class GameDatabase
             string.IsNullOrWhiteSpace(Dog.MissionChargedTexture))
             throw new InvalidDataException("Dog meditation settings are invalid.");
         if (Alchemy.Enabled && (Alchemy.MinimumIngredients <= 0 || Alchemy.MaximumIngredients < Alchemy.MinimumIngredients ||
-            Alchemy.MinimumPropertyMatches <= 0 || Alchemy.MinimumPropertyMatches > Alchemy.MaximumIngredients ||
-            Alchemy.MinimumPropertyFraction is <= 0m or > 1m || Alchemy.MaximumPillEffects is < 1 or > 4 ||
+            Alchemy.MaximumPillEffects is < 1 || Alchemy.MaximumPillEffects > Alchemy.MaximumIngredients ||
             Alchemy.PillDurationTicks <= 0 || Alchemy.MaximumQuality <= 0m ||
             Alchemy.DistillationQualityPerIngredient < 0m || Alchemy.DistillationQualityPerLevel < 0m ||
             Alchemy.CraftSuccessChancePerQuality < 0m || Alchemy.MaximumCraftSuccessChance is < 0m or > 100m ||

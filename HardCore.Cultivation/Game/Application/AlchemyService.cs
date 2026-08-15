@@ -121,15 +121,15 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
                 SuccessChancePercent: successChance);
         }
 
-        if (!RemoveSelected(state, selection))
-            return AlchemyCraftResult.Fail("Состав инвентаря изменился. Соберите смесь заново.");
-
         var previews = mode == AlchemyMode.Pill
             ? CreatePillBatch(resolved.Units)
             : [PreviewDistillation(resolved.Units)];
         var failedPreview = previews.FirstOrDefault(preview => !preview.CanCraft || preview.Output is null);
         if (failedPreview is not null)
-            throw new InvalidOperationException($"Validated alchemy recipe became invalid: {failedPreview.Message}");
+            return AlchemyCraftResult.Fail(failedPreview.Message);
+
+        if (!RemoveSelected(state, selection))
+            return AlchemyCraftResult.Fail("Состав инвентаря изменился. Соберите смесь заново.");
 
         var storedOutputs = new List<ItemInstance>();
         foreach (var preview in previews)
@@ -220,7 +220,8 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             random);
         var forcePurity = RollMixedPurificationResult(units);
         return Enumerable.Range(0, quantityChance.Quantity)
-            .Select(_ => PreviewPill(units, resolveMixedPurification: true, rollRanks: true, forcePurity))
+            .Select(_ => PreviewPill(units, resolveMixedPurification: true, rollRanks: true, forcePurity,
+                rollProperties: true))
             .ToArray();
     }
 
@@ -238,7 +239,8 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         IReadOnlyList<IngredientUnit> units,
         bool resolveMixedPurification,
         bool rollRanks = false,
-        bool? forcePurity = null)
+        bool? forcePurity = null,
+        bool rollProperties = false)
     {
         var cores = units.Where(unit => unit.Config.Category == ItemCategory.Core).ToArray();
         var ingredients = units.Where(unit => unit.Config.Category == ItemCategory.Ingredient).ToArray();
@@ -303,16 +305,15 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
                 .Where(value => value is not null)
                 .Cast<AlchemyPropertyAmount>()
                 .ToArray();
-            var coverage = contributions.Length / (decimal)ingredients.Length;
-            if (contributions.Length < database.Alchemy.MinimumPropertyMatches ||
-                coverage < database.Alchemy.MinimumPropertyFraction)
+            var chance = contributions.Length / (decimal)ingredients.Length;
+            if (rollProperties && random.NextDecimal(0m, 1m) >= chance)
                 continue;
             var property = database.GetAlchemyProperty(propertyId);
             effects.Add((new ItemEffectDefinition
             {
                 Type = property.EffectType,
                 Operation = property.Operation,
-                Value = property.BaseValue * coverage * characteristicMultiplier * elementModifier * contaminationModifier
+                Value = property.BaseValue * chance * characteristicMultiplier * elementModifier * contaminationModifier
             }, property, contributions.Length));
         }
 
@@ -325,7 +326,7 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             return hasPurification
                 ? CreatePurityPill(units, quality, rarity, contamination, resolveMixedPurification)
                 : AlchemyPreview.Fail(
-                    $"Ни одно свойство не повторяется хотя бы {database.Alchemy.MinimumPropertyMatches} раза.");
+                    "Ни одно свойство не выпало по вероятности ингредиентов.");
 
         var name = selectedEffects.Length == 1
             ? selectedEffects[0].Property.PillName

@@ -106,7 +106,7 @@ _ = maximumDogMeditation.Update(maximumDogState, 1f);
 Check(maximumDogMeditation.Collect(maximumDogState).Reward == 3000,
     "Dog meditation did not include the configured maximum reward.");
 
-var alchemy = new AlchemyService(database, new FirstMinimumThenMaximumRandom());
+var alchemy = new AlchemyService(database, new AlchemyCraftRandom());
 Check(AlchemyResultRankFormula.Calculate(
           3m, [2m, 4m], 0.6m, 0.4m, 1.5m, 0.3m, 2m, 0m, 0.1m, 5m) == 3m,
     "Alchemy result rank formula does not apply the weighted average and maximum component.");
@@ -444,9 +444,7 @@ static GameDatabase BuildDatabase()
             Enabled = true,
             MinimumIngredients = 2,
             MaximumIngredients = 5,
-            MinimumPropertyMatches = 2,
-            MinimumPropertyFraction = 0.6m,
-            MaximumPillEffects = 4,
+            MaximumPillEffects = 1,
             PillDurationTicks = 48,
             DistillationQualityPerIngredient = 0.12m,
             DistillationQualityPerLevel = 0.18m,
@@ -497,5 +495,18 @@ sealed class FirstMinimumThenMaximumRandom : IRandomSource
             return minInclusive;
         }
         return maxExclusive - 0.0001m;
+    }
+}
+
+sealed class AlchemyCraftRandom : IRandomSource
+{
+    private int _decimalCalls;
+
+    public int NextInt(int minInclusive, int maxExclusive) => maxExclusive - 1;
+
+    public decimal NextDecimal(decimal minInclusive, decimal maxExclusive)
+    {
+        _decimalCalls++;
+        return _decimalCalls == 2 ? maxExclusive - 0.0001m : minInclusive;
     }
 }
