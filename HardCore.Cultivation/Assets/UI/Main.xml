@@ -33,7 +33,6 @@
 
         <panel class="character-space">
             <button id="character-tap-target" class="character-tap-target" aria-label="Медитировать" />
-            <button id="dog-tap-target" class="dog-tap-target" aria-label="Погладить питомца" />
             <button id="mission-summary-button" class="mission-float glass-panel">
                 <panel class="float-heading"><image sprite="Assets/Textures/GameUIAtlas.atlas#missions" /><text>ТЕКУЩАЯ МИССИЯ</text></panel>
                 <panel id="mission-danger-indicator" class="mission-danger-indicator" hidden="true">

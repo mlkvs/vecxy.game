@@ -156,10 +156,6 @@ text {
     pointer-events: auto; position: absolute; left: 50%; top: 0; bottom: 0; width: 470px; margin-left: -235px;
     align-items: center; justify-content: center; background-color: transparent; border: 0;
 }
-.dog-tap-target {
-    pointer-events: auto; position: absolute; z-index: 20; left: 0; top: 0;
-    width: 0; height: 0; background-color: transparent; border: 0;
-}
 .tap-feedback {
     pointer-events: none; position: absolute; z-index: 5; left: 0; top: 0;
     width: 270px; height: 390px; margin-left: 0; margin-top: 0;

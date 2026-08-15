@@ -259,12 +259,6 @@ public sealed class CombatDamageBatchEvent(string source, decimal totalDamage, i
         ("source", source), ("total_damage", totalDamage), ("hits", hits));
 }
 
-public sealed class DogMeditationOpenedEvent(bool available) : AnalyticsEvent
-{
-    public override string Name => "dog_meditation_opened";
-    public override IReadOnlyDictionary<string, object?> Parameters => CreateParameters(("available", available));
-}
-
 public sealed class SettingsOpenedEvent(string appVersion, int build) : AnalyticsEvent
 {
     public override string Name => "settings_opened";

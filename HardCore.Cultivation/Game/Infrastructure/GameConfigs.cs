@@ -334,36 +334,6 @@ public sealed class CombatBackgroundConfig
     public List<string> Layers { get; init; } = [];
 }
 
-public sealed class DogConfig : IYamlConfig
-{
-    public string MeditatingTexture { get; init; } = "Textures/Dog.png";
-    public string ChargedTexture { get; init; } = "Textures/Dog2.png";
-    public string MissionMeditatingTexture { get; init; } = "Textures/Dog_Missions.png";
-    public string MissionChargedTexture { get; init; } = "Textures/Dog_Missions2.png";
-    public float LocalPositionX { get; init; } = -390f;
-    public float LocalPositionY { get; init; } = 50f;
-    public float BaseScale { get; init; } = 0.28f;
-    public float ChargeDurationSeconds { get; init; } = 60f;
-    public int RewardUnitRubles { get; init; } = 1000;
-    public int MinimumRewardUnits { get; init; } = 1;
-    public int MaximumRewardUnits { get; init; } = 5;
-    public float MinimumChargeScale { get; init; } = 0.96f;
-    public float MaximumChargeScale { get; init; } = 1.02f;
-    public float BobAmplitude { get; init; } = 5f;
-    public float BobSpeed { get; init; } = 3.1f;
-    public float SwayAmplitudeRadians { get; init; } = 0.022f;
-    public float SwaySpeed { get; init; } = 1.8f;
-    public float BreathingAmplitude { get; init; } = 0.008f;
-    public float BreathingSpeed { get; init; } = 2.2f;
-    public float GlowScale { get; init; } = 1.12f;
-    public float GlowPulseAmplitude { get; init; } = 0.06f;
-    public float GlowPulseSpeed { get; init; } = 2.8f;
-    public float GlowRed { get; init; } = 1f;
-    public float GlowGreen { get; init; } = 0.72f;
-    public float GlowBlue { get; init; } = 0.22f;
-    public float GlowAlpha { get; init; } = 0.28f;
-}
-
 public sealed class MissionRewardConfig
 {
     public ItemCategory? RequiredItemCategory { get; init; }
@@ -416,7 +386,6 @@ public sealed class GameDatabase
     public CultivationConfig Cultivation { get; private set; } = new();
     public ShopConfig Shop { get; private set; } = new();
     public CombatConfig Combat { get; private set; } = new();
-    public DogConfig Dog { get; private set; } = new();
     public AlchemyConfig Alchemy { get; private set; } = new();
     public CultivationBalanceSnapshot CultivationBalance { get; private set; } = null!;
     public int MissionBoardSlotCount { get; private set; } = 6;
@@ -434,10 +403,9 @@ public sealed class GameDatabase
         ConfigRef<ShopConfig> shop,
         ConfigRef<MonstersConfig> monsters,
         ConfigRef<CombatConfig> combat,
-        ConfigRef<DogConfig> dog,
         ConfigRef<AlchemyConfig> alchemy)
         => Initialize(balance.Value, rarities.Value, items.Value, missions.Value, cultivation.Value, shop.Value,
-            monsters.Value, combat.Value, dog.Value, alchemy.Value);
+            monsters.Value, combat.Value, alchemy: alchemy.Value);
 
     public void Initialize(
         GameBalanceConfig balance,
@@ -448,14 +416,12 @@ public sealed class GameDatabase
         ShopConfig shop,
         MonstersConfig? monsters = null,
         CombatConfig? combat = null,
-        DogConfig? dog = null,
         AlchemyConfig? alchemy = null)
     {
         Balance = balance;
         Cultivation = cultivation;
         Shop = shop;
         Combat = combat ?? CreateDefaultCombat();
-        Dog = dog ?? new DogConfig();
         Alchemy = alchemy ?? CreateDefaultAlchemy();
         MissionBoardSlotCount = missions.BoardSlotCount;
         _items.Clear();
@@ -567,20 +533,6 @@ public sealed class GameDatabase
             Combat.HealthRegenerationPerSecond < 0m ||
             Combat.HeroAttacksPerSecond <= 0f || Combat.RecoveryHealthPoints <= 0m)
             throw new InvalidDataException("Combat settings are invalid.");
-        if (Dog.ChargeDurationSeconds <= 0f || Dog.RewardUnitRubles <= 0 ||
-            Dog.MinimumRewardUnits <= 0 || Dog.MaximumRewardUnits < Dog.MinimumRewardUnits ||
-            Dog.MaximumRewardUnits == int.MaxValue ||
-            Dog.BaseScale <= 0f || Dog.MinimumChargeScale <= 0f ||
-            Dog.MaximumChargeScale < Dog.MinimumChargeScale || Dog.GlowScale <= 0f ||
-            Dog.BobAmplitude < 0f || Dog.BobSpeed < 0f || Dog.SwaySpeed < 0f ||
-            Dog.BreathingAmplitude is < 0f or >= 1f || Dog.BreathingSpeed < 0f ||
-            Dog.GlowPulseAmplitude is < 0f or >= 1f || Dog.GlowPulseSpeed < 0f ||
-            Dog.GlowRed is < 0f or > 1f || Dog.GlowGreen is < 0f or > 1f ||
-            Dog.GlowBlue is < 0f or > 1f || Dog.GlowAlpha is < 0f or > 1f ||
-            string.IsNullOrWhiteSpace(Dog.MeditatingTexture) || string.IsNullOrWhiteSpace(Dog.ChargedTexture) ||
-            string.IsNullOrWhiteSpace(Dog.MissionMeditatingTexture) ||
-            string.IsNullOrWhiteSpace(Dog.MissionChargedTexture))
-            throw new InvalidDataException("Dog meditation settings are invalid.");
         if (Alchemy.Enabled && (Alchemy.MinimumIngredients <= 0 || Alchemy.MaximumIngredients < Alchemy.MinimumIngredients ||
             Alchemy.MaximumPillEffects is < 1 || Alchemy.MaximumPillEffects > Alchemy.MaximumIngredients ||
             Alchemy.PillDurationTicks <= 0 || Alchemy.MaximumQuality <= 0m ||

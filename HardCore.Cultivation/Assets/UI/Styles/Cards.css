@@ -1065,8 +1065,7 @@
 }
 
 /* Composition corrections after checking the UI at 500x900. */
-.character-tap-target,
-.dog-tap-target {
+.character-tap-target {
     background-image: none;
     background-color: #00000000;
     border: 0;

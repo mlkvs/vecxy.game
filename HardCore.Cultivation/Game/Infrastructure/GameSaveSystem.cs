@@ -26,7 +26,6 @@ public sealed class GameSaveSystem(GameDatabase database)
             TotalTicks = state.Calendar.TotalTicks,
             ActivityMode = state.ActivityMode,
             RecoveryRequired = state.RecoveryRequired,
-            DogMeditationSeconds = state.DogMeditation.ElapsedSeconds,
             Settings = new GameSettingsSaveData
             {
                 MusicEnabled = state.Settings.MusicEnabled,
@@ -153,9 +152,6 @@ public sealed class GameSaveSystem(GameDatabase database)
                     data.Character.MaximumHealthOffset,
                     data.Character.MaximumAgeOffsetYears);
             state.RestoreDefeatRecovery(false);
-            state.DogMeditation.Restore(
-                data.Version >= 8 ? data.DogMeditationSeconds : 0f,
-                database.Dog.ChargeDurationSeconds);
             state.Inventory.ReplaceWith(data.Inventory.Select(FromItemData));
             state.ActiveEffects.AddRange(data.ActiveEffects.Select(effect =>
             {
@@ -368,7 +364,6 @@ public sealed class SaveData
     public long TotalTicks { get; init; }
     public ActivityMode ActivityMode { get; init; } = ActivityMode.Cultivation;
     public bool RecoveryRequired { get; init; }
-    public float DogMeditationSeconds { get; init; }
     public GameSettingsSaveData Settings { get; init; } = new();
     public CharacterSaveData Character { get; init; } = new();
     public List<ItemSaveData> Inventory { get; init; } = [];

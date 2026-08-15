@@ -55,7 +55,6 @@ public sealed class GameLayer
             builder.RegisterType<ShopTransactionService>().SingleInstance();
             builder.RegisterType<CultivationService>().SingleInstance();
             builder.RegisterType<AlchemyService>().SingleInstance();
-            builder.RegisterType<DogMeditationService>().SingleInstance();
             builder.RegisterType<CombatService>().SingleInstance();
             builder.RegisterType<CombatScenePresenter>().SingleInstance();
             builder.RegisterType<TickProcessor>().SingleInstance();
@@ -91,10 +90,9 @@ public sealed class GameLayer
         using var shop = configs.LoadConfig<ShopConfig>("Configs/Shop.yaml");
         using var monsters = configs.LoadConfig<MonstersConfig>("Configs/Monsters.yaml");
         using var combat = configs.LoadConfig<CombatConfig>("Configs/Combat.yaml");
-        using var dog = configs.LoadConfig<DogConfig>("Configs/Dog.yaml");
         using var alchemy = configs.LoadConfig<AlchemyConfig>("Configs/Alchemy.yaml");
 
-        database.Initialize(balance, rarities, items, missions, cultivation, shop, monsters, combat, dog, alchemy);
+        database.Initialize(balance, rarities, items, missions, cultivation, shop, monsters, combat, alchemy);
 
         foreach (var sound in new[]
                  {

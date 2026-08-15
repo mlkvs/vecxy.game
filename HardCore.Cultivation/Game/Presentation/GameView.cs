@@ -52,7 +52,6 @@ internal sealed class GameView
         WindowDocuments = windowDocuments;
 
         CharacterTapTarget = Button("character-tap-target");
-        DogTapTarget = Button("dog-tap-target");
         MissionSummaryButton = Button("mission-summary-button");
         YearCandleWax = Progress("year-candle-wax");
         YearCandleCap = Image("year-candle-cap");
@@ -224,7 +223,6 @@ internal sealed class GameView
     public IReadOnlyList<UiPanel> WindowBackdrops { get; }
     public IReadOnlyList<UiText> ModalMoneyTexts { get; }
     public UiButton CharacterTapTarget { get; }
-    public UiButton DogTapTarget { get; }
     public UiButton MissionSummaryButton { get; }
     public UiProgress YearCandleWax { get; }
     public UiImage YearCandleCap { get; }

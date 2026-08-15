@@ -26,7 +26,6 @@ public sealed class GameController(
     ItemPriceCalculator prices,
     CultivationService cultivation,
     AlchemyService alchemy,
-    DogMeditationService dogMeditation,
     CombatService combat,
     CombatScenePresenter combatScene,
     ISceneManager scenes,
@@ -134,9 +133,6 @@ public sealed class GameController(
     private decimal _pendingHealthRestored;
     private float _healthFloatElapsed;
     private float _healthUiElapsed;
-    private DogCompanion? _dog;
-    private bool _dogConfigured;
-    private Rect? _dogTapBounds;
     private Character? _characterVisual;
     private Background? _backgroundVisual;
 
@@ -161,7 +157,6 @@ public sealed class GameController(
             missions.Refresh(_state);
         combat.ConfigureHero(_state.Character, _state.Character.MaximumHealth <= 0m);
         combatScene.Initialize();
-        SyncDogVisual();
         _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character);
 
         _document = ui.Load("UI/Main.xml");
@@ -204,10 +199,6 @@ public sealed class GameController(
 
         if (_gameOver)
             return;
-
-        if (dogMeditation.Update(_state, deltaTime))
-            Save();
-        SyncDogVisual();
 
         var combatUpdate = combat.Update(_state, deltaTime);
         if (_state.CurrentMission?.Combat is { } activeCombat)
@@ -436,9 +427,6 @@ public sealed class GameController(
         _shopEmpty = null;
         _floatingValues.Clear();
         _floatingValueIndex = 0;
-        _dog = null;
-        _dogConfigured = false;
-        _dogTapBounds = null;
         _characterVisual = null;
         _backgroundVisual = null;
         combatScene.Dispose();
@@ -558,7 +546,6 @@ public sealed class GameController(
         _missionQueueEmpty = null;
         _shopEmpty = null;
 
-        _dogTapBounds = null;
         ResetAlchemySlots();
         _alchemyCore = null;
         BuildAlchemySelection();
@@ -590,7 +577,6 @@ public sealed class GameController(
         BindClick(view.PrivacyPolicyAccept, ConfirmPrivacyPolicy);
         view.EffectPopup.Clicked += _ => CloseEffectPopup();
         view.CharacterTapTarget.ClickedAt += (_, position) => TapCharacter(position);
-        BindClick(view.DogTapTarget, ReactDog);
         BindClick(view.AvailableMissionsTab, () => ShowMissionPage(false));
         BindClick(view.AcceptedMissionsTab, () => ShowMissionPage(true));
         BindClick(view.IngredientsTab, () => SelectInventoryCategory(ItemCategory.Ingredient));
@@ -725,81 +711,6 @@ public sealed class GameController(
         {
             UpdateHud();
         }
-    }
-
-    private void ReactDog()
-    {
-        Track(new DogMeditationOpenedEvent(dogMeditation.GetProgress(_state) >= 1f));
-        var result = dogMeditation.Collect(_state);
-        SyncDogVisual();
-        if (!result.Success)
-        {
-            var progress = Math.Round(dogMeditation.GetProgress(_state) * 100f);
-            ShowActionFeedback(
-                $"Собака медитирует: {progress:0}%",
-                "Assets/Textures/UIIcons/money.png",
-                true,
-                info: true);
-            return;
-        }
-
-        PlaySound("Sounds/item.wav", 0.55f);
-        SpawnFloatingValue(result.Reward, string.Empty, "money-value");
-        ShowActionFeedback(result.Message, "Assets/Textures/UIIcons/money.png", true);
-        UpdateHud();
-        Save();
-    }
-
-    private void SyncDogVisual()
-    {
-        _dog ??= scenes.ActiveScene?.Objects
-            .Select(sceneObject => sceneObject.GetComponent<DogCompanion>())
-            .FirstOrDefault(component => component is not null);
-        if (_dog is not null && !_dogConfigured)
-        {
-            _dog.Configure(database.Dog);
-            _dog.PrewarmTextures(renderer);
-            _dogConfigured = true;
-        }
-        _dog?.SetChargeProgress(dogMeditation.GetProgress(_state));
-        SyncDogTapTarget();
-    }
-
-    private void SyncDogTapTarget()
-    {
-        if (_dog is null || _view is null || renderer.GameOutputWidth <= 0 || renderer.GameOutputHeight <= 0)
-            return;
-
-        var camera = scenes.ActiveScene?.Objects
-            .Select(sceneObject => sceneObject.GetComponent<Camera>())
-            .FirstOrDefault(component => component is { TargetTexture: null });
-        var root = _view.Document.Root.Bounds;
-        var parent = _view.DogTapTarget.Parent?.Bounds ?? default;
-        var aspectRatio = renderer.GameOutputWidth / (float)renderer.GameOutputHeight;
-        if (camera is null || root.Width <= 0f || root.Height <= 0f ||
-            parent.Width <= 0f || parent.Height <= 0f ||
-            !_dog.TryGetViewportBounds(camera, aspectRatio, out var viewportBounds))
-            return;
-
-        var projectedLeft = viewportBounds.Left * root.Width;
-        var projectedTop = viewportBounds.Top * root.Height;
-        var projectedRight = viewportBounds.Right * root.Width;
-        var projectedBottom = viewportBounds.Bottom * root.Height;
-        var clippedLeft = Math.Clamp(projectedLeft, parent.Left, parent.Right);
-        var clippedTop = Math.Clamp(projectedTop, parent.Top, parent.Bottom);
-        var clippedRight = Math.Clamp(projectedRight, parent.Left, parent.Right);
-        var clippedBottom = Math.Clamp(projectedBottom, parent.Top, parent.Bottom);
-
-        var left = MathF.Floor(clippedLeft);
-        var top = MathF.Floor(clippedTop);
-        var right = MathF.Ceiling(clippedRight);
-        var bottom = MathF.Ceiling(clippedBottom);
-        var replacement = new Rect(left, top, MathF.Max(0f, right - left), MathF.Max(0f, bottom - top));
-        if (_dogTapBounds == replacement)
-            return;
-
-        _dogTapBounds = replacement;
-        _view.DogTapTarget.HitTestBounds = replacement;
     }
 
     private void SetActivity(ActivityMode mode)
@@ -969,7 +880,6 @@ public sealed class GameController(
         var stageIndex = Math.Clamp(_state.Character.Cultivation.StageIndex, 0, database.Cultivation.Stages.Count - 1);
         _backgroundVisual?.SetStage(database.Cultivation.Stages[stageIndex]);
         _characterVisual?.SetMissionMode(missionMode);
-        _dog?.SetMissionMode(missionMode);
         _backgroundVisual?.SetMissionMode(missionMode);
     }
 
