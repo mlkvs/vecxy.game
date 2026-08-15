@@ -140,7 +140,7 @@ public sealed class ItemEffectService(GameDatabase database)
             : config.Effects;
         var strength = item.CraftedEffects.Count > 0
             ? 1m
-            : database.Balance.EffectQualityBase + item.Quality * database.Balance.EffectQualityPerPoint;
+            : ItemBalanceFormula.GetEffectStrength(item, config, database);
 
         if (config.DurationType == ItemDurationType.Instant)
         {
@@ -216,25 +216,36 @@ public static class QualityPriceCurve
     }
 }
 
+public static class ItemBalanceFormula
+{
+    public static decimal GetQualityMultiplier(GameBalanceConfig balance, ItemCategory category, decimal quality)
+    {
+        if (quality < 1m && balance.LowQualityPriceMultipliers.TryGetValue(category, out var low))
+            return new PiecewiseLinearCurve<PriceCurvePoint>(
+                [low, balance.QualityPriceCurve.MinBy(point => point.Quality)!],
+                point => point.Quality,
+                point => point.Multiplier).Evaluate(quality);
+        return QualityPriceCurve.Evaluate(quality, balance.QualityPriceCurve);
+    }
+
+    // The spreadsheet applies quality and rarity multipliers equally to price and ordinary item effects.
+    public static decimal GetEffectStrength(ItemInstance item, ItemConfig config, GameDatabase database) =>
+        GetQualityMultiplier(database.Balance, config.Category, item.Quality) *
+        database.GetRarity(item.Rarity).PriceMultiplier;
+}
+
 public sealed class ItemPriceCalculator(GameDatabase database)
 {
     public long GetValue(ItemInstance item)
     {
         var config = database.GetItem(item.ConfigId);
-        var quality = GetQualityMultiplier(item.Quality, config.Category);
+        var quality = ItemBalanceFormula.GetQualityMultiplier(database.Balance, config.Category, item.Quality);
         var rarity = database.GetRarity(item.Rarity).PriceMultiplier;
         var contamination = new PiecewiseLinearCurve<ContaminationCurvePoint>(
             database.Alchemy.ContaminationModifierCurve,
             point => point.Contamination,
             point => point.Multiplier).Evaluate(Math.Clamp(item.Contamination, 0m, 1m));
         return Round(config.BasePrice * quality * rarity * contamination);
-    }
-
-    private decimal GetQualityMultiplier(decimal quality, ItemCategory category)
-    {
-        if (quality < 1m && database.Balance.LowQualityPriceMultipliers.TryGetValue(category, out var low))
-            return new PiecewiseLinearCurve<PriceCurvePoint>([low, database.Balance.QualityPriceCurve.MinBy(point => point.Quality)!], point => point.Quality, point => point.Multiplier).Evaluate(quality);
-        return QualityPriceCurve.Evaluate(quality, database.Balance.QualityPriceCurve);
     }
 
     public long GetBuyPrice(ItemInstance item, ShopState shop) =>

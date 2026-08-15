@@ -1911,7 +1911,7 @@ public sealed class GameController(
         var config = database.GetItem(output.ConfigId);
         Track(new AlchemyCraftSucceededEvent(output.ConfigId, output.Contamination, mode.ToString(),
             selection.Sum(value => value.Quantity)));
-        Track(new ItemReceivedEvent(output.ConfigId, output.Quantity, "alchemy", output.Contamination));
+        Track(new ItemReceivedEvent(output.ConfigId, result.ProducedQuantity, "alchemy", output.Contamination));
         if (preview.Output is { } expected && expected.ConfigId != output.ConfigId)
             Track(new AlchemyCraftAlternateResultEvent(output.ConfigId, expected.ConfigId));
         var sellPrice = prices.GetSellPrice(output, _state.Shop);
@@ -1919,7 +1919,7 @@ public sealed class GameController(
         ShowItemPopup(
             config,
             output,
-            "1",
+            result.ProducedQuantity.ToString(CultureInfo.InvariantCulture),
             mode == AlchemyMode.Pill ? "Создано в алхимической печи." : "Получено после рафинирования.",
             useAction: canUse ? () => UseInventoryItem(output.InstanceId) : null,
             sellAction: () => SellInventoryItem(output.InstanceId),
@@ -2942,7 +2942,7 @@ public sealed class GameController(
         }
         var strength = item.CraftedEffects.Count > 0
             ? 1m
-            : database.Balance.EffectQualityBase + item.Quality * database.Balance.EffectQualityPerPoint;
+            : ItemBalanceFormula.GetEffectStrength(item, config, database);
         var effectText = string.Join("; ", definitions.Select(effect =>
             DescribeEffect(effect, strength, config.DurationType == ItemDurationType.Temporary)));
         return config.DurationType switch
@@ -2957,7 +2957,8 @@ public sealed class GameController(
     {
         if (config.Effects.Count == 0)
             return "Материал для алхимии.";
-        var strength = database.Balance.EffectQualityBase + quality * database.Balance.EffectQualityPerPoint;
+        // The rarity is still unknown in this preview, so show the common-rarity value.
+        var strength = ItemBalanceFormula.GetQualityMultiplier(database.Balance, config.Category, quality);
         var effectText = string.Join("; ", config.Effects.Select(effect =>
             DescribeEffect(effect, strength, config.DurationType == ItemDurationType.Temporary)));
         return config.DurationType switch

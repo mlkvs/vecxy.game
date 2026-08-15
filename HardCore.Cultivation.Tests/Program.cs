@@ -12,6 +12,50 @@ var cultivation = new CultivationService(database, random);
 var dogMeditation = new DogMeditationService(database, random);
 var processor = new TickProcessor(database, effectService, missionService, shopService, cultivation);
 
+var spreadsheetBalance = new CultivationBalanceSnapshot(
+    new GameBalanceConfig
+    {
+        MaximumAgeYears = 63m,
+        InitialCharacterStats = new CharacterStats(100m, 1m, 1m, 1m, 63m)
+    },
+    new CultivationConfig
+    {
+        InitialRequiredPower = [100m, 200m],
+        Stages =
+        [
+            new CultivationStageConfig
+            {
+                Id = "body_tempering",
+                RecursiveCoefficient = 0.7m,
+                SpiritualPowerMultiplier = 1m,
+                StatsPerLevel = new CharacterStats(5m, 0.1m, 0.5m, 0.05m, 0.5m)
+            }
+        ]
+    });
+Check(spreadsheetBalance.GetCost(0, 3) == 210m && spreadsheetBalance.GetCost(0, 10) == 1103.987003m,
+    "Cultivation costs do not match the spreadsheet recurrence.");
+Check(spreadsheetBalance.GetStart(0) == new CharacterStats(100m, 1m, 1m, 1m, 63m) &&
+      spreadsheetBalance.GetEnd(0) == new CharacterStats(150m, 2m, 6m, 1.5m, 68m),
+    "Cultivation statistics do not match the spreadsheet baseline.");
+var spreadsheetQualityBalance = new GameBalanceConfig
+{
+    QualityPriceCurve =
+    [
+        new PriceCurvePoint { Quality = 1m, Multiplier = 1m },
+        new PriceCurvePoint { Quality = 2m, Multiplier = 1.25m },
+        new PriceCurvePoint { Quality = 3m, Multiplier = 1.75m },
+        new PriceCurvePoint { Quality = 4m, Multiplier = 2.5m },
+        new PriceCurvePoint { Quality = 5m, Multiplier = 3.5m }
+    ],
+    LowQualityPriceMultipliers =
+    {
+        [ItemCategory.Pill] = new PriceCurvePoint { Quality = 0.1m, Multiplier = 0.5m }
+    }
+};
+Check(ItemBalanceFormula.GetQualityMultiplier(spreadsheetQualityBalance, ItemCategory.Pill, 0.1m) == 0.5m &&
+      ItemBalanceFormula.GetQualityMultiplier(spreadsheetQualityBalance, ItemCategory.Pill, 5m) == 3.5m,
+    "Item effect quality multipliers do not match the spreadsheet.");
+
 var state = new GameState(database.Balance.TicksPerYear);
 state.EnqueueMission(new ActiveMission { MissionConfigId = "mission", RequiredProgress = 10 });
 var cultivationWeek = processor.ProcessTick(state);
@@ -39,7 +83,7 @@ combatState.EnqueueMission(new ActiveMission
     }
 });
 var combatEvents = new List<CombatEvent>();
-for (var index = 0; index < 200 && combatState.CurrentMission?.Encounter?.Resolved != true; index++)
+for (var index = 0; index < 1200 && combatState.CurrentMission?.Encounter?.Resolved != true; index++)
     combatEvents.AddRange(combat.Update(combatState, 0.1f).Events);
 Check(combatEvents.Any(value => value.Type == CombatEventType.Started), "Combat did not start at encounter progress.");
 Check(combatEvents.Any(value => value.Type == CombatEventType.Victory), "Hero did not win the deterministic training combat.");
@@ -60,10 +104,12 @@ Check(maximumDogMeditation.Collect(maximumDogState).Reward == 3000,
     "Dog meditation did not include the configured maximum reward.");
 
 var alchemy = new AlchemyService(database, new MaximumRandom());
-Check(AlchemyCharacteristicFormula.Calculate(1m, 1, 8m) == 9m &&
-      AlchemyCharacteristicFormula.Calculate(3m, 2, 8m) == 102m &&
-      AlchemyCharacteristicFormula.Calculate(5m, 5, 8m) == 1025m,
-    "Alchemy characteristic formula does not match the balance table.");
+Check(AlchemyResultRankFormula.Calculate(
+          3m, [2m, 4m], 0.6m, 0.4m, 1.5m, 0.3m, 2m, 0m, 0.1m, 5m) == 3m,
+    "Alchemy result rank formula does not apply the weighted average and maximum component.");
+Check(AlchemyResultRankFormula.Calculate(
+          3m, [2m, 4m], 0.6m, 0.4m, 1.5m, 0.3m, 2m, 100m, 0.1m, 5m) == 5m,
+    "Alchemy result rank formula is not clamped to one rank above the best component.");
 var alchemyState = new GameState(database.Balance.TicksPerYear);
 var primaryIngredient = new ItemInstance
 {
@@ -96,11 +142,12 @@ var pillSelection = new[]
 var pillPreview = alchemy.Preview(alchemyState, pillSelection, AlchemyMode.Pill);
 Check(pillPreview.CanCraft && pillPreview.Output?.CraftedEffects.Count == 1,
     "Three matching properties out of five did not produce a pill effect.");
-Check(pillPreview.Output!.CraftedEffects[0].Value == 35055m,
-    "Ingredient count, quality, or missing-property coverage was not applied to the crafted pill.");
+Check(pillPreview.Output!.CraftedEffects[0].Value == 60m,
+    "Property coverage or the crafted pill strength formula was not applied.");
 var pillResult = alchemy.Craft(alchemyState, pillSelection, AlchemyMode.Pill);
-Check(pillResult.Success && pillResult.Output is { CraftedDurationTicks: 48 },
-    "Crafted pill was not added with its dynamic duration.");
+Check(pillResult.Success && pillResult.Output is { CraftedDurationTicks: 48, Quantity: 6 } &&
+      pillResult.ProducedQuantity == 6,
+    "Crafted pill batch did not use the configured output quantity distribution.");
 var craftedPill = pillResult.Output!;
 Check(alchemyState.Inventory.Find(craftedPill.InstanceId) is not null,
     "Alchemy did not return the stored item instance required by popup actions.");
@@ -178,32 +225,29 @@ defeatedCombat.Finish(CombatPhase.Defeat, 0);
 defeatedMission.StartCombat(defeatedCombat);
 defeatedState.EnqueueMission(defeatedMission);
 _ = combat.Update(defeatedState, 0.1f);
-Check(defeatedState.RecoveryRequired, "Defeat did not enable mandatory recovery.");
-Check(defeatedState.ActivityMode == ActivityMode.Cultivation, "Defeat did not switch to cultivation.");
-Check(database.Combat.RecoveryHealthPoints == 30m,
-    "Defeat recovery threshold must use the configured fixed HP amount.");
-defeatedState.SetActivityMode(ActivityMode.Missions);
-Check(defeatedState.ActivityMode == ActivityMode.Cultivation, "Missions were enabled before full recovery.");
+Check(!defeatedState.RecoveryRequired && defeatedState.ActivityMode == ActivityMode.Missions,
+    "Defeat must not lock missions behind mandatory recovery.");
+Check(defeatedState.CurrentMission is null && defeatedState.Character.Health == 0.1m,
+    "Defeat did not remove the mission and preserve survival health.");
 var healthAfterDefeat = defeatedState.Character.Health;
-for (var index = 0; index < 5000 && defeatedState.RecoveryRequired; index++)
+for (var index = 0; index < 5000 && defeatedState.Character.Health < defeatedState.Character.MaximumHealth; index++)
     _ = combat.Update(defeatedState, 0.25f);
 Check(defeatedState.Character.Health > healthAfterDefeat, "Health regeneration did not advance gradually.");
-Check(!defeatedState.RecoveryRequired &&
-      defeatedState.Character.Health >= database.Combat.RecoveryHealthPoints &&
-      defeatedState.Character.Health < defeatedState.Character.MaximumHealth,
-    "Recovery did not complete at the configured partial-health threshold.");
-defeatedState.SetActivityMode(ActivityMode.Missions);
-Check(defeatedState.ActivityMode == ActivityMode.Missions, "Missions stayed locked after reaching the recovery threshold.");
+Check(defeatedState.Character.Health == defeatedState.Character.MaximumHealth,
+    "Health did not recover fully outside combat.");
 
 var stageHealth = new CharacterState();
 stageHealth.Cultivation.Restore(0, 10, database.Cultivation.Stages.Count);
 var maximumHealthBeforeBreakthrough = combat.GetHeroMaximumHealth(stageHealth);
 stageHealth.Cultivation.Restore(1, 1, database.Cultivation.Stages.Count);
 var maximumHealthAfterBreakthrough = combat.GetHeroMaximumHealth(stageHealth);
-Check(maximumHealthAfterBreakthrough == maximumHealthBeforeBreakthrough + database.Combat.HeroHealthPerStage,
+var expectedHealthAfterBreakthrough = database.CultivationBalance
+    .GetCurrent(stageHealth.Cultivation, database.Cultivation).MaximumHealth;
+Check(maximumHealthAfterBreakthrough == expectedHealthAfterBreakthrough,
     "Maximum health did not increase by the stage bonus after breakthrough.");
 
 var leveling = new GameState(database.Balance.TicksPerYear);
+leveling.Character.AddSpiritualPower(1000m);
 processor.ProcessTick(leveling);
 Check(leveling.Character.Cultivation.Level == 10, "Automatic level advancement did not reach level 10.");
 
@@ -272,7 +316,9 @@ Check(tapState.Calendar.TotalTicks == 0, "Tap must not advance calendar.");
 
 var longevityCharacter = new CharacterState();
 longevityCharacter.Cultivation.Restore(2, 1, database.Cultivation.Stages.Count);
-Check(cultivation.GetMaximumAge(longevityCharacter) == 140m, "Stage-based longevity bonus is incorrect.");
+Check(cultivation.GetMaximumAge(longevityCharacter) == database.CultivationBalance
+          .GetCurrent(longevityCharacter.Cultivation, database.Cultivation).LongevityYears,
+    "Stage-based longevity bonus is incorrect.");
 
 var shopState = new ShopState();
 shopService.Refresh(shopState);
@@ -318,6 +364,8 @@ static GameDatabase BuildDatabase()
                     AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "clarity", Potency = 1m }] },
                 new ItemConfig { Id = "crafted_alchemy_pill", Name = "Pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
                     TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
+                new ItemConfig { Id = "purity_pill", Name = "Purity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
+                    TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "alchemy_extract", Name = "Extract", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant,
                     BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "attempt", Name = "Attempt", Category = ItemCategory.Core, DurationType = ItemDurationType.UntilBreakthroughAttempt, BasePrice = 10,
@@ -327,17 +375,17 @@ static GameDatabase BuildDatabase()
         new MissionsConfig
         {
             BoardSlotCount = 1,
-            Missions = [new MissionConfig { Id = "mission", Name = "Mission", MinimumDurationTicks = 1, MaximumDurationTicks = 10,
+            Missions = [new MissionConfig { Id = "mission", StageId = "one", Name = "Mission", MinimumDurationTicks = 1, MaximumDurationTicks = 10,
                 Reward = new MissionRewardConfig { RequiredItemCategory = ItemCategory.Ingredient, MinimumQuantity = 1, MaximumQuantity = 15, Money = 10 } }]
         },
         new CultivationConfig
         {
-            InitialRequiredPower = Enumerable.Repeat(10m, 10).ToList(),
+            InitialRequiredPower = [10m, 10m],
             Stages =
             [
-                new CultivationStageConfig { Id = "one", Name = "One", BaseBreakthroughChance = 50 },
-                new CultivationStageConfig { Id = "two", Name = "Two", BaseBreakthroughChance = 50, SpiritualPowerMultiplier = 6 },
-                new CultivationStageConfig { Id = "three", Name = "Three", BaseBreakthroughChance = 50 }
+                new CultivationStageConfig { Id = "one", Name = "One", BaseBreakthroughChance = 50, RecursiveCoefficient = 0.7m },
+                new CultivationStageConfig { Id = "two", Name = "Two", BaseBreakthroughChance = 50, RecursiveCoefficient = 0.7m, SpiritualPowerMultiplier = 6 },
+                new CultivationStageConfig { Id = "three", Name = "Three", BaseBreakthroughChance = 50, RecursiveCoefficient = 0.7m }
             ]
         },
         new ShopConfig { SlotCount = 2, MinimumQuantity = 1, MaximumQuantity = 1, MinimumBuyMarkup = 0, MaximumBuyMarkup = 0, SellAdjustmentPercent = -33 },
@@ -360,12 +408,22 @@ static GameDatabase BuildDatabase()
             DistillationQualityPerIngredient = 0.12m,
             DistillationQualityPerLevel = 0.18m,
             DistillationPotencyPerLevel = 0.12m,
+            ElementCompatibility = Enum.GetValues<Element>().ToDictionary(
+                left => left,
+                _ => Enum.GetValues<Element>().ToDictionary(right => right, _ => 0m)),
+            ContaminationModifierCurve =
+            [
+                new ContaminationCurvePoint { Contamination = 0m, Multiplier = 1m },
+                new ContaminationCurvePoint { Contamination = 1m, Multiplier = 1m }
+            ],
             Properties =
             [
                 new AlchemyPropertyConfig { Id = "vitality", DisplayName = "Vitality", PillName = "Vitality pill",
                     EffectType = EffectType.HealthRegeneration, Operation = ModifierOperation.AdditivePercent, BaseValue = 100m },
                 new AlchemyPropertyConfig { Id = "clarity", DisplayName = "Clarity", PillName = "Clarity pill",
-                    EffectType = EffectType.TickEfficiency, Operation = ModifierOperation.AdditivePercent, BaseValue = 50m }
+                    EffectType = EffectType.TickEfficiency, Operation = ModifierOperation.AdditivePercent, BaseValue = 50m },
+                new AlchemyPropertyConfig { Id = "purification", DisplayName = "Purification", PillName = "Purity pill",
+                    EffectType = EffectType.PurifyContamination, Operation = ModifierOperation.Flat, BaseValue = 0m }
             ]
         });
     return database;

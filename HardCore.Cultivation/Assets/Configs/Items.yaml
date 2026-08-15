@@ -47,8 +47,8 @@
 #                  * произведение (1 + MultiplicativePercent / 100)
 #
 # Важно: у обычных готовых предметов value дополнительно умножается на силу
-# конкретного экземпляра, рассчитанную из его качества в GameBalance.yaml:
-# effectStrength = effectQualityBase + quality * effectQualityPerPoint.
+# конкретного экземпляра из GameBalance.yaml: множитель качества умножается
+# на priceMultiplier его редкости. Это совпадает с таблицей баланса.
 # У созданных алхимией пилюль итоговый CraftedEffect уже включает качество,
 # количество ингредиентов, potency и долю совпадений по формуле Alchemy.yaml,
 # поэтому повторный множитель качества к нему не применяется.
@@ -135,6 +135,7 @@ items:
     description: Навсегда укрепляет тело и повышает запас здоровья.
     icon: Assets/Textures/Items/insight-core.png
     category: Core
+    element: Earth
     durationType: Permanent
     basePrice: 620
     shopWeight: 5
@@ -149,6 +150,7 @@ items:
     description: Навсегда усиливает силу обычной атаки.
     icon: Assets/Textures/Items/breakthrough-seal.png
     category: Core
+    element: Air
     durationType: Permanent
     basePrice: 680
     shopWeight: 4
@@ -179,6 +181,7 @@ items:
     description: Укрепляет основание культивации перед будущими прорывами.
     icon: Assets/Textures/Items/insight-core.png
     category: Core
+    element: Void
     # Эффект живёт до следующей попытки прорыва.
     durationType: UntilBreakthroughAttempt
     basePrice: 700
@@ -194,6 +197,7 @@ items:
     description: Временно стабилизирует духовное основание перед попыткой перейти на новую стадию.
     icon: Assets/Textures/Items/breakthrough-seal.png
     category: Core
+    element: Void
     durationType: Temporary
     temporaryDurationTicks: 18
     basePrice: 560
@@ -260,6 +264,7 @@ items:
     description: Вырвано из тела дикого зверя, ингредиент для алхимии
     icon: Assets/Textures/Items/mission-talisman.png
     category: Core
+    element: Earth
     basePrice: 150
     shopWeight: 9
 
@@ -268,6 +273,7 @@ items:
     description: Вырвано из тела дикого зверя, ингредиент для алхимии
     icon: Assets/Textures/Items/swift-scroll.png
     category: Core
+    element: Water
     basePrice: 150
     shopWeight: 9
     
@@ -276,14 +282,16 @@ items:
     description: Вырвано из тела дикого зверя, ингредиент для алхимии
     icon: Assets/Textures/Items/swift-scroll.png
     category: Core
+    element: Air
     basePrice: 150
-    shopWeight: 9   
+    shopWeight: 9
     
   - id: core_fire
     name: Ядро горельца
     description: Вырвано из тела дикого зверя, ингредиент для алхимии
     icon: Assets/Textures/Items/swift-scroll.png
     category: Core
+    element: Fire
     basePrice: 150
     shopWeight: 9
     
@@ -292,6 +300,7 @@ items:
     description: Вырвано из тела дикого зверя, ингредиент для алхимии
     icon: Assets/Textures/Items/swift-scroll.png
     category: Core
+    element: Void
     basePrice: 250
     shopWeight: 9
 
@@ -320,6 +329,7 @@ items:
     description: Навсегда укрепляет восприятие мира и немного повышает результат каждой недели.
     icon: Assets/Textures/Items/spirit-seed.png
     category: Core
+    element: Void
     durationType: Permanent
     basePrice: 980
     shopWeight: 3

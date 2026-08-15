@@ -40,7 +40,7 @@ public sealed class CultivationBalanceSnapshot
     public CultivationBalanceSnapshot(GameBalanceConfig balance, CultivationConfig config)
     {
         _costs = new decimal[config.Stages.Count, 10]; _starts = new CharacterStats[config.Stages.Count]; _ends = new CharacterStats[config.Stages.Count];
-        _starts[0] = new(balance.MaximumAgeYears * 0m + 100m, 1m, 1m, 1m, balance.MaximumAgeYears);
+        _starts[0] = balance.InitialCharacterStats;
         for (var s = 0; s < config.Stages.Count; s++)
         {
             if (s == 0) { _costs[s, 0] = config.InitialRequiredPower[0]; _costs[s, 1] = config.InitialRequiredPower[1]; }
@@ -59,10 +59,16 @@ public sealed class CultivationBalanceSnapshot
 
 public static class ElementCompatibilityCalculator
 {
-    public static decimal GetModifier(IEnumerable<Element?> elements, AlchemyConfig config)
+    public static decimal GetModifier(
+        Element? coreElement,
+        IEnumerable<Element?> ingredientElements,
+        AlchemyConfig config)
     {
-        var values = elements.Where(value => value.HasValue).Select(value => value!.Value).ToArray(); var sum = 0m;
+        var values = ingredientElements.Where(value => value.HasValue).Select(value => value!.Value).ToArray();
+        var sum = 0m;
         for (var i = 0; i < values.Length; i++) for (var j = i + 1; j < values.Length; j++) sum += config.ElementCompatibility[values[i]][values[j]];
+        if (coreElement is { } core)
+            sum += values.Sum(ingredient => config.ElementCompatibility[core][ingredient]);
         return 1m + config.ElementCompatibilityCoefficient * sum;
     }
 }

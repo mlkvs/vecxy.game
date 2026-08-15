@@ -12,17 +12,44 @@ public enum AlchemyMode
 
 public readonly record struct AlchemySelection(Guid InstanceId, int Quantity);
 
-public static class AlchemyCharacteristicFormula
+public static class AlchemyResultRankFormula
 {
-    public static decimal Calculate(decimal quality, int ingredientCount, decimal coefficient)
+    public static decimal Calculate(
+        decimal coreRank,
+        IReadOnlyCollection<decimal> ingredientRanks,
+        decimal averageWeight,
+        decimal maximumWeight,
+        decimal coreRankWeight,
+        decimal baseSigma,
+        decimal randomnessReferenceIngredientCount,
+        decimal standardNormal,
+        decimal minimumAllowed,
+        decimal maximumAllowed)
     {
-        if (quality < 0m)
-            throw new ArgumentOutOfRangeException(nameof(quality));
-        if (ingredientCount < 0)
-            throw new ArgumentOutOfRangeException(nameof(ingredientCount));
-        if (coefficient < 0m)
-            throw new ArgumentOutOfRangeException(nameof(coefficient));
-        return quality * ingredientCount * (1m + coefficient * ingredientCount);
+        if (ingredientRanks.Count == 0)
+            throw new ArgumentException("At least one ingredient rank is required.", nameof(ingredientRanks));
+        if (averageWeight < 0m || maximumWeight < 0m || averageWeight + maximumWeight <= 0m)
+            throw new ArgumentOutOfRangeException(nameof(averageWeight));
+        if (coreRankWeight <= 0m || baseSigma < 0m || randomnessReferenceIngredientCount <= 0m)
+            throw new ArgumentOutOfRangeException(nameof(coreRankWeight));
+        if (maximumAllowed < minimumAllowed)
+            throw new ArgumentOutOfRangeException(nameof(maximumAllowed));
+
+        var allRanks = ingredientRanks.Append(coreRank).ToArray();
+        var weightedAverage = (coreRankWeight * coreRank + ingredientRanks.Sum()) /
+                              (coreRankWeight + ingredientRanks.Count);
+        var sigma = baseSigma * (decimal)Math.Sqrt(
+            (double)(randomnessReferenceIngredientCount / ingredientRanks.Count));
+        var unrounded = averageWeight * weightedAverage +
+                        maximumWeight * allRanks.Max() +
+                        sigma * standardNormal;
+        var rounded = decimal.Round(unrounded, 0, MidpointRounding.AwayFromZero);
+        var componentMinimum = allRanks.Min() - 1m;
+        var componentMaximum = allRanks.Max() + 1m;
+        return Math.Clamp(
+            rounded,
+            Math.Max(minimumAllowed, componentMinimum),
+            Math.Min(maximumAllowed, componentMaximum));
     }
 }
 
@@ -35,9 +62,14 @@ public sealed record AlchemyPreview(
     public static AlchemyPreview Fail(string message) => new(false, message, null, []);
 }
 
-public sealed record AlchemyCraftResult(bool Success, string Message, ItemInstance? Output)
+public sealed record AlchemyCraftResult(
+    bool Success,
+    string Message,
+    IReadOnlyList<ItemInstance> Outputs,
+    int ProducedQuantity)
 {
-    public static AlchemyCraftResult Fail(string message) => new(false, message, null);
+    public ItemInstance? Output => Outputs.FirstOrDefault();
+    public static AlchemyCraftResult Fail(string message) => new(false, message, [], 0);
 }
 
 public sealed class AlchemyService(GameDatabase database, IRandomSource random)
@@ -67,11 +99,12 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         var resolved = Resolve(state, selection);
         if (resolved.Error is not null)
             return AlchemyCraftResult.Fail(resolved.Error);
-        var preview = mode == AlchemyMode.Pill
-            ? PreviewPill(resolved.Units, resolveMixedPurification: true)
-            : PreviewDistillation(resolved.Units);
-        if (!preview.CanCraft || preview.Output is null)
-            return AlchemyCraftResult.Fail(preview.Message);
+        var previews = mode == AlchemyMode.Pill
+            ? CreatePillBatch(resolved.Units)
+            : [PreviewDistillation(resolved.Units)];
+        var failedPreview = previews.FirstOrDefault(preview => !preview.CanCraft || preview.Output is null);
+        if (failedPreview is not null)
+            return AlchemyCraftResult.Fail(failedPreview.Message);
 
         foreach (var selected in selection
                      .GroupBy(value => value.InstanceId)
@@ -81,11 +114,20 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
                 return AlchemyCraftResult.Fail("Состав инвентаря изменился. Соберите смесь заново.");
         }
 
-        var output = preview.Output.Copy();
-        var stored = state.Inventory.Items.FirstOrDefault(candidate => candidate.CanStackWith(output));
-        state.Inventory.Add(output);
-        stored ??= output;
-        return new AlchemyCraftResult(true, $"Создано: {output.CustomName ?? database.GetItem(output.ConfigId).Name}", stored);
+        var storedOutputs = new List<ItemInstance>();
+        foreach (var preview in previews)
+        {
+            var output = preview.Output!.Copy();
+            var stored = state.Inventory.Items.FirstOrDefault(candidate => candidate.CanStackWith(output));
+            state.Inventory.Add(output);
+            stored ??= output;
+            if (!storedOutputs.Contains(stored))
+                storedOutputs.Add(stored);
+        }
+        var first = storedOutputs[0];
+        var producedQuantity = previews.Count;
+        var name = first.CustomName ?? database.GetItem(first.ConfigId).Name;
+        return new AlchemyCraftResult(true, $"Создано: {name} x{producedQuantity}", storedOutputs, producedQuantity);
     }
 
     public IReadOnlyList<AlchemyPropertyAmount> GetProperties(ItemInstance item)
@@ -126,7 +168,36 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         return (units, null);
     }
 
-    private AlchemyPreview PreviewPill(IReadOnlyList<IngredientUnit> units, bool resolveMixedPurification)
+    private IReadOnlyList<AlchemyPreview> CreatePillBatch(IReadOnlyList<IngredientUnit> units)
+    {
+        var validation = PreviewPill(units, resolveMixedPurification: false);
+        if (!validation.CanCraft)
+            return [validation];
+        var quantityChance = WeightedRandom.Select(
+            database.Alchemy.PillOutputQuantityChances,
+            chance => chance.ChancePercent,
+            random);
+        var forcePurity = RollMixedPurificationResult(units);
+        return Enumerable.Range(0, quantityChance.Quantity)
+            .Select(_ => PreviewPill(units, resolveMixedPurification: true, rollRanks: true, forcePurity))
+            .ToArray();
+    }
+
+    private bool? RollMixedPurificationResult(IReadOnlyList<IngredientUnit> units)
+    {
+        var ingredients = units.Where(unit => unit.Config.Category == ItemCategory.Ingredient).ToArray();
+        var purificationCount = ingredients.Count(unit => GetProperties(unit.Item)
+            .Any(property => property.PropertyId == database.Alchemy.PurificationPropertyId));
+        if (purificationCount == 0 || purificationCount == ingredients.Length)
+            return null;
+        return random.NextDecimal(0m, 1m) >= database.Alchemy.PurificationMixedRecipeChance;
+    }
+
+    private AlchemyPreview PreviewPill(
+        IReadOnlyList<IngredientUnit> units,
+        bool resolveMixedPurification,
+        bool rollRanks = false,
+        bool? forcePurity = null)
     {
         var cores = units.Where(unit => unit.Config.Category == ItemCategory.Core).ToArray();
         var ingredients = units.Where(unit => unit.Config.Category == ItemCategory.Ingredient).ToArray();
@@ -137,15 +208,32 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         if (ingredients.Length > database.Alchemy.MaximumIngredients)
             return AlchemyPreview.Fail($"В рецепте может быть не больше {database.Alchemy.MaximumIngredients} ингредиентов.");
 
-        var ingredientQuality = ingredients.Average(value => value.Item.Quality);
-        var quality = ingredientQuality * (1m - database.Alchemy.CoreQualityWeight) +
-                      cores[0].Item.Quality * database.Alchemy.CoreQualityWeight;
-        quality = Math.Clamp(quality, 0.1m, database.Alchemy.MaximumQuality);
-        var characteristicMultiplier = AlchemyCharacteristicFormula.Calculate(
-            quality,
-            ingredients.Length,
-            database.Alchemy.IngredientCharacteristicCoefficient);
-        var elementModifier = ElementCompatibilityCalculator.GetModifier(ingredients.Select(unit => unit.Config.Element), database.Alchemy);
+        var quality = CalculateResultRank(
+            cores[0].Item.Quality,
+            ingredients.Select(value => value.Item.Quality).ToArray(),
+            database.Alchemy.QualityRandomnessSigma,
+            rollRanks,
+            0.1m,
+            database.Alchemy.MaximumQuality);
+        var rarityRank = CalculateResultRank(
+            (int)cores[0].Item.Rarity,
+            ingredients.Select(value => (decimal)(int)value.Item.Rarity).ToArray(),
+            database.Alchemy.RarityRandomnessSigma,
+            rollRanks,
+            0m,
+            Enum.GetValues<ItemRarity>().Length - 1);
+        var rarity = (ItemRarity)(int)rarityRank;
+        // The spreadsheet scales potion effects only by the resulting quality and rarity.
+        // Ingredient count influences eligibility and property coverage, not the numeric value exponentially.
+        var characteristicMultiplier = ItemBalanceFormula.GetQualityMultiplier(
+                                         database.Balance,
+                                         ItemCategory.Pill,
+                                         quality) *
+                                     database.GetRarity(rarity).PriceMultiplier;
+        var elementModifier = ElementCompatibilityCalculator.GetModifier(
+            cores[0].Config.Element,
+            ingredients.Select(unit => unit.Config.Element),
+            database.Alchemy);
         var contamination = ingredients.Average(unit => Math.Clamp(unit.Item.Contamination, 0m, 1m));
         var contaminationModifier = new PiecewiseLinearCurve<ContaminationCurvePoint>(database.Alchemy.ContaminationModifierCurve,
             point => point.Contamination, point => point.Multiplier).Evaluate(contamination);
@@ -155,7 +243,7 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         var hasPurification = purificationIngredients.Length > 0;
         var allPurification = purificationIngredients.Length == ingredients.Length;
         if (allPurification)
-            return CreatePurityPill(units, quality, contamination, resolveMixedPurification);
+            return CreatePurityPill(units, quality, rarity, contamination, resolveMixedPurification);
 
         var effects = new List<(ItemEffectDefinition Effect, AlchemyPropertyConfig Property, int Matches)>();
         foreach (var propertyId in ingredients
@@ -190,11 +278,10 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             .ToArray();
         if (selectedEffects.Length == 0)
             return hasPurification
-                ? CreatePurityPill(units, quality, contamination, resolveMixedPurification)
+                ? CreatePurityPill(units, quality, rarity, contamination, resolveMixedPurification)
                 : AlchemyPreview.Fail(
                     $"Ни одно свойство не повторяется хотя бы {database.Alchemy.MinimumPropertyMatches} раза.");
 
-        var rarity = AverageRarity(units.Select(value => value.Item.Rarity));
         var name = selectedEffects.Length == 1
             ? selectedEffects[0].Property.PillName
             : $"Составная пилюля · {selectedEffects.Length} эффекта";
@@ -216,10 +303,10 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
                 return new AlchemyPreview(
                     true,
                     $"Смесь с шансом {database.Alchemy.PurificationMixedRecipeChance:P0} даст обычную пилюлю, иначе получится пилюля чистоты.",
-                    CreatePurityPill(units, quality, contamination, randomizePercent: false).Output,
+                    CreatePurityPill(units, quality, rarity, contamination, randomizePercent: false).Output,
                     ["Очищение", .. selectedEffects.Select(value => value.Property.DisplayName)]);
-            if (random.NextDecimal(0m, 1m) >= database.Alchemy.PurificationMixedRecipeChance)
-                return CreatePurityPill(units, quality, contamination, randomizePercent: true);
+            if (forcePurity ?? random.NextDecimal(0m, 1m) >= database.Alchemy.PurificationMixedRecipeChance)
+                return CreatePurityPill(units, quality, rarity, contamination, randomizePercent: true);
         }
 
         return new AlchemyPreview(
@@ -229,7 +316,38 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             selectedEffects.Select(value => value.Property.DisplayName).ToArray());
     }
 
-    private AlchemyPreview CreatePurityPill(IReadOnlyList<IngredientUnit> units, decimal quality, decimal contamination, bool randomizePercent)
+    private decimal CalculateResultRank(
+        decimal coreRank,
+        IReadOnlyCollection<decimal> ingredientRanks,
+        decimal baseSigma,
+        bool rollRandomness,
+        decimal minimumAllowed,
+        decimal maximumAllowed) =>
+        AlchemyResultRankFormula.Calculate(
+            coreRank,
+            ingredientRanks,
+            database.Alchemy.ResultAverageWeight,
+            database.Alchemy.ResultMaximumWeight,
+            database.Alchemy.CoreRankWeight,
+            baseSigma,
+            database.Alchemy.RandomnessReferenceIngredientCount,
+            rollRandomness ? NextStandardNormal() : 0m,
+            minimumAllowed,
+            maximumAllowed);
+
+    private decimal NextStandardNormal()
+    {
+        var first = Math.Max(1e-12, (double)random.NextDecimal(0m, 1m));
+        var second = (double)random.NextDecimal(0m, 1m);
+        return (decimal)(Math.Sqrt(-2d * Math.Log(first)) * Math.Cos(2d * Math.PI * second));
+    }
+
+    private AlchemyPreview CreatePurityPill(
+        IReadOnlyList<IngredientUnit> units,
+        decimal quality,
+        ItemRarity rarity,
+        decimal contamination,
+        bool randomizePercent)
     {
         var percent = randomizePercent
             ? RollPurificationPercent()
@@ -238,7 +356,7 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         {
             InstanceId = Guid.Empty,
             ConfigId = database.Alchemy.PurityPillItemId,
-            Rarity = AverageRarity(units.Select(unit => unit.Item.Rarity)),
+            Rarity = rarity,
             Quality = quality,
             Contamination = contamination,
             PurificationPercent = percent,

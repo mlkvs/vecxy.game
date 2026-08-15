@@ -122,11 +122,10 @@ public sealed class GameBalanceConfig : IYamlConfig
     public decimal MinimumTickEfficiency { get; init; } = 0.1m;
     public decimal MinimumAgingMultiplier { get; init; } = 0m;
     public decimal MaximumBreakthroughChance { get; init; } = 100m;
-    public decimal EffectQualityBase { get; init; } = 0.5m;
-    public decimal EffectQualityPerPoint { get; init; } = 0.2m;
     public long StartingMoney { get; init; } = 1000;
     public decimal StartingAgeYears { get; init; } = 16m;
     public decimal MaximumAgeYears { get; init; } = 80m;
+    public CharacterStats InitialCharacterStats { get; init; } = new(100m, 1m, 1m, 1m, 80m);
     public int MaximumMissionQueueSize { get; init; } = 6;
     public List<QualityBand> QualityBands { get; init; } = [];
     public List<ContaminationBand> ContaminationBands { get; init; } = [];
@@ -204,17 +203,30 @@ public sealed class AlchemyConfig : IYamlConfig
     public string PurityPillItemId { get; init; } = "purity_pill";
     public string ExtractItemId { get; init; } = "alchemy_extract";
     public int MinimumIngredients { get; init; } = 2;
-    public int MaximumIngredients { get; init; } = 5;
+    public int MaximumIngredients { get; init; } = 6;
     public int MinimumPropertyMatches { get; init; } = 2;
     public decimal MinimumPropertyFraction { get; init; } = 0.6m;
     public int MaximumPillEffects { get; init; } = 4;
     public int PillDurationTicks { get; init; } = 48;
-    public decimal CoreQualityWeight { get; init; } = 0.25m;
+    public List<AlchemyOutputQuantityChance> PillOutputQuantityChances { get; init; } =
+    [
+        new() { Quantity = 1, ChancePercent = 45m },
+        new() { Quantity = 2, ChancePercent = 25m },
+        new() { Quantity = 3, ChancePercent = 15m },
+        new() { Quantity = 4, ChancePercent = 8m },
+        new() { Quantity = 5, ChancePercent = 5m },
+        new() { Quantity = 6, ChancePercent = 2m }
+    ];
+    public decimal ResultAverageWeight { get; init; } = 0.6m;
+    public decimal ResultMaximumWeight { get; init; } = 0.4m;
+    public decimal CoreRankWeight { get; init; } = 1.5m;
+    public decimal QualityRandomnessSigma { get; init; } = 0.30m;
+    public decimal RarityRandomnessSigma { get; init; } = 0.40m;
+    public decimal RandomnessReferenceIngredientCount { get; init; } = 2m;
     public decimal MaximumQuality { get; init; } = 5m;
     public decimal DistillationQualityPerIngredient { get; init; } = 0.12m;
     public decimal DistillationQualityPerLevel { get; init; } = 0.18m;
     public decimal DistillationPotencyPerLevel { get; init; } = 0.12m;
-    public decimal IngredientCharacteristicCoefficient { get; init; } = 8m;
     public string PurificationPropertyId { get; init; } = "purification";
     public decimal PurificationMixedRecipeChance { get; init; } = 0.5m;
     public decimal PurificationMinimumPercent { get; init; } = 25m;
@@ -223,6 +235,12 @@ public sealed class AlchemyConfig : IYamlConfig
     public Dictionary<Element, Dictionary<Element, decimal>> ElementCompatibility { get; init; } = [];
     public List<ContaminationCurvePoint> ContaminationModifierCurve { get; init; } = [];
     public List<AlchemyPropertyConfig> Properties { get; init; } = [];
+}
+
+public sealed class AlchemyOutputQuantityChance
+{
+    public int Quantity { get; init; }
+    public decimal ChancePercent { get; init; }
 }
 
 public sealed class ContaminationCurvePoint
@@ -513,7 +531,10 @@ public sealed class GameDatabase
     {
         if (Balance.TicksPerYear <= 0 || Balance.RealMillisecondsPerTick <= 0)
             throw new InvalidDataException("Tick settings must be positive.");
-        if (Balance.MaximumAgeYears <= Balance.StartingAgeYears || Balance.MaximumMissionQueueSize <= 0)
+        if (Balance.MaximumAgeYears <= Balance.StartingAgeYears || Balance.MaximumMissionQueueSize <= 0 ||
+            Balance.InitialCharacterStats.MaximumHealth <= 0m || Balance.InitialCharacterStats.HealthRegeneration < 0m ||
+            Balance.InitialCharacterStats.Attack < 0m || Balance.InitialCharacterStats.AttacksPerSecond <= 0m ||
+            Balance.InitialCharacterStats.LongevityYears < Balance.MaximumAgeYears)
             throw new InvalidDataException("Lifetime and mission queue settings are invalid.");
         if (Balance.QualityBands.Count == 0 || Balance.QualityBands.Any(band => band.Index is < 1 or > 5 || band.Weight <= 0m))
             throw new InvalidDataException("Quality bands are invalid.");
@@ -564,11 +585,19 @@ public sealed class GameDatabase
         if (Alchemy.Enabled && (Alchemy.MinimumIngredients <= 0 || Alchemy.MaximumIngredients < Alchemy.MinimumIngredients ||
             Alchemy.MinimumPropertyMatches <= 0 || Alchemy.MinimumPropertyMatches > Alchemy.MaximumIngredients ||
             Alchemy.MinimumPropertyFraction is <= 0m or > 1m || Alchemy.MaximumPillEffects is < 1 or > 4 ||
-            Alchemy.PillDurationTicks <= 0 || Alchemy.CoreQualityWeight is < 0m or > 1m || Alchemy.MaximumQuality <= 0m ||
+            Alchemy.PillDurationTicks <= 0 || Alchemy.MaximumQuality <= 0m ||
             Alchemy.DistillationQualityPerIngredient < 0m || Alchemy.DistillationQualityPerLevel < 0m ||
-            Alchemy.DistillationPotencyPerLevel < 0m || Alchemy.IngredientCharacteristicCoefficient < 0m ||
+            Alchemy.DistillationPotencyPerLevel < 0m ||
             Alchemy.PurificationMixedRecipeChance is < 0m or > 1m || Alchemy.PurificationMinimumPercent is < 0m or > 100m ||
             Alchemy.PurificationMaximumPercent < Alchemy.PurificationMinimumPercent || Alchemy.PurificationMaximumPercent > 100m ||
+            Alchemy.PillOutputQuantityChances.Count == 0 ||
+            Alchemy.PillOutputQuantityChances.Any(chance => chance.Quantity <= 0 || chance.ChancePercent <= 0m) ||
+            Alchemy.PillOutputQuantityChances.Sum(chance => chance.ChancePercent) != 100m ||
+            Alchemy.PillOutputQuantityChances.Select(chance => chance.Quantity).Distinct().Count() != Alchemy.PillOutputQuantityChances.Count ||
+            Alchemy.ResultAverageWeight < 0m || Alchemy.ResultMaximumWeight < 0m ||
+            Alchemy.ResultAverageWeight + Alchemy.ResultMaximumWeight <= 0m ||
+            Alchemy.CoreRankWeight <= 0m || Alchemy.QualityRandomnessSigma < 0m ||
+            Alchemy.RarityRandomnessSigma < 0m || Alchemy.RandomnessReferenceIngredientCount <= 0m ||
             _alchemyProperties.Count == 0))
             throw new InvalidDataException("Alchemy settings are invalid.");
         if (Alchemy.Enabled)
