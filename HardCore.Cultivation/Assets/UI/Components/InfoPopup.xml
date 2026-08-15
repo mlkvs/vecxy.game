@@ -13,7 +13,6 @@
                 <text id="info-popup-title" class="info-popup-title">Название</text>
                 <panel id="info-popup-element" class="item-element" hidden="true">
                     <image id="info-popup-element-icon" class="item-element-icon"/>
-                    <text id="info-popup-element-name" class="item-element-name">СТИХИЯ</text>
                 </panel>
             </panel>
         </panel>

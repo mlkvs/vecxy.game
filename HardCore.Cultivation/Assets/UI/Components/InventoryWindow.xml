@@ -18,7 +18,6 @@
                 <text id="inventory-detail-name" class="inventory-detail-name">Предмет</text>
                 <panel id="inventory-detail-element" class="item-element" hidden="true">
                     <image id="inventory-detail-element-icon" class="item-element-icon"/>
-                    <text id="inventory-detail-element-name" class="item-element-name">СТИХИЯ</text>
                 </panel>
                 <text id="inventory-detail-effect" class="inventory-detail-effect">Описание эффекта</text>
             </panel>

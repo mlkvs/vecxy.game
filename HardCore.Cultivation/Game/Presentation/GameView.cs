@@ -131,7 +131,6 @@ internal sealed class GameView
         InventoryDetailRarity = Text(windowDocuments.Inventory, "inventory-detail-rarity");
         InventoryDetailElement = Panel(windowDocuments.Inventory, "inventory-detail-element");
         InventoryDetailElementIcon = Image(windowDocuments.Inventory, "inventory-detail-element-icon");
-        InventoryDetailElementName = Text(windowDocuments.Inventory, "inventory-detail-element-name");
         InventoryDetailEffect = Text(windowDocuments.Inventory, "inventory-detail-effect");
         InventoryUse = Button(windowDocuments.Inventory, "inventory-use-button");
         InventorySell = Button(windowDocuments.Inventory, "inventory-sell-button");
@@ -170,7 +169,6 @@ internal sealed class GameView
         InfoPopupTitle = Text(windowDocuments.InfoPopup, "info-popup-title");
         InfoPopupElement = Panel(windowDocuments.InfoPopup, "info-popup-element");
         InfoPopupElementIcon = Image(windowDocuments.InfoPopup, "info-popup-element-icon");
-        InfoPopupElementName = Text(windowDocuments.InfoPopup, "info-popup-element-name");
         InfoPopupDescription = Text(windowDocuments.InfoPopup, "info-popup-description");
         InfoPopupEffect = Text(windowDocuments.InfoPopup, "info-popup-effect");
         InfoPopupStatLabel1 = Text(windowDocuments.InfoPopup, "info-popup-stat-label-1");
@@ -300,7 +298,6 @@ internal sealed class GameView
     public UiText InventoryDetailRarity { get; }
     public UiPanel InventoryDetailElement { get; }
     public UiImage InventoryDetailElementIcon { get; }
-    public UiText InventoryDetailElementName { get; }
     public UiText InventoryDetailEffect { get; }
     public UiButton InventoryUse { get; }
     public UiButton InventorySell { get; }
@@ -335,7 +332,6 @@ internal sealed class GameView
     public UiText InfoPopupTitle { get; }
     public UiPanel InfoPopupElement { get; }
     public UiImage InfoPopupElementIcon { get; }
-    public UiText InfoPopupElementName { get; }
     public UiText InfoPopupDescription { get; }
     public UiText InfoPopupEffect { get; }
     public UiText InfoPopupStatLabel1 { get; }

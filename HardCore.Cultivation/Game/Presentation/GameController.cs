@@ -1345,7 +1345,7 @@ public sealed class GameController(
         _view.InventoryDetailName.Value = $"{ItemDisplayName(config, item)} · ×{item.Quantity}";
         _view.InventoryDetailRarity.Value = rarity.DisplayName.ToUpperInvariant();
         _view.InventoryDetailRarity.Style.Color = rarity.Color;
-        SetItemElement(_view.InventoryDetailElement, _view.InventoryDetailElementIcon, _view.InventoryDetailElementName, config.Element);
+        SetItemElement(_view.InventoryDetailElement, _view.InventoryDetailElementIcon, config.Element);
         _view.InventoryDetailEffect.Value = DescribeItemEffect(config, item);
         _view.InventoryDetailEffect.Value += ContaminationDescription(item.Contamination);
         _view.InventoryUse.IsEnabled = config.Effects.Count > 0 || item.CraftedEffects.Count > 0;
@@ -2835,7 +2835,7 @@ public sealed class GameController(
         var view = _view!;
         view.InfoPopupCard.SetAttribute("class", "info-popup-card");
         SetInfoPopupDetailVisibility(view, true);
-        SetItemElement(view.InfoPopupElement, view.InfoPopupElementIcon, view.InfoPopupElementName, config.Element);
+        SetItemElement(view.InfoPopupElement, view.InfoPopupElementIcon, config.Element);
         view.InfoPopupKind.Value = ItemCategoryName(config.Category);
         view.InfoPopupTitle.Value = item is null ? config.Name : ItemDisplayName(config, item);
         view.InfoPopupDescription.Value = (item?.CustomDescription ?? config.Description) +
@@ -2873,7 +2873,7 @@ public sealed class GameController(
         var view = _view!;
         view.InfoPopupCard.SetAttribute("class", "info-popup-card alchemy-failure-popup");
         SetInfoPopupDetailVisibility(view, false);
-        SetItemElement(view.InfoPopupElement, view.InfoPopupElementIcon, view.InfoPopupElementName, null);
+        SetItemElement(view.InfoPopupElement, view.InfoPopupElementIcon, null);
         view.InfoPopupKind.Value = string.Empty;
         view.InfoPopupTitle.Value = "Неудача!";
         view.InfoPopupDescription.Value = "Все ингредиенты потеряны.";
@@ -2907,13 +2907,12 @@ public sealed class GameController(
         view.InfoPopupDetails.IsVisible = isVisible;
     }
 
-    private static void SetItemElement(UiPanel host, UiImage icon, UiText name, Element? element)
+    private static void SetItemElement(UiPanel host, UiImage icon, Element? element)
     {
         host.IsVisible = element.HasValue;
         if (element is not { } value)
             return;
         icon.Sprite = ElementIcon(value);
-        name.Value = $"СТИХИЯ: {ElementName(value).ToUpperInvariant()}";
     }
 
     private static void SetElementIcon(UiImage icon, Element? element)
@@ -2930,16 +2929,6 @@ public sealed class GameController(
         Element.Earth => "Assets/Textures/UIIcons/Elements/earth.png",
         Element.Air => "Assets/Textures/UIIcons/Elements/air.png",
         Element.Void => "Assets/Textures/UIIcons/Elements/void.png",
-        _ => throw new ArgumentOutOfRangeException(nameof(element))
-    };
-
-    private static string ElementName(Element element) => element switch
-    {
-        Element.Fire => "Огонь",
-        Element.Water => "Вода",
-        Element.Earth => "Земля",
-        Element.Air => "Воздух",
-        Element.Void => "Пустота",
         _ => throw new ArgumentOutOfRangeException(nameof(element))
     };
 
