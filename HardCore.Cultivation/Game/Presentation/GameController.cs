@@ -2809,6 +2809,8 @@ public sealed class GameController(
         var rarity = item is null ? null : database.GetRarity(item.Rarity);
         var quality = item?.Quality ?? 2.5m;
         var view = _view!;
+        view.InfoPopupCard.SetAttribute("class", "info-popup-card");
+        SetInfoPopupDetailVisibility(view, true);
         view.InfoPopupKind.Value = ItemCategoryName(config.Category);
         view.InfoPopupTitle.Value = item is null ? config.Name : ItemDisplayName(config, item);
         view.InfoPopupDescription.Value = (item?.CustomDescription ?? config.Description) +
@@ -2844,6 +2846,8 @@ public sealed class GameController(
     private void ShowAlchemyFailurePopup()
     {
         var view = _view!;
+        view.InfoPopupCard.SetAttribute("class", "info-popup-card alchemy-failure-popup");
+        SetInfoPopupDetailVisibility(view, false);
         view.InfoPopupKind.Value = "АЛХИМИЯ";
         view.InfoPopupTitle.Value = "НЕУДАЧА!";
         view.InfoPopupDescription.Value = "Все ингредиенты потеряны.";
@@ -2868,6 +2872,13 @@ public sealed class GameController(
         view.InfoPopupIcon.Sprite = AtlasSprite("Assets/Textures/UIIcons/close.png");
         view.InfoPopupIconWell.Style.BorderColor = "#d85a5a";
         MountWindow(view.InfoPopup, exclusive: false);
+    }
+
+    private static void SetInfoPopupDetailVisibility(GameView view, bool isVisible)
+    {
+        view.InfoPopupEffect.IsVisible = isVisible;
+        view.InfoPopup.Query<UiPanel>("#info-popup-stats")!.IsVisible = isVisible;
+        view.InfoPopupDetails.IsVisible = isVisible;
     }
 
     private void AddRewardIcon(UiElement parent, ItemConfig item, string badge)

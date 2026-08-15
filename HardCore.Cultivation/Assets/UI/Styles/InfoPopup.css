@@ -20,3 +20,39 @@
     flex: 1;
     min-width: 0;
 }
+
+.alchemy-failure-popup {
+    width: 100%;
+    max-width: 430px;
+    padding: 22px;
+}
+
+.alchemy-failure-popup .info-popup-header {
+    min-height: 82px;
+    padding: 0 58px 12px 0;
+    gap: 13px;
+}
+
+.alchemy-failure-popup .info-popup-icon-well {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+}
+
+.alchemy-failure-popup .info-popup-icon {
+    width: 50px;
+    height: 50px;
+}
+
+.alchemy-failure-popup .info-popup-kind { font-size: 15px; }
+.alchemy-failure-popup .info-popup-title { margin-top: 2px; font-size: 27px; color: #b8433e; }
+
+.alchemy-failure-popup .info-popup-description {
+    min-height: 0;
+    margin: 18px 0 0;
+    color: #493625;
+    font-size: 26px;
+    text-align: center;
+}
+
+.alchemy-failure-popup .info-popup-actions { margin-top: 22px; }
