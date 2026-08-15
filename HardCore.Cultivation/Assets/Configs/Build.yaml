@@ -46,7 +46,7 @@ game:
   name: "HardCore Cultivation"
   # Game version shown in the in-game settings window. It is independent from
   # Google Play versionCode, which is a monotonically increasing technical integer.
-  version: "1.0.0"
+  version: "1.0.1"
   # Path from the repository root to a square PNG used as Android launcher icon.
   # Use a 512x512 or 1024x1024 image; the build creates Android resource variants.
   icon: "HardCore.Cultivation/Assets/Textures/AppIcon.png"

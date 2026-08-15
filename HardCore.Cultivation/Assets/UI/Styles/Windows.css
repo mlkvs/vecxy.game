@@ -329,11 +329,12 @@
 .alchemy-slot-quality .quality-star-empty,
 .alchemy-slot-quality .quality-star-fill,
 .alchemy-slot-quality .quality-star-fill image { width: 9px; height: 9px; }
-.alchemy-outer-slot.slot-1 { left: 50%; top: 37%; margin-left: -10%; margin-top: -10%; }
-.alchemy-outer-slot.slot-2 { left: 25%; top: 57%; margin-left: -10%; margin-top: -10%; }
-.alchemy-outer-slot.slot-3 { left: 75%; top: 57%; margin-left: -10%; margin-top: -10%; }
-.alchemy-outer-slot.slot-4 { left: 32%; top: 79%; margin-left: -10%; margin-top: -10%; }
-.alchemy-outer-slot.slot-5 { left: 68%; top: 79%; margin-left: -10%; margin-top: -10%; }
+.alchemy-outer-slot.slot-1 { left: 50%; top: 30%; margin-left: -10%; margin-top: -10%; }
+.alchemy-outer-slot.slot-2 { left: 26%; top: 45%; margin-left: -10%; margin-top: -10%; }
+.alchemy-outer-slot.slot-3 { left: 74%; top: 45%; margin-left: -10%; margin-top: -10%; }
+.alchemy-outer-slot.slot-4 { left: 26%; top: 73%; margin-left: -10%; margin-top: -10%; }
+.alchemy-outer-slot.slot-5 { left: 74%; top: 73%; margin-left: -10%; margin-top: -10%; }
+.alchemy-outer-slot.slot-6 { left: 50%; top: 88%; margin-left: -10%; margin-top: -10%; }
 .alchemy-core-slot {
     left: 50%; top: 61%; width: 26.67%; height: 26.67%; margin-left: -13.335%; margin-top: -13.335%;
     background-color: #25261b; border-color: #f1bd5977;
