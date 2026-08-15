@@ -2848,8 +2848,8 @@ public sealed class GameController(
         var view = _view!;
         view.InfoPopupCard.SetAttribute("class", "info-popup-card alchemy-failure-popup");
         SetInfoPopupDetailVisibility(view, false);
-        view.InfoPopupKind.Value = "АЛХИМИЯ";
-        view.InfoPopupTitle.Value = "НЕУДАЧА!";
+        view.InfoPopupKind.Value = string.Empty;
+        view.InfoPopupTitle.Value = "Неудача!";
         view.InfoPopupDescription.Value = "Все ингредиенты потеряны.";
         view.InfoPopupEffect.Value = string.Empty;
         view.InfoPopupStatLabel1.Value = string.Empty;
