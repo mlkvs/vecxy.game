@@ -1,6 +1,7 @@
 <button class="inventory-icon-card" data-key="{{key}}">
     <panel class="inventory-icon-well">
         <image class="inventory-icon" />
+        <image class="element-badge" hidden="true"/>
         <panel class="inventory-quality item-icon-quality" />
         <text class="contamination-badge" hidden="true">0%</text>
     </panel>

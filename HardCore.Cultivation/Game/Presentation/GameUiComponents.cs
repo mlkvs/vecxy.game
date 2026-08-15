@@ -10,6 +10,7 @@ internal sealed class ShopCardView : AUiComponent
     {
         IconWell = Element<UiPanel>(".item-icon-well");
         Icon = Element<UiImage>(".item-icon");
+        ElementIcon = Element<UiImage>(".element-badge");
         Name = Element<UiText>(".item-name");
         QualityHost = Element<UiPanel>(".shop-item-quality");
         Contamination = Element<UiText>(".contamination-badge");
@@ -20,6 +21,7 @@ internal sealed class ShopCardView : AUiComponent
     public UiElement Card => Root;
     public UiPanel IconWell { get; }
     public UiImage Icon { get; }
+    public UiImage ElementIcon { get; }
     public UiText Name { get; }
     public UiPanel QualityHost { get; }
     public QualityStarsView QualityStars { get; set; } = null!;
@@ -34,6 +36,7 @@ internal sealed class InventoryIconView : AUiComponent
     {
         IconWell = Element<UiPanel>(".inventory-icon-well");
         Icon = Element<UiImage>(".inventory-icon");
+        ElementIcon = Element<UiImage>(".element-badge");
         QualityHost = Element<UiPanel>(".inventory-quality");
         Contamination = Element<UiText>(".contamination-badge");
         Quantity = Element<UiText>(".inventory-quantity");
@@ -42,6 +45,7 @@ internal sealed class InventoryIconView : AUiComponent
     public UiElement Card => Root;
     public UiPanel IconWell { get; }
     public UiImage Icon { get; }
+    public UiImage ElementIcon { get; }
     public UiPanel QualityHost { get; }
     public QualityStarsView QualityStars { get; set; } = null!;
     public UiText Contamination { get; }

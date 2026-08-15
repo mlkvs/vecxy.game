@@ -1226,6 +1226,7 @@ public sealed class GameController(
         var unitPrice = prices.GetBuyPrice(slot.Item, _state.Shop);
         card.Card.SetAttribute("data-slot-id", slot.SlotId.ToString());
         card.Icon.Sprite = AtlasSprite(config.Icon);
+        SetElementIcon(card.ElementIcon, config.Element);
         card.Name.Value = config.Name;
         card.QualityStars.SetQuality(slot.Item.Quality);
         SetContaminationBadge(card.Contamination, slot.Item.Contamination);
@@ -1323,6 +1324,7 @@ public sealed class GameController(
         var config = database.GetItem(item.ConfigId);
         icon.Card.SetAttribute("data-item-id", item.InstanceId.ToString());
         icon.Icon.Sprite = AtlasSprite(config.Icon);
+        SetElementIcon(icon.ElementIcon, config.Element);
         icon.QualityStars.SetQuality(item.Quality);
         SetContaminationBadge(icon.Contamination, item.Contamination);
         icon.Quantity.Value = $"×{item.Quantity}";
@@ -1721,6 +1723,7 @@ public sealed class GameController(
             : _alchemySlots.Contains(item.InstanceId);
         icon.Card.SetAttribute("data-item-id", item.InstanceId.ToString());
         icon.Icon.Sprite = AtlasSprite(config.Icon);
+        SetElementIcon(icon.ElementIcon, config.Element);
         icon.QualityStars.SetQuality(item.Quality);
         SetContaminationBadge(icon.Contamination, item.Contamination);
         icon.Quantity.Value = $"×{item.Quantity}";
