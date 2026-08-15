@@ -31,6 +31,8 @@
 .item-icon {
     width: 106px;
     height: 106px;
+    flex-shrink: 0;
+    aspect-ratio: 1 / 1;
     object-fit: contain;
 }
 
@@ -1832,6 +1834,9 @@
 .info-popup-icon {
     width: 68px;
     height: 68px;
+    flex-shrink: 0;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
 }
 
 .info-popup-quality {
