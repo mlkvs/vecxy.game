@@ -1906,7 +1906,7 @@ public sealed class GameController(
                 Save();
                 SyncAlchemy();
                 SyncInventory();
-                ShowAlchemyFailurePopup(result.Message, _alchemyMode, result.SuccessChancePercent);
+                ShowAlchemyFailurePopup();
                 return;
             }
             ShowActionFeedback(result.Message, "Assets/Textures/UIIcons/close.png", false);
@@ -2841,22 +2841,22 @@ public sealed class GameController(
         MountWindow(view.InfoPopup, exclusive: false);
     }
 
-    private void ShowAlchemyFailurePopup(string message, AlchemyMode mode, decimal successChancePercent)
+    private void ShowAlchemyFailurePopup()
     {
         var view = _view!;
         view.InfoPopupKind.Value = "АЛХИМИЯ";
-        view.InfoPopupTitle.Value = mode == AlchemyMode.Pill ? "СОЗДАНИЕ НЕ УДАЛОСЬ" : "РАФИНИРОВАНИЕ НЕ УДАЛОСЬ";
-        view.InfoPopupDescription.Value = "Реакция сорвалась. Все предметы из алхимической схемы разрушены.";
-        view.InfoPopupEffect.Value = "Ингредиенты потеряны";
-        view.InfoPopupStatLabel1.Value = "ШАНС УСПЕХА";
-        view.InfoPopupStatValue1.Value = $"{successChancePercent:0.#}%";
+        view.InfoPopupTitle.Value = "НЕУДАЧА!";
+        view.InfoPopupDescription.Value = "Все ингредиенты потеряны.";
+        view.InfoPopupEffect.Value = string.Empty;
+        view.InfoPopupStatLabel1.Value = string.Empty;
+        view.InfoPopupStatValue1.Value = string.Empty;
         view.InfoPopupPriceIcon.IsVisible = false;
-        view.InfoPopupStatLabel2.Value = "РЕЗУЛЬТАТ";
-        view.InfoPopupStatValue2.Value = "НЕУДАЧА";
-        view.InfoPopupStatValue2.IsVisible = true;
-        view.InfoPopupStatLabel3.Value = "ПРЕДМЕТЫ";
-        view.InfoPopupStatValue3.Value = "УНИЧТОЖЕНЫ";
-        view.InfoPopupDetails.Value = message;
+        view.InfoPopupStatLabel2.Value = string.Empty;
+        view.InfoPopupStatValue2.Value = string.Empty;
+        view.InfoPopupStatValue2.IsVisible = false;
+        view.InfoPopupStatLabel3.Value = string.Empty;
+        view.InfoPopupStatValue3.Value = string.Empty;
+        view.InfoPopupDetails.Value = string.Empty;
         view.InfoPopupOk.Label = "ПОНЯТНО";
         _infoPopupAction = null;
         _infoPopupUseAction = null;
