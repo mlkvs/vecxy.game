@@ -63,12 +63,8 @@ maximumQuality: 5.0
 distillationQualityPerIngredient: 0.12
 distillationQualityPerLevel: 0.18
 
-# Каждая ступень экстракта дополнительно усиливает алхимические свойства.
-# 0.12 = +12% силы за ступень до расчёта итоговой пилюли.
-distillationPotencyPerLevel: 0.12
-
 # Итоговая сила эффекта созданной пилюли соответствует таблице баланса:
-# baseValue * potency * coverage * qualityPriceCurve(quality) * rarityMultiplier.
+# baseValue * coverage * qualityPriceCurve(quality) * rarityMultiplier.
 # Количество ингредиентов определяет доступность рецепта и coverage свойства,
 # но не создаёт отдельный экспоненциальный множитель. Стихийная совместимость
 # и загрязнение применяются после этой формулы.
@@ -109,8 +105,10 @@ contaminationModifierCurve:
   - { contamination: 0.75, multiplier: 0.25 }
   - { contamination: 1.00, multiplier: 0.10 }
 
-# Каталог алхимических свойств. baseValue — сила при 100% совпадении и potency=1
-# ДО множителя из формулы количества ингредиентов и качества выше.
+# Каталог алхимических свойств. baseValue — колонка «Нач. эфф (обыч 1 зв)»
+# из балансовой таблицы для поддерживаемого типа эффекта. Итоговая сила при
+# 100% совпадении дополнительно умножается на качество и редкость
+# созданной пилюли, поэтому не повышайте эти малые стартовые значения вручную.
 # Алхимические пилюли временные: для постоянной атаки и максимума здоровья
 # используйте готовые Core-предметы из Items.yaml. Мгновенное исцеление также
 # задаётся готовыми Instant-пилюлями, чтобы не создавать временный эффект без действия.
@@ -127,60 +125,60 @@ properties:
     pillName: Пилюля духовного потока
     effectType: SpiritualPowerGain
     operation: AdditivePercent
-    baseValue: 24
+    baseValue: 1
 
   - id: clarity
     displayName: Ясность
     pillName: Пилюля ясного сознания
     effectType: TickEfficiency
     operation: AdditivePercent
-    baseValue: 22
+    baseValue: 0.1
 
   - id: longevity
     displayName: Долголетие
     pillName: Пилюля тихих лет
     effectType: AgingSpeed
     operation: AdditivePercent
-    baseValue: -18
+    baseValue: -1
 
   - id: vitality
     displayName: Жизненность
     pillName: Пилюля живой крови
     effectType: HealthRegeneration
     operation: AdditivePercent
-    baseValue: 65
+    baseValue: 1
 
   - id: jade_body
     displayName: Нефритовое тело
     pillName: Пилюля нефритового тела
     effectType: MaximumHealth
-    operation: AdditivePercent
-    baseValue: 18
+    operation: Flat
+    baseValue: 1
 
   - id: blade_intent
     displayName: Намерение клинка
     pillName: Пилюля острого намерения
     effectType: Attack
-    operation: AdditivePercent
-    baseValue: 20
+    operation: Flat
+    baseValue: 0.1
 
   - id: wind_step
     displayName: Шаг ветра
     pillName: Пилюля шага ветра
     effectType: AttackSpeed
     operation: AdditivePercent
-    baseValue: 24
+    baseValue: 1
 
   - id: swiftness
     displayName: Стремительность
     pillName: Пилюля быстрого пути
     effectType: MissionProgress
     operation: AdditivePercent
-    baseValue: 28
+    baseValue: 1
 
   - id: insight
     displayName: Прозрение
     pillName: Пилюля прозрения
     effectType: BreakthroughChance
     operation: Flat
-    baseValue: 4
+    baseValue: 1

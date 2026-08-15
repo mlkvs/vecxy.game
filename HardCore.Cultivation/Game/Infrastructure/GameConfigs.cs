@@ -124,7 +124,6 @@ public sealed class GameBalanceConfig : IYamlConfig
     public decimal MaximumBreakthroughChance { get; init; } = 100m;
     public long StartingMoney { get; init; } = 1000;
     public decimal StartingAgeYears { get; init; } = 16m;
-    public decimal MaximumAgeYears { get; init; } = 80m;
     public CharacterStats InitialCharacterStats { get; init; } = new(100m, 1m, 1m, 1m, 80m);
     public int MaximumMissionQueueSize { get; init; } = 6;
     public List<QualityBand> QualityBands { get; init; } = [];
@@ -226,7 +225,6 @@ public sealed class AlchemyConfig : IYamlConfig
     public decimal MaximumQuality { get; init; } = 5m;
     public decimal DistillationQualityPerIngredient { get; init; } = 0.12m;
     public decimal DistillationQualityPerLevel { get; init; } = 0.18m;
-    public decimal DistillationPotencyPerLevel { get; init; } = 0.12m;
     public string PurificationPropertyId { get; init; } = "purification";
     public decimal PurificationMixedRecipeChance { get; init; } = 0.5m;
     public decimal PurificationMinimumPercent { get; init; } = 25m;
@@ -531,10 +529,10 @@ public sealed class GameDatabase
     {
         if (Balance.TicksPerYear <= 0 || Balance.RealMillisecondsPerTick <= 0)
             throw new InvalidDataException("Tick settings must be positive.");
-        if (Balance.MaximumAgeYears <= Balance.StartingAgeYears || Balance.MaximumMissionQueueSize <= 0 ||
+        if (Balance.InitialCharacterStats.LongevityYears <= Balance.StartingAgeYears || Balance.MaximumMissionQueueSize <= 0 ||
             Balance.InitialCharacterStats.MaximumHealth <= 0m || Balance.InitialCharacterStats.HealthRegeneration < 0m ||
             Balance.InitialCharacterStats.Attack < 0m || Balance.InitialCharacterStats.AttacksPerSecond <= 0m ||
-            Balance.InitialCharacterStats.LongevityYears < Balance.MaximumAgeYears)
+            Balance.InitialCharacterStats.LongevityYears <= 0m)
             throw new InvalidDataException("Lifetime and mission queue settings are invalid.");
         if (Balance.QualityBands.Count == 0 || Balance.QualityBands.Any(band => band.Index is < 1 or > 5 || band.Weight <= 0m))
             throw new InvalidDataException("Quality bands are invalid.");
@@ -587,7 +585,6 @@ public sealed class GameDatabase
             Alchemy.MinimumPropertyFraction is <= 0m or > 1m || Alchemy.MaximumPillEffects is < 1 or > 4 ||
             Alchemy.PillDurationTicks <= 0 || Alchemy.MaximumQuality <= 0m ||
             Alchemy.DistillationQualityPerIngredient < 0m || Alchemy.DistillationQualityPerLevel < 0m ||
-            Alchemy.DistillationPotencyPerLevel < 0m ||
             Alchemy.PurificationMixedRecipeChance is < 0m or > 1m || Alchemy.PurificationMinimumPercent is < 0m or > 100m ||
             Alchemy.PurificationMaximumPercent < Alchemy.PurificationMinimumPercent || Alchemy.PurificationMaximumPercent > 100m ||
             Alchemy.PillOutputQuantityChances.Count == 0 ||
@@ -629,8 +626,6 @@ public sealed class GameDatabase
             foreach (var property in item.AlchemyProperties)
             {
                 _ = GetAlchemyProperty(property.PropertyId);
-                if (property.Potency <= 0m)
-                    throw new InvalidDataException($"Invalid alchemy property potency: {item.Id}/{property.PropertyId}");
             }
         }
 

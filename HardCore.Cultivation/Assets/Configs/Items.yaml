@@ -46,13 +46,12 @@
 # (base + сумма Flat) * (1 + сумма AdditivePercent / 100)
 #                  * произведение (1 + MultiplicativePercent / 100)
 #
-# Важно: у обычных готовых предметов value дополнительно умножается на силу
-# конкретного экземпляра из GameBalance.yaml: множитель качества умножается
-# на priceMultiplier его редкости. Это совпадает с таблицей баланса.
+# Важно: базовое значение записывается в value рядом с типом эффекта.
+# Оно затем умножается на качество и priceMultiplier редкости.
 # У созданных алхимией пилюль итоговый CraftedEffect уже включает качество,
-# количество ингредиентов, potency и долю совпадений по формуле Alchemy.yaml,
+# количество ингредиентов и долю совпадений по формуле Alchemy.yaml,
 # поэтому повторный множитель качества к нему не применяется.
-# Поэтому value здесь — базовое значение ДО влияния звёзд качества.
+# Для очистки загрязнения value задаёт точный процент экземпляра.
 # Несколько активных эффектов одного типа складываются или перемножаются
 # согласно operation. Постоянные эффекты также могут накапливаться.
 #
@@ -79,10 +78,10 @@ items:
     # Вес выбора предмета в генерации магазина / наградных пулов.
     shopWeight: 18
     effects:
-      # +25% к общей эффективности тика.
+      # Стартовое значение из таблицы: +0.1% к общей эффективности тика.
       - type: TickEfficiency
         operation: AdditivePercent
-        value: 25
+        value: 0.1
 
   - id: still_age_pill
     name: Пилюля тихих лет
@@ -97,7 +96,7 @@ items:
       # Отрицательный процент = замедление старения.
       - type: AgingSpeed
         operation: AdditivePercent
-        value: -30
+        value: -1
 
   - id: bloodspring_pill
     name: Пилюля кровавого источника
@@ -109,12 +108,10 @@ items:
     basePrice: 260
     shopWeight: 11
     effects:
-      # Базовые +100% к регенерации до влияния качества предмета.
-      # При базовой регенерации 0.1 HP/с и силе предмета 1.0
-      # итоговая скорость на время действия станет 0.2 HP/с.
+      # Стартовое значение из таблицы: +1% к регенерации.
       - type: HealthRegeneration
         operation: AdditivePercent
-        value: 100
+        value: 1
 
   - id: healing_dew
     name: Роса живой крови
@@ -128,7 +125,7 @@ items:
     effects:
       - type: HealthRestore
         operation: Flat
-        value: 35
+        value: 2
 
   - id: jade_body_core
     name: Ядро нефритового тела
@@ -143,7 +140,7 @@ items:
       # Постоянный Flat-бонус к максимуму HP.
       - type: MaximumHealth
         operation: Flat
-        value: 20
+        value: 1
 
   - id: windblade_core
     name: Ядро ветрового клинка
@@ -157,7 +154,7 @@ items:
     effects:
       - type: Attack
         operation: Flat
-        value: 1.5
+        value: 0.1
 
   - id: gale_step_pill
     name: Пилюля порыва ветра
@@ -171,7 +168,7 @@ items:
     effects:
       - type: AttackSpeed
         operation: AdditivePercent
-        value: 35
+        value: 1
 
   # ------------------------------------------------------------
   # ПРЕДМЕТЫ ДЛЯ ПРОРЫВА
@@ -190,7 +187,7 @@ items:
       # Плоский бонус к шансу прорыва.
       - type: BreakthroughChance
         operation: Flat
-        value: 3
+        value: 1
 
   - id: breakthrough_seal
     name: Печать небесного прорыва
@@ -205,7 +202,7 @@ items:
     effects:
       - type: BreakthroughChance
         operation: Flat
-        value: 7
+        value: 1
 
   # ------------------------------------------------------------
   # МГНОВЕННЫЕ ПРЕДМЕТЫ ДУХОВНОЙ СИЛЫ
@@ -223,7 +220,7 @@ items:
       # Плоское мгновенное добавление духовной силы.
       - type: SpiritualPowerGain
         operation: Flat
-        value: 80
+        value: 10
 
   - id: marrow_elixir
     name: Эликсир костного мозга
@@ -236,7 +233,7 @@ items:
     effects:
       - type: SpiritualPowerGain
         operation: Flat
-        value: 160
+        value: 10
 
   # ------------------------------------------------------------
   # ОЧИЩЕНИЕ ЗАГРЯЗНЕНИЯ
@@ -319,7 +316,7 @@ items:
     effects:
       - type: AgingSpeed
         operation: AdditivePercent
-        value: -45
+        value: -1
 
   # ------------------------------------------------------------
   # ПОСТОЯННЫЕ ПРЕДМЕТЫ ПРОГРЕССИИ
@@ -337,7 +334,7 @@ items:
       # Постоянный бонус к эффективности тика.
       - type: TickEfficiency
         operation: AdditivePercent
-        value: 3
+        value: 0.1
 
   - id: eternal_vitality_pill
     name: Пилюля вечной жизненности
@@ -348,11 +345,11 @@ items:
     basePrice: 1250
     shopWeight: 3
     effects:
-      # Постоянные +0.02 HP/с до влияния качества предмета.
+      # Стартовое значение из таблицы: +0.1 HP/с до влияния качества предмета.
       # Flat прибавляется к базе раньше процентных модификаторов.
       - type: HealthRegeneration
         operation: Flat
-        value: 0.02
+        value: 0.1
 
   # ------------------------------------------------------------
   # ПОСТОЯННЫЕ НЕБЕСНЫЕ ПИЛЮЛИ
@@ -378,7 +375,7 @@ items:
     effects:
       - type: SpiritualPowerGain
         operation: Flat
-        value: 0.01
+        value: 10
 
   - id: heavenly_pill_drop
     name: Небесная пилюля капли
@@ -391,7 +388,7 @@ items:
     effects:
       - type: SpiritualPowerGain
         operation: Flat
-        value: 0.05
+        value: 10
 
   - id: heavenly_pill_trace
     name: Небесная пилюля следа
@@ -404,7 +401,7 @@ items:
     effects:
       - type: SpiritualPowerGain
         operation: Flat
-        value: 0.1
+        value: 10
 
   - id: heavenly_pill_stream
     name: Небесная пилюля потока
@@ -417,7 +414,7 @@ items:
     effects:
       - type: SpiritualPowerGain
         operation: Flat
-        value: 0.5
+        value: 10
 
   - id: heavenly_pill_spring
     name: Небесная пилюля источника
@@ -430,7 +427,7 @@ items:
     effects:
       - type: SpiritualPowerGain
         operation: Flat
-        value: 1
+        value: 10
 
   - id: heavenly_pill_sea
     name: Небесная пилюля моря
@@ -443,7 +440,7 @@ items:
     effects:
       - type: SpiritualPowerGain
         operation: Flat
-        value: 3
+        value: 10
 
   - id: heavenly_pill_mountain
     name: Небесная пилюля горы
@@ -469,7 +466,7 @@ items:
     effects:
       - type: SpiritualPowerGain
         operation: Flat
-        value: 30
+        value: 10
 
   # ------------------------------------------------------------
   # КОНТЕНТНЫЕ ИНГРЕДИЕНТЫ / ЛУТ
@@ -487,16 +484,11 @@ items:
     basePrice: 75
     shopWeight: 20
     # У каждого ингредиента может быть не больше четырёх свойств.
-    # potency умножает baseValue свойства из Alchemy.yaml.
     alchemyProperties:
       - propertyId: vitality
-        potency: 1.15
       - propertyId: swiftness
-        potency: 0.90
       - propertyId: insight
-        potency: 0.65
       - propertyId: blade_intent
-        potency: 0.85
 
   - id: azure_spirit_core
     name: Лазурное духовное яйцо
@@ -509,13 +501,9 @@ items:
     shopWeight: 9
     alchemyProperties:
       - propertyId: spirit_flow
-        potency: 1.20
       - propertyId: clarity
-        potency: 1.10
       - propertyId: insight
-        potency: 0.95
       - propertyId: longevity
-        potency: 0.80
 
   - id: celestial_orb
     name: Большая ляпка
@@ -528,13 +516,9 @@ items:
     shopWeight: 2
     alchemyProperties:
       - propertyId: spirit_flow
-        potency: 1.35
       - propertyId: insight
-        potency: 1.30
       - propertyId: longevity
-        potency: 1.20
       - propertyId: vitality
-        potency: 1.10
 
   - id: jade_lotus
     name: Нефритовый лоток
@@ -547,13 +531,9 @@ items:
     shopWeight: 17
     alchemyProperties:
       - propertyId: vitality
-        potency: 1.15
       - propertyId: longevity
-        potency: 1.10
       - propertyId: clarity
-        potency: 1.00
       - propertyId: jade_body
-        potency: 1.05
 
   - id: phoenix_feather
     name: Перо огненного голубя
@@ -566,13 +546,9 @@ items:
     shopWeight: 7
     alchemyProperties:
       - propertyId: swiftness
-        potency: 1.35
       - propertyId: vitality
-        potency: 1.05
       - propertyId: insight
-        potency: 1.00
       - propertyId: wind_step
-        potency: 1.15
 
   - id: purity_herb
     name: Трава чистоты
@@ -588,7 +564,6 @@ items:
     alchemyProperties:
       # Только ингредиенты с этим свойством гарантированно создают пилюлю чистоты.
       - propertyId: purification
-        potency: 1
 
   # ------------------------------------------------------------
   # ТЕХНИЧЕСКИЕ РЕЗУЛЬТАТЫ АЛХИМИИ

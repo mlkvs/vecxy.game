@@ -369,7 +369,6 @@ public sealed record ItemEffectDefinition
 public sealed record AlchemyPropertyAmount
 {
     public string PropertyId { get; init; } = string.Empty;
-    public decimal Potency { get; init; } = 1m;
 }
 
 public sealed class ActiveEffect

@@ -2931,14 +2931,16 @@ public sealed class GameController(
 
     private string DescribeItemEffect(ItemConfig config, ItemInstance item)
     {
-        var definitions = item.CraftedEffects.Count > 0 ? item.CraftedEffects : config.Effects;
+        IReadOnlyList<ItemEffectDefinition> definitions = item.CraftedEffects.Count > 0
+            ? item.CraftedEffects
+            : config.Effects;
         if (definitions.Count == 0)
         {
             var properties = alchemy.GetProperties(item);
             return properties.Count == 0
                 ? "Материал для алхимии."
                 : string.Join(" · ", properties.Select(value =>
-                    $"{database.GetAlchemyProperty(value.PropertyId).DisplayName} {value.Potency:0.##}"));
+                    database.GetAlchemyProperty(value.PropertyId).DisplayName));
         }
         var strength = item.CraftedEffects.Count > 0
             ? 1m
