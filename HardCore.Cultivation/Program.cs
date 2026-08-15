@@ -24,10 +24,6 @@ public sealed class Application : IEntryPoint
         
         layers.Add(new GameLayer.Definition());
         layers.Add(new CheatLayer.Definition());
-        
-#if !ANDROID
-        // layers.Add(new UiProfilerLayer.Definition());
-#endif
     }
 }
 

@@ -62,10 +62,6 @@
     <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.UI\Vecxy.UI.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(VecxyPlatform)' == 'Desktop'">
-    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Editor\Vecxy.Editor.csproj" />
-  </ItemGroup>
-
   <ItemGroup>
     <Compile Remove="Progression/GameProgress.cs" />
   </ItemGroup>
