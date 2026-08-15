@@ -75,13 +75,15 @@ public static class ElementCompatibilityCalculator
 
 public static class ContaminationCalculator
 {
-    /// <summary>Combines independent contamination probabilities as 1 - product(1 - p).</summary>
-    public static decimal Combine(IEnumerable<decimal> probabilities)
+    /// <summary>Combines independent contamination probabilities and applies the configured divisor.</summary>
+    public static decimal Combine(IEnumerable<decimal> probabilities, decimal divisor)
     {
         var cleanProbability = 1m;
         foreach (var probability in probabilities)
             cleanProbability *= 1m - Math.Clamp(probability, 0m, 1m);
-        return 1m - cleanProbability;
+        if (divisor <= 0m)
+            throw new ArgumentOutOfRangeException(nameof(divisor));
+        return Math.Clamp((1m - cleanProbability) / divisor, 0m, 1m);
     }
 
     public static ContaminationLevelConfig? GetLevel(decimal contamination, GameBalanceConfig balance) =>

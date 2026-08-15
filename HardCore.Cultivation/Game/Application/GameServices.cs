@@ -115,7 +115,8 @@ public sealed class ItemGenerator(GameDatabase database, IRandomSource random)
     {
         var band = WeightedRandom.Select(database.Balance.ContaminationBands, value => value.Weight, random);
         var contamination = band.Maximum == band.Minimum ? band.Minimum : random.NextDecimal(band.Minimum, band.Maximum);
-        return NormalizeContamination(configId, ContaminationCalculator.Combine([contamination]));
+        return NormalizeContamination(configId,
+            ContaminationCalculator.Combine([contamination], database.Balance.ContaminationCombinationDivisor));
     }
 }
 

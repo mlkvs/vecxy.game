@@ -128,6 +128,7 @@ public sealed class GameBalanceConfig : IYamlConfig
     public int MaximumMissionQueueSize { get; init; } = 6;
     public List<QualityBand> QualityBands { get; init; } = [];
     public List<ContaminationBand> ContaminationBands { get; init; } = [];
+    public decimal ContaminationCombinationDivisor { get; init; } = 3m;
     public decimal ContaminationAbsorptionPerPill { get; init; } = 1m;
     public List<ContaminationLevelConfig> ContaminationLevels { get; init; } = [];
     public List<PriceCurvePoint> QualityPriceCurve { get; init; } = [];
@@ -540,7 +541,7 @@ public sealed class GameDatabase
             throw new InvalidDataException("Quality bands are invalid.");
         if (Balance.ContaminationBands.Count == 0 || Balance.ContaminationBands.Any(band =>
                 band.Minimum is < 0m or > 1m || band.Maximum is < 0m or > 1m || band.Maximum < band.Minimum || band.Weight <= 0m) ||
-            Balance.ContaminationAbsorptionPerPill < 0m)
+                Balance.ContaminationAbsorptionPerPill < 0m || Balance.ContaminationCombinationDivisor <= 0m)
             throw new InvalidDataException("Contamination generation settings are invalid.");
         if (Balance.ContaminationLevels.Count != 4 || Balance.ContaminationLevels.Any(level =>
                 level.MinimumContamination is <= 0m or > 1m || string.IsNullOrWhiteSpace(level.Name)) ||
