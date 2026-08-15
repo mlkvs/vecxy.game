@@ -324,6 +324,10 @@
     pointer-events: none; position: absolute; left: 7.5%; top: 7.5%;
     width: 85%; height: 85%; object-fit: contain;
 }
+.alchemy-slot > image.alchemy-slot-element {
+    left: auto; top: auto; right: -7%; bottom: -7%; z-index: 6;
+    width: 34%; height: 34%;
+}
 .alchemy-slot-quality { left: 5%; top: 77%; width: 90%; height: 18px; }
 .alchemy-slot-quality .quality-star,
 .alchemy-slot-quality .quality-star-empty,

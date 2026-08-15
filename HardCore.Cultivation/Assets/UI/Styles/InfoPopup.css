@@ -21,6 +21,17 @@
     min-width: 0;
 }
 
+.item-element {
+    min-height: 24px;
+    margin-top: 7px;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.item-element-icon { width: 20px; height: 20px; object-fit: contain; }
+.item-element-name { color: #7e653b; font-size: 15px; }
+
 .alchemy-failure-popup {
     width: 100%;
     max-width: 430px;

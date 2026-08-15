@@ -1345,6 +1345,7 @@ public sealed class GameController(
         _view.InventoryDetailName.Value = $"{ItemDisplayName(config, item)} · ×{item.Quantity}";
         _view.InventoryDetailRarity.Value = rarity.DisplayName.ToUpperInvariant();
         _view.InventoryDetailRarity.Style.Color = rarity.Color;
+        SetItemElement(_view.InventoryDetailElement, _view.InventoryDetailElementIcon, _view.InventoryDetailElementName, config.Element);
         _view.InventoryDetailEffect.Value = DescribeItemEffect(config, item);
         _view.InventoryDetailEffect.Value += ContaminationDescription(item.Contamination);
         _view.InventoryUse.IsEnabled = config.Effects.Count > 0 || item.CraftedEffects.Count > 0;
@@ -1551,6 +1552,12 @@ public sealed class GameController(
             var icon = (UiImage)document.CreateElement("image");
             icon.Style.Set("visibility", "hidden");
             slot.Add(icon);
+            var elementIcon = document.CreateImage(string.Empty, new Dictionary<string, string>
+            {
+                ["class"] = "alchemy-slot-element"
+            });
+            elementIcon.Style.Set("visibility", "hidden");
+            slot.Add(elementIcon);
             var qualityHost = document.CreatePanel(new Dictionary<string, string>
             {
                 ["class"] = "alchemy-slot-quality item-icon-quality"
@@ -1565,7 +1572,7 @@ public sealed class GameController(
             var slotIndex = index;
             slot.Clicked += _ => RemoveAlchemyIngredientAt(slotIndex);
             furnaceStage.Add(slot);
-            _alchemySlotWidgets.Add(new AlchemySlotWidget(slot, icon, qualityHost, quality, label));
+            _alchemySlotWidgets.Add(new AlchemySlotWidget(slot, icon, elementIcon, qualityHost, quality, label));
             _renderedAlchemySlots.Add(null);
         }
 
@@ -1575,6 +1582,12 @@ public sealed class GameController(
         });
         var coreIcon = (UiImage)document.CreateElement("image");
         coreSlot.Add(coreIcon);
+        var coreElementIcon = document.CreateImage(string.Empty, new Dictionary<string, string>
+        {
+            ["class"] = "alchemy-slot-element"
+        });
+        coreElementIcon.Style.Set("visibility", "hidden");
+        coreSlot.Add(coreElementIcon);
         var coreQualityHost = document.CreatePanel(new Dictionary<string, string>
         {
             ["class"] = "alchemy-slot-quality item-icon-quality"
@@ -1594,7 +1607,7 @@ public sealed class GameController(
         };
         furnaceStage.Add(coreSlot);
         _alchemyCoreWidget = new AlchemySlotWidget(
-            coreSlot, coreIcon, coreQualityHost, coreQuality, coreLabel);
+            coreSlot, coreIcon, coreElementIcon, coreQualityHost, coreQuality, coreLabel);
         _renderedAlchemyCore = null;
         UpdateAlchemySlots();
     }
@@ -1614,9 +1627,13 @@ public sealed class GameController(
             SetPaintVisibility(widget.Label, item is null);
             if (item is not null)
             {
-                widget.Icon.Sprite = AtlasSprite(database.GetItem(item.ConfigId).Icon);
+                var config = database.GetItem(item.ConfigId);
+                widget.Icon.Sprite = AtlasSprite(config.Icon);
                 widget.Quality.SetQuality(item.Quality);
+                SetElementIcon(widget.ElementIcon, config.Element);
             }
+            else
+                SetElementIcon(widget.ElementIcon, null);
             _renderedAlchemySlots[index] = instanceId;
         }
 
@@ -1633,12 +1650,19 @@ public sealed class GameController(
         SetPaintVisibility(coreWidget.QualityHost, core is not null);
         SetPaintVisibility(coreWidget.Label, !distillation && core is null);
         if (distillation)
+        {
             coreWidget.Icon.Sprite = "Assets/Textures/GameUIAtlas.atlas#alchemy";
+            SetElementIcon(coreWidget.ElementIcon, null);
+        }
         else if (core is not null)
         {
-            coreWidget.Icon.Sprite = AtlasSprite(database.GetItem(core.ConfigId).Icon);
+            var config = database.GetItem(core.ConfigId);
+            coreWidget.Icon.Sprite = AtlasSprite(config.Icon);
             coreWidget.Quality.SetQuality(core.Quality);
+            SetElementIcon(coreWidget.ElementIcon, config.Element);
         }
+        else
+            SetElementIcon(coreWidget.ElementIcon, null);
         _renderedAlchemyCore = coreState;
     }
 
@@ -2811,6 +2835,7 @@ public sealed class GameController(
         var view = _view!;
         view.InfoPopupCard.SetAttribute("class", "info-popup-card");
         SetInfoPopupDetailVisibility(view, true);
+        SetItemElement(view.InfoPopupElement, view.InfoPopupElementIcon, view.InfoPopupElementName, config.Element);
         view.InfoPopupKind.Value = ItemCategoryName(config.Category);
         view.InfoPopupTitle.Value = item is null ? config.Name : ItemDisplayName(config, item);
         view.InfoPopupDescription.Value = (item?.CustomDescription ?? config.Description) +
@@ -2848,6 +2873,7 @@ public sealed class GameController(
         var view = _view!;
         view.InfoPopupCard.SetAttribute("class", "info-popup-card alchemy-failure-popup");
         SetInfoPopupDetailVisibility(view, false);
+        SetItemElement(view.InfoPopupElement, view.InfoPopupElementIcon, view.InfoPopupElementName, null);
         view.InfoPopupKind.Value = string.Empty;
         view.InfoPopupTitle.Value = "Неудача!";
         view.InfoPopupDescription.Value = "Все ингредиенты потеряны.";
@@ -2880,6 +2906,42 @@ public sealed class GameController(
         view.InfoPopup.Query<UiPanel>("#info-popup-stats")!.IsVisible = isVisible;
         view.InfoPopupDetails.IsVisible = isVisible;
     }
+
+    private static void SetItemElement(UiPanel host, UiImage icon, UiText name, Element? element)
+    {
+        host.IsVisible = element.HasValue;
+        if (element is not { } value)
+            return;
+        icon.Sprite = ElementIcon(value);
+        name.Value = $"СТИХИЯ: {ElementName(value).ToUpperInvariant()}";
+    }
+
+    private static void SetElementIcon(UiImage icon, Element? element)
+    {
+        SetPaintVisibility(icon, element.HasValue);
+        if (element is { } value)
+            icon.Sprite = ElementIcon(value);
+    }
+
+    private static string ElementIcon(Element element) => element switch
+    {
+        Element.Fire => "Assets/Textures/UIIcons/Elements/fire.png",
+        Element.Water => "Assets/Textures/UIIcons/Elements/water.png",
+        Element.Earth => "Assets/Textures/UIIcons/Elements/earth.png",
+        Element.Air => "Assets/Textures/UIIcons/Elements/air.png",
+        Element.Void => "Assets/Textures/UIIcons/Elements/void.png",
+        _ => throw new ArgumentOutOfRangeException(nameof(element))
+    };
+
+    private static string ElementName(Element element) => element switch
+    {
+        Element.Fire => "Огонь",
+        Element.Water => "Вода",
+        Element.Earth => "Земля",
+        Element.Air => "Воздух",
+        Element.Void => "Пустота",
+        _ => throw new ArgumentOutOfRangeException(nameof(element))
+    };
 
     private void AddRewardIcon(UiElement parent, ItemConfig item, string badge)
     {
@@ -3156,6 +3218,7 @@ public sealed class GameController(
     private sealed record AlchemySlotWidget(
         UiButton Root,
         UiImage Icon,
+        UiImage ElementIcon,
         UiPanel QualityHost,
         QualityStarsView Quality,
         UiText Label);
