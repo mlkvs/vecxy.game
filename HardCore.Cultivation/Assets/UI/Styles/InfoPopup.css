@@ -22,13 +22,13 @@
 }
 
 .item-element {
-    width: 24px;
-    height: 24px;
-    margin-top: 7px;
+    width: 32px;
+    height: 32px;
+    margin-top: 9px;
     align-items: center;
 }
 
-.item-element-icon { width: 24px; height: 24px; object-fit: contain; }
+.item-element-icon { width: 32px; height: 32px; object-fit: contain; }
 
 .alchemy-failure-popup {
     width: 100%;

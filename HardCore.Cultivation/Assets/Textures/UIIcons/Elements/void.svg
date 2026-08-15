@@ -1,4 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
-  <path d="m48 10 8 28 28 10-28 10-8 28-8-28-28-10 28-10 8-28Z" fill="#8661c4" stroke="#402a6f" stroke-width="5" stroke-linejoin="round"/>
-  <circle cx="48" cy="48" r="10" fill="#e6d6ff" stroke="#b895ed" stroke-width="4"/>
+  <defs><radialGradient id="void" cx="50%" cy="46%" r="52%"><stop stop-color="#ffb6ff"/><stop offset=".32" stop-color="#c34cff"/><stop offset=".72" stop-color="#5921ba"/><stop offset="1" stop-color="#25105e"/></radialGradient></defs>
+  <path d="M48 8c6 15 12 21 27 27-15 6-21 12-27 27-6-15-12-21-27-27 15-6 21-12 27-27Z" fill="url(#void)" stroke="#f2a6ff" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M48 30c4 9 8 13 17 17-9 4-13 8-17 17-4-9-8-13-17-17 9-4 13-8 17-17Z" fill="#18073d"/>
+  <path d="M48 38c2 5 4 7 9 9-5 2-7 4-9 9-2-5-4-7-9-9 5-2 7-4 9-9Z" fill="#f7d3ff"/>
+  <path d="m76 68 2 6 6 2-6 2-2 6-2-6-6-2 6-2 2-6ZM19 15l1.5 4.5L25 21l-4.5 1.5L19 27l-1.5-4.5L13 21l4.5-1.5L19 15Z" fill="#edc4ff"/>
 </svg>

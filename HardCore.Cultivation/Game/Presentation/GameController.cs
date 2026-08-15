@@ -1226,7 +1226,6 @@ public sealed class GameController(
         var unitPrice = prices.GetBuyPrice(slot.Item, _state.Shop);
         card.Card.SetAttribute("data-slot-id", slot.SlotId.ToString());
         card.Icon.Sprite = AtlasSprite(config.Icon);
-        SetElementIcon(card.ElementIcon, config.Element);
         card.Name.Value = config.Name;
         card.QualityStars.SetQuality(slot.Item.Quality);
         SetContaminationBadge(card.Contamination, slot.Item.Contamination);
@@ -1324,7 +1323,6 @@ public sealed class GameController(
         var config = database.GetItem(item.ConfigId);
         icon.Card.SetAttribute("data-item-id", item.InstanceId.ToString());
         icon.Icon.Sprite = AtlasSprite(config.Icon);
-        SetElementIcon(icon.ElementIcon, config.Element);
         icon.QualityStars.SetQuality(item.Quality);
         SetContaminationBadge(icon.Contamination, item.Contamination);
         icon.Quantity.Value = $"×{item.Quantity}";
@@ -1623,19 +1621,19 @@ public sealed class GameController(
                 continue;
             var widget = _alchemySlotWidgets[index];
             var item = instanceId is { } id ? _state.Inventory.Find(id) : null;
+            var config = item is null ? null : database.GetItem(item.ConfigId);
             widget.Root.ToggleClass("filled", item is not null);
             SetPaintVisibility(widget.Icon, item is not null);
+            SetPaintVisibility(widget.ElementIcon, config?.Element is not null);
             SetPaintVisibility(widget.QualityHost, item is not null);
             SetPaintVisibility(widget.Label, item is null);
             if (item is not null)
             {
-                var config = database.GetItem(item.ConfigId);
-                widget.Icon.Sprite = AtlasSprite(config.Icon);
+                widget.Icon.Sprite = AtlasSprite(config!.Icon);
+                if (config.Element is { } element)
+                    widget.ElementIcon.Sprite = AtlasSprite(ElementIcon(element));
                 widget.Quality.SetQuality(item.Quality);
-                SetElementIcon(widget.ElementIcon, config.Element);
             }
-            else
-                SetElementIcon(widget.ElementIcon, null);
             _renderedAlchemySlots[index] = instanceId;
         }
 
@@ -1654,17 +1652,19 @@ public sealed class GameController(
         if (distillation)
         {
             coreWidget.Icon.Sprite = "Assets/Textures/GameUIAtlas.atlas#alchemy";
-            SetElementIcon(coreWidget.ElementIcon, null);
+            SetPaintVisibility(coreWidget.ElementIcon, false);
         }
         else if (core is not null)
         {
             var config = database.GetItem(core.ConfigId);
             coreWidget.Icon.Sprite = AtlasSprite(config.Icon);
+            SetPaintVisibility(coreWidget.ElementIcon, config.Element is not null);
+            if (config.Element is { } element)
+                coreWidget.ElementIcon.Sprite = AtlasSprite(ElementIcon(element));
             coreWidget.Quality.SetQuality(core.Quality);
-            SetElementIcon(coreWidget.ElementIcon, config.Element);
         }
         else
-            SetElementIcon(coreWidget.ElementIcon, null);
+            SetPaintVisibility(coreWidget.ElementIcon, false);
         _renderedAlchemyCore = coreState;
     }
 
@@ -1723,7 +1723,6 @@ public sealed class GameController(
             : _alchemySlots.Contains(item.InstanceId);
         icon.Card.SetAttribute("data-item-id", item.InstanceId.ToString());
         icon.Icon.Sprite = AtlasSprite(config.Icon);
-        SetElementIcon(icon.ElementIcon, config.Element);
         icon.QualityStars.SetQuality(item.Quality);
         SetContaminationBadge(icon.Contamination, item.Contamination);
         icon.Quantity.Value = $"×{item.Quantity}";
@@ -2916,13 +2915,6 @@ public sealed class GameController(
         if (element is not { } value)
             return;
         icon.Sprite = AtlasSprite(ElementIcon(value));
-    }
-
-    private static void SetElementIcon(UiImage icon, Element? element)
-    {
-        SetPaintVisibility(icon, element.HasValue);
-        if (element is { } value)
-            icon.Sprite = AtlasSprite(ElementIcon(value));
     }
 
     private static string ElementIcon(Element element) => element switch

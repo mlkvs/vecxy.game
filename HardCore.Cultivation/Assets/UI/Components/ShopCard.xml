@@ -2,7 +2,6 @@
     <panel class="shop-card-header">
         <panel class="shop-card-icon-stack">
             <panel class="item-icon-well"><image class="item-icon" /></panel>
-            <image class="element-badge"/>
             <panel class="item-quality shop-item-quality item-icon-quality" />
             <text class="contamination-badge" hidden="true">0%</text>
         </panel>
