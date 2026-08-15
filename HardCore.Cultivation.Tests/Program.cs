@@ -15,7 +15,6 @@ var processor = new TickProcessor(database, effectService, missionService, shopS
 var spreadsheetBalance = new CultivationBalanceSnapshot(
     new GameBalanceConfig
     {
-        MaximumAgeYears = 63m,
         InitialCharacterStats = new CharacterStats(100m, 1m, 1m, 1m, 63m)
     },
     new CultivationConfig
@@ -187,8 +186,9 @@ distillationState.Inventory.Add(extract.Copy(2));
 var powerful = alchemy.Preview(distillationState,
     [new(extract.InstanceId, 3)], AlchemyMode.Distillation);
 Check(powerful.CanCraft && powerful.Output is { DistillationLevel: 2 } &&
-      powerful.Output.AlchemyProperties[0].Potency > extract.AlchemyProperties[0].Potency,
-    "Repeated distillation did not create a more powerful extract.");
+      powerful.Output.AlchemyProperties.Select(value => value.PropertyId)
+          .SequenceEqual(extract.AlchemyProperties.Select(value => value.PropertyId)),
+    "Repeated distillation did not preserve the extract properties.");
 
 var savePath = Path.Combine(Path.GetTempPath(), $"cultivation-alchemy-{Guid.NewGuid():N}.json");
 var saveSystem = new GameSaveSystem(database) { SavePath = savePath };
@@ -338,7 +338,7 @@ static GameDatabase BuildDatabase()
         new GameBalanceConfig
         {
             TicksPerYear = 48, RealMillisecondsPerTick = 1000, BaseSpiritualPowerPerTick = 100,
-            StartingAgeYears = 16, MaximumAgeYears = 80, MaximumMissionQueueSize = 6,
+            StartingAgeYears = 16, MaximumMissionQueueSize = 6,
             QualityBands = [new QualityBand { Index = 1, Weight = 1 }],
             ContaminationBands = [new ContaminationBand { Minimum = 0m, Maximum = 0m, Weight = 1m }],
             ContaminationLevels =
@@ -359,9 +359,9 @@ static GameDatabase BuildDatabase()
             Items =
             [
                 new ItemConfig { Id = "ingredient", Name = "Ingredient", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant, BasePrice = 10,
-                    AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "vitality", Potency = 1m }] },
+                    AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "vitality" }] },
                 new ItemConfig { Id = "ingredient_other", Name = "Other", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant, BasePrice = 10,
-                    AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "clarity", Potency = 1m }] },
+                    AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "clarity" }] },
                 new ItemConfig { Id = "crafted_alchemy_pill", Name = "Pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
                     TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "purity_pill", Name = "Purity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
@@ -407,7 +407,6 @@ static GameDatabase BuildDatabase()
             PillDurationTicks = 48,
             DistillationQualityPerIngredient = 0.12m,
             DistillationQualityPerLevel = 0.18m,
-            DistillationPotencyPerLevel = 0.12m,
             ElementCompatibility = Enum.GetValues<Element>().ToDictionary(
                 left => left,
                 _ => Enum.GetValues<Element>().ToDictionary(right => right, _ => 0m)),

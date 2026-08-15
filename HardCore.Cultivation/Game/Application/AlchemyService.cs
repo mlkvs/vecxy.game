@@ -262,12 +262,11 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
                 coverage < database.Alchemy.MinimumPropertyFraction)
                 continue;
             var property = database.GetAlchemyProperty(propertyId);
-            var potency = contributions.Average(value => value.Potency);
             effects.Add((new ItemEffectDefinition
             {
                 Type = property.EffectType,
                 Operation = property.Operation,
-                Value = property.BaseValue * potency * coverage * characteristicMultiplier * elementModifier * contaminationModifier
+                Value = property.BaseValue * coverage * characteristicMultiplier * elementModifier * contaminationModifier
             }, property, contributions.Length));
         }
 
@@ -386,14 +385,12 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             return AlchemyPreview.Fail("Для рафинирования требуется одинаковое сырьё одной ступени.");
 
         var nextLevel = level + 1;
-        var potencyMultiplier = 1m + database.Alchemy.DistillationPotencyPerLevel * nextLevel;
         var properties = units
             .SelectMany(unit => GetProperties(unit.Item))
             .GroupBy(value => value.PropertyId, StringComparer.Ordinal)
             .Select(group => new AlchemyPropertyAmount
             {
-                PropertyId = group.Key,
-                Potency = group.Average(value => value.Potency) * potencyMultiplier
+                PropertyId = group.Key
             })
             .OrderBy(value => value.PropertyId, StringComparer.Ordinal)
             .ToList();

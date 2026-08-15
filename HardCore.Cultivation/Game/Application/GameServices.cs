@@ -135,7 +135,7 @@ public sealed class ItemEffectService(GameDatabase database)
         if (item is null)
             return TransactionResult.Fail("Предмет не найден.");
         var config = database.GetItem(item.ConfigId);
-        var definitions = item.CraftedEffects.Count > 0
+        IReadOnlyList<ItemEffectDefinition> definitions = item.CraftedEffects.Count > 0
             ? item.CraftedEffects
             : config.Effects;
         var strength = item.CraftedEffects.Count > 0
