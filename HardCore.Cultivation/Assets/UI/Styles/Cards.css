@@ -4122,3 +4122,12 @@
 .category-tab.active .tab-brush-stroke {
     opacity: 0.9;
 }
+
+/* Element badges sit slightly outside the circular alchemy receptacles. */
+.alchemy-furnace-stage > .alchemy-slot,
+.alchemy-furnace-stage > .alchemy-slot.filled,
+.alchemy-furnace-stage > .alchemy-core-slot,
+.alchemy-furnace-stage > .alchemy-core-slot.filled,
+.alchemy-furnace-stage > .alchemy-core-slot.equipment {
+    overflow: visible;
+}
