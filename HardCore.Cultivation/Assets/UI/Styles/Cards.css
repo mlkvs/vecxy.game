@@ -4059,3 +4059,65 @@
     box-shadow: none;
     color: #00000000;
 }
+
+/* Every tab group uses the same treatment as the alchemy mode selector. */
+.window-tabs,
+.category-tabs {
+    column-gap: 12px;
+}
+
+.window-tab,
+.category-tab {
+    position: relative;
+    color: #4a3826;
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 24px;
+    box-shadow: none;
+    text-shadow: 0 1px 0 #fffaf0cc;
+    font-size: 16px;
+    opacity: 0.72;
+    overflow: visible;
+}
+
+.window-tabs .window-tab.active,
+.category-tabs .category-tab.active {
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
+    background-size: fill;
+    background-slice: 12px;
+    background-color: #00000000;
+    border: 0;
+    box-shadow: none;
+    opacity: 0.72;
+    transform: none;
+}
+
+.window-tab > text,
+.category-tab > text {
+    pointer-events: none;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    text-align: center;
+}
+
+.tab-brush-stroke {
+    pointer-events: none;
+    position: absolute;
+    left: 12%;
+    bottom: 7px;
+    width: 76%;
+    height: 17px;
+    z-index: 1;
+    object-fit: fill;
+    image-tint: #df792d;
+    opacity: 0;
+    transform: rotate(-1.2deg);
+}
+
+.window-tab.active .tab-brush-stroke,
+.category-tab.active .tab-brush-stroke {
+    opacity: 0.9;
+}

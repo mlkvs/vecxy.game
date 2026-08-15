@@ -5,8 +5,8 @@
     </panel>
     <panel class="window-body">
         <panel class="window-tabs alchemy-tabs">
-            <button id="alchemy-pill-tab" class="window-tab active">АЛХИМИЧЕСКАЯ ПЕЧЬ</button>
-            <button id="alchemy-distill-tab" class="window-tab">РАФИНИРОВАНИЕ</button>
+            <button id="alchemy-pill-tab" class="window-tab active"><image class="tab-brush-stroke" sprite="Assets/Textures/GameUIAtlas.atlas#tab-brush-stroke"/><text>АЛХИМИЧЕСКАЯ ПЕЧЬ</text></button>
+            <button id="alchemy-distill-tab" class="window-tab"><image class="tab-brush-stroke" sprite="Assets/Textures/GameUIAtlas.atlas#tab-brush-stroke"/><text>РАФИНИРОВАНИЕ</text></button>
         </panel>
         <panel id="alchemy-selection" class="alchemy-selection" />
         <panel class="alchemy-filters">

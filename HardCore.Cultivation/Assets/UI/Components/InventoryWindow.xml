@@ -3,9 +3,9 @@
     <panel class="window-body">
         <panel class="window-toolbar"><text>ПРЕДМЕТЫ</text><text id="inventory-count" class="toolbar-value">0 предметов</text></panel>
         <panel class="category-tabs">
-            <button id="ingredients-tab" class="category-tab active">ИНГРЕДИЕНТЫ</button>
-            <button id="cores-tab" class="category-tab">ЯДРА ЗВЕРЕЙ</button>
-            <button id="pills-tab" class="category-tab">ПИЛЮЛИ</button>
+            <button id="ingredients-tab" class="category-tab active"><image class="tab-brush-stroke" sprite="Assets/Textures/GameUIAtlas.atlas#tab-brush-stroke"/><text>ИНГРЕДИЕНТЫ</text></button>
+            <button id="cores-tab" class="category-tab"><image class="tab-brush-stroke" sprite="Assets/Textures/GameUIAtlas.atlas#tab-brush-stroke"/><text>ЯДРА ЗВЕРЕЙ</text></button>
+            <button id="pills-tab" class="category-tab"><image class="tab-brush-stroke" sprite="Assets/Textures/GameUIAtlas.atlas#tab-brush-stroke"/><text>ПИЛЮЛИ</text></button>
         </panel>
         <panel id="inventory-grid" class="inventory-grid" virtualize="true" />
         <panel id="inventory-details" class="inventory-details" hidden="true">
