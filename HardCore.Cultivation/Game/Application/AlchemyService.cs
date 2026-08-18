@@ -328,6 +328,17 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
                 : AlchemyPreview.Fail(
                     "Ни одно свойство не выпало по вероятности ингредиентов.");
 
+        var craftedEffects = new List<ItemEffectDefinition> { selectedEffects[0].Effect };
+        if (selectedEffects[0].Property.Id == "swiftness")
+        {
+            craftedEffects.Add(new ItemEffectDefinition
+            {
+                Type = EffectType.SpiritualPowerGain,
+                Operation = selectedEffects[0].Effect.Operation,
+                Value = selectedEffects[0].Effect.Value
+            });
+        }
+
         var output = new ItemInstance
         {
             InstanceId = Guid.Empty,
@@ -335,7 +346,7 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             Rarity = rarity,
             Quality = quality,
             Contamination = contamination,
-            CraftedEffects = [selectedEffects[0].Effect]
+            CraftedEffects = craftedEffects
         };
         if (hasPurification)
         {

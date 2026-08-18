@@ -113,8 +113,9 @@ contaminationModifierCurve:
 # resultPillItemId ссылается на Pill из Items.yaml: там задаются название,
 # описание, иконка и длительность. Сила эффекта рассчитывается алхимией для
 # каждого экземпляра отдельно и не дублируется в Items.yaml.
-# В одной созданной пилюле всегда ровно один эффект: если в рецепте свойств
+# Обычно в созданной пилюле один основной эффект: если в рецепте свойств
 # несколько, выбирается самое частое, а при равенстве - самое сильное.
+# Отдельные пилюли могут добавлять второй связанный эффект, если это задано балансом.
 properties:
   - id: purification
     displayName: Очищение
@@ -173,8 +174,8 @@ properties:
     baseValue: 1
 
   - id: swiftness
-    displayName: Стремительность
-    resultPillItemId: swiftness_pill
+    displayName: Ускорение времени
+    resultPillItemId: time_acceleration_pill
     effectType: MissionProgress
     operation: AdditivePercent
     baseValue: 1

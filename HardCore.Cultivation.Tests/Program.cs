@@ -166,6 +166,22 @@ var independentPillResult = independentAlchemy.Craft(independentPillState,
 Check(independentPillResult.Success && independentPillResult.Outputs.Select(item => item.ConfigId).Order().SequenceEqual(["clarity_pill", "vitality_pill"]),
     "Each pill in an alchemy batch must roll its output type independently.");
 
+var swiftnessState = new GameState(database.Balance.TicksPerYear);
+var swiftnessCore = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "attempt", Rarity = ItemRarity.Common, Quality = 1m };
+var swiftnessIngredient = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "swiftness_ingredient", Rarity = ItemRarity.Common, Quality = 1m };
+swiftnessIngredient.AddQuantity(1);
+swiftnessState.Inventory.Add(swiftnessCore);
+swiftnessState.Inventory.Add(swiftnessIngredient);
+var swiftnessResult = new AlchemyService(database, new StableRandom()).Craft(swiftnessState,
+    [new(swiftnessCore.InstanceId, 1), new(swiftnessIngredient.InstanceId, 2)],
+    AlchemyMode.Pill);
+Check(swiftnessResult.Success &&
+      swiftnessResult.Output is { ConfigId: "time_acceleration_pill" } &&
+      swiftnessResult.Output.CraftedEffects.Count == 2 &&
+      swiftnessResult.Output.CraftedEffects.Any(effect => effect.Type == EffectType.MissionProgress) &&
+      swiftnessResult.Output.CraftedEffects.Any(effect => effect.Type == EffectType.SpiritualPowerGain),
+    "Time acceleration pill must grant both mission progress and spiritual power gain.");
+
 var purificationState = new GameState(database.Balance.TicksPerYear);
 purificationState.Character.AddContamination(0.4m);
 var purificationPill = new ItemInstance
@@ -374,6 +390,21 @@ longevityCharacter.Cultivation.Restore(2, 1, database.Cultivation.Stages.Count);
 Check(cultivation.GetMaximumAge(longevityCharacter) == database.CultivationBalance
           .GetCurrent(longevityCharacter.Cultivation, database.Cultivation).LongevityYears,
     "Stage-based longevity bonus is incorrect.");
+var longevityState = new GameState(database.Balance.TicksPerYear);
+longevityState.Character.Cultivation.Restore(2, 1, database.Cultivation.Stages.Count);
+longevityState.Inventory.Add(new ItemInstance
+{
+    InstanceId = Guid.NewGuid(),
+    ConfigId = "longevity_pill",
+    Rarity = ItemRarity.Common,
+    Quality = 1m
+});
+var maximumAgeBeforePill = cultivation.GetMaximumAge(longevityState.Character, longevityState.ActiveEffects);
+var longevityPill = longevityState.Inventory.Items.Single(item => item.ConfigId == "longevity_pill");
+var longevityUse = effectService.Use(longevityState, longevityPill.InstanceId);
+Check(longevityUse.Success, "Longevity pill could not be used.");
+Check(cultivation.GetMaximumAge(longevityState.Character, longevityState.ActiveEffects) == maximumAgeBeforePill + 5m,
+    "Longevity pill must increase maximum age by its fixed amount.");
 
 var shopState = new ShopState();
 shopService.Refresh(shopState);
@@ -417,12 +448,18 @@ static GameDatabase BuildDatabase()
                     AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "vitality" }] },
                 new ItemConfig { Id = "ingredient_other", Name = "Other", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant, BasePrice = 10,
                     AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "clarity" }] },
+                new ItemConfig { Id = "swiftness_ingredient", Name = "Swiftness", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant, BasePrice = 10,
+                    AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "swiftness" }] },
                 new ItemConfig { Id = "vitality_pill", Name = "Vitality pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
                     TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "clarity_pill", Name = "Clarity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
                     TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "purity_pill", Name = "Purity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Instant,
                     BasePrice = 10, ShopWeight = 0 },
+                new ItemConfig { Id = "time_acceleration_pill", Name = "Time pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
+                    TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
+                new ItemConfig { Id = "longevity_pill", Name = "Longevity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Permanent,
+                    BasePrice = 10, ShopWeight = 0, Effects = [new ItemEffectDefinition { Type = EffectType.LongevityYears, Operation = ModifierOperation.Flat, Value = 5m }] },
                 new ItemConfig { Id = "alchemy_extract", Name = "Extract", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant,
                     BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "attempt", Name = "Attempt", Category = ItemCategory.Core, DurationType = ItemDurationType.UntilBreakthroughAttempt, BasePrice = 10,
@@ -469,7 +506,9 @@ static GameDatabase BuildDatabase()
                 new AlchemyPropertyConfig { Id = "clarity", DisplayName = "Clarity", ResultPillItemId = "clarity_pill",
                     EffectType = EffectType.TickEfficiency, Operation = ModifierOperation.AdditivePercent, BaseValue = 50m },
                 new AlchemyPropertyConfig { Id = "purification", DisplayName = "Purification", ResultPillItemId = "purity_pill",
-                    EffectType = EffectType.PurifyContamination, Operation = ModifierOperation.Flat, BaseValue = 0m }
+                    EffectType = EffectType.PurifyContamination, Operation = ModifierOperation.Flat, BaseValue = 0m },
+                new AlchemyPropertyConfig { Id = "swiftness", DisplayName = "Time", ResultPillItemId = "time_acceleration_pill",
+                    EffectType = EffectType.MissionProgress, Operation = ModifierOperation.AdditivePercent, BaseValue = 100m }
             ]
         });
     return database;

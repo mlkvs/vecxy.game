@@ -262,9 +262,12 @@ public sealed class GameSaveSystem(GameDatabase database)
 
     private ItemInstance FromItemData(ItemSaveData data)
     {
-        var configId = data.ConfigId == "crafted_alchemy_pill" && data.CraftedEffects.Count > 0
-            ? database.GetAlchemyResultPillId(data.CraftedEffects[0].Type, data.CraftedEffects[0].Operation)
+        var rawConfigId = data.ConfigId == "swiftness_pill"
+            ? "time_acceleration_pill"
             : data.ConfigId;
+        var configId = rawConfigId == "crafted_alchemy_pill" && data.CraftedEffects.Count > 0
+            ? database.GetAlchemyResultPillId(data.CraftedEffects[0].Type, data.CraftedEffects[0].Operation)
+            : rawConfigId;
         var config = database.GetItem(configId);
         var item = new ItemInstance
         {

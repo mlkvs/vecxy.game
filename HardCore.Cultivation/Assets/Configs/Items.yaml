@@ -34,6 +34,7 @@
 # - MaximumHealth       — максимум здоровья
 # - Attack              — сила атаки
 # - AttackSpeed         — атак в секунду
+# - LongevityYears      — изменение максимального предела жизни в годах
 # - HealthRestore       — мгновенно восстанавливает здоровье; используйте только с Instant
 # - PurifyContamination — мгновенно снимает заданный процент загрязнения; используйте только с Instant
 #
@@ -351,6 +352,19 @@ items:
         operation: Flat
         value: 0.1
 
+  - id: longevity_pill
+    name: Пилюля продления жизни
+    description: Навсегда укрепляет жизненную основу и увеличивает предел жизни на 5 лет.
+    icon: Assets/Textures/Items/still-age-pill.png
+    category: Pill
+    durationType: Permanent
+    basePrice: 1600
+    shopWeight: 10
+    effects:
+      - type: LongevityYears
+        operation: Flat
+        value: 5
+
   # ------------------------------------------------------------
   # ПОСТОЯННЫЕ НЕБЕСНЫЕ ПИЛЮЛИ
   # ------------------------------------------------------------
@@ -550,9 +564,165 @@ items:
       - propertyId: insight
       - propertyId: wind_step
 
+  - id: spiritgrass_body
+    name: Стебель духоцвета
+    description: Редкий материал, насыщенный ци.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Water
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: spirit_flow
+
+  - id: spiritgrass_root
+    name: Корень духоцвета
+    description: Редкий материал, насыщенный ци.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Water
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: spirit_flow
+
+  - id: spiritgrass_young
+    name: Росток духоцвета
+    description: Молодой побег редкого растения, насыщенный ци.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Water
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: spirit_flow
+
+  - id: demon_spider_web
+    name: Паутина демонического паука
+    description: Паутина, поглощающая жизненную ци; при правильной обработке становится мощным лекарством.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Water
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: vitality
+
+  - id: meat_root
+    name: Мясной корень
+    description: Практически неубиваемый дикий корнеплод.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Earth
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: jade_body
+
+  - id: heal_grass
+    name: Подорожник
+    description: Распространённое, но всё ещё эффективное лечебное растение.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Earth
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: vitality
+
+  - id: wind_cotton
+    name: Хлопок ветра
+    description: Хлопок, взращённый на ци ветра.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Air
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: wind_step
+
+  - id: cauke_leaves
+    name: Листья кауки
+    description: Листья болотного дерева, которые заметно тонизируют тело.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Air
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: wind_step
+
+  - id: yan_nuts
+    name: Орешки янь
+    description: Орехи с высокогорья, обладающие мощными тонизирующими свойствами.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Fire
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: blade_intent
+
+  - id: chicken_flower
+    name: Куриный цветок
+    description: Говорят, даже домашняя птица становится неожиданно боевой, если склюёт этот цветок.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Fire
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: blade_intent
+
+  - id: sealed_blackhole
+    name: Запечатанная червоточина
+    description: Запечатанная аномалия, содержащая следы законов времени.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Void
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: longevity
+
+  - id: space_dust
+    name: Космическая пыль
+    description: Микроскопическая пыльца, содержащая в себе законы пространства.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Void
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: swiftness
+
+  - id: ying_yang_flower
+    name: Цветок инь и ян
+    description: Цветок, удерживающий противоположные энергии в редком равновесии.
+    icon: Assets/Textures/Items/azure-spirit-core.png
+    category: Ingredient
+    element: Void
+    durationType: Instant
+    basePrice: 160
+    shopWeight: 9
+    alchemyProperties:
+      - propertyId: insight
+
   - id: purity_herb
-    name: Трава чистоты
-    description: Редкий ингредиент, выводящий скверну из алхимической смеси.
+    name: Чистотел
+    description: Дикая трава, известная своими сильными очищающими свойствами.
     icon: Assets/Textures/Items/jade-lotus.png
     category: Ingredient
     element: Void
@@ -603,9 +773,9 @@ items:
     basePrice: 340
     shopWeight: 0
 
-  - id: swiftness_pill
-    name: Пилюля быстрого пути
-    description: Временно ускоряет выполнение миссий.
+  - id: time_acceleration_pill
+    name: Пилюля ускорения времени
+    description: Временно ускоряет течение внутреннего времени, повышая прирост духовной силы и прогресс миссий за тик.
     icon: Assets/Textures/Items/focus-pill.png
     category: Pill
     durationType: Temporary
