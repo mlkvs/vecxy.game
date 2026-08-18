@@ -26,6 +26,8 @@
 # type:
 # - TickEfficiency      — множитель эффективности тика / общей продуктивности
 # - AgingSpeed          — изменение скорости старения
+# - TimeAcceleration    — сколько "времени" проходит за один тик: ускоряет дух,
+#   миссии и старение/убывание жизненной свечи одновременно
 # - BreakthroughChance  — бонус к шансу прорыва
 # - SpiritualPowerGain  — бонус к духовной силе
 # - MissionProgress     — ускорение миссий
@@ -781,7 +783,11 @@ items:
     durationType: Temporary
     temporaryDurationTicks: 48
     basePrice: 260
-    shopWeight: 0
+    shopWeight: 8
+    effects:
+      - type: TimeAcceleration
+        operation: AdditivePercent
+        value: 1
 
   - id: insight_pill
     name: Пилюля прозрения
