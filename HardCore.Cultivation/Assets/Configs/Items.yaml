@@ -571,14 +571,55 @@ items:
   # shopWeight: 0 исключает предмет из магазина и случайных наград.
   # Имя, описание, эффекты и свойства конкретного экземпляра сохраняются
   # непосредственно в ItemInstance и в файле сохранения.
-  - id: crafted_alchemy_pill
-    name: Алхимическая пилюля
-    description: Пилюля, свойства которой определены составом ингредиентов.
+  # Эти шаблоны используются только алхимией. Сила эффекта хранится в
+  # CraftedEffects конкретного экземпляра, а здесь задаются вид и длительность.
+  - id: spirit_flow_pill
+    name: Пилюля духовного потока
+    description: Временно ускоряет накопление духовной силы.
+    icon: Assets/Textures/Items/focus-pill.png
+    category: Pill
+    durationType: Temporary
+    temporaryDurationTicks: 48
+    basePrice: 280
+    shopWeight: 0
+
+  - id: jade_body_pill
+    name: Пилюля нефритового тела
+    description: Временно укрепляет тело и запас здоровья.
+    icon: Assets/Textures/Items/focus-pill.png
+    category: Pill
+    durationType: Temporary
+    temporaryDurationTicks: 48
+    basePrice: 340
+    shopWeight: 0
+
+  - id: blade_intent_pill
+    name: Пилюля острого намерения
+    description: Временно усиливает обычную атаку.
+    icon: Assets/Textures/Items/focus-pill.png
+    category: Pill
+    durationType: Temporary
+    temporaryDurationTicks: 48
+    basePrice: 340
+    shopWeight: 0
+
+  - id: swiftness_pill
+    name: Пилюля быстрого пути
+    description: Временно ускоряет выполнение миссий.
     icon: Assets/Textures/Items/focus-pill.png
     category: Pill
     durationType: Temporary
     temporaryDurationTicks: 48
     basePrice: 260
+    shopWeight: 0
+
+  - id: insight_pill
+    name: Пилюля прозрения
+    description: Укрепляет основание до следующей попытки прорыва.
+    icon: Assets/Textures/Items/focus-pill.png
+    category: Pill
+    durationType: UntilBreakthroughAttempt
+    basePrice: 450
     shopWeight: 0
 
   - id: alchemy_extract

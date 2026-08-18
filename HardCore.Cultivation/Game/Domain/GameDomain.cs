@@ -550,6 +550,7 @@ public sealed class ActiveMission
 {
     public Guid InstanceId { get; init; } = Guid.NewGuid();
     public required string MissionConfigId { get; init; }
+    public int? DangerLevel { get; init; }
     public decimal RequiredProgress { get; init; }
     public decimal CurrentProgress { get; private set; }
     public bool RewardGranted { get; private set; }
@@ -642,20 +643,38 @@ public sealed class ShopState
 
 public sealed class MissionBoardState
 {
-    private readonly List<string> _missionIds = [];
+    private readonly List<MissionOffer> _offers = [];
 
-    public IReadOnlyList<string> MissionIds => _missionIds;
+    public IReadOnlyList<MissionOffer> Offers => _offers;
+    public IReadOnlyList<string> MissionIds => _offers.Select(offer => offer.MissionConfigId).ToList();
 
-    public bool Contains(string missionId) => _missionIds.Contains(missionId);
+    public MissionOffer? Find(Guid offerId) => _offers.FirstOrDefault(offer => offer.OfferId == offerId);
 
-    public bool Take(string missionId) => _missionIds.Remove(missionId);
+    public MissionOffer? FindByMissionId(string missionId) =>
+        _offers.FirstOrDefault(offer => offer.MissionConfigId == missionId);
 
-    public void ReplaceWith(IEnumerable<string> missionIds)
+    public bool Take(Guid offerId)
     {
-        ArgumentNullException.ThrowIfNull(missionIds);
-        _missionIds.Clear();
-        _missionIds.AddRange(missionIds.Distinct(StringComparer.Ordinal));
+        var offer = Find(offerId);
+        return offer is not null && _offers.Remove(offer);
     }
+
+    public void ReplaceWith(IEnumerable<MissionOffer> offers)
+    {
+        ArgumentNullException.ThrowIfNull(offers);
+        _offers.Clear();
+        _offers.AddRange(offers);
+    }
+
+    public void ReplaceWithLegacy(IEnumerable<string> missionIds) =>
+        ReplaceWith(missionIds.Select(missionId => new MissionOffer { MissionConfigId = missionId }));
+}
+
+public sealed class MissionOffer
+{
+    public Guid OfferId { get; init; } = Guid.NewGuid();
+    public required string MissionConfigId { get; init; }
+    public int? DangerLevel { get; init; }
 }
 
 public sealed class GameState

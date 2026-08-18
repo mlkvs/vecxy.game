@@ -101,6 +101,8 @@ internal sealed class GameView
         InventoryButton = Button("inventory-button");
 
         ShopWindow = Register(windowDocuments.Shop, "shop-window");
+        ShopIngredientsTab = Button(windowDocuments.Shop, "shop-ingredients-tab");
+        ShopPillsAndCoresTab = Button(windowDocuments.Shop, "shop-pills-cores-tab");
         ShopGrid = Panel(windowDocuments.Shop, "shop-grid");
 
         AlchemyWindow = Register(windowDocuments.Alchemy, "alchemy-window");
@@ -269,6 +271,8 @@ internal sealed class GameView
     public UiButton AlchemyButton { get; }
     public UiButton InventoryButton { get; }
     public UiPanel ShopWindow { get; }
+    public UiButton ShopIngredientsTab { get; }
+    public UiButton ShopPillsAndCoresTab { get; }
     public UiPanel ShopGrid { get; }
     public UiPanel AlchemyWindow { get; }
     public UiButton AlchemyPillTab { get; }

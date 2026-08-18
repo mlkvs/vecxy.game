@@ -286,39 +286,63 @@ public sealed class MissionService(
         var candidates = database.Missions.Values
             .Where(mission => Math.Abs(database.GetCultivationStageIndex(mission.StageId) - currentStage) <= 1)
             .ToList();
-        var offers = new List<string>(database.MissionBoardSlotCount);
-        while (offers.Count < database.MissionBoardSlotCount && candidates.Count > 0)
+        if (candidates.Count == 0)
+            throw new InvalidOperationException("No mission templates are available for the current cultivation stage.");
+        var offers = new List<MissionOffer>(database.MissionBoardSlotCount);
+        while (offers.Count < database.MissionBoardSlotCount)
         {
             var selected = WeightedRandom.Select(candidates, mission => mission.BoardWeight, random);
-            offers.Add(selected.Id);
-            candidates.Remove(selected);
+            offers.Add(new MissionOffer
+            {
+                MissionConfigId = selected.Id,
+                DangerLevel = RollDangerLevel(selected)
+            });
         }
         state.MissionBoard.ReplaceWith(offers);
     }
 
-    public TransactionResult Start(GameState state, string missionId)
+    public TransactionResult Start(GameState state, Guid offerId)
     {
         if (state.MissionQueue.Count >= database.Balance.MaximumMissionQueueSize)
             return TransactionResult.Fail("Очередь миссий заполнена.");
-        if (!state.MissionBoard.Contains(missionId))
+        var offer = state.MissionBoard.Find(offerId);
+        if (offer is null)
             return TransactionResult.Fail("Это поручение уже недоступно.");
-        var config = database.GetMission(missionId);
+        var config = database.GetMission(offer.MissionConfigId);
         var required = random.NextInt(config.MinimumDurationTicks, config.MaximumDurationTicks + 1);
-        var encounter = RollEncounter(config, required);
+        var encounter = RollEncounter(config, offer.DangerLevel, required);
         state.EnqueueMission(new ActiveMission
         {
-            MissionConfigId = missionId,
+            MissionConfigId = offer.MissionConfigId,
+            DangerLevel = offer.DangerLevel,
             RequiredProgress = required,
             Rewards = GenerateRewards(config),
             Encounter = encounter
         });
-        state.MissionBoard.Take(missionId);
+        state.MissionBoard.Take(offerId);
         return TransactionResult.Ok(0, $"Добавлено в очередь: {config.Name}");
     }
 
-    private MissionEncounter? RollEncounter(MissionConfig mission, decimal requiredProgress)
+    // Compatibility entry point for callers that address an offer by its template id.
+    public TransactionResult Start(GameState state, string missionId)
     {
-        if (mission.DangerLevel is not { } level)
+        var offer = state.MissionBoard.FindByMissionId(missionId);
+        return offer is null
+            ? TransactionResult.Fail("This mission is no longer available.")
+            : Start(state, offer.OfferId);
+    }
+
+    private int? RollDangerLevel(MissionConfig mission)
+    {
+        var levels = mission.PossibleDangerLevels.Count > 0
+            ? mission.PossibleDangerLevels
+            : mission.DangerLevel is { } legacyDanger ? [legacyDanger] : [];
+        return levels.Count == 0 ? null : levels[random.NextInt(0, levels.Count)];
+    }
+
+    private MissionEncounter? RollEncounter(MissionConfig mission, int? dangerLevel, decimal requiredProgress)
+    {
+        if (dangerLevel is not { } level)
             return null;
         var danger = database.GetDanger(level);
         if (random.NextDecimal(0m, 100m) >= danger.EncounterChancePercent)
@@ -470,20 +494,32 @@ public sealed class ShopService(
 {
     public void Refresh(ShopState shop)
     {
-        var slots = new List<ShopSlot>();
-        var items = database.Items.Values.ToArray();
-        for (var index = 0; index < database.Shop.SlotCount; index++)
+        var slots = new List<ShopSlot>(database.Shop.IngredientSlotCount + database.Shop.PillAndCoreSlotCount);
+        AddSlots(slots,
+            database.Items.Values.Where(item => item.Category == ItemCategory.Ingredient).ToArray(),
+            database.Shop.IngredientSlotCount);
+        AddSlots(slots,
+            database.Items.Values.Where(item => item.Category is ItemCategory.Pill or ItemCategory.Core).ToArray(),
+            database.Shop.PillAndCoreSlotCount);
+        shop.ReplaceStock(
+            slots,
+            random.NextInt(database.Shop.MinimumBuyMarkup, database.Shop.MaximumBuyMarkup + 1),
+            database.Shop.SellAdjustmentPercent);
+    }
+
+    private void AddSlots(List<ShopSlot> slots, IReadOnlyList<ItemConfig> items, int count)
+    {
+        var candidates = items.Where(item => item.ShopWeight > 0m).ToArray();
+        if (candidates.Length == 0)
+            throw new InvalidOperationException("Shop category has no sellable items.");
+        for (var index = 0; index < count; index++)
         {
-            var config = WeightedRandom.Select(items, item => item.ShopWeight, random);
+            var config = WeightedRandom.Select(candidates, item => item.ShopWeight, random);
             var quantity = random.NextInt(
                 database.Shop.MinimumQuantity,
                 database.Shop.MaximumQuantity + 1);
             slots.Add(new ShopSlot(itemGenerator.Generate(config.Id), quantity));
         }
-        shop.ReplaceStock(
-            slots,
-            random.NextInt(database.Shop.MinimumBuyMarkup, database.Shop.MaximumBuyMarkup + 1),
-            database.Shop.SellAdjustmentPercent);
     }
 }
 

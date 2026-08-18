@@ -8,7 +8,7 @@ namespace HardCore.Cultivation.Game.Infrastructure;
 
 public sealed class GameSaveSystem(GameDatabase database)
 {
-    public const int CurrentVersion = 17;
+    public const int CurrentVersion = 18;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -51,6 +51,7 @@ public sealed class GameSaveSystem(GameDatabase database)
             {
                 InstanceId = mission.InstanceId,
                 ConfigId = mission.MissionConfigId,
+                DangerLevel = mission.DangerLevel,
                 RequiredProgress = mission.RequiredProgress,
                 CurrentProgress = mission.CurrentProgress,
                 RewardGranted = mission.RewardGranted,
@@ -76,7 +77,12 @@ public sealed class GameSaveSystem(GameDatabase database)
                     FinishDelay = mission.Combat.FinishDelay
                 }
             }).ToList(),
-            AvailableMissionIds = state.MissionBoard.MissionIds.ToList(),
+            AvailableMissions = state.MissionBoard.Offers.Select(offer => new MissionOfferSaveData
+            {
+                OfferId = offer.OfferId,
+                MissionConfigId = offer.MissionConfigId,
+                DangerLevel = offer.DangerLevel
+            }).ToList(),
             Shop = new ShopSaveData
             {
                 BuyMarkupPercent = state.Shop.BuyMarkupPercent,
@@ -183,6 +189,7 @@ public sealed class GameSaveSystem(GameDatabase database)
                 {
                     InstanceId = savedMission.InstanceId == Guid.Empty ? Guid.NewGuid() : savedMission.InstanceId,
                     MissionConfigId = savedMission.ConfigId,
+                    DangerLevel = savedMission.DangerLevel,
                     RequiredProgress = savedMission.RequiredProgress,
                     Rewards = savedMission.Rewards.Count > 0
                         ? savedMission.Rewards.Select(FromRewardData).ToList()
@@ -193,9 +200,23 @@ public sealed class GameSaveSystem(GameDatabase database)
                 mission.RestoreCombat(RestoreCombat(savedMission.Combat));
                 state.EnqueueMission(mission);
             }
-            foreach (var missionId in data.AvailableMissionIds)
-                _ = database.GetMission(missionId);
-            state.MissionBoard.ReplaceWith(data.AvailableMissionIds);
+            if (data.AvailableMissions.Count > 0)
+            {
+                foreach (var offer in data.AvailableMissions)
+                    _ = database.GetMission(offer.MissionConfigId);
+                state.MissionBoard.ReplaceWith(data.AvailableMissions.Select(offer => new MissionOffer
+                {
+                    OfferId = offer.OfferId == Guid.Empty ? Guid.NewGuid() : offer.OfferId,
+                    MissionConfigId = offer.MissionConfigId,
+                    DangerLevel = offer.DangerLevel
+                }));
+            }
+            else
+            {
+                foreach (var missionId in data.AvailableMissionIds)
+                    _ = database.GetMission(missionId);
+                state.MissionBoard.ReplaceWithLegacy(data.AvailableMissionIds);
+            }
 
             var slots = data.Shop.Slots.Select(slot =>
             {
@@ -241,11 +262,14 @@ public sealed class GameSaveSystem(GameDatabase database)
 
     private ItemInstance FromItemData(ItemSaveData data)
     {
-        var config = database.GetItem(data.ConfigId);
+        var configId = data.ConfigId == "crafted_alchemy_pill" && data.CraftedEffects.Count > 0
+            ? database.GetAlchemyResultPillId(data.CraftedEffects[0].Type, data.CraftedEffects[0].Operation)
+            : data.ConfigId;
+        var config = database.GetItem(configId);
         var item = new ItemInstance
         {
             InstanceId = data.InstanceId,
-            ConfigId = data.ConfigId,
+            ConfigId = configId,
             Rarity = data.Rarity,
             Quality = data.Quality,
             Contamination = config.Category == ItemCategory.Ingredient &&
@@ -368,11 +392,19 @@ public sealed class SaveData
     public CharacterSaveData Character { get; init; } = new();
     public List<ItemSaveData> Inventory { get; init; } = [];
     public List<MissionSaveData> MissionQueue { get; init; } = [];
+    public List<MissionOfferSaveData> AvailableMissions { get; init; } = [];
     public List<string> AvailableMissionIds { get; init; } = [];
     // Kept for migration from version 2 saves.
     public MissionSaveData? Mission { get; init; }
     public ShopSaveData Shop { get; init; } = new();
     public List<EffectSaveData> ActiveEffects { get; init; } = [];
+}
+
+public sealed class MissionOfferSaveData
+{
+    public Guid OfferId { get; init; }
+    public string MissionConfigId { get; init; } = string.Empty;
+    public int? DangerLevel { get; init; }
 }
 
 public sealed class GameSettingsSaveData
@@ -419,6 +451,7 @@ public sealed class MissionSaveData
 {
     public Guid InstanceId { get; init; }
     public string ConfigId { get; init; } = string.Empty;
+    public int? DangerLevel { get; init; }
     public decimal RequiredProgress { get; init; }
     public decimal CurrentProgress { get; init; }
     public bool RewardGranted { get; init; }

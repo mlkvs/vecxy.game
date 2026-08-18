@@ -1,5 +1,9 @@
 <panel id="shop-window" class="window compact-window shop-window" hidden="true">
     <panel class="window-header"><panel><text class="window-title">Лавка духов</text><text class="window-subtitle">Ассортимент обновляется каждый год</text></panel><button class="window-close"><image sprite="Assets/Textures/GameUIAtlas.atlas#close" /></button></panel>
+    <panel class="window-tabs shop-tabs">
+        <button id="shop-ingredients-tab" class="window-tab active"><image class="tab-brush-stroke" sprite="Assets/Textures/GameUIAtlas.atlas#tab-brush-stroke"/><text>ИНГРЕДИЕНТЫ</text></button>
+        <button id="shop-pills-cores-tab" class="window-tab"><image class="tab-brush-stroke" sprite="Assets/Textures/GameUIAtlas.atlas#tab-brush-stroke"/><text>ПИЛЮЛИ И ЯДРА</text></button>
+    </panel>
     <panel class="window-body">
         <panel class="window-content shop-content"><panel id="shop-grid" class="shop-grid" /></panel>
     </panel>

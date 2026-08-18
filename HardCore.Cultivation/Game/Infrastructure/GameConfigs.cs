@@ -199,13 +199,9 @@ public sealed class ItemConfig
 public sealed class AlchemyConfig : IYamlConfig
 {
     public bool Enabled { get; init; }
-    public string CraftedPillItemId { get; init; } = "crafted_alchemy_pill";
-    public string PurityPillItemId { get; init; } = "purity_pill";
     public string ExtractItemId { get; init; } = "alchemy_extract";
     public int MinimumIngredients { get; init; } = 2;
     public int MaximumIngredients { get; init; } = 6;
-    public int MaximumPillEffects { get; init; } = 1;
-    public int PillDurationTicks { get; init; } = 48;
     public List<AlchemyOutputQuantityChance> PillOutputQuantityChances { get; init; } =
     [
         new() { Quantity = 1, ChancePercent = 45m },
@@ -252,7 +248,7 @@ public sealed class AlchemyPropertyConfig
 {
     public string Id { get; init; } = string.Empty;
     public string DisplayName { get; init; } = string.Empty;
-    public string PillName { get; init; } = string.Empty;
+    public string ResultPillItemId { get; init; } = string.Empty;
     public EffectType EffectType { get; init; }
     public ModifierOperation Operation { get; init; }
     public decimal BaseValue { get; init; }
@@ -260,7 +256,7 @@ public sealed class AlchemyPropertyConfig
 
 public sealed class MissionsConfig : IYamlConfig
 {
-    public int BoardSlotCount { get; init; } = 6;
+    public int BoardSlotCount { get; init; } = 8;
     public List<MissionConfig> Missions { get; init; } = [];
 }
 
@@ -274,6 +270,8 @@ public sealed class MissionConfig
     public int MinimumDurationTicks { get; init; } = 1;
     public int MaximumDurationTicks { get; init; } = 500;
     public decimal BoardWeight { get; init; } = 1m;
+    public List<int> PossibleDangerLevels { get; init; } = [];
+    // Retained for compatibility with older configs. Prefer PossibleDangerLevels.
     public int? DangerLevel { get; init; }
     public List<string> PossibleMonsterIds { get; init; } = [];
     public List<string> PossibleBackgroundIds { get; init; } = [];
@@ -365,7 +363,8 @@ public sealed class CultivationStageConfig
 
 public sealed class ShopConfig : IYamlConfig
 {
-    public int SlotCount { get; init; } = 6;
+    public int IngredientSlotCount { get; init; } = 6;
+    public int PillAndCoreSlotCount { get; init; } = 6;
     public int MinimumQuantity { get; init; } = 1;
     public int MaximumQuantity { get; init; } = 1;
     public int MinimumBuyMarkup { get; init; } = 25;
@@ -388,7 +387,7 @@ public sealed class GameDatabase
     public CombatConfig Combat { get; private set; } = new();
     public AlchemyConfig Alchemy { get; private set; } = new();
     public CultivationBalanceSnapshot CultivationBalance { get; private set; } = null!;
-    public int MissionBoardSlotCount { get; private set; } = 6;
+    public int MissionBoardSlotCount { get; private set; } = 8;
     public IReadOnlyDictionary<string, ItemConfig> Items => _items;
     public IReadOnlyDictionary<string, MissionConfig> Missions => _missions;
     public IReadOnlyDictionary<string, MonsterConfig> Monsters => _monsters;
@@ -465,12 +464,7 @@ public sealed class GameDatabase
         return index >= 0 ? index : throw new KeyNotFoundException($"Unknown cultivation stage: {id}");
     }
 
-    public int GetMissionBoardCapacityForStage(int currentStageIndex)
-    {
-        var availableMissionCount = _missions.Values.Count(mission =>
-            Math.Abs(GetCultivationStageIndex(mission.StageId) - currentStageIndex) <= 1);
-        return Math.Max(1, Math.Min(MissionBoardSlotCount, availableMissionCount));
-    }
+    public int GetMissionBoardCapacityForStage(int currentStageIndex) => MissionBoardSlotCount;
 
     public MonsterConfig GetMonster(string id) => _monsters.TryGetValue(id, out var monster)
         ? monster
@@ -491,6 +485,11 @@ public sealed class GameDatabase
         _alchemyProperties.TryGetValue(id, out var property)
             ? property
             : throw new KeyNotFoundException($"Unknown alchemy property: {id}");
+
+    public string GetAlchemyResultPillId(EffectType effectType, ModifierOperation operation) =>
+        _alchemyProperties.Values.FirstOrDefault(property =>
+            property.EffectType == effectType && property.Operation == operation)?.ResultPillItemId
+        ?? throw new KeyNotFoundException($"No alchemy pill is configured for {effectType} ({operation}).");
 
     private void Validate()
     {
@@ -527,15 +526,20 @@ public sealed class GameDatabase
             throw new InvalidDataException("Every cultivation stage must define cultivation and mission backgrounds.");
         if (_items.Count == 0 || _missions.Count == 0)
             throw new InvalidDataException("Items and missions cannot be empty.");
-        if (MissionBoardSlotCount <= 0 || MissionBoardSlotCount > _missions.Count)
+        if (MissionBoardSlotCount <= 0)
             throw new InvalidDataException("Mission board slot count is invalid.");
+        if (Shop.IngredientSlotCount <= 0 || Shop.PillAndCoreSlotCount <= 0 ||
+            Shop.MinimumQuantity <= 0 || Shop.MaximumQuantity < Shop.MinimumQuantity ||
+            Shop.MinimumBuyMarkup < 0 || Shop.MaximumBuyMarkup < Shop.MinimumBuyMarkup)
+        {
+            throw new InvalidDataException("Shop settings are invalid.");
+        }
         if (Combat.RenderWidth <= 0 || Combat.RenderHeight <= 0 || Combat.HeroBaseHealth <= 0m ||
             Combat.HealthRegenerationPerSecond < 0m ||
             Combat.HeroAttacksPerSecond <= 0f || Combat.RecoveryHealthPoints <= 0m)
             throw new InvalidDataException("Combat settings are invalid.");
         if (Alchemy.Enabled && (Alchemy.MinimumIngredients <= 0 || Alchemy.MaximumIngredients < Alchemy.MinimumIngredients ||
-            Alchemy.MaximumPillEffects is < 1 || Alchemy.MaximumPillEffects > Alchemy.MaximumIngredients ||
-            Alchemy.PillDurationTicks <= 0 || Alchemy.MaximumQuality <= 0m ||
+            Alchemy.MaximumQuality <= 0m ||
             Alchemy.DistillationQualityPerIngredient < 0m || Alchemy.DistillationQualityPerLevel < 0m ||
             Alchemy.CraftSuccessChancePerQuality < 0m || Alchemy.MaximumCraftSuccessChance is < 0m or > 100m ||
             Alchemy.PurificationMixedRecipeChance is < 0m or > 1m || Alchemy.PurificationMinimumPercent is < 0m or > 100m ||
@@ -552,8 +556,6 @@ public sealed class GameDatabase
             throw new InvalidDataException("Alchemy settings are invalid.");
         if (Alchemy.Enabled)
         {
-            _ = GetItem(Alchemy.CraftedPillItemId);
-            _ = GetItem(Alchemy.PurityPillItemId);
             _ = GetItem(Alchemy.ExtractItemId);
             _ = GetAlchemyProperty(Alchemy.PurificationPropertyId);
         }
@@ -582,6 +584,14 @@ public sealed class GameDatabase
             }
         }
 
+        foreach (var property in _alchemyProperties.Values)
+        {
+            if (string.IsNullOrWhiteSpace(property.DisplayName) || string.IsNullOrWhiteSpace(property.ResultPillItemId))
+                throw new InvalidDataException($"Alchemy property has no output pill: {property.Id}");
+            if (GetItem(property.ResultPillItemId).Category != ItemCategory.Pill)
+                throw new InvalidDataException($"Alchemy property output is not a pill: {property.Id}");
+        }
+
         foreach (var mission in _missions.Values)
         {
             if (mission.MinimumDurationTicks <= 0 ||
@@ -592,9 +602,15 @@ public sealed class GameDatabase
                 throw new InvalidDataException($"Invalid mission balance: {mission.Id}");
             }
             _ = GetCultivationStageIndex(mission.StageId);
-            if (mission.DangerLevel is { } danger)
+            var dangerLevels = mission.PossibleDangerLevels.Count > 0
+                ? mission.PossibleDangerLevels
+                : mission.DangerLevel is { } legacyDanger ? [legacyDanger] : [];
+            if (dangerLevels.Count > 0)
             {
-                _ = GetDanger(danger);
+                if (dangerLevels.Any(danger => danger <= 0) || dangerLevels.Distinct().Count() != dangerLevels.Count)
+                    throw new InvalidDataException($"Mission danger levels are invalid: {mission.Id}");
+                foreach (var danger in dangerLevels)
+                    _ = GetDanger(danger);
                 if (mission.PossibleMonsterIds.Count == 0 || mission.PossibleBackgroundIds.Count == 0)
                     throw new InvalidDataException($"Dangerous mission has no combat pool: {mission.Id}");
                 foreach (var monster in mission.PossibleMonsterIds)

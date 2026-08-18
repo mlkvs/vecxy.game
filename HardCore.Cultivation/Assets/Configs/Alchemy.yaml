@@ -10,8 +10,6 @@
 enabled: true
 
 # Технические предметы-результаты должны существовать в Items.yaml.
-craftedPillItemId: crafted_alchemy_pill
-purityPillItemId: purity_pill
 extractItemId: alchemy_extract
 
 # Общий размер смеси.
@@ -21,9 +19,6 @@ maximumIngredients: 6
 # Каждый ингредиент даёт своему свойству шанс 1 / числа ингредиентов.
 # Для одинакового свойства шансы складываются: 3 одинаковых из 5 дают 60%.
 # Бросок выполняется для каждого типа свойства.
-# Максимум эффектов в одной пилюле. Сейчас пилюля может получить только один.
-maximumPillEffects: 1
-pillDurationTicks: 48
 
 # За один крафт пилюли создаётся случайное количество экземпляров. Сумма всех
 # chancePercent обязана быть равна 100.
@@ -114,73 +109,79 @@ contaminationModifierCurve:
 # Алхимические пилюли временные: для постоянной атаки и максимума здоровья
 # используйте готовые Core-предметы из Items.yaml. Мгновенное исцеление также
 # задаётся готовыми Instant-пилюлями, чтобы не создавать временный эффект без действия.
+# Каждая запись описывает одно свойство и его конкретную пилюлю-результат.
+# resultPillItemId ссылается на Pill из Items.yaml: там задаются название,
+# описание, иконка и длительность. Сила эффекта рассчитывается алхимией для
+# каждого экземпляра отдельно и не дублируется в Items.yaml.
+# В одной созданной пилюле всегда ровно один эффект: если в рецепте свойств
+# несколько, выбирается самое частое, а при равенстве - самое сильное.
 properties:
   - id: purification
     displayName: Очищение
-    pillName: Пилюля чистоты
+    resultPillItemId: purity_pill
     effectType: PurifyContamination
     operation: Flat
     baseValue: 0
 
   - id: spirit_flow
     displayName: Поток ци
-    pillName: Пилюля духовного потока
+    resultPillItemId: spirit_flow_pill
     effectType: SpiritualPowerGain
     operation: AdditivePercent
     baseValue: 1
 
   - id: clarity
     displayName: Ясность
-    pillName: Пилюля ясного сознания
+    resultPillItemId: focus_pill
     effectType: TickEfficiency
     operation: AdditivePercent
     baseValue: 0.1
 
   - id: longevity
     displayName: Долголетие
-    pillName: Пилюля тихих лет
+    resultPillItemId: still_age_pill
     effectType: AgingSpeed
     operation: AdditivePercent
     baseValue: -1
 
   - id: vitality
     displayName: Жизненность
-    pillName: Пилюля живой крови
+    resultPillItemId: bloodspring_pill
     effectType: HealthRegeneration
     operation: AdditivePercent
     baseValue: 1
 
   - id: jade_body
     displayName: Нефритовое тело
-    pillName: Пилюля нефритового тела
+    resultPillItemId: jade_body_pill
     effectType: MaximumHealth
     operation: Flat
     baseValue: 1
 
   - id: blade_intent
     displayName: Намерение клинка
-    pillName: Пилюля острого намерения
+    resultPillItemId: blade_intent_pill
     effectType: Attack
     operation: Flat
     baseValue: 0.1
 
   - id: wind_step
     displayName: Шаг ветра
-    pillName: Пилюля шага ветра
+    resultPillItemId: gale_step_pill
     effectType: AttackSpeed
     operation: AdditivePercent
     baseValue: 1
 
   - id: swiftness
     displayName: Стремительность
-    pillName: Пилюля быстрого пути
+    resultPillItemId: swiftness_pill
     effectType: MissionProgress
     operation: AdditivePercent
     baseValue: 1
 
   - id: insight
     displayName: Прозрение
-    pillName: Пилюля прозрения
+    resultPillItemId: insight_pill
     effectType: BreakthroughChance
     operation: Flat
     baseValue: 1

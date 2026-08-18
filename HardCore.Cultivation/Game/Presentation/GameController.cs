@@ -59,7 +59,7 @@ public sealed class GameController(
     private const float ShopCardMinimumHeight = 172f;
     private const float ShopGridRowGap = 10f;
     // Header, window/body padding, content margin, and a small safety buffer.
-    private const float ShopWindowChromeHeight = 150f;
+    private const float ShopWindowChromeHeight = 218f;
     private const float ShopViewportMargin = 48f;
     private const int MissionColumnCount = 2;
     private const float MissionCardHeight = 215f;
@@ -105,7 +105,14 @@ public sealed class GameController(
     private string? _combatMissionId;
     private string? _combatEnemyId;
     private ItemCategory _inventoryCategory = ItemCategory.Ingredient;
+    private ShopSection _shopSection = ShopSection.Ingredients;
     private Guid? _selectedInventoryItem;
+
+    private enum ShopSection
+    {
+        Ingredients,
+        PillsAndCores
+    }
     private readonly List<Guid?> _alchemySlots = [];
     private readonly List<AlchemySlotWidget> _alchemySlotWidgets = [];
     private readonly List<Guid?> _renderedAlchemySlots = [];
@@ -125,7 +132,7 @@ public sealed class GameController(
     private UiKeyedCollection<Guid, ShopSlot, ShopCardView>? _shopCards;
     private UiKeyedCollection<Guid, ItemInstance, InventoryIconView>? _inventoryIcons;
     private UiKeyedCollection<Guid, ItemInstance, InventoryIconView>? _alchemyIngredientIcons;
-    private UiKeyedCollection<string, string, MissionCardView>? _missionCards;
+    private UiKeyedCollection<Guid, MissionOffer, MissionCardView>? _missionCards;
     private UiKeyedCollection<Guid, ActiveMission, MissionQueueItemView>? _missionQueueItems;
     private UiText? _missionBoardEmpty;
     private UiText? _missionQueueEmpty;
@@ -148,11 +155,11 @@ public sealed class GameController(
             Track(new FirstLaunchEvent(buildInfo.Platform, buildInfo.Version));
         }
         ApplyMusicSetting();
-        if (_state.Shop.Slots.Count == 0)
+        if (!HasExpectedShopStock())
             shop.Refresh(_state.Shop);
-        if (_state.MissionBoard.MissionIds.Count == 0 ||
-            _state.MissionBoard.MissionIds.Any(id =>
-                Math.Abs(database.GetCultivationStageIndex(database.GetMission(id).StageId) -
+        if (_state.MissionBoard.Offers.Count == 0 ||
+            _state.MissionBoard.Offers.Any(offer =>
+                Math.Abs(database.GetCultivationStageIndex(database.GetMission(offer.MissionConfigId).StageId) -
                          _state.Character.Cultivation.StageIndex) > 1))
             missions.Refresh(_state);
         combat.ConfigureHero(_state.Character, _state.Character.MaximumHealth <= 0m);
@@ -470,7 +477,7 @@ public sealed class GameController(
             CreateAlchemyIngredientIcon,
             icon => icon.Card,
             UpdateAlchemyIngredientIcon);
-        _missionCards = new UiKeyedCollection<string, string, MissionCardView>(
+        _missionCards = new UiKeyedCollection<Guid, MissionOffer, MissionCardView>(
             _view.MissionsList,
             CreateMissionCard,
             card => card.Card,
@@ -551,6 +558,8 @@ public sealed class GameController(
         BuildAlchemySelection();
 
         BindClick(view.ShopButton, OpenShop);
+        BindClick(view.ShopIngredientsTab, () => SelectShopSection(ShopSection.Ingredients));
+        BindClick(view.ShopPillsAndCoresTab, () => SelectShopSection(ShopSection.PillsAndCores));
         BindClick(view.AlchemyButton, OpenAlchemy);
         BindClick(view.InventoryButton, () =>
         {
@@ -899,7 +908,7 @@ public sealed class GameController(
             return;
         }
         var config = database.GetMission(mission.MissionConfigId);
-        var difficulty = GetMissionDifficulty(config);
+        var difficulty = GetMissionDifficulty(config, mission.DangerLevel ?? mission.Encounter?.DangerLevel);
         _view!.MissionDangerIndicator.IsVisible = true;
         _view.MissionDifficulty.Value = difficulty.Label;
         _view.MissionDifficulty.ToggleClass("difficulty-very-easy", difficulty.CssClass == "difficulty-very-easy");
@@ -1055,7 +1064,11 @@ public sealed class GameController(
         if (_view is null || _shopCards is null)
             return;
         UpdateShopWindowHeight();
-        var availableSlots = _state.Shop.Slots.Where(slot => slot.AvailableQuantity > 0).ToArray();
+        _view.ShopIngredientsTab.ToggleClass("active", _shopSection == ShopSection.Ingredients);
+        _view.ShopPillsAndCoresTab.ToggleClass("active", _shopSection == ShopSection.PillsAndCores);
+        var availableSlots = _state.Shop.Slots
+            .Where(slot => slot.AvailableQuantity > 0 && IsInShopSection(slot))
+            .ToArray();
         _shopCards.Update(availableSlots, slot => slot.SlotId);
         if (availableSlots.Length == 0)
         {
@@ -1083,6 +1096,27 @@ public sealed class GameController(
         UpdateShopWindowHeight();
         OpenWindow(_view!.ShopWindow);
         SyncShop();
+    }
+
+    private bool HasExpectedShopStock() =>
+        _state.Shop.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category == ItemCategory.Ingredient) ==
+        database.Shop.IngredientSlotCount &&
+        _state.Shop.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category is ItemCategory.Pill or ItemCategory.Core) ==
+        database.Shop.PillAndCoreSlotCount;
+
+    private void SelectShopSection(ShopSection section)
+    {
+        _shopSection = section;
+        _view?.ShopGrid.ScrollTo(Vector2.Zero);
+        SyncShop();
+    }
+
+    private bool IsInShopSection(ShopSlot slot)
+    {
+        var category = database.GetItem(slot.Item.ConfigId).Category;
+        return _shopSection == ShopSection.Ingredients
+            ? category == ItemCategory.Ingredient
+            : category is ItemCategory.Pill or ItemCategory.Core;
     }
 
     private void UpdateShopWindowHeight()
@@ -1876,7 +1910,7 @@ public sealed class GameController(
     {
         OpenWindow(_view!.MissionsWindow);
         TrackScreen("missions");
-        Track(new MissionsOpenedEvent(_state.Character.Cultivation.StageIndex, _state.MissionBoard.MissionIds.Count));
+        Track(new MissionsOpenedEvent(_state.Character.Cultivation.StageIndex, _state.MissionBoard.Offers.Count));
         SyncMissions();
         UpdateMissionsWindowHeight();
     }
@@ -1923,9 +1957,9 @@ public sealed class GameController(
             return;
         var refresh = _state.Calendar.TicksPerYear - _state.Calendar.TickInYear;
         _view.MissionRefresh.Value = $"Обновление через {FormatWeeks(refresh)}";
-        if (_state.MissionBoard.MissionIds.Count == 0)
+        if (_state.MissionBoard.Offers.Count == 0)
         {
-            _missionCards.Update(Array.Empty<string>(), id => id);
+            _missionCards.Update(Array.Empty<MissionOffer>(), offer => offer.OfferId);
             if (_missionBoardEmpty is null)
             {
                 var document = _view.GetDocumentFor(_view.MissionsList);
@@ -1941,30 +1975,30 @@ public sealed class GameController(
             _missionBoardEmpty.RemoveFromParent();
             _missionBoardEmpty = null;
         }
-        _missionCards.Update(_state.MissionBoard.MissionIds, id => id);
+        _missionCards.Update(_state.MissionBoard.Offers, offer => offer.OfferId);
     }
 
-    private MissionCardView CreateMissionCard(string missionId)
+    private MissionCardView CreateMissionCard(MissionOffer offer)
     {
         var document = _view!.GetDocumentFor(_view.MissionsList);
         var root = document.Instantiate("Components/MissionCard.xml", _view.MissionsList, new Dictionary<string, string>
         {
-            ["key"] = missionId, ["name"] = string.Empty,
+            ["key"] = offer.OfferId.ToString(), ["name"] = string.Empty,
             ["description"] = string.Empty, ["duration"] = string.Empty
         });
         var card = new MissionCardView(root);
-        var mission = database.GetMission(missionId);
+        var mission = database.GetMission(offer.MissionConfigId);
         BuildMissionRewardPreview(card.RewardIcons, mission);
-        card.Start.Clicked += _ => StartMission(missionId);
+        card.Start.Clicked += _ => StartMission(offer.OfferId);
         return card;
     }
 
-    private void UpdateMissionCard(MissionCardView card, string missionId, int _)
+    private void UpdateMissionCard(MissionCardView card, MissionOffer offer, int _)
     {
-        var mission = database.GetMission(missionId);
+        var mission = database.GetMission(offer.MissionConfigId);
         card.Name.Value = mission.Name;
         card.Description.Value = mission.Description;
-        var difficulty = GetMissionDifficulty(mission);
+        var difficulty = GetMissionDifficulty(mission, offer.DangerLevel);
         card.Danger.IsVisible = true;
         card.Danger.Value = difficulty.Label;
         card.Danger.ToggleClass("difficulty-very-easy", difficulty.CssClass == "difficulty-very-easy");
@@ -1976,23 +2010,25 @@ public sealed class GameController(
         card.Start.IsEnabled = _state.MissionQueue.Count < database.Balance.MaximumMissionQueueSize;
     }
 
-    private (string Label, string CssClass) GetMissionDifficulty(MissionConfig mission)
+    private (string Label, string CssClass) GetMissionDifficulty(MissionConfig mission, int? dangerLevel)
     {
         var delta = database.GetCultivationStageIndex(mission.StageId) - _state.Character.Cultivation.StageIndex;
         if (delta < 0)
-            return mission.DangerLevel.GetValueOrDefault() >= 2
+            return dangerLevel.GetValueOrDefault() >= 2
                 ? ("ЛЕГКО", "difficulty-easy")
                 : ("ОЧЕНЬ ЛЕГКО", "difficulty-very-easy");
         if (delta == 0)
             return ("НАРАВНЕ", "difficulty-equal");
-        return mission.DangerLevel.GetValueOrDefault() >= 3
+        return dangerLevel.GetValueOrDefault() >= 3
             ? ("САМОУБИЙСТВО", "difficulty-suicidal")
             : ("ОПАСНО", "difficulty-dangerous");
     }
 
-    private void StartMission(string missionId)
+    private void StartMission(Guid offerId)
     {
-        var result = missions.Start(_state, missionId);
+        var offer = _state.MissionBoard.Find(offerId);
+        var missionId = offer?.MissionConfigId ?? string.Empty;
+        var result = missions.Start(_state, offerId);
         Track(result.Success ? new MissionStartedEvent(missionId) : new MissionStartFailedEvent(missionId, result.Message));
         ShowActionFeedback(result.Message,
             result.Success ? "Assets/Textures/UIIcons/missions.png" : "Assets/Textures/UIIcons/close.png",

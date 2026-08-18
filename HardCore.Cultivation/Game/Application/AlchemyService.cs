@@ -320,7 +320,7 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         var selectedEffects = effects
             .OrderByDescending(value => value.Matches)
             .ThenByDescending(value => Math.Abs(value.Effect.Value))
-            .Take(database.Alchemy.MaximumPillEffects)
+            .Take(1)
             .ToArray();
         if (selectedEffects.Length == 0)
             return hasPurification
@@ -328,20 +328,14 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
                 : AlchemyPreview.Fail(
                     "Ни одно свойство не выпало по вероятности ингредиентов.");
 
-        var name = selectedEffects.Length == 1
-            ? selectedEffects[0].Property.PillName
-            : $"Составная пилюля · {selectedEffects.Length} эффекта";
         var output = new ItemInstance
         {
             InstanceId = Guid.Empty,
-            ConfigId = database.Alchemy.CraftedPillItemId,
+            ConfigId = selectedEffects[0].Property.ResultPillItemId,
             Rarity = rarity,
             Quality = quality,
-            CustomName = name,
-            CustomDescription = $"Создана из алхимических свойств ингредиентов с ядром «{cores[0].Item.CustomName ?? cores[0].Config.Name}».",
-            CraftedDurationTicks = database.Alchemy.PillDurationTicks,
             Contamination = contamination,
-            CraftedEffects = selectedEffects.Select(value => value.Effect).ToList()
+            CraftedEffects = [selectedEffects[0].Effect]
         };
         if (hasPurification)
         {
@@ -357,7 +351,7 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
 
         return new AlchemyPreview(
             true,
-            selectedEffects.Length == 1 ? "Смесь устойчива." : "Свойства образуют многокомпонентную пилюлю.",
+            "Смесь устойчива.",
             output,
             selectedEffects.Select(value => value.Property.DisplayName).ToArray());
     }
@@ -401,7 +395,7 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         var output = new ItemInstance
         {
             InstanceId = Guid.Empty,
-            ConfigId = database.Alchemy.PurityPillItemId,
+            ConfigId = database.GetAlchemyProperty(database.Alchemy.PurificationPropertyId).ResultPillItemId,
             Rarity = rarity,
             Quality = quality,
             Contamination = contamination,

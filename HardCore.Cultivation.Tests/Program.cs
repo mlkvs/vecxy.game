@@ -133,9 +133,9 @@ Check(pillPreview.CanCraft && pillPreview.Output?.CraftedEffects.Count == 1,
 Check(pillPreview.Output!.CraftedEffects[0].Value == 60m,
     "Property coverage or the crafted pill strength formula was not applied.");
 var pillResult = alchemy.Craft(alchemyState, pillSelection, AlchemyMode.Pill);
-Check(pillResult.Success && pillResult.Output is { CraftedDurationTicks: 48, Quantity: 6 } &&
+Check(pillResult.Success && pillResult.Output is { ConfigId: "vitality_pill", Quantity: 6 } &&
       pillResult.ProducedQuantity == 6,
-    "Crafted pill batch did not use the configured output quantity distribution.");
+    "Crafted pill batch did not use the configured output type and quantity distribution.");
 var craftedPill = pillResult.Output!;
 Check(alchemyState.Inventory.Find(craftedPill.InstanceId) is not null,
     "Alchemy did not return the stored item instance required by popup actions.");
@@ -151,6 +151,21 @@ Check(pillSale.Success && pillSale.TotalPrice == pillSellPrice &&
 var pillUse = effectService.Use(alchemyState, craftedPill.InstanceId);
 Check(pillUse.Success && alchemyState.ActiveEffects.Count > 0,
     "Crafted pill could not be used from its result popup.");
+
+var independentPillState = new GameState(database.Balance.TicksPerYear);
+var independentCore = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "attempt", Rarity = ItemRarity.Common, Quality = 1m };
+var vitalityIngredient = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Common, Quality = 1m };
+var clarityIngredient = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient_other", Rarity = ItemRarity.Common, Quality = 1m };
+independentPillState.Inventory.Add(independentCore);
+independentPillState.Inventory.Add(vitalityIngredient);
+independentPillState.Inventory.Add(clarityIngredient);
+var independentAlchemy = new AlchemyService(database, new BatchPropertyRandom());
+var independentPillResult = independentAlchemy.Craft(independentPillState,
+    [new(independentCore.InstanceId, 1), new(vitalityIngredient.InstanceId, 1), new(clarityIngredient.InstanceId, 1)],
+    AlchemyMode.Pill);
+Check(independentPillResult.Success && independentPillResult.Outputs.Select(item => item.ConfigId).Order().SequenceEqual(["clarity_pill", "vitality_pill"]),
+    "Each pill in an alchemy batch must roll its output type independently.");
+
 var purificationState = new GameState(database.Balance.TicksPerYear);
 purificationState.Character.AddContamination(0.4m);
 var purificationPill = new ItemInstance
@@ -304,6 +319,11 @@ Check(overchargedChance == database.Cultivation.Stages[0].BaseBreakthroughChance
 
 var missionState = new GameState(database.Balance.TicksPerYear);
 missionService.Refresh(missionState);
+Check(missionState.MissionBoard.Offers.Count == 8, "Mission board must always generate eight offers.");
+Check(missionState.MissionBoard.Offers.Select(offer => offer.OfferId).Distinct().Count() == 8,
+    "Repeated mission templates must remain individual offers.");
+Check(missionState.MissionBoard.Offers.All(offer => offer.DangerLevel == 1),
+    "Each mission offer must receive its own danger level.");
 Check(missionService.Start(missionState, "mission").Success, "Mission could not be accepted.");
 var rewards = missionState.CurrentMission!.Rewards;
 Check(rewards.Count is 1 or 2, "Mission must contain one or two rewards.");
@@ -319,6 +339,13 @@ Check(itemRewards.Count == 2 && itemRewards.All(reward => reward.Type == Mission
 Check(itemRewards.All(reward => reward.Quantity == 15), "Ingredient reward must allow up to 15 items.");
 Check(itemRewards.All(reward => reward.ItemRolls.Count == reward.Quantity),
     "Mission item rewards were not rolled individually.");
+
+var categoryShopState = new ShopState();
+shopService.Refresh(categoryShopState);
+Check(categoryShopState.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category == ItemCategory.Ingredient) == 2,
+    "Shop must generate the configured number of ingredient slots.");
+Check(categoryShopState.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category is ItemCategory.Pill or ItemCategory.Core) == 2,
+    "Shop must generate the configured number of pill and core slots.");
 
 var failedCultivation = new CultivationService(database, new MaximumRandom());
 var failedCharacter = new CharacterState();
@@ -390,7 +417,9 @@ static GameDatabase BuildDatabase()
                     AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "vitality" }] },
                 new ItemConfig { Id = "ingredient_other", Name = "Other", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant, BasePrice = 10,
                     AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "clarity" }] },
-                new ItemConfig { Id = "crafted_alchemy_pill", Name = "Pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
+                new ItemConfig { Id = "vitality_pill", Name = "Vitality pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
+                    TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
+                new ItemConfig { Id = "clarity_pill", Name = "Clarity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
                     TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "purity_pill", Name = "Purity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Instant,
                     BasePrice = 10, ShopWeight = 0 },
@@ -402,8 +431,9 @@ static GameDatabase BuildDatabase()
         },
         new MissionsConfig
         {
-            BoardSlotCount = 1,
+            BoardSlotCount = 8,
             Missions = [new MissionConfig { Id = "mission", StageId = "one", Name = "Mission", MinimumDurationTicks = 1, MaximumDurationTicks = 10,
+                PossibleDangerLevels = [1], PossibleMonsterIds = ["training_spirit"], PossibleBackgroundIds = ["forest"],
                 Reward = new MissionRewardConfig { RequiredItemCategory = ItemCategory.Ingredient, MinimumQuantity = 1, MaximumQuantity = 15, Money = 10 } }]
         },
         new CultivationConfig
@@ -416,14 +446,12 @@ static GameDatabase BuildDatabase()
                 new CultivationStageConfig { Id = "three", Name = "Three", BaseBreakthroughChance = 50, RecursiveCoefficient = 0.7m }
             ]
         },
-        new ShopConfig { SlotCount = 2, MinimumQuantity = 1, MaximumQuantity = 1, MinimumBuyMarkup = 0, MaximumBuyMarkup = 0, SellAdjustmentPercent = -33 },
+        new ShopConfig { IngredientSlotCount = 2, PillAndCoreSlotCount = 2, MinimumQuantity = 1, MaximumQuantity = 1, MinimumBuyMarkup = 0, MaximumBuyMarkup = 0, SellAdjustmentPercent = -33 },
         alchemy: new AlchemyConfig
         {
             Enabled = true,
             MinimumIngredients = 2,
             MaximumIngredients = 5,
-            MaximumPillEffects = 1,
-            PillDurationTicks = 48,
             DistillationQualityPerIngredient = 0.12m,
             DistillationQualityPerLevel = 0.18m,
             ElementCompatibility = Enum.GetValues<Element>().ToDictionary(
@@ -436,11 +464,11 @@ static GameDatabase BuildDatabase()
             ],
             Properties =
             [
-                new AlchemyPropertyConfig { Id = "vitality", DisplayName = "Vitality", PillName = "Vitality pill",
+                new AlchemyPropertyConfig { Id = "vitality", DisplayName = "Vitality", ResultPillItemId = "vitality_pill",
                     EffectType = EffectType.HealthRegeneration, Operation = ModifierOperation.AdditivePercent, BaseValue = 100m },
-                new AlchemyPropertyConfig { Id = "clarity", DisplayName = "Clarity", PillName = "Clarity pill",
+                new AlchemyPropertyConfig { Id = "clarity", DisplayName = "Clarity", ResultPillItemId = "clarity_pill",
                     EffectType = EffectType.TickEfficiency, Operation = ModifierOperation.AdditivePercent, BaseValue = 50m },
-                new AlchemyPropertyConfig { Id = "purification", DisplayName = "Purification", PillName = "Purity pill",
+                new AlchemyPropertyConfig { Id = "purification", DisplayName = "Purification", ResultPillItemId = "purity_pill",
                     EffectType = EffectType.PurifyContamination, Operation = ModifierOperation.Flat, BaseValue = 0m }
             ]
         });
@@ -457,6 +485,29 @@ sealed class MaximumRandom : IRandomSource
 {
     public int NextInt(int minInclusive, int maxExclusive) => maxExclusive - 1;
     public decimal NextDecimal(decimal minInclusive, decimal maxExclusive) => maxExclusive - 0.0001m;
+}
+
+sealed class BatchPropertyRandom : IRandomSource
+{
+    private int _unitRoll;
+    private int _percentRoll;
+
+    public int NextInt(int minInclusive, int maxExclusive) => minInclusive;
+
+    public decimal NextDecimal(decimal minInclusive, decimal maxExclusive)
+    {
+        if (maxExclusive == 100m)
+            return ++_percentRoll == 1 ? 0m : 50m;
+
+        _unitRoll++;
+        return _unitRoll switch
+        {
+            5 or 6 => 0m,
+            11 => 0.9m,
+            12 => 0m,
+            _ => 0.5m
+        };
+    }
 }
 
 sealed class FirstMinimumThenMaximumRandom : IRandomSource
