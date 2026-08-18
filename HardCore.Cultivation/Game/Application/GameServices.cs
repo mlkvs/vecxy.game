@@ -132,12 +132,14 @@ public sealed class ItemEffectService(GameDatabase database)
         var aging = Math.Max(
             database.Balance.MinimumAgingMultiplier,
             ModifierCalculator.Calculate(ModifierCalculator.Calculate(1m, effects, EffectType.AgingSpeed), contamination, EffectType.AgingSpeed));
+        var timeAcceleration = Math.Max(0m,
+            ModifierCalculator.Calculate(1m, effects, EffectType.TimeAcceleration));
         var spiritual = Math.Max(0m,
             ModifierCalculator.Calculate(ModifierCalculator.Calculate(1m, effects, EffectType.SpiritualPowerGain), contamination, EffectType.SpiritualPowerGain));
         var mission = Math.Max(0m,
             ModifierCalculator.Calculate(ModifierCalculator.Calculate(1m, effects, EffectType.MissionProgress), contamination, EffectType.MissionProgress));
         var breakthrough = ModifierCalculator.Calculate(ModifierCalculator.Calculate(0m, effects, EffectType.BreakthroughChance), contamination, EffectType.BreakthroughChance);
-        return new TickModifiers(tickEfficiency, aging, spiritual, mission, breakthrough);
+        return new TickModifiers(tickEfficiency, aging, timeAcceleration, spiritual, mission, breakthrough);
     }
 
     public TransactionResult Use(GameState state, Guid instanceId)
@@ -850,18 +852,19 @@ public sealed class TickProcessor(
         var levelsGained = 0;
         if (state.ActivityMode == ActivityMode.Missions && state.CurrentMission?.IsInCombat != true)
         {
-            missionProgress = modifiers.TickEfficiency * modifiers.MissionProgressMultiplier;
+            missionProgress = modifiers.TickEfficiency * modifiers.TimeAccelerationMultiplier * modifiers.MissionProgressMultiplier;
             missionCompleted = missions.AdvanceCurrentMission(state, missionProgress);
         }
         else if (state.ActivityMode == ActivityMode.Cultivation)
         {
             spiritualPower = database.Balance.BaseSpiritualPowerPerTick *
                              modifiers.TickEfficiency *
+                             modifiers.TimeAccelerationMultiplier *
                              modifiers.SpiritualPowerMultiplier;
             state.Character.AddSpiritualPower(spiritualPower);
             levelsGained = cultivation.AdvanceLevelsAutomatically(state.Character);
         }
-        state.Character.Age.Advance(modifiers.AgingMultiplier, state.Calendar.TicksPerYear);
+        state.Character.Age.Advance(modifiers.AgingMultiplier * modifiers.TimeAccelerationMultiplier, state.Calendar.TicksPerYear);
         var characterDied = state.Character.Age.TotalYears >= cultivation.GetMaximumAge(state.Character);
         effects.AdvanceTemporaryEffects(state);
         var newYear = state.Calendar.AdvanceTick();

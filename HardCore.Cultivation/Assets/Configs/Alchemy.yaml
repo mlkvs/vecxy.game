@@ -176,7 +176,7 @@ properties:
   - id: swiftness
     displayName: Ускорение времени
     resultPillItemId: time_acceleration_pill
-    effectType: MissionProgress
+    effectType: TimeAcceleration
     operation: AdditivePercent
     baseValue: 1
 

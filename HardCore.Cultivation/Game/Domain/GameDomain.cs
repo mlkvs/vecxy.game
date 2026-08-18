@@ -4,6 +4,7 @@ public enum EffectType
 {
     TickEfficiency,
     AgingSpeed,
+    TimeAcceleration,
     BreakthroughChance,
     SpiritualPowerGain,
     MissionProgress,
@@ -759,6 +760,7 @@ public sealed class GameSettings
 public readonly record struct TickModifiers(
     decimal TickEfficiency,
     decimal AgingMultiplier,
+    decimal TimeAccelerationMultiplier,
     decimal SpiritualPowerMultiplier,
     decimal MissionProgressMultiplier,
     decimal BreakthroughChanceBonus);

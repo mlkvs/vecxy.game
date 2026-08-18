@@ -177,10 +177,9 @@ var swiftnessResult = new AlchemyService(database, new StableRandom()).Craft(swi
     AlchemyMode.Pill);
 Check(swiftnessResult.Success &&
       swiftnessResult.Output is { ConfigId: "time_acceleration_pill" } &&
-      swiftnessResult.Output.CraftedEffects.Count == 2 &&
-      swiftnessResult.Output.CraftedEffects.Any(effect => effect.Type == EffectType.MissionProgress) &&
-      swiftnessResult.Output.CraftedEffects.Any(effect => effect.Type == EffectType.SpiritualPowerGain),
-    "Time acceleration pill must grant both mission progress and spiritual power gain.");
+      swiftnessResult.Output.CraftedEffects.Count == 1 &&
+      swiftnessResult.Output.CraftedEffects[0].Type == EffectType.TimeAcceleration,
+    "Time acceleration pill must use a single time acceleration effect.");
 
 var purificationState = new GameState(database.Balance.TicksPerYear);
 purificationState.Character.AddContamination(0.4m);
@@ -508,7 +507,7 @@ static GameDatabase BuildDatabase()
                 new AlchemyPropertyConfig { Id = "purification", DisplayName = "Purification", ResultPillItemId = "purity_pill",
                     EffectType = EffectType.PurifyContamination, Operation = ModifierOperation.Flat, BaseValue = 0m },
                 new AlchemyPropertyConfig { Id = "swiftness", DisplayName = "Time", ResultPillItemId = "time_acceleration_pill",
-                    EffectType = EffectType.MissionProgress, Operation = ModifierOperation.AdditivePercent, BaseValue = 100m }
+                    EffectType = EffectType.TimeAcceleration, Operation = ModifierOperation.AdditivePercent, BaseValue = 100m }
             ]
         });
     return database;

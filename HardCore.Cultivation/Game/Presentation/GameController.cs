@@ -3023,6 +3023,7 @@ public sealed class GameController(
         {
             EffectType.TickEfficiency => $"Получение духовной силы {SignedUi(value)}%",
             EffectType.AgingSpeed => $"Скорость старения {SignedUi(value)}%",
+            EffectType.TimeAcceleration => $"Течение времени {SignedUi(value)}%",
             EffectType.BreakthroughChance when pluralBreakthroughChance => $"Шансы прорыва {SignedUi(value)}%",
             EffectType.BreakthroughChance => $"Шанс прорыва {SignedUi(value)}%",
             EffectType.SpiritualPowerGain when effect.Operation == ModifierOperation.Flat => $"Добавляет {CompactNumberFormatter.Format(value)} духовной силы",
@@ -3070,6 +3071,7 @@ public sealed class GameController(
     private static string EffectName(EffectType type) => type switch
     {
         EffectType.TickEfficiency => "Эффективность культивации", EffectType.AgingSpeed => "Старение",
+        EffectType.TimeAcceleration => "Течение времени",
         EffectType.BreakthroughChance => "Шанс прорыва", EffectType.SpiritualPowerGain => "Духовная сила",
         EffectType.MissionProgress => "Выполнение миссий",
         EffectType.HealthRegeneration => "Регенерация здоровья",
