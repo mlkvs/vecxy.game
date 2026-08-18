@@ -577,12 +577,15 @@ public sealed class CultivationService(GameDatabase database, IRandomSource rand
         return database.CultivationBalance.GetCost(stageIndex, level);
     }
 
-    public decimal GetMaximumAge(CharacterState character)
+    public decimal GetMaximumAge(CharacterState character, IEnumerable<ActiveEffect>? activeEffects = null)
     {
         ArgumentNullException.ThrowIfNull(character);
         var baseLongevity = database.CultivationBalance.GetCurrent(character.Cultivation, database.Cultivation).LongevityYears;
-        var longevity = ModifierCalculator.Calculate(baseLongevity,
-            ContaminationCalculator.GetEffects(character.Contamination, database.Balance), EffectType.LongevityYears);
+        var effects = activeEffects?.Where(effect => !effect.IsExpired).ToArray() ?? [];
+        var longevity = ModifierCalculator.Calculate(
+            ModifierCalculator.Calculate(baseLongevity, effects, EffectType.LongevityYears),
+            ContaminationCalculator.GetEffects(character.Contamination, database.Balance),
+            EffectType.LongevityYears);
         return Math.Max(1m, longevity + character.MaximumAgeOffsetYears);
     }
 

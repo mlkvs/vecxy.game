@@ -164,7 +164,7 @@ public sealed class GameController(
             missions.Refresh(_state);
         combat.ConfigureHero(_state.Character, _state.Character.MaximumHealth <= 0m);
         combatScene.Initialize();
-        _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character);
+        _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character, _state.ActiveEffects);
 
         _document = ui.Load("UI/Main.xml");
         _document.Reloaded += BuildUi;
@@ -363,7 +363,7 @@ public sealed class GameController(
     public void ChangeAgeForCheat(decimal years)
     {
         _state.Character.Age.Restore(Math.Max(0m, _state.Character.Age.TotalYears + years));
-        _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character);
+        _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character, _state.ActiveEffects);
         if (!_gameOver && _view is not null)
             CloseWindows();
         CommitCheatChange();
@@ -372,7 +372,7 @@ public sealed class GameController(
     public void ChangeMaximumAgeForCheat(decimal years)
     {
         _state.Character.AdjustMaximumAgeOffset(years);
-        _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character);
+        _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character, _state.ActiveEffects);
         CommitCheatChange();
     }
 
@@ -813,7 +813,7 @@ public sealed class GameController(
         foreach (var modalMoney in _view.ModalMoneyTexts)
             modalMoney.Value = _view.Money.Value;
         _view.Age.Value = Format(character.Age.TotalYears);
-        _view.MaximumAge.Value = Format(cultivation.GetMaximumAge(character));
+        _view.MaximumAge.Value = Format(cultivation.GetMaximumAge(character, _state.ActiveEffects));
         _view.Realm.Value = $"{stage.Name} · ур. {progress.Level}";
         UpdateCultivationPowerBar(character.SpiritualPower, required, powerBars);
         var healthFraction = character.MaximumHealth <= 0m ? 0m : character.Health / character.MaximumHealth;
@@ -2143,7 +2143,7 @@ public sealed class GameController(
             missions.Refresh(_state);
             SyncMissionBoard();
             ShowAchievement("УСПЕШНЫЙ ПРОРЫВ");
-            ShowActionFeedback($"Предел жизни увеличен до {Format(cultivation.GetMaximumAge(_state.Character))} лет.",
+            ShowActionFeedback($"Предел жизни увеличен до {Format(cultivation.GetMaximumAge(_state.Character, _state.ActiveEffects))} лет.",
                 "Assets/Textures/UIIcons/age.png", true, info: true);
         }
         ApplyStateToView();
@@ -2568,7 +2568,7 @@ public sealed class GameController(
     {
         CloseWindows();
         var stage = database.Cultivation.Stages[_state.Character.Cultivation.StageIndex];
-        _view!.DeathAge.Value = $"{Format(_state.Character.Age.TotalYears)} / {Format(cultivation.GetMaximumAge(_state.Character))} лет";
+        _view!.DeathAge.Value = $"{Format(_state.Character.Age.TotalYears)} / {Format(cultivation.GetMaximumAge(_state.Character, _state.ActiveEffects))} лет";
         _view.DeathStage.Value = $"{stage.Name} · ур. {_state.Character.Cultivation.Level}";
         _view.DeathYear.Value = _state.Calendar.CurrentYear.ToString(CultureInfo.InvariantCulture);
         OpenWindow(_view.DeathWindow);
