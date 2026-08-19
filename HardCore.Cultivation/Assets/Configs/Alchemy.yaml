@@ -160,14 +160,14 @@ properties:
     baseValue: 1
 
   - id: blade_intent
-    displayName: Намерение клинка
+    displayName: Намерение атаки
     resultPillItemId: blade_intent_pill
     effectType: Attack
     operation: Flat
     baseValue: 0.1
 
   - id: wind_step
-    displayName: Шаг ветра
+    displayName: Ускорение ветром
     resultPillItemId: gale_step_pill
     effectType: AttackSpeed
     operation: AdditivePercent
