@@ -8,9 +8,4 @@ Build/
 imgui.ini
 tmp/
 artifacts/
-*.keystore
-*.jks
-!Build/
-!Build/Keystores/
-!Build/Keystores/hardcore-cultivation-google-play.jks
-!Build/Keystores/GOOGLE_PLAY_KEYSTORE.md
+.agents/local/
