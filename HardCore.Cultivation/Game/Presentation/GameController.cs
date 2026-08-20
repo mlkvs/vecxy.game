@@ -47,6 +47,7 @@ public sealed class GameController(
     private Action? _infoPopupAction;
     private Action? _infoPopupUseAction;
     private Action? _infoPopupSellAction;
+    private readonly Queue<ItemInstance> _alchemyResultPopupQueue = new();
     private long _actionToastExpiresAt;
     private const long ActionToastLifetimeMilliseconds = 1850;
     private const float HealthUiRefreshIntervalSeconds = 1f / 15f;
@@ -1888,22 +1889,44 @@ public sealed class GameController(
         Save();
         SyncAlchemy();
         SyncInventory();
-        var config = database.GetItem(output.ConfigId);
         Track(new AlchemyCraftSucceededEvent(output.ConfigId, output.Contamination, mode.ToString(),
             selection.Sum(value => value.Quantity)));
         Track(new ItemReceivedEvent(output.ConfigId, result.ProducedQuantity, "alchemy", output.Contamination));
         if (preview.Output is { } expected && expected.ConfigId != output.ConfigId)
             Track(new AlchemyCraftAlternateResultEvent(output.ConfigId, expected.ConfigId));
-        var sellPrice = prices.GetSellPrice(output, _state.Shop);
-        var canUse = config.Effects.Count > 0 || output.CraftedEffects.Count > 0;
-        ShowItemPopup(
-            config,
-            output,
-            result.ProducedQuantity.ToString(CultureInfo.InvariantCulture),
-            mode == AlchemyMode.Pill ? "Создано в алхимической печи." : "Получено после рафинирования.",
-            useAction: canUse ? () => UseInventoryItem(output.InstanceId) : null,
-            sellAction: () => SellInventoryItem(output.InstanceId),
-            sellPrice: sellPrice);
+        ShowAlchemyResultPopups(result.Outputs, mode);
+    }
+
+    private void ShowAlchemyResultPopups(IReadOnlyList<ItemInstance> outputs, AlchemyMode mode)
+    {
+        _alchemyResultPopupQueue.Clear();
+        foreach (var output in outputs
+                     .OrderBy(item => item.Quality)
+                     .ThenBy(item => item.Rarity))
+            _alchemyResultPopupQueue.Enqueue(output);
+        ShowNextAlchemyResultPopup(mode);
+    }
+
+    private void ShowNextAlchemyResultPopup(AlchemyMode? mode = null)
+    {
+        while (_alchemyResultPopupQueue.TryDequeue(out var output))
+        {
+            var item = _state.Inventory.Find(output.InstanceId);
+            if (item is null)
+                continue;
+
+            var config = database.GetItem(item.ConfigId);
+            var canUse = config.Effects.Count > 0 || item.CraftedEffects.Count > 0;
+            ShowItemPopup(
+                config,
+                item,
+                item.Quantity.ToString(CultureInfo.InvariantCulture),
+                mode == AlchemyMode.Distillation ? "Получено после рафинирования." : "Создано в алхимической печи.",
+                useAction: canUse ? () => UseInventoryItem(item.InstanceId) : null,
+                sellAction: () => SellInventoryItem(item.InstanceId),
+                sellPrice: prices.GetSellPrice(item, _state.Shop));
+            return;
+        }
     }
 
     private void OpenMissions()
@@ -2526,6 +2549,7 @@ public sealed class GameController(
         _infoPopupAction = null;
         _infoPopupUseAction = null;
         _infoPopupSellAction = null;
+        _alchemyResultPopupQueue.Clear();
         UpdateWindowLayerState();
         if (_deferredHudRefresh)
         {
