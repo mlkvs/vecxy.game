@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <VecxyApplicationId>game.vecxy.horror</VecxyApplicationId>
+    <VecxyApplicationTitle Condition="'$(BuildGameName)' == ''">Horror</VecxyApplicationTitle>
+    <VecxyApplicationTitle Condition="'$(BuildGameName)' != ''">$(BuildGameName)</VecxyApplicationTitle>
+    <VecxyApplicationVersion>1.0.0</VecxyApplicationVersion>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <Import Project="../Engine/Vecxy/Code/Vecxy.Platforms/build/Vecxy.Platforms.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Engine/Vecxy.Engine.csproj" />
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Rendering/Vecxy.Rendering.csproj" />
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Scene/Vecxy.Scene.csproj" />
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Assets/Vecxy.Assets.csproj" />
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Kernel/Vecxy.Kernel.csproj" />
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Diagnostics/Vecxy.Diagnostics.csproj" />
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Physics/Vecxy.Physics.csproj" />
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Input/Vecxy.Input.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Editor\Vecxy.Editor.csproj" />
+  </ItemGroup>
+</Project>

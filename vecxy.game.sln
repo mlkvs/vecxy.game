@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vecxy.Scene", "Engine\Vecxy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vecxy.UI", "Engine\Vecxy\Code\Vecxy.UI\Vecxy.UI.csproj", "{7753F467-0538-85F7-AF24-B748D155C33E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horror", "Horror\Horror.csproj", "{AF36295C-D06D-479F-BB8D-47BF92C9E2BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{7753F467-0538-85F7-AF24-B748D155C33E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7753F467-0538-85F7-AF24-B748D155C33E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7753F467-0538-85F7-AF24-B748D155C33E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF36295C-D06D-479F-BB8D-47BF92C9E2BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF36295C-D06D-479F-BB8D-47BF92C9E2BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF36295C-D06D-479F-BB8D-47BF92C9E2BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF36295C-D06D-479F-BB8D-47BF92C9E2BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

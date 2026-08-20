@@ -11,7 +11,7 @@ public sealed class MainScene(IComponentInstantiator instantiator) : IScene
 {
     public void OnLoad(SceneInstance scene)
     {
-        scene.Lighting.Skybox.Enabled = true;
+        scene.Lighting.Skybox.Enabled = false;
         
         var background = instantiator.Instantiate<Background>(scene);
 

@@ -1,0 +1,14 @@
+name: Vignette
+enabled: true
+order: 200
+roundEnabled: true
+sideMasksEnabled: false
+color: [0.0, 0.0, 0.0, 1.0]
+intensity: 0.8
+roundRadius: 0.5
+roundSoftness: 0.9
+top: 0.0
+right: 0.0
+bottom: 0.0
+left: 0.0
+edgeSoftness: 0.02

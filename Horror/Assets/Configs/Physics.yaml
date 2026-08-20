@@ -1,0 +1,10 @@
+fixedUpdateRate: 60
+maxSubSteps: 8
+maxFrameDelta: 0.25
+gravity: [0, -9.81, 0]
+allowSleeping: true
+interpolationEnabled: true
+collisionLayers:
+  default:
+    index: 0
+    collidesWith: [default]
