@@ -1,16 +1,10 @@
 # ============================================================
 # ПРЕДМЕТЫ
 # ============================================================
-# Это главный контентный файл предметов.
-# Здесь задаются:
-# - список всех предметов
-# - их названия и описания
-# - иконки
-# - категории
-# - тип длительности
-# - базовая цена
-# - частота появления в генерации
-# - игровые эффекты
+# Актуальный набор предметов:
+# - 15 пилюль в порядке эффектов, заданном игровой системой
+# - 15 ингредиентов, по одному на каждую пилюлю
+# - 5 ядер стихий: Earth, Water, Air, Fire, Void
 #
 # Важные правила:
 # - id должен быть уникальным
@@ -25,17 +19,16 @@
 # По эффектам:
 # type:
 # - TickEfficiency      — множитель эффективности тика / общей продуктивности
-# - AgingSpeed          — изменение скорости старения
+# - TimeAcceleration    — ускорение течения времени
 # - BreakthroughChance  — бонус к шансу прорыва
 # - SpiritualPowerGain  — бонус к духовной силе
 # - MissionProgress     — ускорение миссий
-# - HealthRegeneration  — восстановление здоровья в секунду;
-#   база задаётся через healthRegenerationPerSecond в Combat.yaml
+# - HealthRegeneration  — восстановление здоровья
 # - MaximumHealth       — максимум здоровья
 # - Attack              — сила атаки
 # - AttackSpeed         — атак в секунду
-# - HealthRestore       — мгновенно восстанавливает здоровье; используйте только с Instant
-# - PurifyContamination — мгновенно снимает заданный процент загрязнения; используйте только с Instant
+# - HealthRestore       — мгновенное восстановление здоровья
+# - PurifyContamination — мгновенное очищение загрязнения
 #
 # operation:
 # - Flat                  — плоское добавление
@@ -44,558 +37,433 @@
 #
 # Формула модифицируемого параметра:
 # (base + сумма Flat) * (1 + сумма AdditivePercent / 100)
-#                  * произведение (1 + MultiplicativePercent / 100)
+#                  * произведение (1 + сумма MultiplicativePercent / 100)
 #
-# Важно: у обычных готовых предметов value дополнительно умножается на силу
-# конкретного экземпляра из GameBalance.yaml: множитель качества умножается
-# на priceMultiplier его редкости. Это совпадает с таблицей баланса.
-# У созданных алхимией пилюль итоговый CraftedEffect уже включает качество,
-# количество ингредиентов, potency и долю совпадений по формуле Alchemy.yaml,
-# поэтому повторный множитель качества к нему не применяется.
-# Поэтому value здесь — базовое значение ДО влияния звёзд качества.
-# Несколько активных эффектов одного типа складываются или перемножаются
-# согласно operation. Постоянные эффекты также могут накапливаться.
-#
-# Практический совет:
-# - Для "прямой силы" и разовых банок обычно удобнее Flat
-# - Для долгих бафов темпа чаще подходят AdditivePercent
-
 items:
   # ------------------------------------------------------------
   # ВРЕМЕННЫЕ ПИЛЮЛИ ТЕМПА
   # ------------------------------------------------------------
-  - id: focus_pill
-    name: Пилюля сосредоточения
-    description: Обостряет восприятие и помогает извлечь больше пользы из каждой недели.
-    icon: Assets/Textures/Items/focus-pill.png
-    # Pill = пилюля, отображается во вкладке пилюль.
-    category: Pill
-    # Временный баф.
-    durationType: Temporary
-    # Длительность действия в тиках.
-    temporaryDurationTicks: 24
-    # Базовая цена ДО модификаторов качества, редкости и магазинной наценки.
-    basePrice: 120
-    # Вес выбора предмета в генерации магазина / наградных пулов.
-    shopWeight: 18
-    effects:
-      # +25% к общей эффективности тика.
-      - type: TickEfficiency
-        operation: AdditivePercent
-        value: 1
+- id: spiritual_energy_pill
+  name: Пилюля духовной энергии
+  description: Мгновенно увеличивает духовную энергию.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Instant
+  basePrice: 140
+  shopWeight: 14
+  effects:
+  - type: SpiritualPowerGain
+    operation: Flat
+    value: 10
+- id: spiritual_growth_pill
+  name: Пилюля духовного роста
+  description: Повышает общую эффективность духовного роста.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 24
+  basePrice: 120
+  shopWeight: 18
+  effects:
+  - type: TickEfficiency
+    operation: AdditivePercent
+    value: 0.1
+- id: spirit_gain_pill
+  name: Пилюля духовного потока
+  description: Временно увеличивает количество получаемого духа.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 48
+  basePrice: 280
+  shopWeight: 8
+  effects:
+  - type: SpiritualPowerGain
+    operation: AdditivePercent
+    value: 1
+- id: vitality_pill
+  name: Пилюля жизненной силы
+  description: На время ускоряет естественное восстановление тела.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 48
+  basePrice: 260
+  shopWeight: 11
+  effects:
+  - type: HealthRegeneration
+    operation: Flat
+    value: 0.1
+- id: bloodspring_pill
+  name: Пилюля кровавого источника
+  description: На время увеличивает регенерацию здоровья.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 48
+  basePrice: 260
+  shopWeight: 11
+  effects:
+  - type: HealthRegeneration
+    operation: AdditivePercent
+    value: 1
+- id: jade_body_pill
+  name: Пилюля нефритового тела
+  description: Навсегда увеличивает максимальный запас здоровья.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Permanent
+  basePrice: 250
+  shopWeight: 8
+  effects:
+  - type: MaximumHealth
+    operation: Flat
+    value: 1
+- id: healing_dew
+  name: Роса живой крови
+  description: Сразу восстанавливает здоровье.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Instant
+  basePrice: 250
+  shopWeight: 14
+  effects:
+  - type: HealthRestore
+    operation: Flat
+    value: 2
+- id: eternal_swiftness_pill
+  name: Пилюля вечной стремительности
+  description: Навсегда увеличивает скорость атаки.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Permanent
+  basePrice: 250
+  shopWeight: 4
+  effects:
+  - type: AttackSpeed
+    operation: AdditivePercent
+    value: 1
+- id: gale_step_pill
+  name: Пилюля порыва ветра
+  description: Временно увеличивает скорость.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 48
+  basePrice: 250
+  shopWeight: 8
+  effects:
+  - type: AttackSpeed
+    operation: AdditivePercent
+    value: 1
+- id: blade_intent_permanent_pill
+  name: Пилюля вечного намерения
+  description: Навсегда увеличивает силу атаки.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Permanent
+  basePrice: 250
+  shopWeight: 4
+  effects:
+  - type: Attack
+    operation: Flat
+    value: 0.1
+- id: blade_intent_pill
+  name: Пилюля ярости
+  description: Временно увеличивает силу атаки.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 48
+  basePrice: 250
+  shopWeight: 8
+  effects:
+  - type: Attack
+    operation: AdditivePercent
+    value: 1
+- id: time_acceleration_pill
+  name: Пилюля ускорения времени
+  description: Временно ускоряет течение внутреннего времени, повышая прирост 
+    духовной силы и прогресс миссий за тик.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 48
+  basePrice: 250
+  shopWeight: 8
+  effects:
+  - type: TimeAcceleration
+    operation: AdditivePercent
+    value: 1
+- id: mission_speed_pill
+  name: Пилюля пространства
+  description: Временно ускоряет выполнение миссий.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 48
+  basePrice: 250
+  shopWeight: 8
+  effects:
+  - type: MissionProgress
+    operation: AdditivePercent
+    value: 1
+- id: insight_pill
+  name: Пилюля прозрения
+  description: Увеличивает вероятность успешного прорыва до следующей попытки.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: UntilBreakthroughAttempt
+  basePrice: 100
+  shopWeight: 0
+  effects:
+  - type: BreakthroughChance
+    operation: Flat
+    value: 1
+- id: purity_pill
+  name: Пилюля чистоты
+  description: Мгновенно очищает загрязнение.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Instant
+  basePrice: 250
+  shopWeight: 25
+  effects:
+  - type: PurifyContamination
+    operation: Flat
+    value: 1
+- id: spiritgrass_body
+  name: Стебель духоцвета
+  description: Редкий материал, насыщенный ци.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Water
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: spirit_flow
 
-  - id: bloodspring_pill
-    name: Пилюля кровавого источника
-    description: На время ускоряет естественное восстановление тела.
-    icon: Assets/Textures/Items/marrow-elixir.png
-    category: Pill
-    durationType: Temporary
-    temporaryDurationTicks: 48
-    basePrice: 260
-    shopWeight: 11
-    effects:
-      # Базовые +100% к регенерации до влияния качества предмета.
-      # При базовой регенерации 0.1 HP/с и силе предмета 1.0
-      # итоговая скорость на время действия станет 0.2 HP/с.
-      - type: HealthRegeneration
-        operation: AdditivePercent
-        value: 1
+- id: spiritgrass_root
+  name: Корень духоцвета
+  description: Редкий материал, насыщенный ци.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Water
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: spirit_flow
 
-  - id: healing_dew
-    name: Роса живой крови
-    description: Сразу затягивает раны и восстанавливает здоровье.
-    icon: Assets/Textures/Items/spirit-dew.png
-    category: Pill
-    durationType: Instant
-    # Количество HP до влияния качества экземпляра.
-    basePrice: 140
-    shopWeight: 14
-    effects:
-      - type: HealthRestore
-        operation: Flat
-        value: 2
+- id: spiritgrass_young
+  name: Росток духоцвета
+  description: Молодой побег редкого растения, насыщенный ци.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Water
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: spirit_flow
 
-  - id: jade_body_core
-    name: Ядро нефритового тела
-    description: Навсегда укрепляет тело и повышает запас здоровья.
-    icon: Assets/Textures/Items/insight-core.png
-    category: Core
-    element: Earth
-    durationType: Permanent
-    basePrice: 200
-    shopWeight: 5
-    effects:
-      # Постоянный Flat-бонус к максимуму HP.
-      - type: MaximumHealth
-        operation: Flat
-        value: 1
+- id: demon_spider_web
+  name: Паутина демонического паука
+  description: Паутина, поглощающая жизненную ци; при правильной обработке 
+    становится мощным лекарством.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Water
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: vitality
 
-  - id: windblade_core
-    name: Ядро ветрового клинка
-    description: Навсегда усиливает силу обычной атаки.
-    icon: Assets/Textures/Items/breakthrough-seal.png
-    category: Core
-    element: Air
-    durationType: Permanent
-    basePrice: 250
-    shopWeight: 4
-    effects:
-      - type: Attack
-        operation: Flat
-        value: 0.1
+- id: azure_spirit_core
+  name: Лазурная пыль
+  description: Редкий материал, насыщенный ци.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Water
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: longevity
 
-  - id: gale_step_pill
-    name: Пилюля порыва ветра
-    description: На короткое время ускоряет атаки.
-    icon: Assets/Textures/Items/focus-pill.png
-    category: Pill
-    durationType: Temporary
-    temporaryDurationTicks: 24
-    basePrice: 150
-    shopWeight: 9
-    effects:
-      - type: AttackSpeed
-        operation: AdditivePercent
-        value: 0.01
+- id: meat_root
+  name: Мясной корень
+  description: Практически неубиваемый дикий корнеплод.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Earth
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: jade_body
+
+- id: heal_grass
+  name: Подорожник
+  description: Распространённое, но всё ещё эффективное лечебное растение.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Earth
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: vitality
+
+- id: wind_cotton
+  name: Ветряной хлопок
+  description: Хлопок, взращённый на ци ветра.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Air
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: wind_step
+
+- id: cauke_leaves
+  name: Листья каки
+  description: Листья болотного дерева, которые заметно тонизируют тело.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Air
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: wind_step
+
+- id: yan_nuts
+  name: Орешки янь
+  description: Орехи с высокогорья, обладающие мощными тонизирующими свойствами.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Fire
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: blade_intent
+
+- id: chicken_flower
+  name: Куриный цветок
+  description: Говорят, даже домашняя птица становится неожиданно боевой, если 
+    склюёт этот цветок.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Fire
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: blade_intent
+
+- id: sealed_blackhole
+  name: Запечатанная червоточина
+  description: Запечатанная аномалия, содержащая следы законов времени.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Void
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: longevity
+
+- id: space_dust
+  name: Космическая пыль
+  description: Микроскопическая пыльца, содержащая в себе законы пространства.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Void
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: swiftness
+
+- id: ying_yang_flower
+  name: Цветок инь и янь
+  description: Цветок, удерживающий противоположные энергии в редком равновесии.
+  icon: Assets/Textures/Items/azure-spirit-core.png
+  category: Ingredient
+  element: Void
+  durationType: Instant
+  basePrice: 100
+  shopWeight: 9
+  alchemyProperties:
+  - propertyId: insight
+
+- id: purity_herb
+  name: Чистотел
+  description: Дикая трава, известная своими сильными очищающими свойствами.
+  icon: Assets/Textures/Items/jade-lotus.png
+  category: Ingredient
+  element: Void
+  durationType: Instant
+  basePrice: 200
+  shopWeight: 15
+  alchemyProperties:
+      # Только ингредиенты с этим свойством гарантированно создают пилюлю чистоты.
+  - propertyId: purification
 
   # ------------------------------------------------------------
-  # ПРЕДМЕТЫ ДЛЯ ПРОРЫВА
+  # Ядра
   # ------------------------------------------------------------
-  - id: insight_core
-    name: Ядро прозрения
-    description: Укрепляет основание культивации перед будущими прорывами.
-    icon: Assets/Textures/Items/insight-core.png
-    category: Core
-    element: Void
-    # Эффект живёт до следующей попытки прорыва.
-    durationType: UntilBreakthroughAttempt
-    basePrice: 700
-    shopWeight: 5
-    effects:
-      # Плоский бонус к шансу прорыва.
-      - type: BreakthroughChance
-        operation: Flat
-        value: 3
 
-  - id: breakthrough_seal
-    name: Печать небесного прорыва
-    description: Временно стабилизирует духовное основание перед попыткой перейти на новую стадию.
-    icon: Assets/Textures/Items/breakthrough-seal.png
-    category: Core
-    element: Void
-    durationType: Temporary
-    temporaryDurationTicks: 18
-    basePrice: 560
-    shopWeight: 5
-    effects:
-      - type: BreakthroughChance
-        operation: Flat
-        value: 7
+- id: core_earth
+  name: Ядро копателя
+  description: Вырвано из тела дикого зверя, ингредиент для алхимии
+  icon: Assets/Textures/Items/mission-talisman.png
+  category: Core
+  element: Earth
+  basePrice: 150
+  shopWeight: 9
 
-  # ------------------------------------------------------------
-  # МГНОВЕННЫЕ ПРЕДМЕТЫ ДУХОВНОЙ СИЛЫ
-  # ------------------------------------------------------------
-  - id: spirit_dew
-    name: Роса духовной силы
-    description: Высвобождает накопленный внутри запас духовной силы.
-    icon: Assets/Textures/Items/spirit-dew.png
-    category: Pill
-    # Instant = расходник с немедленным эффектом.
-    durationType: Instant
-    basePrice: 90
-    shopWeight: 24
-    effects:
-      # Плоское мгновенное добавление духовной силы.
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 80
+- id: core_water
+  name: Ядро ныряльщика
+  description: Вырвано из тела дикого зверя, ингредиент для алхимии
+  icon: Assets/Textures/Items/swift-scroll.png
+  category: Core
+  element: Water
+  basePrice: 150
+  shopWeight: 9
 
-  - id: marrow_elixir
-    name: Эликсир костного мозга
-    description: Мгновенно наполняет меридианы большим запасом духовной силы.
-    icon: Assets/Textures/Items/marrow-elixir.png
-    category: Pill
-    durationType: Instant
-    basePrice: 210
-    shopWeight: 13
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 160
+- id: core_wind
+  name: Ядро летуна
+  description: Вырвано из тела дикого зверя, ингредиент для алхимии
+  icon: Assets/Textures/Items/swift-scroll.png
+  category: Core
+  element: Air
+  basePrice: 150
+  shopWeight: 9
 
-  # ------------------------------------------------------------
-  # ОЧИЩЕНИЕ ЗАГРЯЗНЕНИЯ
-  # ------------------------------------------------------------
-  - id: purity_pill
-    name: Пилюля чистоты
-    description: Редкая очищающая пилюля, выводящая часть загрязнения из тела.
-    icon: Assets/Textures/Items/still-age-pill.png
-    category: Pill
-    durationType: Instant
-    # Рецепт создаёт этот предмет; нулевой вес исключает прямую генерацию в лавке и наградах.
-    basePrice: 420
-    shopWeight: 0
-    effects:
-      # Точный процент записывается в экземпляр при создании в алхимии.
-      - type: PurifyContamination
-        operation: Flat
-        value: 1
+- id: core_fire
+  name: Ядро горельца
+  description: Вырвано из тела дикого зверя, ингредиент для алхимии
+  icon: Assets/Textures/Items/swift-scroll.png
+  category: Core
+  element: Fire
+  basePrice: 150
+  shopWeight: 9
 
-  # ------------------------------------------------------------
-  # УСКОРЕНИЕ МИССИЙ
-  # ------------------------------------------------------------
-  - id: core_earth
-    name: Ядро копателя
-    description: Вырвано из тела дикого зверя, ингредиент для алхимии
-    icon: Assets/Textures/Items/mission-talisman.png
-    category: Core
-    element: Earth
-    basePrice: 150
-    shopWeight: 9
-
-  - id: core_water
-    name: Ядро ныряльщика
-    description: Вырвано из тела дикого зверя, ингредиент для алхимии
-    icon: Assets/Textures/Items/swift-scroll.png
-    category: Core
-    element: Water
-    basePrice: 150
-    shopWeight: 9
-    
-  - id: core_wind
-    name: Ядро летуна
-    description: Вырвано из тела дикого зверя, ингредиент для алхимии
-    icon: Assets/Textures/Items/swift-scroll.png
-    category: Core
-    element: Air
-    basePrice: 150
-    shopWeight: 9
-    
-  - id: core_fire
-    name: Ядро горельца
-    description: Вырвано из тела дикого зверя, ингредиент для алхимии
-    icon: Assets/Textures/Items/swift-scroll.png
-    category: Core
-    element: Fire
-    basePrice: 150
-    shopWeight: 9
-    
-  - id: swift_scroll
-    name: Ядро пожирателя
-    description: Вырвано из тела дикого зверя, ингредиент для алхимии
-    icon: Assets/Textures/Items/swift-scroll.png
-    category: Core
-    element: Void
-    basePrice: 250
-    shopWeight: 9
+- id: swift_scroll
+  name: Ядро пожирателя
+  description: Вырвано из тела дикого зверя, ингредиент для алхимии
+  icon: Assets/Textures/Items/swift-scroll.png
+  category: Core
+  element: Void
+  basePrice: 250
+  shopWeight: 9
 
   # ------------------------------------------------------------
   # ВРЕМЕННЫЕ ПРЕДМЕТЫ СТАРЕНИЯ
   # ------------------------------------------------------------
-  - id: time_incense
-    name: Благовоние тихого времени
-    description: Успокаивает жизненный огонь и заметно замедляет старение на короткий срок.
-    icon: Assets/Textures/Items/time-incense.png
-    category: Pill
-    durationType: Temporary
-    temporaryDurationTicks: 24
-    basePrice: 310
-    shopWeight: 8
-    effects:
-      - type: AgingSpeed
-        operation: AdditivePercent
-        value: -45
-
-  # ------------------------------------------------------------
-  # ПОСТОЯННЫЕ ПРЕДМЕТЫ ПРОГРЕССИИ
-  # ------------------------------------------------------------
-  - id: spirit_seed
-    name: Семя вечного духа
-    description: Навсегда укрепляет восприятие мира и немного повышает результат каждой недели.
-    icon: Assets/Textures/Items/spirit-seed.png
-    category: Core
-    element: Void
-    durationType: Permanent
-    basePrice: 980
-    shopWeight: 3
-    effects:
-      # Постоянный бонус к эффективности тика.
-      - type: TickEfficiency
-        operation: AdditivePercent
-        value: 3
-
-  - id: eternal_vitality_pill
-    name: Пилюля вечной жизненности
-    description: Навсегда укрепляет жизненные каналы и понемногу ускоряет регенерацию.
-    icon: Assets/Textures/Items/focus-pill.png
-    category: Pill
-    durationType: Permanent
-    basePrice: 1250
-    shopWeight: 3
-    effects:
-      # Постоянные +0.02 HP/с до влияния качества предмета.
-      # Flat прибавляется к базе раньше процентных модификаторов.
-      - type: HealthRegeneration
-        operation: Flat
-        value: 0.02
-
-  # ------------------------------------------------------------
-  # ПОСТОЯННЫЕ НЕБЕСНЫЕ ПИЛЮЛИ
-  # ------------------------------------------------------------
-  # Эти предметы усиливают базовый доход духовной силы за тик и за тап.
-  # Они хороши как вертикальная прогрессия для idle/clicker-части игры.
-  #
-  # Если хотите усилить late game:
-  # - повышайте value у верхних tier
-  # - повышайте shopWeight у mid-tier, чтобы они чаще попадались
-  #
-  # Если хотите ослабить snowball:
-  # - снижайте value
-  # - снижайте вероятность high-tier предметов
-  - id: heavenly_pill_speck
-    name: Небесная пилюля искры
-    description: Незначительно увеличивает рост духовной силы.
-    icon: Assets/Textures/Items/spirit-dew.png
-    category: Pill
-    durationType: Permanent
-    basePrice: 1
-    shopWeight: 12
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 0.01
-
-  - id: heavenly_pill_drop
-    name: Небесная пилюля капли
-    description: Увеличивает рост духовной силы.
-    icon: Assets/Textures/Items/spirit-dew.png
-    category: Pill
-    durationType: Permanent
-    basePrice: 5
-    shopWeight: 10
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 0.05
-
-  - id: heavenly_pill_trace
-    name: Небесная пилюля следа
-    description: Увеличивает рост духовной силы.
-    icon: Assets/Textures/Items/focus-pill.png
-    category: Pill
-    durationType: Permanent
-    basePrice: 20
-    shopWeight: 9
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 0.1
-
-  - id: heavenly_pill_stream
-    name: Небесная пилюля потока
-    description: Заметно величивает рост духовной силы.
-    icon: Assets/Textures/Items/focus-pill.png
-    category: Pill
-    durationType: Permanent
-    basePrice: 100
-    shopWeight: 7
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 0.5
-
-  - id: heavenly_pill_spring
-    name: Небесная пилюля источника
-    description: Заметно увеличивает рост духовной силы.
-    icon: Assets/Textures/Items/focus-pill.png
-    category: Pill
-    durationType: Permanent
-    basePrice: 1000
-    shopWeight: 5
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 1
-
-  - id: heavenly_pill_sea
-    name: Небесная пилюля моря
-    description: Навсегда мощно увеличивает рост духовной силы.
-    icon: Assets/Textures/Items/marrow-elixir.png
-    category: Pill
-    durationType: Permanent
-    basePrice: 10000
-    shopWeight: 3
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 3
-
-  - id: heavenly_pill_mountain
-    name: Небесная пилюля горы
-    description: Неописуемо увеличивает рост духовной силы.
-    icon: Assets/Textures/Items/marrow-elixir.png
-    category: Pill
-    durationType: Permanent
-    basePrice: 100000
-    shopWeight: 2
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 10
-
-  - id: heavenly_pill_firmament
-    name: Небесная пилюля небосвода
-    description: Нет слов, насколько эта пилюля увеличивает рост духовной силы.
-    icon: Assets/Textures/Items/marrow-elixir.png
-    category: Pill
-    durationType: Permanent
-    basePrice: 1000000
-    shopWeight: 1
-    effects:
-      - type: SpiritualPowerGain
-        operation: Flat
-        value: 30
-
-  # ------------------------------------------------------------
-  # КОНТЕНТНЫЕ ИНГРЕДИЕНТЫ / ЛУТ
-  # ------------------------------------------------------------
-  # Эти предметы сами по себе не дают эффекта,
-  # но используются как лут и как визуально разные награды.
-  - id: crimson_beast_core
-    name: Багровое яйцо кота
-    description: Ценный материал для будущей алхимии.
-    icon: Assets/Textures/Items/crimson-beast-core.png
-    category: Ingredient
-    # Стихия участвует в совместимости смеси из Alchemy.yaml.
-    element: Fire
-    durationType: Instant
-    basePrice: 75
-    shopWeight: 20
-    # У каждого ингредиента может быть не больше четырёх свойств.
-    # potency умножает baseValue свойства из Alchemy.yaml.
-    alchemyProperties:
-      - propertyId: vitality
-        potency: 1.15
-      - propertyId: swiftness
-        potency: 0.90
-      - propertyId: insight
-        potency: 0.65
-      - propertyId: blade_intent
-        potency: 0.85
-
-  - id: azure_spirit_core
-    name: Лазурное духовное яйцо
-    description: Редкий материал, насыщенный ци.
-    icon: Assets/Textures/Items/azure-spirit-core.png
-    category: Ingredient
-    element: Water
-    durationType: Instant
-    basePrice: 160
-    shopWeight: 9
-    alchemyProperties:
-      - propertyId: spirit_flow
-        potency: 1.20
-      - propertyId: clarity
-        potency: 1.10
-      - propertyId: insight
-        potency: 0.95
-      - propertyId: longevity
-        potency: 0.80
-
-  - id: celestial_orb
-    name: Большая ляпка
-    description: Запредельно редкий ингредиент.
-    icon: Assets/Textures/Items/celestial-orb.png
-    category: Ingredient
-    element: Void
-    durationType: Instant
-    basePrice: 1200
-    shopWeight: 2
-    alchemyProperties:
-      - propertyId: spirit_flow
-        potency: 1.35
-      - propertyId: insight
-        potency: 1.30
-      - propertyId: longevity
-        potency: 1.20
-      - propertyId: vitality
-        potency: 1.10
-
-  - id: jade_lotus
-    name: Нефритовый лоток
-    description: Свежий алхимический ингредиент, выращенный в источнике духовной силы.
-    icon: Assets/Textures/Items/jade-lotus.png
-    category: Ingredient
-    element: Earth
-    durationType: Instant
-    basePrice: 110
-    shopWeight: 17
-    alchemyProperties:
-      - propertyId: vitality
-        potency: 1.15
-      - propertyId: longevity
-        potency: 1.10
-      - propertyId: clarity
-        potency: 1.00
-      - propertyId: jade_body
-        potency: 1.05
-
-  - id: phoenix_feather
-    name: Перо огненного голубя
-    description: Редкий жаростойкий материал для пилюль и талисманов высшего порядка.
-    icon: Assets/Textures/Items/phoenix-feather.png
-    category: Ingredient
-    element: Air
-    durationType: Instant
-    basePrice: 330
-    shopWeight: 7
-    alchemyProperties:
-      - propertyId: swiftness
-        potency: 1.35
-      - propertyId: vitality
-        potency: 1.05
-      - propertyId: insight
-        potency: 1.00
-      - propertyId: wind_step
-        potency: 1.15
-
-  - id: purity_herb
-    name: Трава чистоты
-    description: Редкий ингредиент, выводящий скверну из алхимической смеси.
-    icon: Assets/Textures/Items/jade-lotus.png
-    category: Ingredient
-    element: Void
-    durationType: Instant
-    basePrice: 260
-    # Вес повышен, чтобы ингредиент регулярно появлялся и в лавке, и в наградах миссий.
-    # Пилюля чистоты по-прежнему не генерируется напрямую: её создаёт алхимия.
-    shopWeight: 25
-    alchemyProperties:
-      # Только ингредиенты с этим свойством гарантированно создают пилюлю чистоты.
-      - propertyId: purification
-        potency: 1
-
-  # ------------------------------------------------------------
-  # ТЕХНИЧЕСКИЕ РЕЗУЛЬТАТЫ АЛХИМИИ
-  # ------------------------------------------------------------
-  # shopWeight: 0 исключает предмет из магазина и случайных наград.
-  # Имя, описание, эффекты и свойства конкретного экземпляра сохраняются
-  # непосредственно в ItemInstance и в файле сохранения.
-  - id: crafted_alchemy_pill
-    name: Алхимическая пилюля
-    description: Пилюля, свойства которой определены составом ингредиентов.
-    icon: Assets/Textures/Items/focus-pill.png
-    category: Pill
-    durationType: Temporary
-    temporaryDurationTicks: 48
-    basePrice: 260
-    shopWeight: 0
-
-  - id: alchemy_extract
-    name: Алхимический экстракт
-    description: Очищенный порошок для повторного рафинирования или создания пилюль.
-    icon: Assets/Textures/Items/alchemy-extract.png
-    category: Ingredient
-    durationType: Instant
-    basePrice: 190
-    shopWeight: 0
