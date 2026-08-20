@@ -467,3 +467,52 @@ items:
   # ------------------------------------------------------------
   # ВРЕМЕННЫЕ ПРЕДМЕТЫ СТАРЕНИЯ
   # ------------------------------------------------------------
+
+# Технические результаты алхимии. Они не выпадают напрямую в магазине.
+- id: focus_pill
+  name: Пилюля сосредоточения
+  description: Обостряет восприятие и повышает эффективность культивации.
+  icon: Assets/Textures/Items/focus-pill.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 24
+  basePrice: 120
+  shopWeight: 0
+
+- id: spirit_flow_pill
+  name: Пилюля потока ци
+  description: Ускоряет накопление духовной силы.
+  icon: Assets/Textures/Items/spirit-dew.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 48
+  basePrice: 260
+  shopWeight: 0
+
+- id: still_age_pill
+  name: Пилюля остановленного возраста
+  description: Замедляет течение времени для тела культиватора.
+  icon: Assets/Textures/Items/still-age-pill.png
+  category: Pill
+  durationType: Temporary
+  temporaryDurationTicks: 48
+  basePrice: 260
+  shopWeight: 0
+
+- id: purity_pill
+  name: Пилюля чистоты
+  description: Выводит загрязнение из тела культиватора.
+  icon: Assets/Textures/Items/still-age-pill.png
+  category: Pill
+  durationType: Instant
+  basePrice: 420
+  shopWeight: 0
+
+- id: alchemy_extract
+  name: Алхимический экстракт
+  description: Очищенный порошок для повторного рафинирования или создания пилюль.
+  icon: Assets/Textures/Items/alchemy-extract.png
+  category: Ingredient
+  durationType: Instant
+  basePrice: 190
+  shopWeight: 0
