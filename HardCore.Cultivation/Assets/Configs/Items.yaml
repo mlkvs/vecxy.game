@@ -251,10 +251,10 @@ items:
   category: Ingredient
   element: Water
   durationType: Instant
-  basePrice: 100
+  basePrice: 150
   shopWeight: 9
   alchemyProperties:
-  - propertyId: spirit_flow
+  - propertyId: TickEfficiency
 
 - id: spiritgrass_young
   name: Росток духоцвета
