@@ -133,7 +133,7 @@ properties:
 
   - id: clarity
     displayName: Ясность
-    resultPillItemId: focus_pill
+    resultPillItemId: spiritual_growth_pill
     effectType: TickEfficiency
     operation: AdditivePercent
     baseValue: 0.1
