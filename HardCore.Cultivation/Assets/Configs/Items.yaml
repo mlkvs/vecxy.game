@@ -499,15 +499,6 @@ items:
   basePrice: 260
   shopWeight: 0
 
-- id: purity_pill
-  name: Пилюля чистоты
-  description: Выводит загрязнение из тела культиватора.
-  icon: Assets/Textures/Items/still-age-pill.png
-  category: Pill
-  durationType: Instant
-  basePrice: 420
-  shopWeight: 0
-
 - id: alchemy_extract
   name: Алхимический экстракт
   description: Очищенный порошок для повторного рафинирования или создания пилюль.
