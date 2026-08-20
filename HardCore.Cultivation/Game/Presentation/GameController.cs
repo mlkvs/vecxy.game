@@ -585,7 +585,6 @@ public sealed class GameController(
         BindClick(view.SettingsSoundsToggle, ToggleSounds);
         BindClick(view.SettingsPrivacyPolicy, OpenPrivacyPolicy);
         BindClick(view.PrivacyPolicyAccept, ConfirmPrivacyPolicy);
-        view.EffectPopup.Clicked += _ => CloseEffectPopup();
         view.CharacterTapTarget.ClickedAt += (_, position) => TapCharacter(position);
         BindClick(view.AvailableMissionsTab, () => ShowMissionPage(false));
         BindClick(view.AcceptedMissionsTab, () => ShowMissionPage(true));
@@ -601,7 +600,21 @@ public sealed class GameController(
         BindClick(view.InventoryUse, UseSelectedItem);
         BindClick(view.InventorySell, SellSelectedItem);
         foreach (var backdrop in view.WindowBackdrops)
-            backdrop.Clicked += _ => CloseAlchemyFilterMenus();
+            backdrop.Clicked += _ => CloseWindowFromBackdrop(backdrop);
+        foreach (var window in new[]
+                 {
+                     view.ShopWindow, view.InventoryWindow, view.AlchemyWindow,
+                     view.MissionsWindow, view.SettingsWindow
+                 })
+            window.Clicked += _ => { };
+        view.InfoPopupCard.Clicked += _ => { };
+        view.EffectPopupCard.Clicked += _ => { };
+        foreach (var windowDocument in view.WindowDocuments.All)
+        {
+            foreach (var dialogClass in new[] { ".breakthrough-dialog", ".death-dialog", ".privacy-policy-card" })
+            foreach (var dialog in windowDocument.QueryAll(dialogClass))
+                dialog.Clicked += _ => { };
+        }
         view.AlchemySelection.Clicked += _ => CloseAlchemyFilterMenus();
         view.AlchemyIngredients.Clicked += _ => CloseAlchemyFilterMenus();
         foreach (var close in view.WindowCloseButtons)
@@ -2565,6 +2578,23 @@ public sealed class GameController(
         _infoPopupAction = null;
         _infoPopupUseAction = null;
         _infoPopupSellAction = null;
+        ShowNextAlchemyResultPopup();
+    }
+
+    private void CloseWindowFromBackdrop(UiPanel backdrop)
+    {
+        var view = _view;
+        if (view is null)
+            return;
+
+        PlaySound("Sounds/ui-click.wav", 0.45f);
+        var document = view.GetDocumentFor(backdrop);
+        if (ReferenceEquals(document, view.WindowDocuments.InfoPopup))
+            CloseInfoPopup();
+        else if (ReferenceEquals(document, view.WindowDocuments.EffectPopup))
+            CloseEffectPopup();
+        else
+            CloseWindows();
     }
 
     private void ConfirmInfoPopup()
