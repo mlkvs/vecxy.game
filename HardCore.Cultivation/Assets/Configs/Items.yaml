@@ -507,22 +507,3 @@ items:
   durationType: Instant
   basePrice: 190
   shopWeight: 0
-
-- id: jade_lotus
-  name: Нефритовый лоток
-  description: Свежий алхимический ингредиент, выращенный в источнике духовной силы.
-  icon: Assets/Textures/Items/jade-lotus.png
-  category: Ingredient
-  element: Earth
-  durationType: Instant
-  basePrice: 110
-  shopWeight: 17
-  alchemyProperties:
-  - propertyId: vitality
-    potency: 1.15
-  - propertyId: longevity
-    potency: 1.10
-  - propertyId: clarity
-    potency: 1.00
-  - propertyId: jade_body
-    potency: 1.05
