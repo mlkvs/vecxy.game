@@ -20,5 +20,6 @@
     <Project Path="Horror/Horror.csproj" />
     <Project Path="HardCore.Cultivation/HardCore.Cultivation.csproj" />
     <Project Path="HardCore.Cultivation.Tests/HardCore.Cultivation.Tests.csproj" />
+    <Project Path="Sponza/Sponza.csproj" />
   </Folder>
 </Solution>
