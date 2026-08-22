@@ -145,6 +145,8 @@ var pillResult = alchemy.Craft(alchemyState, pillSelection, AlchemyMode.Pill);
 Check(pillResult.Success && pillResult.Output is { ConfigId: "vitality_pill", Quantity: 6 } &&
       pillResult.ProducedQuantity == 6,
     "Crafted pill batch did not use the configured output type and quantity distribution.");
+Check(pillResult.SuccessChancePercent == 65.2m,
+    "Pill success chance must combine core, average ingredient, and best ingredient quality.");
 var craftedPill = pillResult.Output!;
 Check(alchemyState.Inventory.Find(craftedPill.InstanceId) is not null,
     "Alchemy did not return the stored item instance required by popup actions.");
@@ -291,9 +293,12 @@ defeatedCombat.Initialize(100, 1, 1);
 defeatedCombat.Finish(CombatPhase.Defeat, 0);
 defeatedMission.StartCombat(defeatedCombat);
 defeatedState.EnqueueMission(defeatedMission);
+var combatMissionRemoval = missionService.Remove(defeatedState, defeatedMission.InstanceId);
+Check(!combatMissionRemoval.Success && combatMissionRemoval.Message == "Нельзя бросить миссию во время боя.",
+    "Removing a mission during combat must be rejected with the expected message.");
 _ = combat.Update(defeatedState, 0.1f);
-Check(!defeatedState.RecoveryRequired && defeatedState.ActivityMode == ActivityMode.Missions,
-    "Defeat must not lock missions behind mandatory recovery.");
+Check(!defeatedState.RecoveryRequired && defeatedState.ActivityMode == ActivityMode.Cultivation,
+    "Defeat must switch the character back to cultivation without mandatory recovery.");
 Check(defeatedState.CurrentMission is null && defeatedState.Character.Health == 0.1m,
     "Defeat did not remove the mission and preserve survival health.");
 var healthAfterDefeat = defeatedState.Character.Health;
@@ -302,6 +307,18 @@ for (var index = 0; index < 5000 && defeatedState.Character.Health < defeatedSta
 Check(defeatedState.Character.Health > healthAfterDefeat, "Health regeneration did not advance gradually.");
 Check(defeatedState.Character.Health == defeatedState.Character.MaximumHealth,
     "Health did not recover fully outside combat.");
+
+var missionRegenerationState = new GameState(database.Balance.TicksPerYear);
+combat.ConfigureHero(missionRegenerationState.Character, true);
+missionRegenerationState.Character.RestoreHealth(10m, missionRegenerationState.Character.MaximumHealth);
+missionRegenerationState.SetActivityMode(ActivityMode.Missions);
+var missionRegeneration = combat.Update(missionRegenerationState, 0.25f).HealthRestored;
+var cultivationRegenerationState = new GameState(database.Balance.TicksPerYear);
+combat.ConfigureHero(cultivationRegenerationState.Character, true);
+cultivationRegenerationState.Character.RestoreHealth(10m, cultivationRegenerationState.Character.MaximumHealth);
+var cultivationRegeneration = combat.Update(cultivationRegenerationState, 0.25f).HealthRestored;
+Check(cultivationRegeneration == missionRegeneration * 3m,
+    "Cultivation mode must restore health three times faster.");
 
 var surrenderedState = new GameState(database.Balance.TicksPerYear);
 combat.ConfigureHero(surrenderedState.Character, true);
@@ -450,6 +467,24 @@ Check(longevityUse.Success, "Longevity pill could not be used.");
 Check(cultivation.GetMaximumAge(longevityState.Character, longevityState.ActiveEffects) == maximumAgeBeforePill + 5m,
     "Longevity pill must increase maximum age by its fixed amount.");
 
+var eternalSpiritState = new GameState(database.Balance.TicksPerYear);
+eternalSpiritState.Inventory.Add(new ItemInstance
+{
+    InstanceId = Guid.NewGuid(),
+    ConfigId = "eternal_spirit_pill",
+    Rarity = ItemRarity.Common,
+    Quality = 1m
+});
+var spiritBeforePill = processor.ProcessTick(eternalSpiritState).SpiritualPowerGained;
+var eternalSpiritPill = eternalSpiritState.Inventory.Items.Single(item => item.ConfigId == "eternal_spirit_pill");
+var eternalSpiritUse = effectService.Use(eternalSpiritState, eternalSpiritPill.InstanceId);
+var spiritAfterPill = processor.ProcessTick(eternalSpiritState).SpiritualPowerGained;
+Check(eternalSpiritUse.Success && spiritAfterPill == spiritBeforePill * 1.03m,
+    "Eternal spirit pill must permanently increase spiritual power gained per tick by 3%.");
+Check(eternalSpiritState.ActiveEffects.Any(effect =>
+        effect.SourceItemId == "eternal_spirit_pill" && effect.RemainingTicks is null),
+    "Eternal spirit pill effect must not expire.");
+
 var shopState = new ShopState();
 shopService.Refresh(shopState);
 Check(shopState.SellAdjustmentPercent == -33, "Sell adjustment must stay fixed at -33%.");
@@ -504,6 +539,8 @@ static GameDatabase BuildDatabase()
                     TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "longevity_pill", Name = "Longevity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Permanent,
                     BasePrice = 10, ShopWeight = 0, Effects = [new ItemEffectDefinition { Type = EffectType.LongevityYears, Operation = ModifierOperation.Flat, Value = 5m }] },
+                new ItemConfig { Id = "eternal_spirit_pill", Name = "Eternal spirit pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Permanent,
+                    BasePrice = 10, ShopWeight = 0, Effects = [new ItemEffectDefinition { Type = EffectType.TickEfficiency, Operation = ModifierOperation.AdditivePercent, Value = 3m }] },
                 new ItemConfig { Id = "alchemy_extract", Name = "Extract", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant,
                     BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "attempt", Name = "Attempt", Category = ItemCategory.Core, DurationType = ItemDurationType.UntilBreakthroughAttempt, BasePrice = 10,

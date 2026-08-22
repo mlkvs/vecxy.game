@@ -46,7 +46,7 @@ game:
   name: "HardCore Cultivation"
   # Game version shown in the in-game settings window. It is independent from
   # Google Play versionCode, which is a monotonically increasing technical integer.
-  version: "1.0.2"
+  version: "1.0.3"
   # Path from the repository root to a square PNG used as Android launcher icon.
   # Use a 512x512 or 1024x1024 image; the build creates Android resource variants.
   icon: "HardCore.Cultivation/Assets/Textures/AppIcon.png"
@@ -57,7 +57,7 @@ googlePlay:
   versionCode: 1
   # Android versionName shown to players in Google Play. It may use semantic versioning,
   # for example "1.1.0" or "1.1.0-beta.2". Usually it matches game.version.
-  bundleVersion: "1.0.0"
+  bundleVersion: "1.0.3"
   signing:
     # Path from repository root to the JKS/keystore used for Google Play signing.
     keystore: "Build/Keystores/hardcore-cultivation-google-play.jks"

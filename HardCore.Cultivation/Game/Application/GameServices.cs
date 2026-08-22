@@ -366,7 +366,7 @@ public sealed class MissionService(
     {
         var mission = state.MissionQueue.FirstOrDefault(value => value.InstanceId == missionInstanceId);
         if (mission?.IsInCombat == true)
-            return TransactionResult.Fail("Нельзя покинуть поручение во время боя.");
+            return TransactionResult.Fail("Нельзя бросить миссию во время боя.");
         return state.RemoveMission(missionInstanceId)
             ? TransactionResult.Ok(0, "Миссия удалена из очереди.")
             : TransactionResult.Fail("Миссия не найдена.");
@@ -759,6 +759,8 @@ public sealed class CombatService(GameDatabase database)
         if (mission?.Combat is null && state.Character.Health < state.Character.MaximumHealth && deltaTime > 0f)
         {
             var regeneration = GetHeroHealthRegeneration(state.Character, state.ActiveEffects);
+            if (state.ActivityMode == ActivityMode.Cultivation)
+                regeneration *= 3m;
             var before = state.Character.Health;
             state.Character.Heal(regeneration * (decimal)Math.Clamp(deltaTime, 0f, 0.25f));
             result.HealthRestored = state.Character.Health - before;
@@ -798,9 +800,12 @@ public sealed class CombatService(GameDatabase database)
             {
                 state.RemoveMission(mission.InstanceId);
                 if (active.Phase == CombatPhase.Defeat)
+                {
                     state.Character.RestoreHealth(
                         Math.Min(DefeatSurvivalHealth, state.Character.MaximumHealth),
                         state.Character.MaximumHealth);
+                    state.SetActivityMode(ActivityMode.Cultivation);
+                }
             }
             result.Events.Add(new CombatEvent(CombatEventType.Closed));
             return result;

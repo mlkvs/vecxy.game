@@ -2,8 +2,8 @@
 # ПРЕДМЕТЫ
 # ============================================================
 # Актуальный набор предметов:
-# - 15 пилюль в порядке эффектов, заданном игровой системой
-# - 15 ингредиентов, по одному на каждую пилюлю
+# - 16 базовых пилюль в порядке эффектов, заданном игровой системой
+# - 15 алхимических ингредиентов для создаваемых пилюль
 # - 5 ядер стихий: Earth, Water, Air, Fire, Void
 #
 # Важные правила:
@@ -68,6 +68,18 @@ items:
   - type: TickEfficiency
     operation: AdditivePercent
     value: 10
+- id: eternal_spirit_pill
+  name: Пилюля вечного духа
+  description: Навсегда увеличивает количество духовной силы, получаемой за каждый тик.
+  icon: Assets/Textures/Pills/spiritual-growth.png
+  category: Pill
+  durationType: Permanent
+  basePrice: 980
+  shopWeight: 3
+  effects:
+  - type: TickEfficiency
+    operation: AdditivePercent
+    value: 3
 - id: spirit_gain_pill
   name: Пилюля духовного потока
   description: Временно увеличивает количество получаемого духа.
@@ -422,7 +434,7 @@ items:
 - id: core_earth
   name: Ядро копателя
   description: Вырвано из тела дикого зверя, ингредиент для алхимии
-  icon: Assets/Textures/Items/mission-talisman.png
+  icon: Assets/Textures/Items/core-earth.png
   category: Core
   element: Earth
   basePrice: 150
@@ -431,7 +443,7 @@ items:
 - id: core_water
   name: Ядро ныряльщика
   description: Вырвано из тела дикого зверя, ингредиент для алхимии
-  icon: Assets/Textures/Items/swift-scroll.png
+  icon: Assets/Textures/Items/core-water.png
   category: Core
   element: Water
   basePrice: 150
@@ -440,7 +452,7 @@ items:
 - id: core_wind
   name: Ядро летуна
   description: Вырвано из тела дикого зверя, ингредиент для алхимии
-  icon: Assets/Textures/Items/swift-scroll.png
+  icon: Assets/Textures/Items/core-air.png
   category: Core
   element: Air
   basePrice: 150
@@ -449,7 +461,7 @@ items:
 - id: core_fire
   name: Ядро горельца
   description: Вырвано из тела дикого зверя, ингредиент для алхимии
-  icon: Assets/Textures/Items/swift-scroll.png
+  icon: Assets/Textures/Items/core-fire.png
   category: Core
   element: Fire
   basePrice: 150
@@ -458,7 +470,7 @@ items:
 - id: swift_scroll
   name: Ядро пожирателя
   description: Вырвано из тела дикого зверя, ингредиент для алхимии
-  icon: Assets/Textures/Items/swift-scroll.png
+  icon: Assets/Textures/Items/core-void.png
   category: Core
   element: Void
   basePrice: 250

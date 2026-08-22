@@ -154,9 +154,11 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         var coreQuality = mode == AlchemyMode.Pill
             ? units.Single(unit => unit.Config.Category == ItemCategory.Core).Item.Quality
             : 0m;
+        var ingredientQuality = 0.4m * ingredients.Average(unit => unit.Item.Quality) +
+                                0.6m * ingredients.Max(unit => unit.Item.Quality);
         return Math.Min(
             database.Alchemy.MaximumCraftSuccessChance,
-            database.Alchemy.CraftSuccessChancePerQuality * (coreQuality + ingredients.Average(unit => unit.Item.Quality)));
+            database.Alchemy.CraftSuccessChancePerQuality * (coreQuality + ingredientQuality));
     }
 
     private static bool RemoveSelected(GameState state, IReadOnlyCollection<AlchemySelection> selection)
