@@ -297,7 +297,8 @@ public sealed class MissionService(
             offers.Add(new MissionOffer
             {
                 MissionConfigId = selected.Id,
-                DangerLevel = RollDangerLevel(selected)
+                DangerLevel = RollDangerLevel(selected),
+                Rewards = GenerateRewards(selected)
             });
         }
         state.MissionBoard.ReplaceWith(offers);
@@ -318,7 +319,7 @@ public sealed class MissionService(
             MissionConfigId = offer.MissionConfigId,
             DangerLevel = offer.DangerLevel,
             RequiredProgress = required,
-            Rewards = GenerateRewards(config),
+            Rewards = offer.Rewards.Count > 0 ? offer.Rewards : GenerateRewards(config),
             Encounter = encounter
         });
         state.MissionBoard.Take(offerId);
@@ -428,8 +429,6 @@ public sealed class MissionService(
     {
         var result = new List<MissionReward>(2);
         var candidates = database.Items.Values
-            .Where(item => mission.Reward.RequiredItemCategory is null ||
-                           item.Category == mission.Reward.RequiredItemCategory)
             .ToArray();
         var canGiveMoney = mission.Reward.Money > 0;
         var canGiveItem = candidates.Length > 0;
@@ -720,6 +719,13 @@ public sealed class CombatService(GameDatabase database)
     public decimal GetHeroAttack(CharacterState character, IEnumerable<ActiveEffect>? activeEffects = null) =>
         Math.Max(0m, GetHeroStats(character, activeEffects).Attack);
 
+    public decimal GetHeroDamageAgainst(CharacterState character, decimal enemyDefense,
+        IEnumerable<ActiveEffect>? activeEffects = null) =>
+        CalculateDamage(GetHeroAttack(character, activeEffects), enemyDefense);
+
+    public static decimal CalculateDamage(decimal attack, decimal defense) =>
+        Math.Max(1m, attack - defense);
+
     public decimal GetHeroHealthRegeneration(CharacterState character, IEnumerable<ActiveEffect>? activeEffects = null) =>
         Math.Max(0m, GetHeroStats(character, activeEffects).HealthRegeneration);
     public decimal GetHeroAttacksPerSecond(CharacterState character, IEnumerable<ActiveEffect>? activeEffects = null) =>
@@ -734,6 +740,16 @@ public sealed class CombatService(GameDatabase database)
 
     public void ConfigureHero(CharacterState character, bool fillIfUninitialized = false, IEnumerable<ActiveEffect>? activeEffects = null) =>
         character.ConfigureMaximumHealth(GetHeroMaximumHealth(character, activeEffects), fillIfUninitialized);
+
+    public bool Surrender(GameState state)
+    {
+        var active = state.CurrentMission?.Combat;
+        if (active is null || active.IsFinished)
+            return false;
+
+        active.Finish(CombatPhase.Surrender, 0f);
+        return true;
+    }
 
     public CombatUpdate Update(GameState state, float deltaTime)
     {
@@ -781,9 +797,10 @@ public sealed class CombatService(GameDatabase database)
             if (!victory)
             {
                 state.RemoveMission(mission.InstanceId);
-                state.Character.RestoreHealth(
-                    Math.Min(DefeatSurvivalHealth, state.Character.MaximumHealth),
-                    state.Character.MaximumHealth);
+                if (active.Phase == CombatPhase.Defeat)
+                    state.Character.RestoreHealth(
+                        Math.Min(DefeatSurvivalHealth, state.Character.MaximumHealth),
+                        state.Character.MaximumHealth);
             }
             result.Events.Add(new CombatEvent(CombatEventType.Closed));
             return result;
@@ -796,7 +813,7 @@ public sealed class CombatService(GameDatabase database)
 
         while (active.HeroCooldown <= 0f && active.Phase == CombatPhase.Fighting)
         {
-            var damage = Math.Max(1m, GetHeroAttack(state.Character, state.ActiveEffects) - monsterConfig.Defense);
+            var damage = GetHeroDamageAgainst(state.Character, monsterConfig.Defense, state.ActiveEffects);
             var appliedDamage = active.DamageEnemy(damage);
             active.ResetCooldown(CombatActor.Hero, 1f / (float)GetHeroAttacksPerSecond(state.Character, state.ActiveEffects));
             result.Events.Add(new CombatEvent(CombatEventType.HeroAttack, appliedDamage));
@@ -811,7 +828,7 @@ public sealed class CombatService(GameDatabase database)
 
         while (active.EnemyCooldown <= 0f && active.Phase == CombatPhase.Fighting)
         {
-            var damage = Math.Max(1m, enemyStats.Attack - GetHeroDefense(state.Character));
+            var damage = CalculateDamage(enemyStats.Attack, GetHeroDefense(state.Character));
             var appliedDamage = state.Character.TakeDamage(damage);
             active.ResetCooldown(CombatActor.Enemy, 1f / (float)enemyStats.AttacksPerSecond);
             result.Events.Add(new CombatEvent(CombatEventType.EnemyAttack, appliedDamage));

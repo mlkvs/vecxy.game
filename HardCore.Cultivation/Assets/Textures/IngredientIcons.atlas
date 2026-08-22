@@ -1,0 +1,21 @@
+{
+  "width": 2048,
+  "padding": 2,
+  "sources": {
+    "spiritgrass-body": "Ingredients/spiritgrass-body.png",
+    "spiritgrass-root": "Ingredients/spiritgrass-root.png",
+    "spiritgrass-young": "Ingredients/spiritgrass-young.png",
+    "demon-spider-web": "Ingredients/demon-spider-web.png",
+    "azure-spirit-core": "Ingredients/azure-spirit-core.png",
+    "meat-root": "Ingredients/meat-root.png",
+    "heal-grass": "Ingredients/heal-grass.png",
+    "wind-cotton": "Ingredients/wind-cotton.png",
+    "cauke-leaves": "Ingredients/cauke-leaves.png",
+    "yan-nuts": "Ingredients/yan-nuts.png",
+    "chicken-flower": "Ingredients/chicken-flower.png",
+    "sealed-blackhole": "Ingredients/sealed-blackhole.png",
+    "space-dust": "Ingredients/space-dust.png",
+    "ying-yang-flower": "Ingredients/ying-yang-flower.png",
+    "purity-herb": "Ingredients/purity-herb.png"
+  }
+}

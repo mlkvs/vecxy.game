@@ -78,16 +78,9 @@ internal sealed class GameView
         MissionNormalState = Panel("mission-normal-state");
         MissionCombatState = Panel("mission-combat-state");
         MissionCombatPreview = Image("mission-combat-preview");
-        CombatHeroAttackStat = Text("combat-hero-attack-stat");
-        CombatHeroDefenseStat = Text("combat-hero-defense-stat");
-        CombatHeroSpeedStat = Text("combat-hero-speed-stat");
-        CombatEnemyAttackStat = Text("combat-enemy-attack-stat");
-        CombatEnemyDefenseStat = Text("combat-enemy-defense-stat");
-        CombatEnemySpeedStat = Text("combat-enemy-speed-stat");
         CombatHeroDamage = Text("combat-hero-damage");
         CombatEnemyDamage = Text("combat-enemy-damage");
-        EnemyHealthProgress = Progress("enemy-health-progress");
-        EnemyHealthText = Text("enemy-health-text");
+        CombatSurrender = Button("combat-surrender-button");
         HeroHealthProgress = Progress("hero-health-progress");
         HeroRecoveryThreshold = Panel("hero-recovery-threshold");
         HeroHealthText = Text("hero-health-text");
@@ -250,16 +243,9 @@ internal sealed class GameView
     public UiPanel MissionNormalState { get; }
     public UiPanel MissionCombatState { get; }
     public UiImage MissionCombatPreview { get; }
-    public UiText CombatHeroAttackStat { get; }
-    public UiText CombatHeroDefenseStat { get; }
-    public UiText CombatHeroSpeedStat { get; }
-    public UiText CombatEnemyAttackStat { get; }
-    public UiText CombatEnemyDefenseStat { get; }
-    public UiText CombatEnemySpeedStat { get; }
     public UiText CombatHeroDamage { get; }
     public UiText CombatEnemyDamage { get; }
-    public UiProgress EnemyHealthProgress { get; }
-    public UiText EnemyHealthText { get; }
+    public UiButton CombatSurrender { get; }
     public UiProgress HeroHealthProgress { get; }
     public UiPanel HeroRecoveryThreshold { get; }
     public UiText HeroHealthText { get; }
@@ -402,6 +388,7 @@ internal sealed class GameView
     private static UiText Text(UiDocument document, string id) => document.GetElementById<UiText>(id);
     private static UiButton Button(UiDocument document, string id) => document.GetElementById<UiButton>(id);
     private static UiImage Image(UiDocument document, string id) => document.GetElementById<UiImage>(id);
+    private static UiProgress Progress(UiDocument document, string id) => document.GetElementById<UiProgress>(id);
 
     private readonly record struct WindowSurface(UiDocument Document, UiPanel Panel);
 }

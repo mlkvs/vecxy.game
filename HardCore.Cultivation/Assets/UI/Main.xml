@@ -47,24 +47,13 @@
                     </panel>
                     <text id="mission-progress-text" class="progress-caption">0 / 0</text>
                 </panel>
-                <panel id="mission-combat-state" hidden="true">
+                    <panel id="mission-combat-state" hidden="true">
                     <panel class="combat-preview-shell">
                         <image id="mission-combat-preview" class="mission-combat-preview" />
-                        <panel class="combatant-stats combatant-stats-hero">
-                            <panel><image sprite="Assets/Textures/GameUIAtlas.atlas#combat-attack"/><text id="combat-hero-attack-stat">0</text></panel>
-                            <panel><image sprite="Assets/Textures/GameUIAtlas.atlas#combat-defense"/><text id="combat-hero-defense-stat">0</text></panel>
-                            <panel><image sprite="Assets/Textures/GameUIAtlas.atlas#combat-speed"/><text id="combat-hero-speed-stat">0</text></panel>
-                        </panel>
-                        <panel class="combatant-stats combatant-stats-enemy">
-                            <panel><image sprite="Assets/Textures/GameUIAtlas.atlas#combat-attack"/><text id="combat-enemy-attack-stat">0</text></panel>
-                            <panel><image sprite="Assets/Textures/GameUIAtlas.atlas#combat-defense"/><text id="combat-enemy-defense-stat">0</text></panel>
-                            <panel><image sprite="Assets/Textures/GameUIAtlas.atlas#combat-speed"/><text id="combat-enemy-speed-stat">0</text></panel>
-                        </panel>
                         <text id="combat-hero-damage" class="combat-damage-float combat-hero-damage" animation-trigger="manual">-0</text>
                         <text id="combat-enemy-damage" class="combat-damage-float combat-enemy-damage" animation-trigger="manual">-0</text>
                     </panel>
-                    <panel class="progress-track combat-health-track"><progress id="enemy-health-progress" class="progress-fill health-fill" /></panel>
-                    <text id="enemy-health-text" class="progress-caption">0 / 0</text>
+                    <button id="combat-surrender-button" class="combat-surrender-button">ОТСТУПИТЬ</button>
                 </panel>
             </button>
             <panel class="side-tools">

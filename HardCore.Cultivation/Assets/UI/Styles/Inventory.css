@@ -28,3 +28,15 @@
     border: 2px solid #56d5a055;
     border-radius: 22px;
 }
+
+/* Keep the real mission and bottom HUD outside the modal surface. */
+#inventory-window.compact-window.inventory-window {
+    top: 260px;
+    bottom: 300px;
+}
+
+#window-layer #window-backdrop {
+    top: 250px;
+    bottom: 290px;
+    background-color: #00000000;
+}

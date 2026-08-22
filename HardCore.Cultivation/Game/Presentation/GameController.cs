@@ -159,6 +159,7 @@ public sealed class GameController(
         if (!HasExpectedShopStock())
             shop.Refresh(_state.Shop);
         if (_state.MissionBoard.Offers.Count == 0 ||
+            _state.MissionBoard.Offers.Any(offer => offer.Rewards.Count == 0) ||
             _state.MissionBoard.Offers.Any(offer =>
                 Math.Abs(database.GetCultivationStageIndex(database.GetMission(offer.MissionConfigId).StageId) -
                          _state.Character.Cultivation.StageIndex) > 1))
@@ -570,6 +571,7 @@ public sealed class GameController(
         });
         BindClick(view.SettingsButton, OpenSettings);
         BindClick(view.MissionSummaryButton, OpenMissions);
+        BindClick(view.CombatSurrender, SurrenderCombat);
         BindClick(view.ActivityMode, ToggleActivityMode);
         BindClick(view.Breakthrough, OpenBreakthrough);
         BindClick(view.ConfirmBreakthrough, AttemptBreakthrough);
@@ -959,21 +961,23 @@ public sealed class GameController(
         _view.MissionCombatState.IsVisible = active is not null;
         if (active is null)
             return;
+        _view.CombatSurrender.IsEnabled = !active.IsFinished;
         if (combatScene.RenderTarget is not null)
             _view.MissionCombatPreview.Texture = combatScene.RenderTarget.ColorTexture;
-        var monster = database.GetMonster(active.MonsterConfigId);
-        var missionStage = database.GetCultivationStageIndex(database.GetMission(_state.CurrentMission!.MissionConfigId).StageId);
-        var enemyStats = combat.GetEnemyStats(missionStage, active.DangerLevel);
-        _view.CombatHeroAttackStat.Value = Format(combat.GetHeroAttack(_state.Character, _state.ActiveEffects));
-        _view.CombatHeroDefenseStat.Value = Format(combat.GetHeroDefense(_state.Character));
-        _view.CombatHeroSpeedStat.Value = Format(combat.GetHeroAttacksPerSecond(_state.Character, _state.ActiveEffects));
-        _view.CombatEnemyAttackStat.Value = Format(enemyStats.Attack);
-        _view.CombatEnemyDefenseStat.Value = Format(monster.Defense);
-        _view.CombatEnemySpeedStat.Value = Format(enemyStats.AttacksPerSecond);
-        _view.EnemyHealthProgress.Progress = (float)(active.EnemyMaximumHealth <= 0m
-            ? 0m
-            : Math.Clamp(active.EnemyHealth / active.EnemyMaximumHealth, 0m, 1m));
-        _view.EnemyHealthText.Value = $"{Format(active.EnemyHealth)} / {Format(active.EnemyMaximumHealth)}";
+        combatScene.SetHealth(
+            _state.Character.Health,
+            _state.Character.MaximumHealth,
+            active.EnemyHealth,
+            active.EnemyMaximumHealth);
+    }
+
+    private void SurrenderCombat()
+    {
+        if (!combat.Surrender(_state))
+            return;
+
+        _view!.CombatSurrender.IsEnabled = false;
+        Save();
     }
 
     private void SyncEffects()
@@ -1034,7 +1038,7 @@ public sealed class GameController(
                     effectIcon.SetAttribute("sprite", "Assets/Textures/GameUIAtlas.atlas#contamination-effect");
                 }
                 else if (TryGetFirstActiveEffect(type, out var firstEffect))
-                    effectIcon.SetAttribute("sprite", $"Assets/Textures/GameUIAtlas.atlas#effect-{Path.GetFileNameWithoutExtension(database.GetItem(firstEffect.SourceItemId).Icon)}");
+                    effectIcon.SetAttribute("sprite", AtlasSprite(database.GetItem(firstEffect.SourceItemId).Icon));
                 else
                     continue;
                 effectEntry.Add(effectIcon);
@@ -2023,8 +2027,7 @@ public sealed class GameController(
             ["description"] = string.Empty, ["duration"] = string.Empty
         });
         var card = new MissionCardView(root);
-        var mission = database.GetMission(offer.MissionConfigId);
-        BuildMissionRewardPreview(card.RewardIcons, mission);
+        BuildMissionRewardPreview(card.RewardIcons, offer.Rewards);
         card.Start.Clicked += _ => StartMission(offer.OfferId);
         return card;
     }
@@ -2940,37 +2943,20 @@ public sealed class GameController(
         tile.Clicked += _ => ShowItemPopup(item, null, badge.TrimStart('×'), "Возможная награда за миссию");
     }
 
-    private void BuildMissionRewardPreview(UiElement parent, MissionConfig mission)
+    private void BuildMissionRewardPreview(UiElement parent, IReadOnlyList<MissionReward> rewards)
     {
         parent.Clear();
-        var candidates = database.Items.Values
-            .Where(item => mission.Reward.RequiredItemCategory is null || item.Category == mission.Reward.RequiredItemCategory)
-            .OrderByDescending(item => item.ShopWeight)
-            .ToArray();
-
-        var canShowMoney = mission.Reward.Money > 0;
-        var canShowItem = candidates.Length > 0;
-        if (!canShowMoney && !canShowItem)
-            return;
-
-        var showMoney = canShowMoney;
-        var showItem = canShowItem;
-
-        if (canShowMoney && canShowItem)
+        foreach (var reward in rewards)
         {
-            var variant = Math.Abs(mission.Id.GetHashCode()) % 3;
-            showMoney = variant is 0 or 2;
-            showItem = variant is 1 or 2;
-        }
+            if (reward.Type == MissionRewardType.Money)
+            {
+                AddRewardIcon(parent, "Assets/Textures/UIIcons/money.png", MoneyFormatter.Format(reward.Money));
+                continue;
+            }
 
-        if (showItem)
-        {
-            var item = candidates[0];
-            AddRewardIcon(parent, item, $"×{mission.Reward.MinimumQuantity}–{mission.Reward.MaximumQuantity}");
+            var item = database.GetItem(reward.ItemConfigId!);
+            AddRewardIcon(parent, item, $"×{reward.Quantity}");
         }
-
-        if (showMoney)
-            AddRewardIcon(parent, "Assets/Textures/UIIcons/money.png", MoneyFormatter.Format(mission.Reward.Money));
     }
 
     private UiElement AddRewardIcon(UiElement parent, string source, string badge)
@@ -3191,9 +3177,11 @@ public sealed class GameController(
     private static string AtlasSprite(string source)
     {
         var normalized = source.Replace('\\', '/');
-        var atlas = normalized.Contains("/Items/", StringComparison.OrdinalIgnoreCase)
-            ? "Assets/Textures/GameUIAtlas.atlas"
-            : "Assets/Textures/GameUIAtlas.atlas";
+        var atlas = normalized.Contains("/Pills/", StringComparison.OrdinalIgnoreCase)
+            ? "Assets/Textures/PillIcons.atlas"
+            : normalized.Contains("/Ingredients/", StringComparison.OrdinalIgnoreCase)
+                ? "Assets/Textures/IngredientIcons.atlas"
+                : "Assets/Textures/GameUIAtlas.atlas";
         return $"{atlas}#{Path.GetFileNameWithoutExtension(normalized)}";
     }
 

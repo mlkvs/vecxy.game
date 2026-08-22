@@ -69,6 +69,15 @@ Check(missionWeek.SpiritualPowerGained == 0 && missionWeek.MissionProgressAdded 
 Check(state.Character.SpiritualPower == powerAfterCultivation, "Mission mode changed spiritual power.");
 
 var combat = new CombatService(database);
+Check(CombatService.CalculateDamage(3m, 2m) == 1m && CombatService.CalculateDamage(3m, 0m) == 3m,
+    "Combat damage must subtract defense while retaining a minimum of one point.");
+var levelTwoHero = new CharacterState();
+levelTwoHero.Cultivation.Restore(0, 2, database.Cultivation.Stages.Count);
+var expectedLevelTwoAttack = database.CultivationBalance
+    .GetCurrent(levelTwoHero.Cultivation, database.Cultivation).Attack;
+Check(combat.GetHeroAttack(levelTwoHero) == expectedLevelTwoAttack &&
+      combat.GetHeroDamageAgainst(levelTwoHero, 4m) == Math.Max(1m, expectedLevelTwoAttack - 4m),
+    "Combat must use the cultivation stat progression and apply enemy defense exactly once.");
 var combatState = new GameState(database.Balance.TicksPerYear);
 combat.ConfigureHero(combatState.Character, true);
 combatState.SetActivityMode(ActivityMode.Missions);
@@ -294,6 +303,37 @@ Check(defeatedState.Character.Health > healthAfterDefeat, "Health regeneration d
 Check(defeatedState.Character.Health == defeatedState.Character.MaximumHealth,
     "Health did not recover fully outside combat.");
 
+var surrenderedState = new GameState(database.Balance.TicksPerYear);
+combat.ConfigureHero(surrenderedState.Character, true);
+surrenderedState.SetActivityMode(ActivityMode.Missions);
+var healthBeforeSurrender = surrenderedState.Character.Health;
+var surrenderedMission = new ActiveMission
+{
+    MissionConfigId = "mission",
+    RequiredProgress = 10,
+    Encounter = new MissionEncounter
+    {
+        MonsterConfigId = "training_spirit",
+        BackgroundId = "forest",
+        DangerLevel = 1,
+        TriggerProgress = 0
+    }
+};
+var surrenderedCombat = new ActiveCombat
+{
+    MonsterConfigId = "training_spirit",
+    BackgroundId = "forest",
+    DangerLevel = 1,
+    EnemyMaximumHealth = 100
+};
+surrenderedCombat.Initialize(100, 1, 1);
+surrenderedMission.StartCombat(surrenderedCombat);
+surrenderedState.EnqueueMission(surrenderedMission);
+Check(combat.Surrender(surrenderedState), "Combat surrender must be available during a fight.");
+_ = combat.Update(surrenderedState, 0.1f);
+Check(surrenderedState.CurrentMission is null && surrenderedState.Character.Health == healthBeforeSurrender,
+    "Surrender must remove the mission without damaging the character.");
+
 var stageHealth = new CharacterState();
 stageHealth.Cultivation.Restore(0, 10, database.Cultivation.Stages.Count);
 var maximumHealthBeforeBreakthrough = combat.GetHeroMaximumHealth(stageHealth);
@@ -339,9 +379,14 @@ Check(missionState.MissionBoard.Offers.Select(offer => offer.OfferId).Distinct()
     "Repeated mission templates must remain individual offers.");
 Check(missionState.MissionBoard.Offers.All(offer => offer.DangerLevel == 1),
     "Each mission offer must receive its own danger level.");
+Check(missionState.MissionBoard.Offers.All(offer => offer.Rewards.Count is 1 or 2),
+    "Each mission offer must receive its own rolled rewards.");
+var expectedMissionRewards = missionState.MissionBoard.FindByMissionId("mission")!.Rewards;
 Check(missionService.Start(missionState, "mission").Success, "Mission could not be accepted.");
 var rewards = missionState.CurrentMission!.Rewards;
 Check(rewards.Count is 1 or 2, "Mission must contain one or two rewards.");
+Check(rewards.SequenceEqual(expectedMissionRewards),
+    "Accepted mission must use the rewards rolled for its board offer.");
 Check(rewards.Where(reward => reward.Type == MissionRewardType.Item).All(reward => reward.Quantity is >= 1 and <= 15), "Mission item quantity is outside allowed bounds.");
 
 var itemRandom = new MaximumRandom();

@@ -41,7 +41,9 @@ monsters:
     spriteSet: Textures/Characters/2 Old_woman/Old_woman
     maximumHealth: 95
     attack: 15
-    defense: 4
+    # Это первый противник на стадии Закалки тела. Его броня не должна
+    # обнулять весь ранний рост атаки до минимального урона в 1.
+    defense: 0
     attacksPerSecond: 1.05
     selectionWeight: 9
 

@@ -81,7 +81,8 @@ public sealed class GameSaveSystem(GameDatabase database)
             {
                 OfferId = offer.OfferId,
                 MissionConfigId = offer.MissionConfigId,
-                DangerLevel = offer.DangerLevel
+                DangerLevel = offer.DangerLevel,
+                Rewards = offer.Rewards.Select(ToRewardData).ToList()
             }).ToList(),
             Shop = new ShopSaveData
             {
@@ -208,7 +209,8 @@ public sealed class GameSaveSystem(GameDatabase database)
                 {
                     OfferId = offer.OfferId == Guid.Empty ? Guid.NewGuid() : offer.OfferId,
                     MissionConfigId = offer.MissionConfigId,
-                    DangerLevel = offer.DangerLevel
+                    DangerLevel = offer.DangerLevel,
+                    Rewards = offer.Rewards.Select(FromRewardData).ToList()
                 }));
             }
             else
@@ -408,6 +410,7 @@ public sealed class MissionOfferSaveData
     public Guid OfferId { get; init; }
     public string MissionConfigId { get; init; } = string.Empty;
     public int? DangerLevel { get; init; }
+    public List<MissionRewardSaveData> Rewards { get; init; } = [];
 }
 
 public sealed class GameSettingsSaveData

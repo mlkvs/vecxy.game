@@ -1,0 +1,23 @@
+{
+  "width": 2048,
+  "padding": 2,
+  "sources": {
+    "spiritual-energy": "Pills/spiritual-energy.png",
+    "spiritual-growth": "Pills/spiritual-growth.png",
+    "spirit-gain": "Pills/spirit-gain.png",
+    "vitality": "Pills/vitality.png",
+    "bloodspring": "Pills/bloodspring.png",
+    "jade-body": "Pills/jade-body.png",
+    "healing-dew": "Pills/healing-dew.png",
+    "eternal-swiftness": "Pills/eternal-swiftness.png",
+    "gale-step": "Pills/gale-step.png",
+    "blade-intent-permanent": "Pills/blade-intent-permanent.png",
+    "blade-intent": "Pills/blade-intent.png",
+    "time-acceleration": "Pills/time-acceleration.png",
+    "mission-speed": "Pills/mission-speed.png",
+    "insight": "Pills/insight.png",
+    "purity": "Pills/purity.png",
+    "spirit-flow": "Pills/spirit-flow.png",
+    "still-age": "Pills/still-age.png"
+  }
+}

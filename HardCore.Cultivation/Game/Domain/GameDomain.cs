@@ -59,7 +59,8 @@ public enum CombatPhase
 {
     Fighting,
     Victory,
-    Defeat
+    Defeat,
+    Surrender
 }
 
 public enum CombatActor
@@ -676,6 +677,7 @@ public sealed class MissionOffer
     public Guid OfferId { get; init; } = Guid.NewGuid();
     public required string MissionConfigId { get; init; }
     public int? DangerLevel { get; init; }
+    public List<MissionReward> Rewards { get; init; } = [];
 }
 
 public sealed class GameState

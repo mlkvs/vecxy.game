@@ -23,6 +23,8 @@ public sealed class CombatScenePresenter(
     private SceneObject? _cameraObject;
     private AnimatedFighter? _hero;
     private AnimatedFighter? _enemy;
+    private HealthBar? _heroHealthBar;
+    private HealthBar? _enemyHealthBar;
     private string? _monsterId;
     private string? _backgroundId;
 
@@ -54,6 +56,8 @@ public sealed class CombatScenePresenter(
         var enemyObject = CreateFighter(scene, "Combat enemy", SceneCenterX + 142f, true, 101);
         _hero = new AnimatedFighter(heroObject.GetComponent<SpriteRenderer>()!, GetTexture, config.HeroSpriteSet);
         _enemy = new AnimatedFighter(enemyObject.GetComponent<SpriteRenderer>()!, GetTexture, config.HeroSpriteSet);
+        _heroHealthBar = CreateHealthBar(scene, "Combat hero health", SceneCenterX - 142f, 12f, new Vector4(0.28f, 0.82f, 0.43f, 1f), 200);
+        _enemyHealthBar = CreateHealthBar(scene, "Combat enemy health", SceneCenterX + 142f, 12f, new Vector4(0.91f, 0.32f, 0.28f, 1f), 201);
         Hide();
     }
 
@@ -76,6 +80,12 @@ public sealed class CombatScenePresenter(
         var enemyDead = combat.Phase == CombatPhase.Victory;
         _hero!.Play(heroDead ? "death" : "idle", !heroDead, locked: heroDead, force: true);
         _enemy!.Play(enemyDead ? "death" : "idle", !enemyDead, locked: enemyDead, force: true);
+    }
+
+    public void SetHealth(decimal heroHealth, decimal heroMaximumHealth, decimal enemyHealth, decimal enemyMaximumHealth)
+    {
+        _heroHealthBar?.SetProgress(HealthFraction(heroHealth, heroMaximumHealth));
+        _enemyHealthBar?.SetProgress(HealthFraction(enemyHealth, enemyMaximumHealth));
     }
 
     public void Handle(IReadOnlyList<CombatEvent> events)
@@ -147,6 +157,36 @@ public sealed class CombatScenePresenter(
         return sceneObject;
     }
 
+    private HealthBar CreateHealthBar(SceneInstance scene, string name, float x, float y, Vector4 fillColor, int order)
+    {
+        var frameObject = scene.CreateObject($"{name} frame");
+        frameObject.Transform.Position = new Vector3(x, y, 0f);
+        var frame = frameObject.AddComponent<SpriteRenderer>();
+        frame.SetTexture(GetTexture("Textures/Combat/health-bar-frame.png"));
+        frame.PixelsPerUnit = 1f;
+        frame.SortingLayer = 11;
+        frame.OrderInLayer = order;
+        frame.Sampler = TextureSamplerState.PointClamp;
+        _objects.Add(frameObject);
+
+        var fillObject = scene.CreateObject($"{name} fill");
+        fillObject.Transform.Position = new Vector3(x - 49f, y, 0f);
+        var fill = fillObject.AddComponent<SpriteRenderer>();
+        fill.SetTexture(GetTexture("Textures/Combat/health-bar-fill.png"));
+        fill.PixelsPerUnit = 1f;
+        fill.Pivot = new Vector2(0f, 0.5f);
+        fill.Color = fillColor;
+        fill.SortingLayer = 11;
+        fill.OrderInLayer = order + 1;
+        fill.Sampler = TextureSamplerState.PointClamp;
+        _objects.Add(fillObject);
+        return new HealthBar(fillObject, fill);
+    }
+
+    private static float HealthFraction(decimal health, decimal maximumHealth) => (float)(maximumHealth <= 0m
+        ? 0m
+        : Math.Clamp(health / maximumHealth, 0m, 1m));
+
     private void RebuildBackground(CombatBackgroundConfig background)
     {
         var scene = scenes.ActiveScene!;
@@ -188,6 +228,8 @@ public sealed class CombatScenePresenter(
         _cameraObject = null;
         _hero = null;
         _enemy = null;
+        _heroHealthBar = null;
+        _enemyHealthBar = null;
         _monsterId = null;
         _backgroundId = null;
     }
@@ -277,6 +319,15 @@ public sealed class CombatScenePresenter(
                 }
                 sprite.SetFrame(_frame, 48, 48);
             }
+        }
+    }
+
+    private sealed class HealthBar(SceneObject fillObject, SpriteRenderer fill)
+    {
+        public void SetProgress(float progress)
+        {
+            fillObject.Transform.LocalScale = new Vector3(Math.Clamp(progress, 0f, 1f), 1f, 1f);
+            fill.Color = new Vector4(fill.Color.X, fill.Color.Y, fill.Color.Z, progress <= 0f ? 0f : 1f);
         }
     }
 }
