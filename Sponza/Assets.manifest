@@ -1,0 +1,214 @@
+{
+  "assets": [
+    {
+      "id": "dc45be63-491f-4095-832b-8a673de628e4",
+      "source": "Game",
+      "path": "Controls.input",
+      "type": "Input",
+      "name": "Controls",
+      "hash": "f45da1572a938b18d400d7327a02fa7ff7087baea493ed20e529d9c9d902a443",
+      "dependencies": []
+    },
+    {
+      "id": "041e4562-a65e-45cc-a1a3-25866344021f",
+      "source": "Game",
+      "path": "Models/Sponza.glb",
+      "type": "Model",
+      "name": "Sponza",
+      "hash": "bc886ebd0fc42997550ad387a37e0c219cde69309a66b4d6b4e14835a7b97eba",
+      "dependencies": []
+    },
+    {
+      "id": "ce8592ac-0bbb-4e44-99f7-19e23c7292f1",
+      "source": "Engine",
+      "path": "Configs/EditorLayout.yaml",
+      "type": "Config",
+      "name": "EditorLayout",
+      "hash": "6937b26f4fe36a4cee3ce84cf9f29f0b9c67995b88ac4de3415f32d608bc58b1",
+      "dependencies": []
+    },
+    {
+      "id": "48c3772d-7d16-437b-ac8f-088a5e7a2a34",
+      "source": "Engine",
+      "path": "Configs/Physics.yaml",
+      "type": "Config",
+      "name": "Physics",
+      "hash": "0fdffdfbb1e5da56db219d5bce3ab7f8a64f5d8347e74c4ad245f73ff29efd69",
+      "dependencies": []
+    },
+    {
+      "id": "dfc227a4-6c53-4ccc-8f02-50318ba7e587",
+      "source": "Engine",
+      "path": "Configs/UI.yaml",
+      "type": "Config",
+      "name": "UI",
+      "hash": "77731c1a538891ca90282b4af8902bc2132a01d39ebfd18170a9b3820b88a682",
+      "dependencies": []
+    },
+    {
+      "id": "0dcc91e4-e66c-4981-9baf-52463ddb5e88",
+      "source": "Engine",
+      "path": "Controls.input",
+      "type": "Input",
+      "name": "Controls",
+      "hash": "5de50818ba171c00acb6471fcc731264e85058a160244cb86a37a100c76ab2ae",
+      "dependencies": []
+    },
+    {
+      "id": "25a73205-2469-40e2-ba34-2a06d7716863",
+      "source": "Engine",
+      "path": "Materials/Default.material",
+      "type": "Material",
+      "name": "Default",
+      "hash": "c42962eadd09830b3ff3a9b7479685c283e4c96864e825e39d6164ea3f6e3c38",
+      "dependencies": [
+        "739f5cc4-9c4b-4803-8b64-2e1fbe86c6b6",
+        "fed7c332-7046-45cc-a036-e8ad94ea3ac4"
+      ]
+    },
+    {
+      "id": "739f5cc4-9c4b-4803-8b64-2e1fbe86c6b6",
+      "source": "Engine",
+      "path": "Shaders/Lit.glsl",
+      "type": "Shader",
+      "name": "Lit",
+      "hash": "03c821e780ad1567a8e7f2cadb562cd4d4a9fbb3332693474efbe08275f0930b",
+      "dependencies": []
+    },
+    {
+      "id": "06e4f940-873a-45da-945e-902b10d361bf",
+      "source": "Engine",
+      "path": "Shaders/PostProcessing/Copy.glsl",
+      "type": "Shader",
+      "name": "Copy",
+      "hash": "15660dedc7c3e0b6910f06631453246a5f66a76ec356e278d720ecd42253e1cf",
+      "dependencies": []
+    },
+    {
+      "id": "463f1f98-d531-4ef1-9598-9ac1bc2c428f",
+      "source": "Engine",
+      "path": "Shaders/PostProcessing/Retro.glsl",
+      "type": "Shader",
+      "name": "Retro",
+      "hash": "fd5a656082700207891558c428fab988375b068dec1de802ee0520cb50d83d9a",
+      "dependencies": []
+    },
+    {
+      "id": "9c26e081-da95-4581-9c52-f003969cd7c7",
+      "source": "Engine",
+      "path": "Shaders/PostProcessing/Vignette.glsl",
+      "type": "Shader",
+      "name": "Vignette",
+      "hash": "bed94aefaf6a5a03572587797cb0a300c12831b32a7a5fb8b9d0d0a653d249d4",
+      "dependencies": []
+    },
+    {
+      "id": "ba1d4999-f53c-4166-a0ee-e97febd88785",
+      "source": "Engine",
+      "path": "Shaders/Skybox.glsl",
+      "type": "Shader",
+      "name": "Skybox",
+      "hash": "fa6a84758c806f0be25cca168ede0e70fd4142625328c437ccff36d42aade6ac",
+      "dependencies": []
+    },
+    {
+      "id": "968aef47-585b-42cd-b7bf-bf2f1879c1cc",
+      "source": "Engine",
+      "path": "Shaders/Sprite.glsl",
+      "type": "Shader",
+      "name": "Sprite",
+      "hash": "e7a72bad07714690a1b61cffa77282761dd1727f6cc016b5c51c10322aac85fd",
+      "dependencies": []
+    },
+    {
+      "id": "f5f3f418-e6ef-4a33-a05e-b7aeb3e4afb8",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/nx.png",
+      "type": "Texture2D",
+      "name": "nx",
+      "hash": "2bcedf3e72574aacb058409d6fe60b708f631c2b367fcb68f6a0c9000b8bb071",
+      "dependencies": []
+    },
+    {
+      "id": "b688fb0f-b1b4-4c50-9203-222a9857a707",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/ny.png",
+      "type": "Texture2D",
+      "name": "ny",
+      "hash": "b6770fdad43a81cab686955836d76d293fc4d373a592eeaac969ff9961ba77e9",
+      "dependencies": []
+    },
+    {
+      "id": "33cc7404-58c9-4291-90d9-ff2f87c57648",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/nz.png",
+      "type": "Texture2D",
+      "name": "nz",
+      "hash": "82207f0c6896552228e4c1f00eef4a6a050f72b7df4a37bf60b4d469657c52c2",
+      "dependencies": []
+    },
+    {
+      "id": "c9745315-edd7-4ff7-8877-ec024f8f4720",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/px.png",
+      "type": "Texture2D",
+      "name": "px",
+      "hash": "f70cf4be9a042f577eead72d6d25f72e73aadd0e8dd857b176fc720cf8c8b979",
+      "dependencies": []
+    },
+    {
+      "id": "0ebe24ae-82d9-493a-bac7-1dfc2881d82f",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/py.png",
+      "type": "Texture2D",
+      "name": "py",
+      "hash": "27ed89c184fb1fbab0d795930d3965cbd3feff135c335f3d124661b4d1a42a7e",
+      "dependencies": []
+    },
+    {
+      "id": "c937ea68-9086-419b-a9a3-f3f63d9c9eb2",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/pz.png",
+      "type": "Texture2D",
+      "name": "pz",
+      "hash": "489d87d72470a4fe3ab74350f32ffe472a62f8addc98c11e18e05d01fab6fa79",
+      "dependencies": []
+    },
+    {
+      "id": "d1b44676-9762-45fc-a2fb-f19295597814",
+      "source": "Engine",
+      "path": "SkyBox/Skybox.yaml",
+      "type": "Config",
+      "name": "Skybox",
+      "hash": "96a1527cba76a648cd2bba75215b857ff4337d445e0bf5f378a7223eda7293a5",
+      "dependencies": []
+    },
+    {
+      "id": "df858003-2b8f-477b-99bd-57e0177a7727",
+      "source": "Engine",
+      "path": "Textures/FmodLogo.png",
+      "type": "Texture2D",
+      "name": "FmodLogo",
+      "hash": "637a25a67d92d210c744f008ff3f19833d18f3945717ba7d8755565f588a7043",
+      "dependencies": []
+    },
+    {
+      "id": "0177207b-85d7-4891-aaad-3ab2c1ec351c",
+      "source": "Engine",
+      "path": "Textures/Logo.png",
+      "type": "Texture2D",
+      "name": "Logo",
+      "hash": "31e72c3db4b39dc48847cbbc1c7f0dc6ba3bca5c11390f429c74167ffaa2a91f",
+      "dependencies": []
+    },
+    {
+      "id": "fed7c332-7046-45cc-a036-e8ad94ea3ac4",
+      "source": "Engine",
+      "path": "Textures/T_Quad_White_64.png",
+      "type": "Texture2D",
+      "name": "T_Quad_White_64",
+      "hash": "7329544873bd6ddf000d93361d7084fbc76063ad92a667721d8c1c9bb732363b",
+      "dependencies": []
+    }
+  ]
+}

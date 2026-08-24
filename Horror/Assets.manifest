@@ -1,0 +1,241 @@
+{
+  "assets": [
+    {
+      "id": "7ce3da38-5b1e-439c-b5d3-0156002c14af",
+      "source": "Game",
+      "path": "Configs/Physics.yaml",
+      "type": "Config",
+      "name": "Physics",
+      "hash": "0150e40ef857fca3cac0b2ffd71c318a5ebad8c2d918afe29d64439884d8e9b7",
+      "dependencies": []
+    },
+    {
+      "id": "ab5789d9-aa8d-4d0a-b622-9679bafcb116",
+      "source": "Game",
+      "path": "Controls.input",
+      "type": "Input",
+      "name": "Controls",
+      "hash": "a5d3c19259f2fb4b34d57bfb0d1d486ed144d0bb63419544a4b3d8f14a832963",
+      "dependencies": []
+    },
+    {
+      "id": "16353ce0-05ff-4ab2-be14-df8ccebac7d2",
+      "source": "Game",
+      "path": "Models/room.glb",
+      "type": "Model",
+      "name": "room",
+      "hash": "9b79c3a5f4f280752b90fcacb038005fb652c96e4cbef5aebee82d9204c8baba",
+      "dependencies": []
+    },
+    {
+      "id": "74930d94-c612-460a-86d9-3d1b62206fdb",
+      "source": "Game",
+      "path": "PostProcessing/Retro.postfx",
+      "type": "Text",
+      "name": "Retro",
+      "hash": "fa3466fea03a1deb1941c8f4a58a190826667d46bbd0b99dec7c5b5d4e46c0c1",
+      "dependencies": []
+    },
+    {
+      "id": "c885b107-25f7-4f3f-b55a-359070c822ee",
+      "source": "Game",
+      "path": "PostProcessing/Vignette.postfx",
+      "type": "Text",
+      "name": "Vignette",
+      "hash": "17711862cfb99dd76e994dd50caed4c53c3c8edaca70b3440054dc297bc5af35",
+      "dependencies": []
+    },
+    {
+      "id": "db172f4d-a8be-41bd-9f44-9f84d0b2cc11",
+      "source": "Engine",
+      "path": "Configs/EditorLayout.yaml",
+      "type": "Config",
+      "name": "EditorLayout",
+      "hash": "6937b26f4fe36a4cee3ce84cf9f29f0b9c67995b88ac4de3415f32d608bc58b1",
+      "dependencies": []
+    },
+    {
+      "id": "015d35d6-1b06-46bb-b980-53716de26413",
+      "source": "Engine",
+      "path": "Configs/Physics.yaml",
+      "type": "Config",
+      "name": "Physics",
+      "hash": "0fdffdfbb1e5da56db219d5bce3ab7f8a64f5d8347e74c4ad245f73ff29efd69",
+      "dependencies": []
+    },
+    {
+      "id": "40093e8d-ebeb-4cf0-a44c-892e76eef87d",
+      "source": "Engine",
+      "path": "Configs/UI.yaml",
+      "type": "Config",
+      "name": "UI",
+      "hash": "77731c1a538891ca90282b4af8902bc2132a01d39ebfd18170a9b3820b88a682",
+      "dependencies": []
+    },
+    {
+      "id": "07d137d9-4a77-48d9-af97-84ef58cf94e3",
+      "source": "Engine",
+      "path": "Controls.input",
+      "type": "Input",
+      "name": "Controls",
+      "hash": "5de50818ba171c00acb6471fcc731264e85058a160244cb86a37a100c76ab2ae",
+      "dependencies": []
+    },
+    {
+      "id": "7a9fbda6-8ff3-4f29-bc7a-4dcb414c60ca",
+      "source": "Engine",
+      "path": "Materials/Default.material",
+      "type": "Material",
+      "name": "Default",
+      "hash": "c42962eadd09830b3ff3a9b7479685c283e4c96864e825e39d6164ea3f6e3c38",
+      "dependencies": [
+        "00e6b4e2-2685-4eb9-9b84-44c3516d8298",
+        "25b077fa-a345-4758-96f6-e24bdafc0b1f"
+      ]
+    },
+    {
+      "id": "00e6b4e2-2685-4eb9-9b84-44c3516d8298",
+      "source": "Engine",
+      "path": "Shaders/Lit.glsl",
+      "type": "Shader",
+      "name": "Lit",
+      "hash": "03c821e780ad1567a8e7f2cadb562cd4d4a9fbb3332693474efbe08275f0930b",
+      "dependencies": []
+    },
+    {
+      "id": "e42d1f27-aa70-4edc-8cdd-c2a8d6b2582c",
+      "source": "Engine",
+      "path": "Shaders/PostProcessing/Copy.glsl",
+      "type": "Shader",
+      "name": "Copy",
+      "hash": "15660dedc7c3e0b6910f06631453246a5f66a76ec356e278d720ecd42253e1cf",
+      "dependencies": []
+    },
+    {
+      "id": "5c330986-1f76-41bf-b1f6-4c2281ec360b",
+      "source": "Engine",
+      "path": "Shaders/PostProcessing/Retro.glsl",
+      "type": "Shader",
+      "name": "Retro",
+      "hash": "fd5a656082700207891558c428fab988375b068dec1de802ee0520cb50d83d9a",
+      "dependencies": []
+    },
+    {
+      "id": "1c25126b-77a7-475b-8236-982d2d408d82",
+      "source": "Engine",
+      "path": "Shaders/PostProcessing/Vignette.glsl",
+      "type": "Shader",
+      "name": "Vignette",
+      "hash": "bed94aefaf6a5a03572587797cb0a300c12831b32a7a5fb8b9d0d0a653d249d4",
+      "dependencies": []
+    },
+    {
+      "id": "f943eff6-b915-46f5-b737-f26a251b3341",
+      "source": "Engine",
+      "path": "Shaders/Skybox.glsl",
+      "type": "Shader",
+      "name": "Skybox",
+      "hash": "fa6a84758c806f0be25cca168ede0e70fd4142625328c437ccff36d42aade6ac",
+      "dependencies": []
+    },
+    {
+      "id": "605e2825-21f6-44c3-9239-1653dd43a371",
+      "source": "Engine",
+      "path": "Shaders/Sprite.glsl",
+      "type": "Shader",
+      "name": "Sprite",
+      "hash": "e7a72bad07714690a1b61cffa77282761dd1727f6cc016b5c51c10322aac85fd",
+      "dependencies": []
+    },
+    {
+      "id": "0468bf91-a8e7-46ae-9632-1102d07085d3",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/nx.png",
+      "type": "Texture2D",
+      "name": "nx",
+      "hash": "2bcedf3e72574aacb058409d6fe60b708f631c2b367fcb68f6a0c9000b8bb071",
+      "dependencies": []
+    },
+    {
+      "id": "c65bc448-1960-4705-af8e-03c453796dab",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/ny.png",
+      "type": "Texture2D",
+      "name": "ny",
+      "hash": "b6770fdad43a81cab686955836d76d293fc4d373a592eeaac969ff9961ba77e9",
+      "dependencies": []
+    },
+    {
+      "id": "4d0eadab-2d53-4e3d-bc6a-04576a898fe2",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/nz.png",
+      "type": "Texture2D",
+      "name": "nz",
+      "hash": "82207f0c6896552228e4c1f00eef4a6a050f72b7df4a37bf60b4d469657c52c2",
+      "dependencies": []
+    },
+    {
+      "id": "1e529403-a900-4c0a-8e3f-393bb32ed8c9",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/px.png",
+      "type": "Texture2D",
+      "name": "px",
+      "hash": "f70cf4be9a042f577eead72d6d25f72e73aadd0e8dd857b176fc720cf8c8b979",
+      "dependencies": []
+    },
+    {
+      "id": "a52b552d-3b2e-4e86-aff2-c17e167bd094",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/py.png",
+      "type": "Texture2D",
+      "name": "py",
+      "hash": "27ed89c184fb1fbab0d795930d3965cbd3feff135c335f3d124661b4d1a42a7e",
+      "dependencies": []
+    },
+    {
+      "id": "2bbdb84e-a178-49cf-8749-7ff58fd9234a",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/pz.png",
+      "type": "Texture2D",
+      "name": "pz",
+      "hash": "489d87d72470a4fe3ab74350f32ffe472a62f8addc98c11e18e05d01fab6fa79",
+      "dependencies": []
+    },
+    {
+      "id": "1dd9bf23-6e6d-437b-bcec-d5ba123f81b3",
+      "source": "Engine",
+      "path": "SkyBox/Skybox.yaml",
+      "type": "Config",
+      "name": "Skybox",
+      "hash": "96a1527cba76a648cd2bba75215b857ff4337d445e0bf5f378a7223eda7293a5",
+      "dependencies": []
+    },
+    {
+      "id": "c86cae40-db8f-4899-9566-e2254c93286f",
+      "source": "Engine",
+      "path": "Textures/FmodLogo.png",
+      "type": "Texture2D",
+      "name": "FmodLogo",
+      "hash": "637a25a67d92d210c744f008ff3f19833d18f3945717ba7d8755565f588a7043",
+      "dependencies": []
+    },
+    {
+      "id": "ea848ca7-863a-4d15-acbf-ba42cabc5ee8",
+      "source": "Engine",
+      "path": "Textures/Logo.png",
+      "type": "Texture2D",
+      "name": "Logo",
+      "hash": "31e72c3db4b39dc48847cbbc1c7f0dc6ba3bca5c11390f429c74167ffaa2a91f",
+      "dependencies": []
+    },
+    {
+      "id": "25b077fa-a345-4758-96f6-e24bdafc0b1f",
+      "source": "Engine",
+      "path": "Textures/T_Quad_White_64.png",
+      "type": "Texture2D",
+      "name": "T_Quad_White_64",
+      "hash": "7329544873bd6ddf000d93361d7084fbc76063ad92a667721d8c1c9bb732363b",
+      "dependencies": []
+    }
+  ]
+}
