@@ -5,6 +5,7 @@ set -Eeuo pipefail
 
 readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly PROJECT="$ROOT_DIR/HardCore.Cultivation/HardCore.Cultivation.csproj"
+readonly VECXY_CLI_PROJECT="$ROOT_DIR/Engine/Vecxy/tools/Vecxy.Cli/Vecxy.Cli.csproj"
 
 # Android packaging writes shared obj/bin paths. A second simultaneous build corrupts
 # those intermediates or fails with a misleading "file is being used" error.
@@ -184,6 +185,12 @@ fi
 
 package_dir="$ROOT_DIR/HardCore.Cultivation/bin/$configuration/net10.0-android/android-arm64"
 
+# The asset CLI is a desktop tool and shares engine obj directories with the game.
+# Run it before Android restore so its own build cannot replace Android NuGet targets.
+dotnet run --project "$VECXY_CLI_PROJECT" -- \
+    --project "$ROOT_DIR/HardCore.Cultivation" \
+    assets prepare
+
 # Restore the complete project-reference graph for Android explicitly. Some engine
 # libraries select their target framework from VecxyPlatform, and relying on the
 # implicit publish restore can reuse a desktop-only project.assets.json.
@@ -198,6 +205,7 @@ TMPDIR="$temp_dir" dotnet publish "$PROJECT" \
     --runtime android-arm64 \
     --output "$publish_dir" \
     -p:VecxyPlatform=Android \
+    -p:VecxySkipAssetPipeline=true \
     -p:AndroidPackageFormat=aab \
     '-p:AndroidPackageFormats=aab%3Bapk' \
     "-p:JavaOptions=-Djava.io.tmpdir=$temp_dir" \
