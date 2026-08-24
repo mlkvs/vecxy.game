@@ -8,7 +8,14 @@ Build settings, signing credentials and analytics are stored in repository YAML 
 Use the root build command for both build flavours:
 
 ```bash
-./build dev
+./build.sh dev
+```
+
+On Windows use the Git Bash-backed wrapper; WSL is not required:
+
+```powershell
+.\build.cmd dev
+.\build.cmd release
 ```
 
 `dev` builds a Debug `.aab` with `GAME_DEV_BUILD`. To make a signed development bundle, also provide `--keystore` and `--alias`.
@@ -16,7 +23,7 @@ Use the root build command for both build flavours:
 Google Play release build:
 
 ```bash
-./build release
+./build.sh release
 ```
 
 Перед Android publish автоматически выполняется Vecxy Asset Pipeline:

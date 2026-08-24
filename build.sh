@@ -9,16 +9,17 @@ readonly PROJECT="$ROOT_DIR/HardCore.Cultivation/HardCore.Cultivation.csproj"
 # Android packaging writes shared obj/bin paths. A second simultaneous build corrupts
 # those intermediates or fails with a misleading "file is being used" error.
 mkdir -p "$ROOT_DIR/artifacts"
-exec 9>"$ROOT_DIR/artifacts/.build.lock"
-flock -n 9 || {
+readonly BUILD_LOCK_DIR="$ROOT_DIR/artifacts/.build.lock.d"
+mkdir "$BUILD_LOCK_DIR" 2>/dev/null || {
     printf 'Error: another build is already running in %s\n' "$ROOT_DIR" >&2
     exit 1
 }
+trap 'rmdir "$BUILD_LOCK_DIR" 2>/dev/null || true' EXIT
 
 usage() {
     cat <<'EOF'
 Usage:
-  ./build <dev|release> [options]
+  ./build.sh <dev|release> [options]
 
 Options:
   -c, --config PATH        Build YAML. Default: HardCore.Cultivation/Assets/Configs/Build.yaml.
@@ -31,11 +32,11 @@ Options:
   -h, --help               Show this help.
 
 Examples:
-  ./build dev
-  ./build release
-  ./build release --build 46
+  ./build.sh dev
+  ./build.sh release
+  ./build.sh release --build 46
   # Set build.platform: "desktop" in Build.yaml, then:
-  ./build dev
+  ./build.sh dev
 EOF
 }
 
@@ -176,8 +177,7 @@ if [[ "$platform" == desktop ]]; then
         --self-contained true \
         --output "$output_dir" \
         -p:VecxyPlatform=Desktop \
-        -p:ErrorOnDuplicatePublishOutputFiles=false \
-        9>&-
+        -p:ErrorOnDuplicatePublishOutputFiles=false
     printf 'Desktop build: %s\n' "$output_dir"
     exit 0
 fi
@@ -199,8 +199,7 @@ TMPDIR="$temp_dir" dotnet publish "$PROJECT" \
     -p:AndroidEnableFastDeployment=false \
     "-p:BuildIconPath=$ROOT_DIR/$icon_path" \
     "${analytics_args[@]}" \
-    "${signing_args[@]}" \
-    9>&-
+    "${signing_args[@]}"
 
 bundle="$(find "$package_dir" -maxdepth 1 -type f -name '*-Signed.aab' -print -quit)"
 bundle="${bundle:-$(find "$package_dir" -maxdepth 1 -type f -name '*.aab' -print -quit)}"
