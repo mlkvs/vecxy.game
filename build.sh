@@ -184,8 +184,16 @@ fi
 
 package_dir="$ROOT_DIR/HardCore.Cultivation/bin/$configuration/net10.0-android/android-arm64"
 
+# Restore the complete project-reference graph for Android explicitly. Some engine
+# libraries select their target framework from VecxyPlatform, and relying on the
+# implicit publish restore can reuse a desktop-only project.assets.json.
+dotnet restore "$PROJECT" \
+    --runtime android-arm64 \
+    -p:VecxyPlatform=Android
+
 TMPDIR="$temp_dir" dotnet publish "$PROJECT" \
     "${common_args[@]}" \
+    --no-restore \
     --framework net10.0-android \
     --runtime android-arm64 \
     --output "$publish_dir" \
