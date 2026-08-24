@@ -71,7 +71,7 @@ dependency. Do not claim a test passed if it was not executed.
 - `HardCore.Cultivation/Assets/Configs/Build.yaml` and `Analytics.yaml` may hold
   sensitive values. Read only the minimum necessary to complete the task and do
   not include their values in output.
-- `Build/Keystores/` and release artifacts require explicit user intent before
+- `Signing/Keystores/` and release artifacts require explicit user intent before
   modification or packaging.
 
 ## AI Workspace
@@ -82,4 +82,3 @@ dependency. Do not claim a test passed if it was not executed.
 - Keep machine-local or disposable agent state under `.agents/local/`; it is
   ignored by Git.
 - Do not overwrite user-authored files or revert unrelated working-tree changes.
-

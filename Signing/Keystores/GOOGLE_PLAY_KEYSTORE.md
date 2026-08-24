@@ -18,7 +18,7 @@ Release build:
 ANDROID_KEYSTORE_PASSWORD='564c004166b02bb7eb51389decd3fa630d41dc9317bd8f11' \
 ANDROID_KEY_PASSWORD='564c004166b02bb7eb51389decd3fa630d41dc9317bd8f11' \
 ./scripts/build-android.sh release --build 45 \
-  --keystore Build/Keystores/hardcore-cultivation-google-play.jks \
+  --keystore Signing/Keystores/hardcore-cultivation-google-play.jks \
   --alias hardcore-cultivation-google-play
 ```
 
@@ -35,7 +35,7 @@ printf 'New keystore password: %s\n' "$PASSWORD"
 
 # Generate a 4096-bit RSA signing key valid for 25 years.
 keytool -genkeypair -v \
-  -keystore Build/Keystores/new-google-play.jks \
+  -keystore Signing/Keystores/new-google-play.jks \
   -storetype JKS \
   -storepass "$PASSWORD" \
   -keypass "$PASSWORD" \
@@ -47,7 +47,7 @@ keytool -genkeypair -v \
 
 # Verify that the alias can be opened.
 keytool -list \
-  -keystore Build/Keystores/new-google-play.jks \
+  -keystore Signing/Keystores/new-google-play.jks \
   -storepass "$PASSWORD" \
   -alias new-google-play
 ```
@@ -58,7 +58,7 @@ Build with the new key:
 ANDROID_KEYSTORE_PASSWORD="$PASSWORD" \
 ANDROID_KEY_PASSWORD="$PASSWORD" \
 ./scripts/build-android.sh release --build 46 \
-  --keystore Build/Keystores/new-google-play.jks \
+  --keystore Signing/Keystores/new-google-play.jks \
   --alias new-google-play
 ```
 

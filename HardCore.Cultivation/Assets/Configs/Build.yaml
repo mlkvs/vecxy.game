@@ -60,7 +60,7 @@ googlePlay:
   bundleVersion: "1.0.3"
   signing:
     # Path from repository root to the JKS/keystore used for Google Play signing.
-    keystore: "Build/Keystores/hardcore-cultivation-google-play.jks"
+    keystore: "Signing/Keystores/hardcore-cultivation-google-play.jks"
     # Alias of the key inside the keystore. Verify it with `keytool -list` if changed.
     alias: "hardcore-cultivation-google-play"
     # Store password and private-key password. Both values are used only while building.
