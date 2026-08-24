@@ -69,11 +69,11 @@ public sealed class GameLayer
 #if ANDROID
         buildInfo.InitializeFromAssembly();
 #else
-        using var build = configs.LoadConfig<BuildConfig>("Configs/Build.yaml");
+        using var build = configs.LoadConfig<BuildConfig>(Assets.Configs.Build);
         buildInfo.Initialize(build.Value);
 #endif
         // Analytics configuration is available both in IDE runs and in packaged Android assets.
-        using var analyticsConfig = configs.LoadConfig<AnalyticsConfig>("Configs/Analytics.yaml");
+        using var analyticsConfig = configs.LoadConfig<AnalyticsConfig>(Assets.Configs.Analytics);
         analyticsInfo.Initialize(analyticsConfig.Value);
 #if ANDROID
         AppMetricaBootstrap.Activate(analyticsInfo.AppMetricaApiKey);
@@ -82,29 +82,29 @@ public sealed class GameLayer
         new AppStartedEvent(buildInfo.Version, buildInfo.VersionCode, buildInfo.Platform, "cold").Publish();
         _sessionTimer.Restart();
 
-        using var balance = configs.LoadConfig<GameBalanceConfig>("Configs/GameBalance.yaml");
-        using var rarities = configs.LoadConfig<RaritiesConfig>("Configs/Rarities.yaml");
-        using var items = configs.LoadConfig<ItemsConfig>("Configs/Items.yaml");
-        using var missions = configs.LoadConfig<MissionsConfig>("Configs/Missions.yaml");
-        using var cultivation = configs.LoadConfig<CultivationConfig>("Configs/Cultivation.yaml");
-        using var shop = configs.LoadConfig<ShopConfig>("Configs/Shop.yaml");
-        using var monsters = configs.LoadConfig<MonstersConfig>("Configs/Monsters.yaml");
-        using var combat = configs.LoadConfig<CombatConfig>("Configs/Combat.yaml");
-        using var alchemy = configs.LoadConfig<AlchemyConfig>("Configs/Alchemy.yaml");
+        using var balance = configs.LoadConfig<GameBalanceConfig>(Assets.Configs.GameBalance);
+        using var rarities = configs.LoadConfig<RaritiesConfig>(Assets.Configs.Rarities);
+        using var items = configs.LoadConfig<ItemsConfig>(Assets.Configs.Items);
+        using var missions = configs.LoadConfig<MissionsConfig>(Assets.Configs.Missions);
+        using var cultivation = configs.LoadConfig<CultivationConfig>(Assets.Configs.Cultivation);
+        using var shop = configs.LoadConfig<ShopConfig>(Assets.Configs.Shop);
+        using var monsters = configs.LoadConfig<MonstersConfig>(Assets.Configs.Monsters);
+        using var combat = configs.LoadConfig<CombatConfig>(Assets.Configs.Combat);
+        using var alchemy = configs.LoadConfig<AlchemyConfig>(Assets.Configs.Alchemy);
 
         database.Initialize(balance, rarities, items, missions, cultivation, shop, monsters, combat, alchemy);
 
         foreach (var sound in new[]
                  {
-                     "Sounds/ui-click.wav",
-                     "Sounds/item.wav",
-                     "Sounds/cultivate.wav",
-                     "Sounds/breakthrough.wav",
-                     "Sounds/mission-complete.wav",
-                     "Sounds/death.wav"
+                     Assets.Sounds.UiClick,
+                     Assets.Sounds.Item,
+                     Assets.Sounds.Cultivate,
+                     Assets.Sounds.Breakthrough,
+                     Assets.Sounds.MissionComplete,
+                     Assets.Sounds.Death
                  })
             audio.Preload(sound);
-        audio.Preload("Musics/Main.mp3", loop: true);
+        audio.Preload(Assets.Musics.Main, loop: true);
 
         scenes.LoadScene<MainScene>();
         game.Initialize();

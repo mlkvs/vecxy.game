@@ -23,7 +23,7 @@ public class Background(
                 throw new NotImplementedException();
             }
             
-            using var backgroundTexture = assets.Load<TextureAsset>("Textures/Background.jpg");
+            using var backgroundTexture = assets.Load<TextureAsset>(Assets.Textures.Background);
 
             var backgroundObject = ctx.Scene.CreateObject("Background");
 
@@ -32,7 +32,7 @@ public class Background(
             background.PixelsPerUnit = 1.0f;
             background.SortingLayer = 0;
 
-            using var missionBackgroundTexture = assets.Load<TextureAsset>("Textures/Background_Missions.jpg");
+            using var missionBackgroundTexture = assets.Load<TextureAsset>(Assets.Textures.BackgroundMissions);
             var missionBackgroundObject = backgroundObject.CreateChild("Mission background");
             var missionBackground = missionBackgroundObject.AddComponent<SpriteRenderer>();
             missionBackground.SetTexture(missionBackgroundTexture);
@@ -51,8 +51,8 @@ public class Background(
     
     private bool _missionMode;
     private float _missionOpacity;
-    private string _cultivationTexturePath = "Textures/Background.jpg";
-    private string _missionTexturePath = "Textures/Background_Missions.jpg";
+    private string _cultivationTexturePath = string.Empty;
+    private string _missionTexturePath = string.Empty;
 
     public SpriteRenderer SpriteRenderer => cultivationSprite;
 
@@ -60,14 +60,16 @@ public class Background(
     {
         if (!string.Equals(_cultivationTexturePath, stage.CultivationBackgroundTexture, StringComparison.Ordinal))
         {
-            using var texture = assets.Load<TextureAsset>(stage.CultivationBackgroundTexture);
+            using var texture = assets.Load<TextureAsset>(
+                new TextureHandle(assets.Find(stage.CultivationBackgroundTexture)));
             cultivationSprite.SetTexture(texture);
             _cultivationTexturePath = stage.CultivationBackgroundTexture;
         }
 
         if (!string.Equals(_missionTexturePath, stage.MissionBackgroundTexture, StringComparison.Ordinal))
         {
-            using var texture = assets.Load<TextureAsset>(stage.MissionBackgroundTexture);
+            using var texture = assets.Load<TextureAsset>(
+                new TextureHandle(assets.Find(stage.MissionBackgroundTexture)));
             missionSprite.SetTexture(texture);
             _missionTexturePath = stage.MissionBackgroundTexture;
         }

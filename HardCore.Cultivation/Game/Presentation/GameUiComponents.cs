@@ -3,7 +3,6 @@ using Vecxy.UI;
 
 namespace HardCore.Cultivation.Game.Presentation;
 
-[AssetPath("UI/Components/ShopCard.xml")]
 internal sealed class ShopCardView : AUiComponent
 {
     public ShopCardView(UiElement root) : base(root)
@@ -92,14 +91,15 @@ internal sealed class MissionQueueItemView : AUiComponent
 
 internal sealed class QualityStarsView : AUiComponent
 {
-    private const string GrayStar = "Assets/Textures/GameUIAtlas.atlas#star-gray";
-    private const string RainbowStar = "Assets/Textures/GameUIAtlas.atlas#star-rainbow";
-
     private readonly IReadOnlyList<UiImage> _emptyStars;
     private readonly IReadOnlyList<UiPanel> _fills;
+    private readonly string _grayStar;
+    private readonly string _rainbowStar;
 
-    public QualityStarsView(UiElement root) : base(root)
+    public QualityStarsView(UiElement root, string grayStar, string rainbowStar) : base(root)
     {
+        _grayStar = grayStar;
+        _rainbowStar = rainbowStar;
         _emptyStars = Elements<UiImage>("quality-star-empty");
         _fills = Elements<UiPanel>("quality-star-fill");
     }
@@ -109,7 +109,7 @@ internal sealed class QualityStarsView : AUiComponent
         Root.SetAttribute("aria-label", "Качество предмета известно");
         Root.ToggleClass("unknown-quality", false);
         foreach (var star in _emptyStars)
-            star.Sprite = GrayStar;
+            star.Sprite = _grayStar;
         for (var index = 0; index < _fills.Count; index++)
             _fills[index].Style.SetWidthPercent((float)Math.Clamp(quality - index, 0m, 1m));
     }
@@ -119,7 +119,7 @@ internal sealed class QualityStarsView : AUiComponent
         Root.SetAttribute("aria-label", "Качество предмета неизвестно");
         Root.ToggleClass("unknown-quality", true);
         foreach (var star in _emptyStars)
-            star.Sprite = RainbowStar;
+            star.Sprite = _rainbowStar;
         foreach (var fill in _fills)
             fill.Style.SetWidthPercent(0f);
     }

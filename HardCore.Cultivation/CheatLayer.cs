@@ -35,7 +35,7 @@ public sealed class CheatLayer(
 
     public override void OnInitialize()
     {
-        _document = ui.Load("UI/CheatOverlay.xml");
+        _document = ui.Load(Assets.UI.CheatOverlay2);
         _document.Reloaded += BuildUi;
         BuildUi(_document);
     }

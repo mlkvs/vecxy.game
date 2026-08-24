@@ -6,6 +6,7 @@ using HardCore.Cultivation.Game.Application;
 using HardCore.Cultivation.Game.Domain;
 using HardCore.Cultivation.Game.Infrastructure;
 using Vecxy.Audio;
+using Vecxy.Assets;
 using Vecxy.Kernel;
 using Vecxy.Rendering;
 using Vecxy.Scene;
@@ -16,6 +17,7 @@ namespace HardCore.Cultivation.Game.Presentation;
 
 public sealed class GameController(
     IUiManager ui,
+    IAssetsManager assets,
     GameDatabase database,
     GameBuildInfo buildInfo,
     TickProcessor ticks,
@@ -75,7 +77,6 @@ public sealed class GameController(
     private const float SettingsContentGap = 14f;
     private const float SettingsVersionHeight = 20f;
     private const float SettingsWindowVerticalPadding = 36f;
-    private const string BackgroundMusicPath = "Musics/Main.mp3";
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
@@ -168,9 +169,9 @@ public sealed class GameController(
         combatScene.Initialize();
         _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character, _state.ActiveEffects);
 
-        _document = ui.Load("UI/Main.xml");
+        _document = ui.Load(Assets.UI.Main2);
         _document.Reloaded += BuildUi;
-        _floatingDocument = ui.Load("UI/FloatingOverlay.xml");
+        _floatingDocument = ui.Load(Assets.UI.FloatingOverlay);
         _floatingDocument.Reloaded += BuildFloatingUi;
         BuildFloatingUi(_floatingDocument);
         _windowDocuments = LoadWindowDocuments();
@@ -181,7 +182,7 @@ public sealed class GameController(
             windowDocument.IsVisible = false;
         }
         BuildUi(_document);
-        _transientDocument = ui.Load("UI/TransientOverlay.xml");
+        _transientDocument = ui.Load(Assets.UI.TransientOverlay);
         _transientDocument.Reloaded += BuildTransientUi;
         BuildTransientUi(_transientDocument);
     }
@@ -494,16 +495,16 @@ public sealed class GameController(
 
     private GameWindowDocuments LoadWindowDocuments() =>
         new(
-            ui.Load("UI/ShopWindowDocument.xml"),
-            ui.Load("UI/InventoryWindowDocument.xml"),
-            ui.Load("UI/AlchemyWindowDocument.xml"),
-            ui.Load("UI/MissionsWindowDocument.xml"),
-            ui.Load("UI/BreakthroughDocument.xml"),
-            ui.Load("UI/DeathWindowDocument.xml"),
-            ui.Load("UI/InfoPopupDocument.xml"),
-            ui.Load("UI/EffectPopupDocument.xml"),
-            ui.Load("UI/SettingsWindowDocument.xml"),
-            ui.Load("UI/PrivacyPolicyDocument.xml"));
+            ui.Load(Assets.UI.ShopWindowDocument),
+            ui.Load(Assets.UI.InventoryWindowDocument),
+            ui.Load(Assets.UI.AlchemyWindowDocument),
+            ui.Load(Assets.UI.MissionsWindowDocument),
+            ui.Load(Assets.UI.BreakthroughDocument),
+            ui.Load(Assets.UI.DeathWindowDocument),
+            ui.Load(Assets.UI.InfoPopupDocument),
+            ui.Load(Assets.UI.EffectPopupDocument),
+            ui.Load(Assets.UI.SettingsWindowDocument),
+            ui.Load(Assets.UI.PrivacyPolicyDocument));
 
     private void HandleWindowDocumentReloaded(UiDocument document)
     {
@@ -524,28 +525,28 @@ public sealed class GameController(
             return;
 
         if (ReferenceEquals(document, _windowDocuments.Shop))
-            document.Instantiate("Components/ShopWindow.xml", layer);
+            document.Instantiate(Assets.UI.ShopWindow, layer);
         else if (ReferenceEquals(document, _windowDocuments.Inventory))
-            document.Instantiate("Components/InventoryWindow.xml", layer);
+            document.Instantiate(Assets.UI.InventoryWindow, layer);
         else if (ReferenceEquals(document, _windowDocuments.Alchemy))
-            document.Instantiate("Components/AlchemyWindow.xml", layer);
+            document.Instantiate(Assets.UI.AlchemyWindow, layer);
         else if (ReferenceEquals(document, _windowDocuments.Missions))
-            document.Instantiate("Components/MissionsWindow.xml", layer);
+            document.Instantiate(Assets.UI.MissionsWindow, layer);
         else if (ReferenceEquals(document, _windowDocuments.Breakthrough))
         {
-            document.Instantiate("Components/BreakthroughWindow.xml", layer);
-            document.Instantiate("Components/BreakthroughResult.xml", layer);
+            document.Instantiate(Assets.UI.BreakthroughWindow, layer);
+            document.Instantiate(Assets.UI.BreakthroughResult, layer);
         }
         else if (ReferenceEquals(document, _windowDocuments.Death))
-            document.Instantiate("Components/DeathWindow.xml", layer);
+            document.Instantiate(Assets.UI.DeathWindow, layer);
         else if (ReferenceEquals(document, _windowDocuments.InfoPopup))
-            document.Instantiate("Components/InfoPopup.xml", layer);
+            document.Instantiate(Assets.UI.InfoPopup, layer);
         else if (ReferenceEquals(document, _windowDocuments.EffectPopup))
-            document.Instantiate("Components/EffectPopup.xml", layer);
+            document.Instantiate(Assets.UI.EffectPopup, layer);
         else if (ReferenceEquals(document, _windowDocuments.Settings))
-            document.Instantiate("Components/SettingsWindow.xml", layer);
+            document.Instantiate(Assets.UI.SettingsWindow, layer);
         else if (ReferenceEquals(document, _windowDocuments.PrivacyPolicy))
-            document.Instantiate("Components/PrivacyPolicyWindow.xml", layer);
+            document.Instantiate(Assets.UI.PrivacyPolicyWindow, layer);
     }
 
     private void InitializeBuiltUi(UiDocument document)
@@ -656,21 +657,21 @@ public sealed class GameController(
         {
             Track(new MissionCompletedEvent(missionIdBeforeTick, "completed", _state.Character.Health));
             Track(new MissionRewardReceivedEvent(missionIdBeforeTick, _state.Character.Money - moneyBefore));
-            PlaySound("Sounds/mission-complete.wav", 0.65f);
+            PlaySound(Assets.Sounds.MissionComplete, 0.65f);
             ShowAchievement("МИССИЯ ВЫПОЛНЕНА");
         }
         if (result.LevelsGained > 0)
         {
             Track(new CultivationLevelGainedEvent("tick", result.LevelsGained,
                 _state.Character.Cultivation.StageIndex, _state.Character.Cultivation.Level));
-            PlaySound("Sounds/cultivate.wav", 0.6f);
+            PlaySound(Assets.Sounds.Cultivate, 0.6f);
             ShowAchievement(result.LevelsGained == 1 ? "НОВЫЙ УРОВЕНЬ" : $"+{result.LevelsGained} УРОВНЯ");
         }
         if (result.CharacterDied)
         {
             _gameOver = true;
             Track(new CharacterDiedEvent(_state.Character.Age.TotalYears, _state.Character.Cultivation.StageIndex));
-            PlaySound("Sounds/death.wav", 0.7f);
+            PlaySound(Assets.Sounds.Death, 0.7f);
         }
         if (result.TickNumber % database.Balance.AutoSaveEveryTicks == 0)
             Save();
@@ -709,7 +710,7 @@ public sealed class GameController(
 
     private void TapCharacter(Vector2 position)
     {
-        PlaySound("Sounds/cultivate.wav", 0.35f);
+        PlaySound(Assets.Sounds.Cultivate, 0.35f);
         if (_tapFeedback is not null)
         {
             var feedbackHalfWidth = MathF.Max(0f, _tapFeedback.Bounds.Width * 0.5f);
@@ -774,7 +775,7 @@ public sealed class GameController(
         if (frame == _yearCandleFlameFrame)
             return;
         _yearCandleFlameFrame = frame;
-        _view.YearCandleFlame.Sprite = $"Assets/Textures/GameUIAtlas.atlas#year-candle-flame-{frame}";
+        _view.YearCandleFlame.Sprite = AssetSprite(Assets.Textures.GameUIAtlas, $"year-candle-flame-{frame}");
     }
 
     private void UpdateYearCandleProgress()
@@ -878,8 +879,8 @@ public sealed class GameController(
             ? "activity-toggle missions"
             : "activity-toggle");
         _view.ActivityModeIcon.Sprite = AtlasSprite(_state.ActivityMode == ActivityMode.Missions
-            ? "Assets/Textures/UIIcons/missions.png"
-            : "Assets/Textures/UIIcons/cultivation.png");
+            ? AssetPath(Assets.Textures.Missions)
+            : AssetPath(Assets.Textures.Cultivation));
         _view.ActivityModeText.Value = _state.ActivityMode == ActivityMode.Missions
             ? "МИССИИ"
             : "КУЛЬТИВАЦИЯ";
@@ -1024,7 +1025,7 @@ public sealed class GameController(
                 var effectEntry = (UiRadialProgress)_document!.CreateElement("radial-progress", new Dictionary<string, string>
                 {
                     ["class"] = "status-effect-entry",
-                    ["sprite"] = "Assets/Textures/GameUIAtlas.atlas#panel-slice",
+                    ["sprite"] = AssetSprite(Assets.Textures.GameUIAtlas, "panel-slice"),
                     ["clockwise-depletion"] = "true",
                     ["radial-rect"] = "true"
                 });
@@ -1035,7 +1036,7 @@ public sealed class GameController(
                 });
                 if (type == EffectType.Contamination)
                 {
-                    effectIcon.SetAttribute("sprite", "Assets/Textures/GameUIAtlas.atlas#contamination-effect");
+                    effectIcon.SetAttribute("sprite", AssetSprite(Assets.Textures.GameUIAtlas, "contamination-effect"));
                 }
                 else if (TryGetFirstActiveEffect(type, out var firstEffect))
                     effectIcon.SetAttribute("sprite", AtlasSprite(database.GetItem(firstEffect.SourceItemId).Icon));
@@ -1161,7 +1162,7 @@ public sealed class GameController(
     private ShopCardView CreateShopCard(ShopSlot slot)
     {
         var document = _view!.GetDocumentFor(_view.ShopGrid);
-        var root = document.Instantiate("Components/ShopCard.xml", _view.ShopGrid, new Dictionary<string, string>
+        var root = document.Instantiate(Assets.UI.ShopCard, _view.ShopGrid, new Dictionary<string, string>
         {
             ["key"] = slot.SlotId.ToString(), ["icon"] = string.Empty, ["name"] = string.Empty,
             ["effect"] = string.Empty, ["price"] = string.Empty
@@ -1224,7 +1225,7 @@ public sealed class GameController(
             ? new ShopPurchaseSucceededEvent(config.Id, result.TotalPrice, moneyBefore, _state.Character.Money)
             : new ShopPurchaseFailedEvent(config.Id, result.TotalPrice, moneyBefore, result.Message));
         ShowActionFeedback(result.Success ? $"Куплено: {config.Name} · −{MoneyFormatter.Format(result.TotalPrice)}" : result.Message,
-            result.Success ? config.Icon : "Assets/Textures/UIIcons/close.png", result.Success);
+            result.Success ? config.Icon : AssetPath(Assets.Textures.Close), result.Success);
         if (result.Success)
         {
             Track(new ItemReceivedEvent(config.Id, 1, "shop", purchasedContamination));
@@ -1266,7 +1267,7 @@ public sealed class GameController(
     private InventoryIconView CreateInventoryIcon(ItemInstance item)
     {
         var document = _view!.GetDocumentFor(_view.InventoryGrid);
-        var root = document.Instantiate("Components/InventoryIcon.xml", _view.InventoryGrid, new Dictionary<string, string>
+        var root = document.Instantiate(Assets.UI.InventoryIcon, _view.InventoryGrid, new Dictionary<string, string>
         {
             ["key"] = item.InstanceId.ToString(), ["icon"] = string.Empty, ["quantity"] = string.Empty
         });
@@ -1356,7 +1357,7 @@ public sealed class GameController(
                      !effectsBefore.Contains((effect.SourceItemId, effect.Type, effect.Value, effect.RemainingTicks))))
             Track(new EffectAddedEvent(effect.Type.ToString(), effect.RemainingTicks, item.ConfigId));
         var levels = result.Success ? cultivation.AdvanceLevelsAutomatically(_state.Character) : 0;
-        ShowActionFeedback(result.Message, result.Success ? config.Icon : "Assets/Textures/UIIcons/close.png", result.Success);
+        ShowActionFeedback(result.Message, result.Success ? config.Icon : AssetPath(Assets.Textures.Close), result.Success);
         if (_state.Character.SpiritualPower != before)
             SpawnFloatingValue(_state.Character.SpiritualPower - before, string.Empty, "spirit-value");
         if (levels > 0)
@@ -1389,7 +1390,7 @@ public sealed class GameController(
             ? new ShopSaleSucceededEvent(item.ConfigId, result.TotalPrice)
             : new ShopSaleFailedEvent(item.ConfigId, result.Message));
         ShowActionFeedback(result.Success ? $"Продано: {ItemDisplayName(config, item)} · +{MoneyFormatter.Format(result.TotalPrice)}" : result.Message,
-            result.Success ? "Assets/Textures/UIIcons/money.png" : "Assets/Textures/UIIcons/close.png", result.Success);
+            result.Success ? AssetPath(Assets.Textures.Money) : AssetPath(Assets.Textures.Close), result.Success);
         if (result.Success)
         {
             SpawnFloatingValue(result.TotalPrice, string.Empty, "money-value");
@@ -1492,14 +1493,14 @@ public sealed class GameController(
         _view!.AlchemySelection.Clear();
         var document = _view.GetDocumentFor(_view.AlchemySelection);
         _view.AlchemySelection.Add(document.CreateImage(
-            "Assets/Textures/UI/alchemy-room.jpg",
+            AssetPath(Assets.Textures.AlchemyRoom),
             new Dictionary<string, string> { ["class"] = "alchemy-room" }));
         var furnaceStage = document.CreatePanel(new Dictionary<string, string>
         {
             ["class"] = "alchemy-furnace-stage"
         });
         furnaceStage.Add(document.CreateImage(
-            "Assets/Textures/UI/alchemy-furnace.png",
+            AssetPath(Assets.Textures.AlchemyFurnace),
             new Dictionary<string, string> { ["class"] = "alchemy-furnace" }));
         _view.AlchemySelection.Add(furnaceStage);
         _alchemySlotWidgets.Clear();
@@ -1613,7 +1614,7 @@ public sealed class GameController(
         SetPaintVisibility(coreWidget.Label, !distillation && core is null);
         if (distillation)
         {
-            coreWidget.Icon.Sprite = "Assets/Textures/GameUIAtlas.atlas#alchemy";
+            coreWidget.Icon.Sprite = AssetSprite(Assets.Textures.GameUIAtlas, "alchemy");
             SetPaintVisibility(coreWidget.ElementIcon, false);
         }
         else if (core is not null)
@@ -1661,7 +1662,7 @@ public sealed class GameController(
     private InventoryIconView CreateAlchemyIngredientIcon(ItemInstance item)
     {
         var document = _view!.GetDocumentFor(_view.AlchemyIngredients);
-        var root = document.Instantiate("Components/InventoryIcon.xml", _view.AlchemyIngredients,
+        var root = document.Instantiate(Assets.UI.InventoryIcon, _view.AlchemyIngredients,
             new Dictionary<string, string>
             {
                 ["key"] = item.InstanceId.ToString(), ["icon"] = string.Empty,
@@ -1858,7 +1859,7 @@ public sealed class GameController(
         var emptySlot = _alchemySlots.FindIndex(value => value is null);
         if (emptySlot < 0)
         {
-            ShowActionFeedback("Все ячейки смеси уже заполнены.", "Assets/Textures/UIIcons/close.png", false, info: true);
+            ShowActionFeedback("Все ячейки смеси уже заполнены.", AssetPath(Assets.Textures.Close), false, info: true);
             return;
         }
         var selected = _alchemySlots.Count(value => value == instanceId);
@@ -1897,7 +1898,7 @@ public sealed class GameController(
                 ShowAlchemyFailurePopup();
                 return;
             }
-            ShowActionFeedback(result.Message, "Assets/Textures/UIIcons/close.png", false);
+            ShowActionFeedback(result.Message, AssetPath(Assets.Textures.Close), false);
             return;
         }
         var mode = _alchemyMode;
@@ -2021,7 +2022,7 @@ public sealed class GameController(
     private MissionCardView CreateMissionCard(MissionOffer offer)
     {
         var document = _view!.GetDocumentFor(_view.MissionsList);
-        var root = document.Instantiate("Components/MissionCard.xml", _view.MissionsList, new Dictionary<string, string>
+        var root = document.Instantiate(Assets.UI.MissionCard, _view.MissionsList, new Dictionary<string, string>
         {
             ["key"] = offer.OfferId.ToString(), ["name"] = string.Empty,
             ["description"] = string.Empty, ["duration"] = string.Empty
@@ -2070,7 +2071,7 @@ public sealed class GameController(
         var result = missions.Start(_state, offerId);
         Track(result.Success ? new MissionStartedEvent(missionId) : new MissionStartFailedEvent(missionId, result.Message));
         ShowActionFeedback(result.Message,
-            result.Success ? "Assets/Textures/UIIcons/missions.png" : "Assets/Textures/UIIcons/close.png",
+            result.Success ? AssetPath(Assets.Textures.Missions) : AssetPath(Assets.Textures.Close),
             result.Success);
         if (result.Success)
             SyncMissions();
@@ -2107,7 +2108,7 @@ public sealed class GameController(
     private MissionQueueItemView CreateMissionQueueItem(ActiveMission mission)
     {
         var document = _view!.GetDocumentFor(_view.MissionQueue);
-        var root = document.Instantiate("Components/MissionQueueItem.xml", _view.MissionQueue, new Dictionary<string, string>
+        var root = document.Instantiate(Assets.UI.MissionQueueItem, _view.MissionQueue, new Dictionary<string, string>
         {
             ["key"] = mission.InstanceId.ToString(), ["number"] = string.Empty,
             ["name"] = string.Empty, ["progress"] = string.Empty
@@ -2137,7 +2138,7 @@ public sealed class GameController(
     private void MoveMission(Guid id, int offset)
     {
         var result = missions.Move(_state, id, offset);
-        ShowActionFeedback(result.Message, "Assets/Textures/UIIcons/missions.png", result.Success, result.Success);
+        ShowActionFeedback(result.Message, AssetPath(Assets.Textures.Missions), result.Success, result.Success);
         SyncMissionQueue();
         UpdateMissionSummary();
     }
@@ -2145,7 +2146,7 @@ public sealed class GameController(
     private void RemoveMission(Guid id)
     {
         var result = missions.Remove(_state, id);
-        ShowActionFeedback(result.Message, "Assets/Textures/UIIcons/missions.png", result.Success, result.Success);
+        ShowActionFeedback(result.Message, AssetPath(Assets.Textures.Missions), result.Success, result.Success);
         SyncMissions();
         UpdateMissionSummary();
     }
@@ -2178,12 +2179,12 @@ public sealed class GameController(
         OpenWindow(_view.BreakthroughResult);
         if (result.Success)
         {
-            PlaySound("Sounds/breakthrough.wav", 0.7f);
+            PlaySound(Assets.Sounds.Breakthrough, 0.7f);
             missions.Refresh(_state);
             SyncMissionBoard();
             ShowAchievement("УСПЕШНЫЙ ПРОРЫВ");
             ShowActionFeedback($"Предел жизни увеличен до {Format(cultivation.GetMaximumAge(_state.Character, _state.ActiveEffects))} лет.",
-                "Assets/Textures/UIIcons/age.png", true, info: true);
+                AssetPath(Assets.Textures.Age), true, info: true);
         }
         ApplyStateToView();
         Save();
@@ -2335,7 +2336,7 @@ public sealed class GameController(
         ApplyMusicSetting();
         Save();
         SyncSettings();
-        PlaySound("Sounds/ui-click.wav", 0.45f);
+        PlaySound(Assets.Sounds.UiClick, 0.45f);
     }
 
     private void ToggleSounds()
@@ -2345,7 +2346,7 @@ public sealed class GameController(
         Track(new SoundSettingChangedEvent(_state.Settings.SoundsEnabled, previous));
         Save();
         SyncSettings();
-        PlaySound("Sounds/ui-click.wav", 0.45f);
+        PlaySound(Assets.Sounds.UiClick, 0.45f);
     }
 
     private void SyncSettings()
@@ -2410,7 +2411,7 @@ public sealed class GameController(
         }
 
         UnmountWindow(_view!.PrivacyPolicyWindow);
-        PlaySound("Sounds/ui-click.wav", 0.45f);
+        PlaySound(Assets.Sounds.UiClick, 0.45f);
     }
 
     private void ApplyMusicSetting()
@@ -2420,14 +2421,14 @@ public sealed class GameController(
             if (_state.Settings.MusicEnabled && !_applicationPaused)
             {
                 if (_backgroundMusicPaused)
-                    audio.Resume(BackgroundMusicPath, loop: true);
+                    audio.Resume(Assets.Musics.Main, loop: true);
                 else
-                    audio.Play(BackgroundMusicPath, loop: true, volume: 0.35f);
+                    audio.Play(Assets.Musics.Main, loop: true, volume: 0.35f);
                 _backgroundMusicPaused = false;
             }
             else
             {
-                audio.Stop(BackgroundMusicPath, loop: true);
+                audio.Stop(Assets.Musics.Main, loop: true);
                 _backgroundMusicPaused = false;
             }
         }
@@ -2444,7 +2445,7 @@ public sealed class GameController(
             Track(new AppBackgroundedEvent());
             _backgroundMusicPaused = _state.Settings.MusicEnabled;
             if (_backgroundMusicPaused)
-                audio.Pause(BackgroundMusicPath, loop: true);
+                audio.Pause(Assets.Musics.Main, loop: true);
             return;
         }
 
@@ -2590,7 +2591,7 @@ public sealed class GameController(
         if (view is null)
             return;
 
-        PlaySound("Sounds/ui-click.wav", 0.45f);
+        PlaySound(Assets.Sounds.UiClick, 0.45f);
         var document = view.GetDocumentFor(backdrop);
         if (ReferenceEquals(document, view.WindowDocuments.InfoPopup))
             CloseInfoPopup();
@@ -2701,7 +2702,7 @@ public sealed class GameController(
             var moneyIcon = (UiImage)document.CreateElement("image", new Dictionary<string, string>
             {
                 ["class"] = "tick-float-money-icon",
-                ["sprite"] = "Assets/Textures/GameUIAtlas.atlas#money"
+                ["sprite"] = AssetSprite(Assets.Textures.GameUIAtlas, "money")
             });
             SetPaintVisibility(moneyIcon, false);
             root.Add(moneyIcon);
@@ -2900,7 +2901,7 @@ public sealed class GameController(
         view.InfoPopupSell.IsVisible = false;
         view.InfoPopupOk.IsVisible = true;
         view.InfoPopupQuality.IsVisible = false;
-        view.InfoPopupIcon.Sprite = AtlasSprite("Assets/Textures/UIIcons/close.png");
+        view.InfoPopupIcon.Sprite = AtlasSprite(AssetPath(Assets.Textures.Close));
         view.InfoPopupIconWell.Style.BorderColor = "#d85a5a";
         MountWindow(view.InfoPopup, exclusive: false);
     }
@@ -2912,7 +2913,7 @@ public sealed class GameController(
         view.InfoPopupDetails.IsVisible = isVisible;
     }
 
-    private static void SetItemElement(UiPanel host, UiImage icon, Element? element)
+    private void SetItemElement(UiPanel host, UiImage icon, Element? element)
     {
         host.IsVisible = element.HasValue;
         if (element is not { } value)
@@ -2920,13 +2921,13 @@ public sealed class GameController(
         icon.Sprite = AtlasSprite(ElementIcon(value));
     }
 
-    private static string ElementIcon(Element element) => element switch
+    private string ElementIcon(Element element) => element switch
     {
-        Element.Fire => "Assets/Textures/UIIcons/Elements/fire.png",
-        Element.Water => "Assets/Textures/UIIcons/Elements/water.png",
-        Element.Earth => "Assets/Textures/UIIcons/Elements/earth.png",
-        Element.Air => "Assets/Textures/UIIcons/Elements/air.png",
-        Element.Void => "Assets/Textures/UIIcons/Elements/void.png",
+        Element.Fire => AssetPath(Assets.Textures.Fire),
+        Element.Water => AssetPath(Assets.Textures.Water),
+        Element.Earth => AssetPath(Assets.Textures.Earth),
+        Element.Air => AssetPath(Assets.Textures.Air),
+        Element.Void => AssetPath(Assets.Textures.Void),
         _ => throw new ArgumentOutOfRangeException(nameof(element))
     };
 
@@ -2950,7 +2951,7 @@ public sealed class GameController(
         {
             if (reward.Type == MissionRewardType.Money)
             {
-                AddRewardIcon(parent, "Assets/Textures/UIIcons/money.png", MoneyFormatter.Format(reward.Money));
+                AddRewardIcon(parent, AssetPath(Assets.Textures.Money), MoneyFormatter.Format(reward.Money));
                 continue;
             }
 
@@ -2979,10 +2980,13 @@ public sealed class GameController(
         return CreateQualityStars(document, host);
     }
 
-    private static QualityStarsView CreateQualityStars(UiDocument document, UiElement host)
+    private QualityStarsView CreateQualityStars(UiDocument document, UiElement host)
     {
-        var stars = document.Instantiate("Components/QualityStars.xml", host);
-        return new QualityStarsView(stars);
+        var stars = document.Instantiate(Assets.UI.QualityStars, host);
+        return new QualityStarsView(
+            stars,
+            AssetSprite(Assets.Textures.GameUIAtlas, "star-gray"),
+            AssetSprite(Assets.Textures.GameUIAtlas, "star-rainbow"));
     }
 
     private void BuildQualityStars(UiElement host, decimal? quality)
@@ -3134,15 +3138,15 @@ public sealed class GameController(
 
     private void BindClick(UiButton button, Action action) => button.Clicked += _ =>
     {
-        PlaySound("Sounds/ui-click.wav", 0.45f);
+        PlaySound(Assets.Sounds.UiClick, 0.45f);
         action();
     };
 
-    private void PlaySound(string path, float volume)
+    private void PlaySound(SoundHandle sound, float volume)
     {
         if (!_state.Settings.SoundsEnabled)
             return;
-        try { audio.Play(path, volume: volume); } catch { }
+        try { audio.Play(sound, volume: volume); } catch { }
     }
 
     private static string Format(decimal value)
@@ -3174,16 +3178,21 @@ public sealed class GameController(
             ? $"+{value.ToString("0.#", CultureInfo.InvariantCulture)}"
             : value.ToString("0.#", CultureInfo.InvariantCulture);
 
-    private static string AtlasSprite(string source)
+    private string AtlasSprite(string source)
     {
         var normalized = source.Replace('\\', '/');
         var atlas = normalized.Contains("/Pills/", StringComparison.OrdinalIgnoreCase)
-            ? "Assets/Textures/PillIcons.atlas"
+            ? AssetPath(Assets.Textures.PillIcons)
             : normalized.Contains("/Ingredients/", StringComparison.OrdinalIgnoreCase)
-                ? "Assets/Textures/IngredientIcons.atlas"
-                : "Assets/Textures/GameUIAtlas.atlas";
+                ? AssetPath(Assets.Textures.IngredientIcons)
+                : AssetPath(Assets.Textures.GameUIAtlas);
         return $"{atlas}#{Path.GetFileNameWithoutExtension(normalized)}";
     }
+
+    private string AssetPath(IAssetHandle handle) => $"Assets/{assets.GetPath(handle)}";
+
+    private string AssetSprite(IAssetHandle handle, string? sprite = null) =>
+        sprite is null ? AssetPath(handle) : $"{AssetPath(handle)}#{sprite}";
 
     private static void SetPaintVisibility(UiElement element, bool visible) =>
         element.Style.Set("visibility", visible ? "visible" : "hidden");

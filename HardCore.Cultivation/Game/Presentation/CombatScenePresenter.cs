@@ -162,7 +162,7 @@ public sealed class CombatScenePresenter(
         var frameObject = scene.CreateObject($"{name} frame");
         frameObject.Transform.Position = new Vector3(x, y, 0f);
         var frame = frameObject.AddComponent<SpriteRenderer>();
-        frame.SetTexture(GetTexture("Textures/Combat/health-bar-frame.png"));
+        frame.SetTexture(GetTexture(Assets.Textures.HealthBarFrame));
         frame.PixelsPerUnit = 1f;
         frame.SortingLayer = 11;
         frame.OrderInLayer = order;
@@ -172,7 +172,7 @@ public sealed class CombatScenePresenter(
         var fillObject = scene.CreateObject($"{name} fill");
         fillObject.Transform.Position = new Vector3(x - 49f, y, 0f);
         var fill = fillObject.AddComponent<SpriteRenderer>();
-        fill.SetTexture(GetTexture("Textures/Combat/health-bar-fill.png"));
+        fill.SetTexture(GetTexture(Assets.Textures.HealthBarFill));
         fill.PixelsPerUnit = 1f;
         fill.Pivot = new Vector2(0f, 0.5f);
         fill.Color = fillColor;
@@ -254,8 +254,19 @@ public sealed class CombatScenePresenter(
     {
         if (_textureCache.TryGetValue(path, out var texture))
             return texture;
-        texture = assets.Load<TextureAsset>(path);
+        texture = assets.Load<TextureAsset>(new TextureHandle(assets.Find(path)));
         _textureCache.Add(path, texture);
+        renderer.PreloadTexture(texture);
+        return texture;
+    }
+
+    private AssetRef<TextureAsset> GetTexture(TextureHandle handle)
+    {
+        var key = handle.Id.ToString();
+        if (_textureCache.TryGetValue(key, out var texture))
+            return texture;
+        texture = assets.Load<TextureAsset>(handle);
+        _textureCache.Add(key, texture);
         renderer.PreloadTexture(texture);
         return texture;
     }

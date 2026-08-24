@@ -47,7 +47,7 @@ public class Character(
             characterObject.Transform.Scale = ctx.Scale;
                 
             // Sprite
-            using var characterTexture = assets.Load<TextureAsset>("Textures/Character.png");
+            using var characterTexture = assets.Load<TextureAsset>(Assets.Textures.Character);
                 
             var sprite = characterObject.AddComponent<SpriteRenderer>();
             sprite.SetTexture(characterTexture);
@@ -75,8 +75,7 @@ public class Character(
     
     private Vector3 _origin;
     private float _elapsed;
-    private readonly Dictionary<string, AssetRef<TextureAsset>> _textureCache =
-        new(StringComparer.Ordinal);
+    private readonly Dictionary<AssetId, AssetRef<TextureAsset>> _textureCache = [];
     private bool _gpuPrewarmed;
 
     public float Amplitude { get; set; } = 24.0f;
@@ -86,8 +85,8 @@ public class Character(
 
     private void PrewarmTextures()
     {
-        _ = GetTexture("Textures/Character.png");
-        _ = GetTexture("Textures/Character_Missions_Transparent.png");
+        _ = GetTexture(Assets.Textures.Character);
+        _ = GetTexture(Assets.Textures.CharacterMissionsTransparent);
     }
 
     public void PrewarmTextures(IRenderer renderer)
@@ -100,12 +99,12 @@ public class Character(
         _gpuPrewarmed = true;
     }
 
-    private AssetRef<TextureAsset> GetTexture(string path)
+    private AssetRef<TextureAsset> GetTexture(TextureHandle handle)
     {
-        if (_textureCache.TryGetValue(path, out var texture))
+        if (_textureCache.TryGetValue(handle.Id, out var texture))
             return texture;
-        texture = assets.Load<TextureAsset>(path);
-        _textureCache.Add(path, texture);
+        texture = assets.Load<TextureAsset>(handle);
+        _textureCache.Add(handle.Id, texture);
         return texture;
     }
 
@@ -116,8 +115,8 @@ public class Character(
 
         _missionMode = missionMode;
         var texture = GetTexture(missionMode
-            ? "Textures/Character_Missions_Transparent.png"
-            : "Textures/Character.png");
+            ? Assets.Textures.CharacterMissionsTransparent
+            : Assets.Textures.Character);
         sprite.SetTexture(texture);
         sprite.PixelsPerUnit = texture.Value.Height / referenceTextureHeight;
     }
