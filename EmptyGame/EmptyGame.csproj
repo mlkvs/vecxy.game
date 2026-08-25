@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <VecxyApplicationId>game.vecxy.empty</VecxyApplicationId>
+    <VecxyApplicationTitle>Vecxy Empty Game</VecxyApplicationTitle>
+    <VecxyApplicationVersion>1.0.0</VecxyApplicationVersion>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <Import Project="..\Engine\Vecxy\Code\Vecxy.Platforms\build\Vecxy.Platforms.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Engine\Vecxy.Engine.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Assets\Vecxy.Assets.csproj" />
+    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Kernel\Vecxy.Kernel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(VecxyPlatform)' == 'Android'">
+    <AndroidResource Include="Resources\drawable\app_icon.xml" />
+  </ItemGroup>
+</Project>

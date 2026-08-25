@@ -1,0 +1,10 @@
+# The empty application still has a logical Game package. It intentionally owns
+# no assets; only Vecxy Engine's required runtime package is built beside it.
+name: Game
+version: 1.0.0
+load: startup
+dependencies: []
+compression: balanced
+platforms:
+  android:
+    compression: fast
