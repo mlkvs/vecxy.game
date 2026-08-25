@@ -1,11 +1,62 @@
-name: Game
-load: startup
-compression: balanced
+# VPack descriptor главного пакета игры.
+# Файл лежит непосредственно в Assets/, поэтому он настраивает встроенный пакет Game.
+# Сам game.vpack не попадает в итоговый бинарный пакет и не является игровым ассетом.
 
+# Логическое имя пакета и основа стабильного PackageId.
+# Для descriptor в корне Assets/ разрешено только имя Game.
+name: Game
+
+# Когда загружать пакет:
+#   startup   — автоматически при запуске игры;
+#   on-demand — только через await Assets.<Package>.LoadAsync().
+# Главный Game всегда обязан быть startup. Для DLC/уровней обычно используется on-demand.
+load: startup
+
+# Имена других пакетов, которые должны быть загружены раньше этого пакета.
+# Пример для обычного пакета:
+# dependencies:
+#   - Shared
+#   - Localization
+# Game не должен зависеть от on-demand DLC, поэтому сейчас список пуст.
+dependencies: []
+
+# Сжатие по умолчанию для платформ без override ниже.
+# Короткая форма использует один из готовых profiles:
+#   compression: none      # без сжатия;
+#   compression: fast      # LZ4;
+#   compression: balanced  # Zstd 3 на desktop, Zstd 1 на Android;
+#   compression: maximum   # Zstd 12 на desktop, Zstd 6 на Android.
+#
+# Ниже используется расширенная форма со всеми доступными полями.
+compression:
+  # Поддерживаемые algorithms: none, lz4, zstd.
+  algorithm: zstd
+
+  # Уровень имеет смысл для Zstd: от -5 (быстрее) до 22 (плотнее).
+  # Рекомендуемые значения: 1 для Android, 3 для desktop, 12 для maximum desktop.
+  level: 3
+
+  # Размер независимо читаемого/распаковываемого блока: b, kb или mb.
+  # Рекомендуется 512kb для desktop и 256kb для Android.
+  block-size: 512kb
+
+# Platform override имеет приоритет над общей настройкой compression.
+# Поддерживаемые ключи платформ: windows, linux, android.
 platforms:
   windows:
-    compression: balanced
+    # Короткая preset-форма. Здесь maximum означает Zstd level 12 / block 512 KB.
+    compression: maximum
+
   linux:
-    compression: balanced
+    # Расширенная форма platform override. Можно задавать algorithm, level и block-size.
+    compression:
+      algorithm: zstd
+      level: 5
+      block-size: 512kb
+
   android:
-    compression: fast
+    # LZ4 быстрее распаковывается и подходит для мобильного startup-пакета.
+    # Для none и lz4 поле level не требуется.
+    compression:
+      algorithm: lz4
+      block-size: 256kb
