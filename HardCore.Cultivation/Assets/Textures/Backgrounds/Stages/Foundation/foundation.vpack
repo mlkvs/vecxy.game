@@ -9,7 +9,7 @@ platforms:
   android:
     compression: fast
 remote:
-  manifest: https://s3.eponesh.com/games/draft/21228/v8/packages.json
+  manifest: https://s3.eponesh.com/games/draft/21228/packages.json
   cache: persistent
   update: check
   integrity: sha256

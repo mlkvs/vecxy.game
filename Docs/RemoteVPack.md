@@ -164,7 +164,7 @@ the application. Every later stage uses `on-demand`, `persistent` cache and the
 shared remote manifest.
 
 The stage descriptors currently use the production manifest at
-`https://s3.eponesh.com/games/draft/21228/v8/packages.json`. Build the target platform, then upload
+`https://s3.eponesh.com/games/draft/21228/packages.json`. Build the target platform, then upload
 `Build/<Platform>/packages.json` and the contents of `Build/<Platform>/Remote/`
 while preserving the `Remote/` relative path. The CLI calculates package `size`
 and `sha256`; those values must not be maintained manually in YAML.
