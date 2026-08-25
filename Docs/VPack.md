@@ -21,6 +21,20 @@ Assets/
 name: DLC
 ```
 
+Главный пакет также можно настроить корневым `Assets/game.vpack`:
+
+```yaml
+name: Game
+load: startup
+compression: balanced
+
+platforms:
+  android:
+    compression: fast
+```
+
+Корневой descriptor заменяет настройки неявного `Game`, а не создаёт второй пакет. Для него имя `Game` и режим `startup` обязательны; compression, platform overrides и зависимости используют тот же формат, что и остальные packages.
+
 После scan/generate основной ассет доступен как `Assets.Textures.Player`, а DLC — как `Assets.DLC.Models.Car` и `Assets.DLC.Textures.Car`.
 
 ```csharp
