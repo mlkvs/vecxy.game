@@ -185,7 +185,7 @@ fi
 dotnet run --project "$VECXY_CLI_PROJECT" -- \
     --project "$ROOT_DIR/HardCore.Cultivation" \
     assets pack --platform "$vpack_platform"
-common_args+=("-p:VecxyPackagesDirectory=$ROOT_DIR/HardCore.Cultivation/Build/$vpack_output_platform/Packages")
+common_args+=("-p:VecxyPackagesDirectory=$ROOT_DIR/HardCore.Cultivation/Build/$vpack_output_platform")
 
 if [[ "$platform" == desktop ]]; then
     [[ -n "$desktop_runtime" ]] || fail "desktop.runtimeIdentifier is required for a desktop build"

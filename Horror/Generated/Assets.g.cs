@@ -34,6 +34,10 @@ public static partial class Assets
 
     public static class Engine
     {
+        private static AssetPackage Package => AssetPackages.Get(new PackageId(new Guid("79e6ac0f-5f3f-e20a-2227-c63732e7dd1e")));
+        public static bool IsLoaded => Package.IsLoaded;
+        public static ValueTask<AssetPackageLease> LoadAsync(CancellationToken cancellationToken = default) => Package.LoadAsync(cancellationToken);
+
         public static class Configs
         {
             [AssetReference("db172f4d-a8be-41bd-9f44-9f84d0b2cc11")]
