@@ -8,6 +8,10 @@
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0.45</AssemblyVersion>
     <FileVersion>1.0.0.45</FileVersion>
+    <!-- This game uses 2D stage backgrounds. Keep Vecxy's reusable skybox code/assets
+         available to other projects while omitting them from this project's engine.vpack. -->
+    <VecxyDisabledEngineFeatures>Skybox</VecxyDisabledEngineFeatures>
+    <VecxyDisabledEngineContent>DefaultSkybox</VecxyDisabledEngineContent>
   </PropertyGroup>
 
   <Import Project="BuildConfig.props" />

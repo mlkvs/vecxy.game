@@ -587,3 +587,9 @@ audio.Play(Assets.Sounds.UiClick);
 файлом `Engine/Vecxy/Code/Vecxy.Engine/Assets/engine.vpack`. Production packages и
 `packages.manifest` размещаются прямо в корне platform output; отдельные папки
 `Packages/` и runtime `Assets/` для них не создаются.
+
+Состав `engine.vpack` можно сократить для конкретной игры через
+`VecxyDisabledEngineFeatures` и `VecxyDisabledEngineContent` в её `.csproj`.
+Например, отключение `Skybox` вместе с `DefaultSkybox` удаляет shader, конфиг и
+встроенный cubemap только из билда этой игры. Формат и сценарий собственного
+skybox описаны в [VPack.md](VPack.md).

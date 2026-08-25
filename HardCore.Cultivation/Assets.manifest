@@ -2532,92 +2532,12 @@
       "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
     },
     {
-      "id": "deb19ec1-d6e3-4f1e-b056-21360ca541ae",
-      "source": "Engine",
-      "path": "Shaders/Skybox.glsl",
-      "type": "Shader",
-      "name": "Skybox",
-      "hash": "fa6a84758c806f0be25cca168ede0e70fd4142625328c437ccff36d42aade6ac",
-      "dependencies": [],
-      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
-    },
-    {
       "id": "383981d0-a142-445b-b8b4-f70b6e37997c",
       "source": "Engine",
       "path": "Shaders/Sprite.glsl",
       "type": "Shader",
       "name": "Sprite",
       "hash": "e7a72bad07714690a1b61cffa77282761dd1727f6cc016b5c51c10322aac85fd",
-      "dependencies": [],
-      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
-    },
-    {
-      "id": "46d9bf55-be94-48dd-9eff-93e8903e5ed8",
-      "source": "Engine",
-      "path": "SkyBox/cubemap/nx.png",
-      "type": "Texture2D",
-      "name": "nx",
-      "hash": "2bcedf3e72574aacb058409d6fe60b708f631c2b367fcb68f6a0c9000b8bb071",
-      "dependencies": [],
-      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
-    },
-    {
-      "id": "2d72ae6e-fa67-433a-8b12-7c99ab5e7522",
-      "source": "Engine",
-      "path": "SkyBox/cubemap/ny.png",
-      "type": "Texture2D",
-      "name": "ny",
-      "hash": "b6770fdad43a81cab686955836d76d293fc4d373a592eeaac969ff9961ba77e9",
-      "dependencies": [],
-      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
-    },
-    {
-      "id": "34995a4b-abf8-4f10-a347-ac75e61b1fd1",
-      "source": "Engine",
-      "path": "SkyBox/cubemap/nz.png",
-      "type": "Texture2D",
-      "name": "nz",
-      "hash": "82207f0c6896552228e4c1f00eef4a6a050f72b7df4a37bf60b4d469657c52c2",
-      "dependencies": [],
-      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
-    },
-    {
-      "id": "4cb6e6c7-f662-4b85-bc7d-3ff40293c4e6",
-      "source": "Engine",
-      "path": "SkyBox/cubemap/px.png",
-      "type": "Texture2D",
-      "name": "px",
-      "hash": "f70cf4be9a042f577eead72d6d25f72e73aadd0e8dd857b176fc720cf8c8b979",
-      "dependencies": [],
-      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
-    },
-    {
-      "id": "ea7752b2-ff21-40c9-931f-79ff807ea64c",
-      "source": "Engine",
-      "path": "SkyBox/cubemap/py.png",
-      "type": "Texture2D",
-      "name": "py",
-      "hash": "27ed89c184fb1fbab0d795930d3965cbd3feff135c335f3d124661b4d1a42a7e",
-      "dependencies": [],
-      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
-    },
-    {
-      "id": "dd682058-0c84-43fa-a5c6-9da72b5e3838",
-      "source": "Engine",
-      "path": "SkyBox/cubemap/pz.png",
-      "type": "Texture2D",
-      "name": "pz",
-      "hash": "489d87d72470a4fe3ab74350f32ffe472a62f8addc98c11e18e05d01fab6fa79",
-      "dependencies": [],
-      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
-    },
-    {
-      "id": "cd5af580-8909-4701-8db5-8e2112ee3211",
-      "source": "Engine",
-      "path": "SkyBox/Skybox.yaml",
-      "type": "Config",
-      "name": "Skybox",
-      "hash": "96a1527cba76a648cd2bba75215b857ff4337d445e0bf5f378a7223eda7293a5",
       "dependencies": [],
       "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
     },

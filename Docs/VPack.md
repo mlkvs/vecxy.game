@@ -44,6 +44,24 @@ platforms:
 собирается в `engine.vpack`. В коде типизированный API остаётся
 `Assets.Engine.Shaders.*`, `Assets.Engine.Textures.*` и так далее.
 
+Не каждый проект обязан упаковывать весь встроенный контент движка. Исключения
+задаются в `.csproj` игры и применяются только к её `Assets.manifest` и
+`engine.vpack`; исходные файлы submodule не меняются:
+
+```xml
+<PropertyGroup>
+  <VecxyDisabledEngineFeatures>Skybox</VecxyDisabledEngineFeatures>
+  <VecxyDisabledEngineContent>DefaultSkybox</VecxyDisabledEngineContent>
+</PropertyGroup>
+```
+
+`Skybox` исключает renderer asset `Shaders/Skybox.glsl`, а `DefaultSkybox`
+исключает встроенный конфиг и cubemap `SkyBox/**`. Проект со своим skybox должен
+отключить только встроенный контент: shader останется в `engine.vpack`, а его
+собственные шесть текстур попадут в `game.vpack` или выбранный project package.
+Если свойства отсутствуют, сохраняется полная обратная совместимость и весь
+стандартный контент движка включается. Несколько значений разделяются `;`.
+
 После scan/generate основной ассет доступен как `Assets.Textures.Player`, а DLC — как `Assets.DLC.Models.Car` и `Assets.DLC.Textures.Car`.
 
 ```csharp
