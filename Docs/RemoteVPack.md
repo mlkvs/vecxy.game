@@ -163,8 +163,8 @@ another download. `BodyTemperingBackgrounds` has no `remote` section and ships i
 the application. Every later stage uses `on-demand`, `persistent` cache and the
 shared remote manifest.
 
-Before deployment, replace `cdn.example.com` in the stage `.vpack` descriptors
-with the production CDN host. Build the target platform, then upload
+The stage descriptors currently use the production manifest at
+`https://s3.eponesh.com/games/draft/21228/v8/packages.json`. Build the target platform, then upload
 `Build/<Platform>/packages.json` and the contents of `Build/<Platform>/Remote/`
 while preserving the `Remote/` relative path. The CLI calculates package `size`
 and `sha256`; those values must not be maintained manually in YAML.
