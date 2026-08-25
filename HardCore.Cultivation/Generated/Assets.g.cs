@@ -121,38 +121,6 @@ public static partial class Assets
         public static TextureHandle _54 => new(new Guid("34e594d9-8ca2-4e08-80be-1a4e54fc8e8b"));
         [AssetReference("e8f24f00-b5f6-4d6b-a12b-971ff13da991")]
         public static TextureHandle _62 => new(new Guid("e8f24f00-b5f6-4d6b-a12b-971ff13da991"));
-        [AssetReference("da77be8e-57d7-4407-910e-fa918ca18b3d")]
-        public static TextureHandle BodyTempering => new(new Guid("da77be8e-57d7-4407-910e-fa918ca18b3d"));
-        [AssetReference("4a7a5ebb-e168-48fe-994b-696623c57c52")]
-        public static TextureHandle Foundation => new(new Guid("4a7a5ebb-e168-48fe-994b-696623c57c52"));
-        [AssetReference("0e2fe4e6-3b0e-4a25-9ac3-2ff8933ab955")]
-        public static TextureHandle GoldenCore => new(new Guid("0e2fe4e6-3b0e-4a25-9ac3-2ff8933ab955"));
-        [AssetReference("0d6e2036-74a6-4720-a4da-b45975d885c8")]
-        public static TextureHandle ImmortalAscension => new(new Guid("0d6e2036-74a6-4720-a4da-b45975d885c8"));
-        [AssetReference("3fa9ea07-a23a-4251-84fa-e3f73b6d8c27")]
-        public static TextureHandle NascentSoul => new(new Guid("3fa9ea07-a23a-4251-84fa-e3f73b6d8c27"));
-        [AssetReference("54d876ff-b5f4-4448-897e-b2124261bd46")]
-        public static TextureHandle QiGathering => new(new Guid("54d876ff-b5f4-4448-897e-b2124261bd46"));
-        [AssetReference("87b4d9a1-0925-4a73-9633-e2651d33f1df")]
-        public static TextureHandle SoulFormation => new(new Guid("87b4d9a1-0925-4a73-9633-e2651d33f1df"));
-        [AssetReference("38c5fc52-5e7a-489b-a5fc-33221e3336fb")]
-        public static TextureHandle VoidRefinement => new(new Guid("38c5fc52-5e7a-489b-a5fc-33221e3336fb"));
-        [AssetReference("beb59ac2-4886-4307-a4e8-3d93cf116079")]
-        public static TextureHandle BodyTempering2 => new(new Guid("beb59ac2-4886-4307-a4e8-3d93cf116079"));
-        [AssetReference("7824bdb7-79e8-425f-b33d-2eb5c66dc36b")]
-        public static TextureHandle Foundation2 => new(new Guid("7824bdb7-79e8-425f-b33d-2eb5c66dc36b"));
-        [AssetReference("f9be284b-f071-4ee3-97db-86ed4da1b640")]
-        public static TextureHandle GoldenCore2 => new(new Guid("f9be284b-f071-4ee3-97db-86ed4da1b640"));
-        [AssetReference("ac049c2c-0c57-4890-8f10-5399b2ed8268")]
-        public static TextureHandle ImmortalAscension2 => new(new Guid("ac049c2c-0c57-4890-8f10-5399b2ed8268"));
-        [AssetReference("21b429a3-b0ae-4ff6-abc2-ed12438d5344")]
-        public static TextureHandle NascentSoul2 => new(new Guid("21b429a3-b0ae-4ff6-abc2-ed12438d5344"));
-        [AssetReference("5aacce0c-9a00-444d-a008-ef3d575cfefd")]
-        public static TextureHandle QiGathering2 => new(new Guid("5aacce0c-9a00-444d-a008-ef3d575cfefd"));
-        [AssetReference("f381e10f-81d4-4384-b808-eb1ba4b2f392")]
-        public static TextureHandle SoulFormation2 => new(new Guid("f381e10f-81d4-4384-b808-eb1ba4b2f392"));
-        [AssetReference("201493bc-36d3-434a-a3b9-37b31670e961")]
-        public static TextureHandle VoidRefinement2 => new(new Guid("201493bc-36d3-434a-a3b9-37b31670e961"));
         [AssetReference("466008ff-5bba-4d13-a3fa-e3b0d01f3cf7")]
         public static TextureHandle Character => new(new Guid("466008ff-5bba-4d13-a3fa-e3b0d01f3cf7"));
         [AssetReference("e81891d1-b1b5-48cb-b883-a2515161b0c5")]
@@ -511,6 +479,198 @@ public static partial class Assets
         public static AssetHandle Windows => new(new Guid("ac224f8a-d5ac-4b9d-81b1-aceebc73eb17"));
         [AssetReference("15ab4601-fcea-4356-8973-41feb742efe3")]
         public static AssetHandle TransientOverlay => new(new Guid("15ab4601-fcea-4356-8973-41feb742efe3"));
+    }
+
+    public static class BodyTemperingBackgrounds
+    {
+        private static AssetPackage Package => AssetPackages.Get(new PackageId(new Guid("2122ce6c-5cf3-faac-4f89-33d7a2313a5d")));
+        public static bool IsLoaded => Package.IsLoaded;
+        public static ValueTask<AssetPackageLease> LoadAsync(CancellationToken cancellationToken = default) => Package.LoadAsync(cancellationToken);
+
+        public static Task<RemotePackageStatus> GetRemoteStatusAsync(CancellationToken cancellationToken = default) => Package.GetRemoteStatusAsync(cancellationToken);
+        public static Task<RemotePackageStatus> CheckForUpdatesAsync(CancellationToken cancellationToken = default) => Package.CheckForUpdatesAsync(cancellationToken);
+        public static Task DownloadAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadAsync(progress, cancellationToken);
+        public static Task DownloadUpdateAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadUpdateAsync(progress, cancellationToken);
+        public static ValueTask<AssetPackageLease> EnsureLoadedAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.EnsureLoadedAsync(progress, cancellationToken);
+        public static Task<PackageCacheInfo> GetCacheInfoAsync(CancellationToken cancellationToken = default) => Package.GetCacheInfoAsync(cancellationToken);
+        public static Task RemoveCachedAsync(CancellationToken cancellationToken = default) => Package.RemoveCachedAsync(cancellationToken);
+
+        public static class Textures
+        {
+            [AssetReference("da77be8e-57d7-4407-910e-fa918ca18b3d")]
+            public static TextureHandle Cultivation => new(new Guid("da77be8e-57d7-4407-910e-fa918ca18b3d"));
+            [AssetReference("beb59ac2-4886-4307-a4e8-3d93cf116079")]
+            public static TextureHandle Missions => new(new Guid("beb59ac2-4886-4307-a4e8-3d93cf116079"));
+        }
+
+    }
+
+    public static class FoundationBackgrounds
+    {
+        private static AssetPackage Package => AssetPackages.Get(new PackageId(new Guid("8f952f0c-e06a-6016-4474-bf0f19738d92")));
+        public static bool IsLoaded => Package.IsLoaded;
+        public static ValueTask<AssetPackageLease> LoadAsync(CancellationToken cancellationToken = default) => Package.LoadAsync(cancellationToken);
+
+        public static Task<RemotePackageStatus> GetRemoteStatusAsync(CancellationToken cancellationToken = default) => Package.GetRemoteStatusAsync(cancellationToken);
+        public static Task<RemotePackageStatus> CheckForUpdatesAsync(CancellationToken cancellationToken = default) => Package.CheckForUpdatesAsync(cancellationToken);
+        public static Task DownloadAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadAsync(progress, cancellationToken);
+        public static Task DownloadUpdateAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadUpdateAsync(progress, cancellationToken);
+        public static ValueTask<AssetPackageLease> EnsureLoadedAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.EnsureLoadedAsync(progress, cancellationToken);
+        public static Task<PackageCacheInfo> GetCacheInfoAsync(CancellationToken cancellationToken = default) => Package.GetCacheInfoAsync(cancellationToken);
+        public static Task RemoveCachedAsync(CancellationToken cancellationToken = default) => Package.RemoveCachedAsync(cancellationToken);
+
+        public static class Textures
+        {
+            [AssetReference("4a7a5ebb-e168-48fe-994b-696623c57c52")]
+            public static TextureHandle Cultivation => new(new Guid("4a7a5ebb-e168-48fe-994b-696623c57c52"));
+            [AssetReference("7824bdb7-79e8-425f-b33d-2eb5c66dc36b")]
+            public static TextureHandle Missions => new(new Guid("7824bdb7-79e8-425f-b33d-2eb5c66dc36b"));
+        }
+
+    }
+
+    public static class GoldenCoreBackgrounds
+    {
+        private static AssetPackage Package => AssetPackages.Get(new PackageId(new Guid("3a461268-ba65-d44c-1f6e-94d6d78c906c")));
+        public static bool IsLoaded => Package.IsLoaded;
+        public static ValueTask<AssetPackageLease> LoadAsync(CancellationToken cancellationToken = default) => Package.LoadAsync(cancellationToken);
+
+        public static Task<RemotePackageStatus> GetRemoteStatusAsync(CancellationToken cancellationToken = default) => Package.GetRemoteStatusAsync(cancellationToken);
+        public static Task<RemotePackageStatus> CheckForUpdatesAsync(CancellationToken cancellationToken = default) => Package.CheckForUpdatesAsync(cancellationToken);
+        public static Task DownloadAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadAsync(progress, cancellationToken);
+        public static Task DownloadUpdateAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadUpdateAsync(progress, cancellationToken);
+        public static ValueTask<AssetPackageLease> EnsureLoadedAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.EnsureLoadedAsync(progress, cancellationToken);
+        public static Task<PackageCacheInfo> GetCacheInfoAsync(CancellationToken cancellationToken = default) => Package.GetCacheInfoAsync(cancellationToken);
+        public static Task RemoveCachedAsync(CancellationToken cancellationToken = default) => Package.RemoveCachedAsync(cancellationToken);
+
+        public static class Textures
+        {
+            [AssetReference("0e2fe4e6-3b0e-4a25-9ac3-2ff8933ab955")]
+            public static TextureHandle Cultivation => new(new Guid("0e2fe4e6-3b0e-4a25-9ac3-2ff8933ab955"));
+            [AssetReference("f9be284b-f071-4ee3-97db-86ed4da1b640")]
+            public static TextureHandle Missions => new(new Guid("f9be284b-f071-4ee3-97db-86ed4da1b640"));
+        }
+
+    }
+
+    public static class ImmortalAscensionBackgrounds
+    {
+        private static AssetPackage Package => AssetPackages.Get(new PackageId(new Guid("a38cc685-6624-ddb1-cb4b-78e64e24db78")));
+        public static bool IsLoaded => Package.IsLoaded;
+        public static ValueTask<AssetPackageLease> LoadAsync(CancellationToken cancellationToken = default) => Package.LoadAsync(cancellationToken);
+
+        public static Task<RemotePackageStatus> GetRemoteStatusAsync(CancellationToken cancellationToken = default) => Package.GetRemoteStatusAsync(cancellationToken);
+        public static Task<RemotePackageStatus> CheckForUpdatesAsync(CancellationToken cancellationToken = default) => Package.CheckForUpdatesAsync(cancellationToken);
+        public static Task DownloadAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadAsync(progress, cancellationToken);
+        public static Task DownloadUpdateAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadUpdateAsync(progress, cancellationToken);
+        public static ValueTask<AssetPackageLease> EnsureLoadedAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.EnsureLoadedAsync(progress, cancellationToken);
+        public static Task<PackageCacheInfo> GetCacheInfoAsync(CancellationToken cancellationToken = default) => Package.GetCacheInfoAsync(cancellationToken);
+        public static Task RemoveCachedAsync(CancellationToken cancellationToken = default) => Package.RemoveCachedAsync(cancellationToken);
+
+        public static class Textures
+        {
+            [AssetReference("0d6e2036-74a6-4720-a4da-b45975d885c8")]
+            public static TextureHandle Cultivation => new(new Guid("0d6e2036-74a6-4720-a4da-b45975d885c8"));
+            [AssetReference("ac049c2c-0c57-4890-8f10-5399b2ed8268")]
+            public static TextureHandle Missions => new(new Guid("ac049c2c-0c57-4890-8f10-5399b2ed8268"));
+        }
+
+    }
+
+    public static class NascentSoulBackgrounds
+    {
+        private static AssetPackage Package => AssetPackages.Get(new PackageId(new Guid("f0ea19b7-30ca-4741-1f0d-c7d0578c7941")));
+        public static bool IsLoaded => Package.IsLoaded;
+        public static ValueTask<AssetPackageLease> LoadAsync(CancellationToken cancellationToken = default) => Package.LoadAsync(cancellationToken);
+
+        public static Task<RemotePackageStatus> GetRemoteStatusAsync(CancellationToken cancellationToken = default) => Package.GetRemoteStatusAsync(cancellationToken);
+        public static Task<RemotePackageStatus> CheckForUpdatesAsync(CancellationToken cancellationToken = default) => Package.CheckForUpdatesAsync(cancellationToken);
+        public static Task DownloadAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadAsync(progress, cancellationToken);
+        public static Task DownloadUpdateAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadUpdateAsync(progress, cancellationToken);
+        public static ValueTask<AssetPackageLease> EnsureLoadedAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.EnsureLoadedAsync(progress, cancellationToken);
+        public static Task<PackageCacheInfo> GetCacheInfoAsync(CancellationToken cancellationToken = default) => Package.GetCacheInfoAsync(cancellationToken);
+        public static Task RemoveCachedAsync(CancellationToken cancellationToken = default) => Package.RemoveCachedAsync(cancellationToken);
+
+        public static class Textures
+        {
+            [AssetReference("3fa9ea07-a23a-4251-84fa-e3f73b6d8c27")]
+            public static TextureHandle Cultivation => new(new Guid("3fa9ea07-a23a-4251-84fa-e3f73b6d8c27"));
+            [AssetReference("21b429a3-b0ae-4ff6-abc2-ed12438d5344")]
+            public static TextureHandle Missions => new(new Guid("21b429a3-b0ae-4ff6-abc2-ed12438d5344"));
+        }
+
+    }
+
+    public static class QiGatheringBackgrounds
+    {
+        private static AssetPackage Package => AssetPackages.Get(new PackageId(new Guid("7547cd0b-c580-7017-a505-9c539c765cef")));
+        public static bool IsLoaded => Package.IsLoaded;
+        public static ValueTask<AssetPackageLease> LoadAsync(CancellationToken cancellationToken = default) => Package.LoadAsync(cancellationToken);
+
+        public static Task<RemotePackageStatus> GetRemoteStatusAsync(CancellationToken cancellationToken = default) => Package.GetRemoteStatusAsync(cancellationToken);
+        public static Task<RemotePackageStatus> CheckForUpdatesAsync(CancellationToken cancellationToken = default) => Package.CheckForUpdatesAsync(cancellationToken);
+        public static Task DownloadAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadAsync(progress, cancellationToken);
+        public static Task DownloadUpdateAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadUpdateAsync(progress, cancellationToken);
+        public static ValueTask<AssetPackageLease> EnsureLoadedAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.EnsureLoadedAsync(progress, cancellationToken);
+        public static Task<PackageCacheInfo> GetCacheInfoAsync(CancellationToken cancellationToken = default) => Package.GetCacheInfoAsync(cancellationToken);
+        public static Task RemoveCachedAsync(CancellationToken cancellationToken = default) => Package.RemoveCachedAsync(cancellationToken);
+
+        public static class Textures
+        {
+            [AssetReference("54d876ff-b5f4-4448-897e-b2124261bd46")]
+            public static TextureHandle Cultivation => new(new Guid("54d876ff-b5f4-4448-897e-b2124261bd46"));
+            [AssetReference("5aacce0c-9a00-444d-a008-ef3d575cfefd")]
+            public static TextureHandle Missions => new(new Guid("5aacce0c-9a00-444d-a008-ef3d575cfefd"));
+        }
+
+    }
+
+    public static class SoulFormationBackgrounds
+    {
+        private static AssetPackage Package => AssetPackages.Get(new PackageId(new Guid("19b6ee19-7cf9-7a55-f2ca-58a204fbbb27")));
+        public static bool IsLoaded => Package.IsLoaded;
+        public static ValueTask<AssetPackageLease> LoadAsync(CancellationToken cancellationToken = default) => Package.LoadAsync(cancellationToken);
+
+        public static Task<RemotePackageStatus> GetRemoteStatusAsync(CancellationToken cancellationToken = default) => Package.GetRemoteStatusAsync(cancellationToken);
+        public static Task<RemotePackageStatus> CheckForUpdatesAsync(CancellationToken cancellationToken = default) => Package.CheckForUpdatesAsync(cancellationToken);
+        public static Task DownloadAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadAsync(progress, cancellationToken);
+        public static Task DownloadUpdateAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadUpdateAsync(progress, cancellationToken);
+        public static ValueTask<AssetPackageLease> EnsureLoadedAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.EnsureLoadedAsync(progress, cancellationToken);
+        public static Task<PackageCacheInfo> GetCacheInfoAsync(CancellationToken cancellationToken = default) => Package.GetCacheInfoAsync(cancellationToken);
+        public static Task RemoveCachedAsync(CancellationToken cancellationToken = default) => Package.RemoveCachedAsync(cancellationToken);
+
+        public static class Textures
+        {
+            [AssetReference("87b4d9a1-0925-4a73-9633-e2651d33f1df")]
+            public static TextureHandle Cultivation => new(new Guid("87b4d9a1-0925-4a73-9633-e2651d33f1df"));
+            [AssetReference("f381e10f-81d4-4384-b808-eb1ba4b2f392")]
+            public static TextureHandle Missions => new(new Guid("f381e10f-81d4-4384-b808-eb1ba4b2f392"));
+        }
+
+    }
+
+    public static class VoidRefinementBackgrounds
+    {
+        private static AssetPackage Package => AssetPackages.Get(new PackageId(new Guid("9ba620b0-0098-3ae3-d680-fc9ca4240ae8")));
+        public static bool IsLoaded => Package.IsLoaded;
+        public static ValueTask<AssetPackageLease> LoadAsync(CancellationToken cancellationToken = default) => Package.LoadAsync(cancellationToken);
+
+        public static Task<RemotePackageStatus> GetRemoteStatusAsync(CancellationToken cancellationToken = default) => Package.GetRemoteStatusAsync(cancellationToken);
+        public static Task<RemotePackageStatus> CheckForUpdatesAsync(CancellationToken cancellationToken = default) => Package.CheckForUpdatesAsync(cancellationToken);
+        public static Task DownloadAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadAsync(progress, cancellationToken);
+        public static Task DownloadUpdateAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.DownloadUpdateAsync(progress, cancellationToken);
+        public static ValueTask<AssetPackageLease> EnsureLoadedAsync(IProgress<PackageDownloadProgress>? progress = null, CancellationToken cancellationToken = default) => Package.EnsureLoadedAsync(progress, cancellationToken);
+        public static Task<PackageCacheInfo> GetCacheInfoAsync(CancellationToken cancellationToken = default) => Package.GetCacheInfoAsync(cancellationToken);
+        public static Task RemoveCachedAsync(CancellationToken cancellationToken = default) => Package.RemoveCachedAsync(cancellationToken);
+
+        public static class Textures
+        {
+            [AssetReference("38c5fc52-5e7a-489b-a5fc-33221e3336fb")]
+            public static TextureHandle Cultivation => new(new Guid("38c5fc52-5e7a-489b-a5fc-33221e3336fb"));
+            [AssetReference("201493bc-36d3-434a-a3b9-37b31670e961")]
+            public static TextureHandle Missions => new(new Guid("201493bc-36d3-434a-a3b9-37b31670e961"));
+        }
+
     }
 
     public static class Engine

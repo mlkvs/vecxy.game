@@ -1,0 +1,15 @@
+# Remote progression package. Replace cdn.example.com with the production CDN host.
+# `size` and `sha256` are intentionally absent: Vecxy writes both to packages.json.
+name: FoundationBackgrounds
+version: 1.0.0
+load: on-demand
+dependencies: []
+compression: balanced
+platforms:
+  android:
+    compression: fast
+remote:
+  manifest: https://cdn.example.com/hardcore-cultivation/packages.json
+  cache: persistent
+  update: check
+  integrity: sha256

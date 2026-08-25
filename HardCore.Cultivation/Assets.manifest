@@ -46,7 +46,7 @@
       "path": "Configs/Cultivation.yaml",
       "type": "Config",
       "name": "Cultivation",
-      "hash": "037ca81a2b8cd9352f5659431556fe213c056e5c414c4e23b8917b5643200a4c",
+      "hash": "f35d5904fcb1ad646091bc90e28f7869852445054d397e50c7e9dd78b9660650",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -453,162 +453,162 @@
     {
       "id": "da77be8e-57d7-4407-910e-fa918ca18b3d",
       "source": "Game",
-      "path": "Textures/Backgrounds/Cultivation/body-tempering.jpg",
+      "path": "Textures/Backgrounds/Stages/BodyTempering/Cultivation.jpg",
       "type": "Texture2D",
-      "name": "body-tempering",
+      "name": "Cultivation",
       "hash": "e83aded06067b30b3eb8069c4cf4b990050b5610549df9d9c8cd6f025d99bb79",
       "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
-    },
-    {
-      "id": "4a7a5ebb-e168-48fe-994b-696623c57c52",
-      "source": "Game",
-      "path": "Textures/Backgrounds/Cultivation/foundation.jpg",
-      "type": "Texture2D",
-      "name": "foundation",
-      "hash": "61099a87d89add1ad13274bcec2ab1bbbbd7a188b4c49105eaa5698c992112fc",
-      "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
-    },
-    {
-      "id": "0e2fe4e6-3b0e-4a25-9ac3-2ff8933ab955",
-      "source": "Game",
-      "path": "Textures/Backgrounds/Cultivation/golden-core.jpg",
-      "type": "Texture2D",
-      "name": "golden-core",
-      "hash": "be7dd50168b82d4074cf3175895911038bfc9644be0b8dd10c4c5acea4438eb9",
-      "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
-    },
-    {
-      "id": "0d6e2036-74a6-4720-a4da-b45975d885c8",
-      "source": "Game",
-      "path": "Textures/Backgrounds/Cultivation/immortal-ascension.jpg",
-      "type": "Texture2D",
-      "name": "immortal-ascension",
-      "hash": "803a524dd7e8e8fa1d641a2b3394a58944ba62828b7276fcf83d5ad74331fad2",
-      "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
-    },
-    {
-      "id": "3fa9ea07-a23a-4251-84fa-e3f73b6d8c27",
-      "source": "Game",
-      "path": "Textures/Backgrounds/Cultivation/nascent-soul.jpg",
-      "type": "Texture2D",
-      "name": "nascent-soul",
-      "hash": "64144a0e9d78dc8a6a459c79eeecbc74a582cd49592463e601ed1ef1a86fa96e",
-      "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
-    },
-    {
-      "id": "54d876ff-b5f4-4448-897e-b2124261bd46",
-      "source": "Game",
-      "path": "Textures/Backgrounds/Cultivation/qi-gathering.jpg",
-      "type": "Texture2D",
-      "name": "qi-gathering",
-      "hash": "0bdbe3964148df418b82a2fac1b43cc814621a8b0885789a0e5c3c5f7dbcd5f1",
-      "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
-    },
-    {
-      "id": "87b4d9a1-0925-4a73-9633-e2651d33f1df",
-      "source": "Game",
-      "path": "Textures/Backgrounds/Cultivation/soul-formation.jpg",
-      "type": "Texture2D",
-      "name": "soul-formation",
-      "hash": "224126435c91b4909e8345bbfda73bac23f60070bf8089f49e42719dcf0bcb2c",
-      "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
-    },
-    {
-      "id": "38c5fc52-5e7a-489b-a5fc-33221e3336fb",
-      "source": "Game",
-      "path": "Textures/Backgrounds/Cultivation/void-refinement.jpg",
-      "type": "Texture2D",
-      "name": "void-refinement",
-      "hash": "b36885d9fe922746f7549a22bfd09e597e4341f32db80f7087b3cf142340f107",
-      "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+      "package": "2122ce6c-5cf3-faac-4f89-33d7a2313a5d"
     },
     {
       "id": "beb59ac2-4886-4307-a4e8-3d93cf116079",
       "source": "Game",
-      "path": "Textures/Backgrounds/Missions/body-tempering.jpg",
+      "path": "Textures/Backgrounds/Stages/BodyTempering/Missions.jpg",
       "type": "Texture2D",
-      "name": "body-tempering",
+      "name": "Missions",
       "hash": "df21a653f86beb14c547e6a46bbb34330cabe564626a2646211c84b2a815fcc9",
       "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+      "package": "2122ce6c-5cf3-faac-4f89-33d7a2313a5d"
+    },
+    {
+      "id": "4a7a5ebb-e168-48fe-994b-696623c57c52",
+      "source": "Game",
+      "path": "Textures/Backgrounds/Stages/Foundation/Cultivation.jpg",
+      "type": "Texture2D",
+      "name": "Cultivation",
+      "hash": "61099a87d89add1ad13274bcec2ab1bbbbd7a188b4c49105eaa5698c992112fc",
+      "dependencies": [],
+      "package": "8f952f0c-e06a-6016-4474-bf0f19738d92"
     },
     {
       "id": "7824bdb7-79e8-425f-b33d-2eb5c66dc36b",
       "source": "Game",
-      "path": "Textures/Backgrounds/Missions/foundation.jpg",
+      "path": "Textures/Backgrounds/Stages/Foundation/Missions.jpg",
       "type": "Texture2D",
-      "name": "foundation",
+      "name": "Missions",
       "hash": "8a2687c54221bee5b1fbc819e017c654cb7db12aabfb19212adbb205d289ec6a",
       "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+      "package": "8f952f0c-e06a-6016-4474-bf0f19738d92"
+    },
+    {
+      "id": "0e2fe4e6-3b0e-4a25-9ac3-2ff8933ab955",
+      "source": "Game",
+      "path": "Textures/Backgrounds/Stages/GoldenCore/Cultivation.jpg",
+      "type": "Texture2D",
+      "name": "Cultivation",
+      "hash": "be7dd50168b82d4074cf3175895911038bfc9644be0b8dd10c4c5acea4438eb9",
+      "dependencies": [],
+      "package": "3a461268-ba65-d44c-1f6e-94d6d78c906c"
     },
     {
       "id": "f9be284b-f071-4ee3-97db-86ed4da1b640",
       "source": "Game",
-      "path": "Textures/Backgrounds/Missions/golden-core.jpg",
+      "path": "Textures/Backgrounds/Stages/GoldenCore/Missions.jpg",
       "type": "Texture2D",
-      "name": "golden-core",
+      "name": "Missions",
       "hash": "8bee00c431c5f172dcbba5ff2159784a5937a48b4d08c8dc531c207215d29475",
       "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+      "package": "3a461268-ba65-d44c-1f6e-94d6d78c906c"
+    },
+    {
+      "id": "0d6e2036-74a6-4720-a4da-b45975d885c8",
+      "source": "Game",
+      "path": "Textures/Backgrounds/Stages/ImmortalAscension/Cultivation.jpg",
+      "type": "Texture2D",
+      "name": "Cultivation",
+      "hash": "803a524dd7e8e8fa1d641a2b3394a58944ba62828b7276fcf83d5ad74331fad2",
+      "dependencies": [],
+      "package": "a38cc685-6624-ddb1-cb4b-78e64e24db78"
     },
     {
       "id": "ac049c2c-0c57-4890-8f10-5399b2ed8268",
       "source": "Game",
-      "path": "Textures/Backgrounds/Missions/immortal-ascension.jpg",
+      "path": "Textures/Backgrounds/Stages/ImmortalAscension/Missions.jpg",
       "type": "Texture2D",
-      "name": "immortal-ascension",
+      "name": "Missions",
       "hash": "d31283a7d470478e4046c4702547ec341aa64d9c9e96828135988496183feff4",
       "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+      "package": "a38cc685-6624-ddb1-cb4b-78e64e24db78"
+    },
+    {
+      "id": "3fa9ea07-a23a-4251-84fa-e3f73b6d8c27",
+      "source": "Game",
+      "path": "Textures/Backgrounds/Stages/NascentSoul/Cultivation.jpg",
+      "type": "Texture2D",
+      "name": "Cultivation",
+      "hash": "64144a0e9d78dc8a6a459c79eeecbc74a582cd49592463e601ed1ef1a86fa96e",
+      "dependencies": [],
+      "package": "f0ea19b7-30ca-4741-1f0d-c7d0578c7941"
     },
     {
       "id": "21b429a3-b0ae-4ff6-abc2-ed12438d5344",
       "source": "Game",
-      "path": "Textures/Backgrounds/Missions/nascent-soul.jpg",
+      "path": "Textures/Backgrounds/Stages/NascentSoul/Missions.jpg",
       "type": "Texture2D",
-      "name": "nascent-soul",
+      "name": "Missions",
       "hash": "2a2bd6a121089dfacdc3c40494e22139ad37912e4fbb000c95abd3a34d2bde12",
       "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+      "package": "f0ea19b7-30ca-4741-1f0d-c7d0578c7941"
+    },
+    {
+      "id": "54d876ff-b5f4-4448-897e-b2124261bd46",
+      "source": "Game",
+      "path": "Textures/Backgrounds/Stages/QiGathering/Cultivation.jpg",
+      "type": "Texture2D",
+      "name": "Cultivation",
+      "hash": "0bdbe3964148df418b82a2fac1b43cc814621a8b0885789a0e5c3c5f7dbcd5f1",
+      "dependencies": [],
+      "package": "7547cd0b-c580-7017-a505-9c539c765cef"
     },
     {
       "id": "5aacce0c-9a00-444d-a008-ef3d575cfefd",
       "source": "Game",
-      "path": "Textures/Backgrounds/Missions/qi-gathering.jpg",
+      "path": "Textures/Backgrounds/Stages/QiGathering/Missions.jpg",
       "type": "Texture2D",
-      "name": "qi-gathering",
+      "name": "Missions",
       "hash": "15022840b356ae42ad9f1174c7db72d46152f20d0a25ae485fca2be7e7821b44",
       "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+      "package": "7547cd0b-c580-7017-a505-9c539c765cef"
+    },
+    {
+      "id": "87b4d9a1-0925-4a73-9633-e2651d33f1df",
+      "source": "Game",
+      "path": "Textures/Backgrounds/Stages/SoulFormation/Cultivation.jpg",
+      "type": "Texture2D",
+      "name": "Cultivation",
+      "hash": "224126435c91b4909e8345bbfda73bac23f60070bf8089f49e42719dcf0bcb2c",
+      "dependencies": [],
+      "package": "19b6ee19-7cf9-7a55-f2ca-58a204fbbb27"
     },
     {
       "id": "f381e10f-81d4-4384-b808-eb1ba4b2f392",
       "source": "Game",
-      "path": "Textures/Backgrounds/Missions/soul-formation.jpg",
+      "path": "Textures/Backgrounds/Stages/SoulFormation/Missions.jpg",
       "type": "Texture2D",
-      "name": "soul-formation",
+      "name": "Missions",
       "hash": "a003eb11a93418483bcf4c201df354362002124fef89b448a2b14db8bf561a12",
       "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+      "package": "19b6ee19-7cf9-7a55-f2ca-58a204fbbb27"
+    },
+    {
+      "id": "38c5fc52-5e7a-489b-a5fc-33221e3336fb",
+      "source": "Game",
+      "path": "Textures/Backgrounds/Stages/VoidRefinement/Cultivation.jpg",
+      "type": "Texture2D",
+      "name": "Cultivation",
+      "hash": "b36885d9fe922746f7549a22bfd09e597e4341f32db80f7087b3cf142340f107",
+      "dependencies": [],
+      "package": "9ba620b0-0098-3ae3-d680-fc9ca4240ae8"
     },
     {
       "id": "201493bc-36d3-434a-a3b9-37b31670e961",
       "source": "Game",
-      "path": "Textures/Backgrounds/Missions/void-refinement.jpg",
+      "path": "Textures/Backgrounds/Stages/VoidRefinement/Missions.jpg",
       "type": "Texture2D",
-      "name": "void-refinement",
+      "name": "Missions",
       "hash": "e9ebbcb3adbc7188fcd787da62c3fbcf97455a8f4b49fd16ff4fba514e345afc",
       "dependencies": [],
-      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+      "package": "9ba620b0-0098-3ae3-d680-fc9ca4240ae8"
     },
     {
       "id": "e81891d1-b1b5-48cb-b883-a2515161b0c5",
@@ -2661,6 +2661,134 @@
       "dependencies": [],
       "version": "1.0.0",
       "remote": null
+    },
+    {
+      "id": "2122ce6c-5cf3-faac-4f89-33d7a2313a5d",
+      "name": "BodyTemperingBackgrounds",
+      "descriptor": "Textures/Backgrounds/Stages/BodyTempering/body-tempering.vpack",
+      "load": 0,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": null
+    },
+    {
+      "id": "8f952f0c-e06a-6016-4474-bf0f19738d92",
+      "name": "FoundationBackgrounds",
+      "descriptor": "Textures/Backgrounds/Stages/Foundation/foundation.vpack",
+      "load": 1,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": {
+        "manifest": "https://cdn.example.com/hardcore-cultivation/packages.json",
+        "url": null,
+        "cache": 0,
+        "update": 1,
+        "integrity": 0,
+        "size": null,
+        "sha256": null
+      }
+    },
+    {
+      "id": "3a461268-ba65-d44c-1f6e-94d6d78c906c",
+      "name": "GoldenCoreBackgrounds",
+      "descriptor": "Textures/Backgrounds/Stages/GoldenCore/golden-core.vpack",
+      "load": 1,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": {
+        "manifest": "https://cdn.example.com/hardcore-cultivation/packages.json",
+        "url": null,
+        "cache": 0,
+        "update": 1,
+        "integrity": 0,
+        "size": null,
+        "sha256": null
+      }
+    },
+    {
+      "id": "a38cc685-6624-ddb1-cb4b-78e64e24db78",
+      "name": "ImmortalAscensionBackgrounds",
+      "descriptor": "Textures/Backgrounds/Stages/ImmortalAscension/immortal-ascension.vpack",
+      "load": 1,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": {
+        "manifest": "https://cdn.example.com/hardcore-cultivation/packages.json",
+        "url": null,
+        "cache": 0,
+        "update": 1,
+        "integrity": 0,
+        "size": null,
+        "sha256": null
+      }
+    },
+    {
+      "id": "f0ea19b7-30ca-4741-1f0d-c7d0578c7941",
+      "name": "NascentSoulBackgrounds",
+      "descriptor": "Textures/Backgrounds/Stages/NascentSoul/nascent-soul.vpack",
+      "load": 1,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": {
+        "manifest": "https://cdn.example.com/hardcore-cultivation/packages.json",
+        "url": null,
+        "cache": 0,
+        "update": 1,
+        "integrity": 0,
+        "size": null,
+        "sha256": null
+      }
+    },
+    {
+      "id": "7547cd0b-c580-7017-a505-9c539c765cef",
+      "name": "QiGatheringBackgrounds",
+      "descriptor": "Textures/Backgrounds/Stages/QiGathering/qi-gathering.vpack",
+      "load": 1,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": {
+        "manifest": "https://cdn.example.com/hardcore-cultivation/packages.json",
+        "url": null,
+        "cache": 0,
+        "update": 1,
+        "integrity": 0,
+        "size": null,
+        "sha256": null
+      }
+    },
+    {
+      "id": "19b6ee19-7cf9-7a55-f2ca-58a204fbbb27",
+      "name": "SoulFormationBackgrounds",
+      "descriptor": "Textures/Backgrounds/Stages/SoulFormation/soul-formation.vpack",
+      "load": 1,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": {
+        "manifest": "https://cdn.example.com/hardcore-cultivation/packages.json",
+        "url": null,
+        "cache": 0,
+        "update": 1,
+        "integrity": 0,
+        "size": null,
+        "sha256": null
+      }
+    },
+    {
+      "id": "9ba620b0-0098-3ae3-d680-fc9ca4240ae8",
+      "name": "VoidRefinementBackgrounds",
+      "descriptor": "Textures/Backgrounds/Stages/VoidRefinement/void-refinement.vpack",
+      "load": 1,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": {
+        "manifest": "https://cdn.example.com/hardcore-cultivation/packages.json",
+        "url": null,
+        "cache": 0,
+        "update": 1,
+        "integrity": 0,
+        "size": null,
+        "sha256": null
+      }
     },
     {
       "id": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e",

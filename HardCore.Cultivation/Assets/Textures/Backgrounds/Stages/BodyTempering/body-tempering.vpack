@@ -1,0 +1,10 @@
+# First-stage backgrounds ship with the game, so a new player never needs a download.
+# This package contains both the cultivation and mission variants for the stage.
+name: BodyTemperingBackgrounds
+version: 1.0.0
+load: startup
+dependencies: []
+compression: balanced
+platforms:
+  android:
+    compression: fast

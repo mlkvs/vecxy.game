@@ -1,0 +1,14 @@
+# Downloaded on first entry into the Void Refinement stage and kept between launches.
+name: VoidRefinementBackgrounds
+version: 1.0.0
+load: on-demand
+dependencies: []
+compression: balanced
+platforms:
+  android:
+    compression: fast
+remote:
+  manifest: https://cdn.example.com/hardcore-cultivation/packages.json
+  cache: persistent
+  update: check
+  integrity: sha256

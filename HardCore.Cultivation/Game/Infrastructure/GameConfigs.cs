@@ -352,8 +352,6 @@ public sealed class CultivationStageConfig
 {
     public string Id { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;
-    public string CultivationBackgroundTexture { get; init; } = "Textures/Background.jpg";
-    public string MissionBackgroundTexture { get; init; } = "Textures/Background_Missions.jpg";
     public decimal RecursiveCoefficient { get; init; }
     public decimal SpiritualPowerMultiplier { get; init; } = 1m;
     public CharacterStats StatsPerLevel { get; init; }
@@ -520,10 +518,6 @@ public sealed class GameDatabase
             Cultivation.Stages.Count == 0 || Cultivation.Stages.Select(stage => stage.Id).Distinct(StringComparer.Ordinal).Count() != Cultivation.Stages.Count ||
             Cultivation.Stages.Any(stage => stage.RecursiveCoefficient <= 0m || stage.SpiritualPowerMultiplier <= 0m))
             throw new InvalidDataException("Cultivation coefficients and initial costs are invalid.");
-        if (Cultivation.Stages.Any(stage =>
-                string.IsNullOrWhiteSpace(stage.CultivationBackgroundTexture) ||
-                string.IsNullOrWhiteSpace(stage.MissionBackgroundTexture)))
-            throw new InvalidDataException("Every cultivation stage must define cultivation and mission backgrounds.");
         if (_items.Count == 0 || _missions.Count == 0)
             throw new InvalidDataException("Items and missions cannot be empty.");
         if (MissionBoardSlotCount <= 0)

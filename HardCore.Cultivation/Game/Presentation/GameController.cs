@@ -887,7 +887,7 @@ public sealed class GameController(
         SyncActivityScene();
     }
 
-    private void SyncActivityScene()
+    private async void SyncActivityScene()
     {
         var objects = scenes.ActiveScene?.Objects;
         if (objects is null)
@@ -904,7 +904,22 @@ public sealed class GameController(
 
         var missionMode = _state.ActivityMode == ActivityMode.Missions;
         var stageIndex = Math.Clamp(_state.Character.Cultivation.StageIndex, 0, database.Cultivation.Stages.Count - 1);
-        _backgroundVisual?.SetStage(database.Cultivation.Stages[stageIndex]);
+        if (_backgroundVisual is not null)
+        {
+            try
+            {
+                await _backgroundVisual.SetStageAsync(database.Cultivation.Stages[stageIndex]);
+            }
+            catch (OperationCanceledException)
+            {
+                // A newer stage request superseded this one.
+            }
+            catch (RemotePackageException exception)
+            {
+                // Keep the previous stage visible while offline or when the CDN is unavailable.
+                Console.Error.WriteLine($"[Backgrounds] Could not acquire stage package: {exception.Message}");
+            }
+        }
         _characterVisual?.SetMissionMode(missionMode);
         _backgroundVisual?.SetMissionMode(missionMode);
     }

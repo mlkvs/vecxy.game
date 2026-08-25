@@ -113,9 +113,10 @@ application namespace — через `ApplicationId`.
 ```text
 Build/Windows/
 ├── game.vpack
-├── dlc.vpack
 ├── packages.manifest   # bundled runtime discovery
-└── packages.json       # remote distribution manifest
+├── packages.json       # remote distribution manifest
+└── Remote/
+    └── dlc.vpack       # upload artifact, never copied into the application
 ```
 
 `packages.json` содержит фактические version, PackageId, platform, architecture,
@@ -153,3 +154,22 @@ platform output можно загрузить на любой HTTP/CDN provider.
 ```
 
 Relative URLs resolve against manifest URL. Неизвестная schema version отклоняется.
+
+## HardCore Cultivation stage backgrounds
+
+Progression backgrounds use one package per stage. Each package contains the
+`Cultivation` and `Missions` variants, so changing the activity mode never starts
+another download. `BodyTemperingBackgrounds` has no `remote` section and ships in
+the application. Every later stage uses `on-demand`, `persistent` cache and the
+shared remote manifest.
+
+Before deployment, replace `cdn.example.com` in the stage `.vpack` descriptors
+with the production CDN host. Build the target platform, then upload
+`Build/<Platform>/packages.json` and the contents of `Build/<Platform>/Remote/`
+while preserving the `Remote/` relative path. The CLI calculates package `size`
+and `sha256`; those values must not be maintained manually in YAML.
+
+At runtime `Background.SetStageAsync` calls the generated typed package API. On
+the first visit to a later stage Vecxy downloads, verifies, atomically activates
+and caches that stage package. If the network is unavailable, the previous stage
+background remains visible and the game can retry on the next scene sync.
