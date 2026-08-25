@@ -582,3 +582,8 @@ audio.Play(Assets.Sounds.UiClick);
 ## VPack packages
 
 Для independently loadable DLC, уровней и локализаций Asset Pipeline поддерживает folder-based `.vpack` descriptors, binary block containers и typed package API. Полный workflow, YAML format, CLI и runtime lifetime описаны в [VPack.md](VPack.md).
+
+Ресурсы движка собираются в обязательный startup-пакет `engine.vpack`, настроенный
+файлом `Engine/Vecxy/Code/Vecxy.Engine/Assets/engine.vpack`. Production packages и
+`packages.manifest` размещаются прямо в корне platform output; отдельные папки
+`Packages/` и runtime `Assets/` для них не создаются.

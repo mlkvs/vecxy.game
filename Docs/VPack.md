@@ -35,6 +35,12 @@ platforms:
 
 Корневой descriptor заменяет настройки неявного `Game`, а не создаёт второй пакет. Для него имя `Game` и режим `startup` обязательны; compression, platform overrides и зависимости используют тот же формат, что и остальные packages.
 
+Ресурсы самого движка настраиваются отдельно в
+`Engine/Vecxy/Code/Vecxy.Engine/Assets/engine.vpack`. Корневая папка engine assets
+образует обязательный startup-пакет `Engine`; он получает стабильный `PackageId` и
+собирается в `engine.vpack`. В коде типизированный API остаётся
+`Assets.Engine.Shaders.*`, `Assets.Engine.Textures.*` и так далее.
+
 После scan/generate основной ассет доступен как `Assets.Textures.Player`, а DLC — как `Assets.DLC.Models.Car` и `Assets.DLC.Textures.Car`.
 
 ```csharp
@@ -136,12 +142,13 @@ IDE использует конфигурацию сборки автомати�
 Output изолирован по проекту и платформе:
 
 ```text
-HardCore.Cultivation/Build/Windows/Packages/game.vpack
-HardCore.Cultivation/Build/Windows/Packages/dlc.vpack
-HardCore.Cultivation/Build/Windows/Packages/packages.manifest
+HardCore.Cultivation/Build/Windows/game.vpack
+HardCore.Cultivation/Build/Windows/engine.vpack
+HardCore.Cultivation/Build/Windows/dlc.vpack
+HardCore.Cultivation/Build/Windows/packages.manifest
 ```
 
-`packages.manifest` является единственным runtime-каталогом packages; runtime не сканирует директории. MSBuild включает Packages в desktop publish и Android assets.
+`packages.manifest` является единственным runtime-каталогом packages; runtime не сканирует директории. В production output файлы `.vpack` и manifest лежат рядом с executable, без каталогов `Assets/Packages` и `Packages`. На Android они лежат в корне packaged assets и извлекаются в единый runtime-каталог. Исходная папка `Assets/` используется только при разработке и не копируется в Release, когда включена VPack-упаковка.
 
 ## Binary format
 
