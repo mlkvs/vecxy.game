@@ -125,6 +125,14 @@ dotnet run --project Engine/Vecxy/tools/Vecxy.Cli -- \
 
 `assets packages` показывает membership, load mode, зависимости и resolved compression. Внутренняя команда `assets pack --platform ...` выполняет prepare и создаёт только packages; её использует `build.sh`/`build.cmd`.
 
+IDE использует конфигурацию сборки автоматически:
+
+- `Debug` выполняет scan/generate/analyze/validate и работает с исходным `Assets/` для быстрого запуска и hot reload;
+- `Release` перед компиляцией собирает VPack для выбранной `VecxyPlatform`, добавляет packages в output и на Android восстанавливает platform graph после desktop asset tools;
+- поведение можно диагностически отключить свойством `-p:VecxyBuildVPack=false`, но для production Release делать этого не следует.
+
+Таким образом, обычные **Build/Run в Release из IDE**, `dotnet build -c Release` и project-local `build.cmd`/`build.sh` используют бинарные packages. Wrapper дополнительно выполняет publish и release signing.
+
 Output изолирован по проекту и платформе:
 
 ```text
