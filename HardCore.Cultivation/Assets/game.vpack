@@ -6,6 +6,9 @@
 # Для descriptor в корне Assets/ разрешено только имя Game.
 name: Game
 
+# Версия содержимого пакета в формате major.minor.patch. Это не версия бинарного VPack format.
+version: 1.0.0
+
 # Когда загружать пакет:
 #   startup   — автоматически при запуске игры;
 #   on-demand — только через await Assets.<Package>.LoadAsync().
@@ -19,6 +22,21 @@ load: startup
 #   - Localization
 # Game не должен зависеть от on-demand DLC, поэтому сейчас список пуст.
 dependencies: []
+
+# Remote delivery обычно применяется к DLC/on-demand пакетам, а Game поставляется
+# вместе с приложением. Полный шаблон (оставлен комментариями и поэтому выключен):
+# remote:
+#   # Выберите ровно одно: общий manifest (рекомендуется) или прямой url.
+#   manifest: https://cdn.example.com/game/packages.json
+#   # url: https://cdn.example.com/{platform}/{name}-{version}.vpack
+#   # Для direct URL можно указать ожидаемые байты и SHA-256:
+#   # size: 123456789
+#   # sha256: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+#   # cache: persistent | session | none
+#   cache: persistent
+#   # update: manual | check | always
+#   update: check
+#   integrity: sha256
 
 # Сжатие по умолчанию для платформ без override ниже.
 # Короткая форма использует один из готовых profiles:

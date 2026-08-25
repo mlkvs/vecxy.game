@@ -2658,14 +2658,18 @@
       "name": "Game",
       "descriptor": "game.vpack",
       "load": 0,
-      "dependencies": []
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": null
     },
     {
       "id": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e",
       "name": "Engine",
       "descriptor": "engine.vpack",
       "load": 0,
-      "dependencies": []
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": null
     }
   ]
 }
