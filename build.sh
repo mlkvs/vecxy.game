@@ -169,6 +169,24 @@ common_args=(
     "-p:BuildDefines=$build_defines"
 )
 
+if [[ "$platform" == android ]]; then
+    vpack_platform=android
+    vpack_output_platform=Android
+elif [[ "$desktop_runtime" == win-* ]]; then
+    vpack_platform=windows
+    vpack_output_platform=Windows
+elif [[ "$desktop_runtime" == linux-* ]]; then
+    vpack_platform=linux
+    vpack_output_platform=Linux
+else
+    fail "VPack currently supports desktop runtimes win-* and linux-*; got: $desktop_runtime"
+fi
+
+dotnet run --project "$VECXY_CLI_PROJECT" -- \
+    --project "$ROOT_DIR/HardCore.Cultivation" \
+    assets pack --platform "$vpack_platform"
+common_args+=("-p:VecxyPackagesDirectory=$ROOT_DIR/HardCore.Cultivation/Build/$vpack_output_platform/Packages")
+
 if [[ "$platform" == desktop ]]; then
     [[ -n "$desktop_runtime" ]] || fail "desktop.runtimeIdentifier is required for a desktop build"
     dotnet publish "$PROJECT" \
@@ -184,12 +202,6 @@ if [[ "$platform" == desktop ]]; then
 fi
 
 package_dir="$ROOT_DIR/HardCore.Cultivation/bin/$configuration/net10.0-android/android-arm64"
-
-# The asset CLI is a desktop tool and shares engine obj directories with the game.
-# Run it before Android restore so its own build cannot replace Android NuGet targets.
-dotnet run --project "$VECXY_CLI_PROJECT" -- \
-    --project "$ROOT_DIR/HardCore.Cultivation" \
-    assets prepare
 
 # Restore the complete project-reference graph for Android explicitly. Some engine
 # libraries select their target framework from VecxyPlatform, and relying on the

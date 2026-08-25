@@ -7,7 +7,8 @@
       "type": "Config",
       "name": "Alchemy",
       "hash": "2a3ac08d0994d28f26958aaf25e2a5b30b95a5f35b15cf9d4dc5ecc9985c78e5",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a501e619-9e73-4ea5-aa8f-527d818a27ae",
@@ -16,7 +17,8 @@
       "type": "Config",
       "name": "Analytics",
       "hash": "8f09ca553f08e93686027d6707aba166a95a76c2e9bea382587e118c28598139",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d9d8a561-a323-4d51-a70a-cebb169a6356",
@@ -24,8 +26,9 @@
       "path": "Configs/Build.yaml",
       "type": "Config",
       "name": "Build",
-      "hash": "4a08eec4cf695c024e92ebe55a307e7fa19043b2e08364f5ec7948caf66f7a38",
-      "dependencies": []
+      "hash": "480dc993c3115d62607eebc9210a3c758e10d9d8adf93c87fedc0d4ec3d98280",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "c2ade27b-629d-4569-af6d-8700c4d5d1cf",
@@ -34,7 +37,8 @@
       "type": "Config",
       "name": "Combat",
       "hash": "e5cc9851e27f92f903b32b2b9544130cc8a1617da139b6d3a118d09f92ea728e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "3f877c25-fcc6-446e-a3da-b56ac65868aa",
@@ -43,7 +47,8 @@
       "type": "Config",
       "name": "Cultivation",
       "hash": "037ca81a2b8cd9352f5659431556fe213c056e5c414c4e23b8917b5643200a4c",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "0c8eea6b-6563-4b20-ba58-084dd1e6d600",
@@ -52,7 +57,8 @@
       "type": "Config",
       "name": "GameBalance",
       "hash": "fe3c92756a6bc4b72bd8180ed16fae3716b086997b213c59bcdc3efeaa8b6020",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "ead6ba0d-04fb-4f17-af4b-9855d401d2dd",
@@ -61,7 +67,8 @@
       "type": "Config",
       "name": "Items",
       "hash": "6ccf9ded62f8d99560421ed2899b78238602b1cff9844f66b05e7ee5c4e5e52c",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "4b2cad11-5191-48aa-92fd-64d549322668",
@@ -70,7 +77,8 @@
       "type": "Config",
       "name": "Missions",
       "hash": "211b347c89e6212f0c99f85b7897e656dbac93fcb3401882e8236747691b2b10",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "c5948dee-d8c9-45a4-bc98-727c86b21ea2",
@@ -79,7 +87,8 @@
       "type": "Config",
       "name": "Monsters",
       "hash": "d12640963a08ef82b116468da269979719e17a9ca2581c7c0c5c8d32b87e0673",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "99ddc38b-3314-4409-9080-e4c8859f4bab",
@@ -88,7 +97,8 @@
       "type": "Config",
       "name": "Rarities",
       "hash": "0d331be0f7a3810b85a0e7d41912bc236b17a2a17bd8c00a12ea03b89a513122",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "599a4f5a-0f66-4d1d-9c92-85c7bbff77bd",
@@ -97,7 +107,8 @@
       "type": "Config",
       "name": "Shop",
       "hash": "f8da0e9446e9f13905437550324e267b80ffb0a589b52f7014067632ec4ab354",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "8ef8fde1-39e7-4f64-ab7a-dc74bcb65fb3",
@@ -106,7 +117,8 @@
       "type": "Config",
       "name": "UI",
       "hash": "6f7c8bdd059ba24eb6a3b896ea9989676ef7eb2f68c9fca000dfdd2040dcbde2",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "ab8fe378-904f-4768-8f08-58224260ce65",
@@ -115,7 +127,8 @@
       "type": "Asset",
       "name": "Rubik-SemiBold",
       "hash": "21f6164f7244cc9311cf1ad8bc0be2ecbe0bf957d8ebc0d313462a1bf64d9b7c",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "1ef42ea1-6f86-405c-8831-ac4b2678e642",
@@ -124,7 +137,8 @@
       "type": "Sound",
       "name": "Main",
       "hash": "d30c110dff15374de860e95b27191175ea9f70ac2efc699e1621efb806b20299",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "47e95478-4672-4913-896d-375ab91a282a",
@@ -133,7 +147,8 @@
       "type": "Sound",
       "name": "breakthrough",
       "hash": "6423b3f6291745a8359a957d02cbe62e53bc804367a65c4ac2027e67381fb654",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2a40b232-a3f3-49ba-9696-70c2d73751b2",
@@ -142,7 +157,8 @@
       "type": "Sound",
       "name": "cultivate",
       "hash": "2be61295e0da2671a675111cc702b8b4bf979ce68a021d544b533f4790225dc1",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "b238a59b-b494-4870-aff9-6be1bc2ed138",
@@ -151,7 +167,8 @@
       "type": "Sound",
       "name": "death",
       "hash": "ccc7360e5faf5844d4d7a3c02868dd8270b3e767287b564a7a2bd2b44fa2bfea",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "254f48a6-fb0e-4660-a230-017824e31e48",
@@ -160,7 +177,8 @@
       "type": "Sound",
       "name": "item",
       "hash": "ec7841ccad9d21e68e24c3d1ed4776d4cefd31626cd582c128a2009c674182f0",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "756a83a7-040a-46bd-99c4-ee7bfb094b53",
@@ -169,7 +187,8 @@
       "type": "Sound",
       "name": "mission-complete",
       "hash": "1e53770527251117e090ecfffd2b64b9c89c3f89d2a380086d0fade27b68848a",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "5ff51c67-beec-474a-86f6-10dfaa2d1e84",
@@ -178,7 +197,8 @@
       "type": "Sound",
       "name": "ui-click",
       "hash": "935739314b44c30afcec4c835c9908f25aa8e311c86b0391240ea0c6c04127fd",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "8ee851e1-ab5c-44df-8274-65380af66def",
@@ -187,7 +207,8 @@
       "type": "Texture2D",
       "name": "AppIcon",
       "hash": "6c531d780fba093c85cfd26ed01d9d7a5ad2aa26465f57c5b787738762df1822",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "69020bba-de61-4ffa-9350-06d53449b6c0",
@@ -196,7 +217,8 @@
       "type": "Texture2D",
       "name": "Background_Missions",
       "hash": "ae68c3be13a36524c70406923a20fe95f0c8c19d645b5cf7bd856e63bf1bd825",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2bfd3154-decc-4a0a-9131-e29cbb7d175c",
@@ -205,7 +227,8 @@
       "type": "Texture2D",
       "name": "Background",
       "hash": "fb2e39dfb13ebba69b11b4dd367ad2ad90366f4040b70bf129ec66af45ee9b09",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "ca8ed694-b241-4a6d-b1c9-2b753df2b86c",
@@ -214,7 +237,8 @@
       "type": "Texture2D",
       "name": "1",
       "hash": "18e83ea73e134045620f73cc26111ea2c1718d8ff08d79082a4ef45f4002db20",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "4d334f77-c259-4b81-a5fd-31254eefa80c",
@@ -223,7 +247,8 @@
       "type": "Texture2D",
       "name": "2",
       "hash": "b7c0fd8d91a38dfbcf3684dac82557c8419f2a17c951b827b62e4b9ff4bb8d9e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "72a8eb4a-9abc-482d-8417-129ee4e411e5",
@@ -232,7 +257,8 @@
       "type": "Texture2D",
       "name": "3",
       "hash": "cc392e821b2055415f7948dfef5c122c88fff7fa0c285800d1199df6684ec8b4",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "23d1479a-d527-4cdd-bec7-2e6507666889",
@@ -241,7 +267,8 @@
       "type": "Texture2D",
       "name": "4",
       "hash": "6a8fa7e7c987d56367e9546f01de19c2a6b3a85e3941bb8de0ec7f5268ecddcc",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "68f55ec3-6951-41b6-9019-5e166bb4196a",
@@ -250,7 +277,8 @@
       "type": "Texture2D",
       "name": "5",
       "hash": "6c078557aee1e6989f6ba45cd5722664eaa7e2df9a7cf53ae781697978e1f857",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "b55c9e17-9bbe-45c1-8872-7cb16665fe02",
@@ -259,7 +287,8 @@
       "type": "Texture2D",
       "name": "1",
       "hash": "5df37b8319351925330d1ebae0f121dfa03dfe86859857ba25da40ec1f6a8c03",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "27ece9b6-2fc9-49a8-84aa-4bbc8161d339",
@@ -268,7 +297,8 @@
       "type": "Texture2D",
       "name": "2",
       "hash": "4c00bc9cef968aaf2b811fb601631137e5ac694ef9f7fe967dfcc48b27928388",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "32177a5a-6ecc-4d3f-a71f-92d916d3818b",
@@ -277,7 +307,8 @@
       "type": "Texture2D",
       "name": "3",
       "hash": "497c5dc0ec2fdaefadc31fc8fa49edf048ba766972b2ed5ffe2e052c03c748e9",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "900239b6-cb16-4f91-a7ea-6c7171114c8a",
@@ -286,7 +317,8 @@
       "type": "Texture2D",
       "name": "4",
       "hash": "c38ea91394efaa982212878a3b6811d9e350708e6f162ca4fddf76cf7b6e6aaa",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a7f95d31-ffdc-43a2-aa3c-ac2771946fcc",
@@ -295,7 +327,8 @@
       "type": "Texture2D",
       "name": "5",
       "hash": "43e443bb270644da72e3e9dafd9e365ae45bc56dabae72776ceb1eb33b0bec72",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "cc198ac3-de0b-4619-96e7-d25a7c48032e",
@@ -304,7 +337,8 @@
       "type": "Texture2D",
       "name": "6",
       "hash": "e91e98f5fab1b9b23063235a754138490bfa617b4cac2793e58603559f3e2596",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "29934917-bdc7-428e-80a7-f60ce1cd9665",
@@ -313,7 +347,8 @@
       "type": "Texture2D",
       "name": "1",
       "hash": "8f937bf91aeba107c3809d03a8ce3dc55a8345ff4b364741e800ea515846b189",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "641bf4e9-3f2f-4ab2-929a-dd3fdba1674d",
@@ -322,7 +357,8 @@
       "type": "Texture2D",
       "name": "2",
       "hash": "2e2c439a3693baec5dc04d32cee15c86ee98b6b2dde0a020bfa6c2ff77a89c77",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f493bbab-fd23-4381-bfd3-cc8184140780",
@@ -331,7 +367,8 @@
       "type": "Texture2D",
       "name": "3",
       "hash": "3ae9d92ea0731e9e7fd425aaf9fec6cdee9a99dc317e354854c318b3a55326c9",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2f30441f-6083-4371-b331-eb1e4c3b0db6",
@@ -340,7 +377,8 @@
       "type": "Texture2D",
       "name": "4",
       "hash": "b7afb336027bf03fe9409bd6ccb03be870ea210e8f1f13004c0cac418f57dde0",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "cecb699a-1f6c-4e0a-855f-56d0fba46004",
@@ -349,7 +387,8 @@
       "type": "Texture2D",
       "name": "5",
       "hash": "0fee6ef15e68e57fe4c265699095a637e742ae1b156e9bc7fcc053668ce0bb3f",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d426e76c-848c-4280-95a9-5b76a63e2b68",
@@ -358,7 +397,8 @@
       "type": "Texture2D",
       "name": "1",
       "hash": "29feafee1f5ba24ea94eca704825da3e1961e5147d8f1555678bc2dc64453b48",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "59c104b6-14db-483e-9f8b-18aba79c2821",
@@ -367,7 +407,8 @@
       "type": "Texture2D",
       "name": "2",
       "hash": "e79847057d53b34be6554d837bbab57793767f7546be8215be5847df5cbeeb5b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "86b97537-f6c6-4bcf-9399-37ad9992804e",
@@ -376,7 +417,8 @@
       "type": "Texture2D",
       "name": "3",
       "hash": "6ad395906c7220641e1e4e8814daabf929750c49a61a5f6aaf8df43cdc82db8d",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "1861b590-674d-48ce-ba9c-6e73c107da02",
@@ -385,7 +427,8 @@
       "type": "Texture2D",
       "name": "4",
       "hash": "44fbedfc915fb18c261b36f23a6405ccd92264b79228347751a9ccd17e34f47d",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "34e594d9-8ca2-4e08-80be-1a4e54fc8e8b",
@@ -394,7 +437,8 @@
       "type": "Texture2D",
       "name": "5",
       "hash": "a0fe9a47dea3f110d3b1860c99c331d275a09dc0229a85b266458d181cc09a60",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e8f24f00-b5f6-4d6b-a12b-971ff13da991",
@@ -403,7 +447,8 @@
       "type": "Texture2D",
       "name": "6",
       "hash": "b7f75e3a845ad37b950a4374b631df1ef811ad6d40cdebac2098764f48c85956",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "da77be8e-57d7-4407-910e-fa918ca18b3d",
@@ -412,7 +457,8 @@
       "type": "Texture2D",
       "name": "body-tempering",
       "hash": "e83aded06067b30b3eb8069c4cf4b990050b5610549df9d9c8cd6f025d99bb79",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "4a7a5ebb-e168-48fe-994b-696623c57c52",
@@ -421,7 +467,8 @@
       "type": "Texture2D",
       "name": "foundation",
       "hash": "61099a87d89add1ad13274bcec2ab1bbbbd7a188b4c49105eaa5698c992112fc",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "0e2fe4e6-3b0e-4a25-9ac3-2ff8933ab955",
@@ -430,7 +477,8 @@
       "type": "Texture2D",
       "name": "golden-core",
       "hash": "be7dd50168b82d4074cf3175895911038bfc9644be0b8dd10c4c5acea4438eb9",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "0d6e2036-74a6-4720-a4da-b45975d885c8",
@@ -439,7 +487,8 @@
       "type": "Texture2D",
       "name": "immortal-ascension",
       "hash": "803a524dd7e8e8fa1d641a2b3394a58944ba62828b7276fcf83d5ad74331fad2",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "3fa9ea07-a23a-4251-84fa-e3f73b6d8c27",
@@ -448,7 +497,8 @@
       "type": "Texture2D",
       "name": "nascent-soul",
       "hash": "64144a0e9d78dc8a6a459c79eeecbc74a582cd49592463e601ed1ef1a86fa96e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "54d876ff-b5f4-4448-897e-b2124261bd46",
@@ -457,7 +507,8 @@
       "type": "Texture2D",
       "name": "qi-gathering",
       "hash": "0bdbe3964148df418b82a2fac1b43cc814621a8b0885789a0e5c3c5f7dbcd5f1",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "87b4d9a1-0925-4a73-9633-e2651d33f1df",
@@ -466,7 +517,8 @@
       "type": "Texture2D",
       "name": "soul-formation",
       "hash": "224126435c91b4909e8345bbfda73bac23f60070bf8089f49e42719dcf0bcb2c",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "38c5fc52-5e7a-489b-a5fc-33221e3336fb",
@@ -475,7 +527,8 @@
       "type": "Texture2D",
       "name": "void-refinement",
       "hash": "b36885d9fe922746f7549a22bfd09e597e4341f32db80f7087b3cf142340f107",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "beb59ac2-4886-4307-a4e8-3d93cf116079",
@@ -484,7 +537,8 @@
       "type": "Texture2D",
       "name": "body-tempering",
       "hash": "df21a653f86beb14c547e6a46bbb34330cabe564626a2646211c84b2a815fcc9",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "7824bdb7-79e8-425f-b33d-2eb5c66dc36b",
@@ -493,7 +547,8 @@
       "type": "Texture2D",
       "name": "foundation",
       "hash": "8a2687c54221bee5b1fbc819e017c654cb7db12aabfb19212adbb205d289ec6a",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f9be284b-f071-4ee3-97db-86ed4da1b640",
@@ -502,7 +557,8 @@
       "type": "Texture2D",
       "name": "golden-core",
       "hash": "8bee00c431c5f172dcbba5ff2159784a5937a48b4d08c8dc531c207215d29475",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "ac049c2c-0c57-4890-8f10-5399b2ed8268",
@@ -511,7 +567,8 @@
       "type": "Texture2D",
       "name": "immortal-ascension",
       "hash": "d31283a7d470478e4046c4702547ec341aa64d9c9e96828135988496183feff4",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "21b429a3-b0ae-4ff6-abc2-ed12438d5344",
@@ -520,7 +577,8 @@
       "type": "Texture2D",
       "name": "nascent-soul",
       "hash": "2a2bd6a121089dfacdc3c40494e22139ad37912e4fbb000c95abd3a34d2bde12",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "5aacce0c-9a00-444d-a008-ef3d575cfefd",
@@ -529,7 +587,8 @@
       "type": "Texture2D",
       "name": "qi-gathering",
       "hash": "15022840b356ae42ad9f1174c7db72d46152f20d0a25ae485fca2be7e7821b44",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f381e10f-81d4-4384-b808-eb1ba4b2f392",
@@ -538,7 +597,8 @@
       "type": "Texture2D",
       "name": "soul-formation",
       "hash": "a003eb11a93418483bcf4c201df354362002124fef89b448a2b14db8bf561a12",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "201493bc-36d3-434a-a3b9-37b31670e961",
@@ -547,7 +607,8 @@
       "type": "Texture2D",
       "name": "void-refinement",
       "hash": "e9ebbcb3adbc7188fcd787da62c3fbcf97455a8f4b49fd16ff4fba514e345afc",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e81891d1-b1b5-48cb-b883-a2515161b0c5",
@@ -556,7 +617,8 @@
       "type": "Texture2D",
       "name": "Character_Missions_Transparent",
       "hash": "7bb3a9494a4d723f96dbb01275a870dc637b6977decca27cacdf246cf4090bf5",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "466008ff-5bba-4d13-a3fa-e3b0d01f3cf7",
@@ -565,7 +627,8 @@
       "type": "Texture2D",
       "name": "Character",
       "hash": "27d8b8bb5c9ae3b7c8a8af7916dae94f5b55b127f69c978bad08ca04a357565b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "65d43dc2-1616-47d7-8e76-0898a0ff03e1",
@@ -574,7 +637,8 @@
       "type": "Texture2D",
       "name": "Old_man_attack",
       "hash": "82fb4d6dcad6632cec630e243eceba516b7a1c5a053cca361121adf66af686ba",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "6e349a14-2ec7-4b21-af4b-b4b40af46743",
@@ -583,7 +647,8 @@
       "type": "Texture2D",
       "name": "Old_man_death",
       "hash": "7e761125b71c88cc2b83219a143dc599b974f8fef7e816a97bff9bbe99e4a16e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "5ce2250b-c629-40e3-9d3e-0052dce66335",
@@ -592,7 +657,8 @@
       "type": "Texture2D",
       "name": "Old_man_hurt",
       "hash": "cecccf7e91c526084c94a3a3f2da4ecd784f7e7bec74de68cdc1c6be59aa9af0",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "c77a8b6c-e83c-4c09-80b7-c1ec1bdd07ef",
@@ -601,7 +667,8 @@
       "type": "Texture2D",
       "name": "Old_man_idle",
       "hash": "04777304aaf9b2d4aae92c14bfac382d9b3f16e9073f50798577b8799af27d9c",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "bcca8f56-4d60-498b-a7ee-3c455f1574f8",
@@ -610,7 +677,8 @@
       "type": "Texture2D",
       "name": "Old_woman_attack",
       "hash": "929a6a21f3aa6f5438890c4b71b2192750ef0b2a88da32dc9f99893ba53436fa",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "6a17d6de-a8e5-452d-baea-af007bdb0102",
@@ -619,7 +687,8 @@
       "type": "Texture2D",
       "name": "Old_woman_death",
       "hash": "03593209e2bcc9b6f3730e39203e69f1d1db8923a58047cfd1678b2ed25b552d",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "099e5723-5c3f-4727-a0ff-af7287de737c",
@@ -628,7 +697,8 @@
       "type": "Texture2D",
       "name": "Old_woman_hurt",
       "hash": "823afe3d172ecfd141b6c5c015b38c0e38ecc53fd665f12aa96d03b9b309dbf4",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2ca29757-d2b5-47b1-8ada-5e1958919f8b",
@@ -637,7 +707,8 @@
       "type": "Texture2D",
       "name": "Old_woman_idle",
       "hash": "d5e379101d37c6c6b5e2f1b42be22d246c5eaff9b79f1c5dd2db633498cfa43b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "83741f89-827b-4094-9faa-2483aa64fbf0",
@@ -646,7 +717,8 @@
       "type": "Texture2D",
       "name": "Man_attack",
       "hash": "3a7d17756797e0006a08fb5ceea6e92c3c45ef38307969fd22b1455640069f59",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "c1ba6f48-2412-4018-bf86-ee44cd3f2de7",
@@ -655,7 +727,8 @@
       "type": "Texture2D",
       "name": "Man_death",
       "hash": "0ca6b1a7d9a35875255d29b7888f0a12f772444e2df4fb990079f66129cd5b47",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "69fac5a3-9871-4728-9242-0eb43bb758d0",
@@ -664,7 +737,8 @@
       "type": "Texture2D",
       "name": "Man_hurt",
       "hash": "e29b569d3925df69bbd238302df5a885bfa4fe9f1b3e2845bade0aedc97189bb",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a00dfd25-3a14-4c07-acd7-fcdb710ec7c8",
@@ -673,7 +747,8 @@
       "type": "Texture2D",
       "name": "Man_idle",
       "hash": "6cb90a6a9fe8ec4e828ebfec4670960a11569f3569dc5ed4ccdd916bc3b17e08",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "69388b01-7b08-40a0-b64b-e870fb8726b0",
@@ -682,7 +757,8 @@
       "type": "Texture2D",
       "name": "Woman_attack",
       "hash": "388a5df60b4ddcdaae4c8a15ea6f74c431a150a5650b1c0232fc0c548ffe22a2",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d6ef92f0-0763-4e05-86b1-357ce5bec0f6",
@@ -691,7 +767,8 @@
       "type": "Texture2D",
       "name": "Woman_death",
       "hash": "50f9402968aeb0195324d1678814e5b63474009778136839082e251c77071364",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "afa94ba0-014b-492e-b75b-ae91c916c940",
@@ -700,7 +777,8 @@
       "type": "Texture2D",
       "name": "Woman_hurt",
       "hash": "14636f58da93eb5eb083834f8bcce8cc4532f30437b4605124f2882dc462cf3a",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "c1b373d1-4438-476c-b055-cf59b104613d",
@@ -709,7 +787,8 @@
       "type": "Texture2D",
       "name": "Woman_idle",
       "hash": "11b73ca0fce0479dfd6a9cb16dd476695ee8b1c7f30eadab49de8999dfa90794",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "b4645186-dfde-4d21-afb8-107d4bcca8bb",
@@ -718,7 +797,8 @@
       "type": "Texture2D",
       "name": "Boy_attack",
       "hash": "fa9986478611f99491eac8800ac89358b89b6108d01b3e5173ef3d6955f4dc4d",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "dcf7d851-6002-4172-89ba-b23001ecf09d",
@@ -727,7 +807,8 @@
       "type": "Texture2D",
       "name": "Boy_death",
       "hash": "60d039b1cce1d3503ca3b789e3c4ecbea6b57f6deef6cb11c4302235f65108f4",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "9f61c3e5-1be6-4b4d-b62e-b3edcb7968f7",
@@ -736,7 +817,8 @@
       "type": "Texture2D",
       "name": "Boy_hurt",
       "hash": "bb8d1da0e745dfb8a9d5e82066bde3eb01dbaef7399c57f71dcd918014d9f78f",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "8f9d419e-768a-40b6-97a3-800a5e0ddbf5",
@@ -745,7 +827,8 @@
       "type": "Texture2D",
       "name": "Boy_idle",
       "hash": "d683e7f7a272c6b7f85198d9da028e69bc8340dd21ac62cc13db2a6e1c156b84",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a2bfb2e9-e36b-4619-8f00-c6ca1a4a0e0a",
@@ -754,7 +837,8 @@
       "type": "Texture2D",
       "name": "Girl_attack",
       "hash": "af8b58b9b1b0d38e7df69f1e4589468a10228b7decf60c0eddcf91aa74421325",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "987765ef-661d-48d2-9b70-3966c006abbc",
@@ -763,7 +847,8 @@
       "type": "Texture2D",
       "name": "Girl_death",
       "hash": "a9ea6b4deffd6a362bf435d2f2af142c9bea729c1562584f8678285449e0415e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "cc3c9bc1-b42c-4938-ada7-e69d23c10ff5",
@@ -772,7 +857,8 @@
       "type": "Texture2D",
       "name": "Girl_hurt",
       "hash": "5eedfa843fd337d7f2223bf35f26db2b2568bfed90d2d86f3ef0ca57d3b00a1f",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2b09b99f-697e-4164-8d0e-44535643bfea",
@@ -781,7 +867,8 @@
       "type": "Texture2D",
       "name": "Girl_idle",
       "hash": "7d1a901f1d3f76f05a46d0cf9df68bfedcdb9b305333f370ba35110ce332b576",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "888f7998-7b76-4caa-a540-6ab8ee6cda32",
@@ -790,7 +877,8 @@
       "type": "Texture2D",
       "name": "health-bar-fill",
       "hash": "137c905aff2588238fcfe8d2a30776bc1be2a02ed07ad6aa3f7972c2ac3bafed",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a68a66cb-4ad9-47dc-9140-65512ad531d2",
@@ -799,7 +887,8 @@
       "type": "Texture2D",
       "name": "health-bar-frame",
       "hash": "35c03139451cd2f52318a68368051ea2599216b6acc3b457fb118dea226042da",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "b444fc52-e800-4a75-9beb-299282fc3682",
@@ -808,7 +897,8 @@
       "type": "Asset",
       "name": "GameUIAtlas",
       "hash": "c3407f938042cd3ba13b6a25d8c7e95c4a23afc1ccf1c950c18e289e7c988cbb",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "72326220-7620-4d46-bcc5-bfe1752bf979",
@@ -817,7 +907,8 @@
       "type": "Asset",
       "name": "IngredientIcons",
       "hash": "c4ceb876e9580736c21e57f7cb74bc64fa4506fc36c2eb4f2a7c4e95d176455b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d3e21c81-0e4b-4dcb-9456-9f073436c1da",
@@ -826,7 +917,8 @@
       "type": "Texture2D",
       "name": "azure-spirit-core",
       "hash": "0bb0d99418f2ad8549e493875ab38a0021901d123ce69b771851836cf77ddc3b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "454c9262-a88e-40b8-8660-ac861f0ae013",
@@ -835,7 +927,8 @@
       "type": "Texture2D",
       "name": "cauke-leaves",
       "hash": "6f9cdb191bfed263fe0ece4c864850fa6d5fcd7d620ad27885add3242cea459e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f601854e-6c87-45df-82b7-faa83b512a62",
@@ -844,7 +937,8 @@
       "type": "Texture2D",
       "name": "chicken-flower",
       "hash": "15dcead0a180803f518d9ba1447a72c43d3f0fe7e91c1a0cbad4ce21fda92e14",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e441fae0-3058-4056-82eb-406053914a01",
@@ -853,7 +947,8 @@
       "type": "Texture2D",
       "name": "demon-spider-web",
       "hash": "1a5ebdeb1fea0a5b6e5ad18c29b1acece71859263491e8b99d372e0aca2b17ca",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "9a4ee67f-013a-4cda-b9b8-4f1861e6f332",
@@ -862,7 +957,8 @@
       "type": "Texture2D",
       "name": "heal-grass",
       "hash": "ba2b401ea5e788f933fc08cacee04455ce59f23ec1e25b9963bd31b21f96d9e9",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "c68ff057-e42d-4700-81a8-ccc97675e0c1",
@@ -871,7 +967,8 @@
       "type": "Texture2D",
       "name": "meat-root",
       "hash": "1aede72c66fb90cf776a4202135fcb93f9241c1534af49e42f0571dea0cb4c6d",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "9179f297-8dae-4bd4-990e-60da86a95ddf",
@@ -880,7 +977,8 @@
       "type": "Texture2D",
       "name": "purity-herb",
       "hash": "f32596edcc706a203f9f767df03b5c9ce03a8ba020e028a77a8ddaaf808d0ef0",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f83be619-36bd-4824-b72f-057261d98d0e",
@@ -889,7 +987,8 @@
       "type": "Texture2D",
       "name": "sealed-blackhole",
       "hash": "18879366056c103ab8383754ea7a5299c0eeac54b710eb9703d515be6928ee01",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "5193682d-b673-461b-80b4-eaf543078f17",
@@ -898,7 +997,8 @@
       "type": "Texture2D",
       "name": "space-dust",
       "hash": "b2b2c6a77e4a669094329271a49d8bdf2b8911e092512d1e2d14ef616a0904a6",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "3386126b-b64c-4989-82d3-440fe651bd2c",
@@ -907,7 +1007,8 @@
       "type": "Texture2D",
       "name": "spiritgrass-body",
       "hash": "6320e78fb23c282c72a2de525eb56d8803185740cee96f9d74f77c1e18be7ff6",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "919090b1-c45a-4f4f-811c-62723ced1f1a",
@@ -916,7 +1017,8 @@
       "type": "Texture2D",
       "name": "spiritgrass-root",
       "hash": "b9b402663226bf5810bb45a7b17da17a9181f78527fc253ac9e32f2a507738ac",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "884a59a7-1534-4fae-9c39-46c4f279225d",
@@ -925,7 +1027,8 @@
       "type": "Texture2D",
       "name": "spiritgrass-young",
       "hash": "06fabf9592303f2cca464b6ace7cb35b06e8e385b171dae8d7d8c07dfe2efd0a",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "4f2b195a-8f73-46a5-aa71-42970dbd6de4",
@@ -934,7 +1037,8 @@
       "type": "Texture2D",
       "name": "wind-cotton",
       "hash": "645d12f903a30d2bca6dcae53e903a475fb5e726d8ef314281aa0e499927e8a1",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "4d5efe77-4993-4ca6-8504-4913a4d16076",
@@ -943,7 +1047,8 @@
       "type": "Texture2D",
       "name": "yan-nuts",
       "hash": "b7eac8ce07fb1f6bf177b7d1fe44efe9ae10a4ed3c0a3708ee6a22260470761e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f1b2fbf5-dfb2-4f8d-aaed-11f89b6aea57",
@@ -952,7 +1057,8 @@
       "type": "Texture2D",
       "name": "ying-yang-flower",
       "hash": "f2cf4f66c9821dc963b8ae87bda6ac83812bbb92fabc4ee9e88924eed276da92",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "699dae08-e2b6-46c4-a24a-85b302d49f3b",
@@ -961,7 +1067,8 @@
       "type": "Texture2D",
       "name": "alchemy-extract",
       "hash": "c0b417aadf67505a6725f3c0b245cf12a3f3f9bed8032c43685c082af538c883",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "ab53e04c-4e5e-4b1f-a73e-b8e32d880b2e",
@@ -970,7 +1077,8 @@
       "type": "Texture2D",
       "name": "azure-spirit-core",
       "hash": "157137e94c1df9fb17a9ffe7982cc2eb8c3933a8375212b79dbfe69633135334",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f9c016a0-edcd-499c-926f-4fafbd70de8f",
@@ -979,7 +1087,8 @@
       "type": "Texture2D",
       "name": "breakthrough-seal",
       "hash": "572f36c594ee2cc7b1b0e88a369632cd2d6fb63707566e137b2c5f832768c0a0",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "bfb0be02-3de8-4417-9d7b-4c5adf1216ba",
@@ -988,7 +1097,8 @@
       "type": "Texture2D",
       "name": "celestial-orb",
       "hash": "f894551cee6eb9d18471c3afb6c61926ced324da12a6ab73bdd2d916a8fbf681",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "b2453a61-5733-4ec1-8742-f400e264f015",
@@ -997,7 +1107,8 @@
       "type": "Texture2D",
       "name": "core-air",
       "hash": "43aae806e88e3522cfe4b428cda1f8d2fc389df75134272bbb2f6e50991ee9f4",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "aa190252-8f10-495f-8f97-6386fa47b79f",
@@ -1006,7 +1117,8 @@
       "type": "Texture2D",
       "name": "core-earth",
       "hash": "05e6b35caad92211d50f18b729e73799aecf0337203b7cbf69dcd15ad38a2319",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "3d6fa743-aed6-4b37-b95e-daaaf81e54b9",
@@ -1015,7 +1127,8 @@
       "type": "Texture2D",
       "name": "core-fire",
       "hash": "8a744253e6b7debb8d1d31179d1c55b9cd106dcd180fd519947203a86f069e54",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f79da84c-f89e-4de8-9b66-eb7088496ea0",
@@ -1024,7 +1137,8 @@
       "type": "Texture2D",
       "name": "core-void",
       "hash": "74b696405a0b24e1e6548a459814b75d752119b6e671f2a3c1af454ef90cf5d8",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d9f9fc35-6160-4e4a-81a8-5a9f43fc96f8",
@@ -1033,7 +1147,8 @@
       "type": "Texture2D",
       "name": "core-water",
       "hash": "4a8b8e2d36d141b342ccb760f128db8709bdfccd7b4833994584d4e32f0de736",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "37975b80-8447-4bf1-8f99-ddcf05ed9880",
@@ -1042,7 +1157,8 @@
       "type": "Texture2D",
       "name": "crimson-beast-core",
       "hash": "18489282bb7fe1b800d626ae437bd0e2828b105c53bc81c78eb1560da60e5153",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e4803353-c775-4bac-aeed-f5e44dc51598",
@@ -1051,7 +1167,8 @@
       "type": "Texture2D",
       "name": "insight-core",
       "hash": "bec7b9df69797fb66b76518fe4ebf0f51d4ca3afddfbe2b40d2f952a90b750a6",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e355a2e4-4504-4623-b6d3-b3757a0830eb",
@@ -1060,7 +1177,8 @@
       "type": "Texture2D",
       "name": "jade-lotus",
       "hash": "3be37acfe72a1964d77cab4e9ee27719befe200b8d0dbee516634f2dd9cf844b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "06633bd9-c1f2-405d-b01f-83b805517bf7",
@@ -1069,7 +1187,8 @@
       "type": "Texture2D",
       "name": "mission-talisman",
       "hash": "fe5d174b1b831db871f9073710bf7ac85a9d546184db0ce519c7f4b4ff8bd85e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "6cdb9bf2-2881-468c-9a80-79d48db9771f",
@@ -1078,7 +1197,8 @@
       "type": "Texture2D",
       "name": "phoenix-feather",
       "hash": "70b3757e59ea98cdaf477c8c01bb7631862622196d8b252ccbdfeac2bdca2067",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "4f5ea19a-ff9c-4f62-afce-6de0a2cca4ee",
@@ -1087,7 +1207,8 @@
       "type": "Texture2D",
       "name": "spirit-seed",
       "hash": "a41fb93a49d1a78e3fb35ec3b638459b41bce240f4d3370298397edeca4e4469",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "52a6527c-63c2-4f67-bbe6-64848500c626",
@@ -1096,7 +1217,8 @@
       "type": "Texture2D",
       "name": "swift-scroll",
       "hash": "c2d5d939bd101924bbea18f2a539320ed04280e129ecfad16ce3a30200f29542",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "19a93e42-493a-4d4c-be21-eda0c260662e",
@@ -1105,7 +1227,8 @@
       "type": "Asset",
       "name": "PillIcons",
       "hash": "7b00f1f13ddd5fc4ed6695dc831a62ad5420ea1a13d64c7e99502f48c787fee4",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2ff86df2-d54e-475b-8bc1-1cb13352f594",
@@ -1114,7 +1237,8 @@
       "type": "Texture2D",
       "name": "blade-intent-permanent",
       "hash": "9a30681f28f5c12a9c7f31a046bc892e07fb99cda1a30586ef99e501b0c21e8d",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "edb40775-7928-4e21-89f4-449ea50ca980",
@@ -1123,7 +1247,8 @@
       "type": "Texture2D",
       "name": "blade-intent",
       "hash": "5a194a7a4f964cbd7adb108d2fa749973317149e09abd6251e310aa95927326b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d1c8c47a-7ea2-41f9-8b24-36218cf68d9c",
@@ -1132,7 +1257,8 @@
       "type": "Texture2D",
       "name": "bloodspring",
       "hash": "4bd447791789a578dcb46200f1a2d7ad0e3208b10e40f5f2020354822f1ecb30",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2c65bee6-9f62-42ef-8687-790b28517daf",
@@ -1141,7 +1267,8 @@
       "type": "Texture2D",
       "name": "eternal-swiftness",
       "hash": "625ad8000f68541e24a620c76b0c2863f4db75b0bf0ce951bb1e3b25747e4279",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "41d814f1-b7c8-477b-a85a-dfaa71b8d3d5",
@@ -1150,7 +1277,8 @@
       "type": "Texture2D",
       "name": "gale-step",
       "hash": "395359057f8d5dc61cbe7caf097c8dcba8fdb9a9c5f62666cecb7d4ccb0f7ec7",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "92fb23e7-0a44-4b01-b19f-732e4fcfaf29",
@@ -1159,7 +1287,8 @@
       "type": "Texture2D",
       "name": "healing-dew",
       "hash": "f5e2963f6199072d8f1e0baf5c4e56900d7e673f64411ca59a20d7302b3e4316",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f95d1e7d-6234-44f3-a1b9-b767bbf635ef",
@@ -1168,7 +1297,8 @@
       "type": "Texture2D",
       "name": "insight",
       "hash": "85819ed1c2de3c2bdadf24137eb6645b372e1ee0a4eda62c498aa6cc0f76e5ce",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "403179c6-b6e9-4e2a-a36e-5dea5b9fa4cc",
@@ -1177,7 +1307,8 @@
       "type": "Texture2D",
       "name": "jade-body",
       "hash": "3299de6a7d8a4446a2999068af3a98ee9324a09f2e539c75662c20a93183b6cb",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "9b3b4420-f4b7-4b1d-a6d0-fde9cc41f181",
@@ -1186,7 +1317,8 @@
       "type": "Texture2D",
       "name": "mission-speed",
       "hash": "5a5f0668e433797d8f0919c771d5baae04e0eae01c252601bf351e5b4a6cb6df",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f8b39963-a4f7-4d85-b2c3-b356e6e0dbf8",
@@ -1195,7 +1327,8 @@
       "type": "Texture2D",
       "name": "purity",
       "hash": "f5e2963f6199072d8f1e0baf5c4e56900d7e673f64411ca59a20d7302b3e4316",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "5caab9a7-d0a0-4733-9f9b-2fd48e04606f",
@@ -1204,7 +1337,8 @@
       "type": "Texture2D",
       "name": "spirit-flow",
       "hash": "b2d70e8164288643e4eac53a0005e19de7188d27701a43999a60a3a38d4d6858",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "3abc7789-adce-40dd-bbdd-3d2022d88209",
@@ -1213,7 +1347,8 @@
       "type": "Texture2D",
       "name": "spirit-gain",
       "hash": "85819ed1c2de3c2bdadf24137eb6645b372e1ee0a4eda62c498aa6cc0f76e5ce",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2c6a35c6-07a8-40f8-b42a-06225053a85d",
@@ -1222,7 +1357,8 @@
       "type": "Texture2D",
       "name": "spiritual-energy",
       "hash": "b2d70e8164288643e4eac53a0005e19de7188d27701a43999a60a3a38d4d6858",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "767b809c-d844-45a3-9efa-ec6ac709e1b3",
@@ -1231,7 +1367,8 @@
       "type": "Texture2D",
       "name": "spiritual-growth",
       "hash": "89dc7c7f64264a29d947a1d1dd8431cd7e5f9b4e1c941957a1229782002326a8",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "7e334e30-aa53-493f-8e35-eee6f580a0ac",
@@ -1240,7 +1377,8 @@
       "type": "Texture2D",
       "name": "still-age",
       "hash": "a3f4a3bebb2204b9ccf84904ffc654fe542cb6a195a516a19c88df0ce76f6f03",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "8191c9d2-9dd9-4684-baca-d8c5e01a9c47",
@@ -1249,7 +1387,8 @@
       "type": "Texture2D",
       "name": "time-acceleration",
       "hash": "f89e8d5d0885715e74ff626b6ec114af7325d9d896cc15cd41a7f9843eb219f3",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a7a61094-3da4-45c8-8c39-fb1eb2f8431e",
@@ -1258,7 +1397,8 @@
       "type": "Texture2D",
       "name": "vitality",
       "hash": "029003067e8f9f20982b90d298f7f47e854d7490772ef8e2641f9f44c52c46a7",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "33514b5b-e25c-4f97-a85e-7f0c037ae2c2",
@@ -1267,7 +1407,8 @@
       "type": "Texture2D",
       "name": "alchemy-furnace",
       "hash": "8a27deaf7ac036154264c32ef8c9a4d83266c6eafa124b999eaace3c380c56eb",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "632eb954-d580-4563-ba82-0c439f1a42bf",
@@ -1276,7 +1417,8 @@
       "type": "Texture2D",
       "name": "alchemy-room",
       "hash": "2d0ea2394ab783ac020f2aea1c7a3b037c01191f34db73e835176a85d560a3d3",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e423369c-d13b-41b9-8b0f-6fecda479100",
@@ -1285,7 +1427,8 @@
       "type": "Texture2D",
       "name": "panel-slice",
       "hash": "a2de8bea310a23be48fdd859c4b835328976c88fb9268b53ce8bbcb743098f6e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "771aaddf-95d1-435f-ba3b-a5b3b6f18ff6",
@@ -1294,7 +1437,8 @@
       "type": "Texture2D",
       "name": "ingredients_icons",
       "hash": "389e894a75ecb97061ce8a0574aa074e53c1f586d4eeb7308c7c0ebaf9db7430",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "00a9746b-d6de-4dde-893b-23fe0fb4de96",
@@ -1303,7 +1447,8 @@
       "type": "Texture2D",
       "name": "pill_icons",
       "hash": "9f2b0cdde23133ec3189ccd32267990ba0fa1381757feefd24a4ecbb77510310",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2df17e44-3b03-4ee4-80e0-3014401226a4",
@@ -1312,7 +1457,8 @@
       "type": "Texture2D",
       "name": "alchemy-extract",
       "hash": "31a63dbf077cad91e9b3c87ce090f569cd15aef59a9400d3c7828252c0f824e8",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "717c4cee-21cf-4afa-9afa-b8dc0d177fc9",
@@ -1321,7 +1467,8 @@
       "type": "Texture2D",
       "name": "azure-spirit-core",
       "hash": "dea7b7235f30e7f0c5928e636872394e0c64dce6b29c3e99dd6570f92da92309",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d9354e7a-2253-4e0b-b898-cf0ab6664d8f",
@@ -1330,7 +1477,8 @@
       "type": "Texture2D",
       "name": "breakthrough-seal",
       "hash": "690140da690a17775435de59fa8d5ba25158d03875485a9215993b5217dcc347",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a9effd32-e98e-4fb9-812b-1db84be0f26c",
@@ -1339,7 +1487,8 @@
       "type": "Texture2D",
       "name": "celestial-orb",
       "hash": "4612892690bc2bd8dd2af53d48ba437ba2d1aecd2257c83e70a868bb0a942c89",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "bc8bd928-8d07-4be8-af54-8972a156f91f",
@@ -1348,7 +1497,8 @@
       "type": "Texture2D",
       "name": "crimson-beast-core",
       "hash": "920c395e753266163f1bb088ae0fdfc84c4540c2f2d997532572bbb8f23c264f",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "9a3916cb-ca2e-403d-b418-1403754e3c1f",
@@ -1357,7 +1507,8 @@
       "type": "Texture2D",
       "name": "insight-core",
       "hash": "3de78aa9e253fb30407da0698d224aa8a369995caaa5e689d4744ae3287c95b0",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "858beabe-aed5-4dd7-a7d9-a86e7cebc2f9",
@@ -1366,7 +1517,8 @@
       "type": "Texture2D",
       "name": "jade-lotus",
       "hash": "248959c0c854237ffd464dae5493fb1644471b5b5e58d6ea44f427c5a28261b7",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "b7d8b665-1faf-4214-aebf-bf79defd4486",
@@ -1375,7 +1527,8 @@
       "type": "Texture2D",
       "name": "mission-talisman",
       "hash": "ed816f246e33061ff7300259d3ae5ddd360159b057c5c0b12a89898248084bde",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "1e915b64-ad41-41f5-82c9-8277dd8ac3ac",
@@ -1384,7 +1537,8 @@
       "type": "Texture2D",
       "name": "phoenix-feather",
       "hash": "d4a86925af96fb68840761293ecf6d17c1c4a6097c9e4557273c4af979f980df",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "0073a32c-abe7-437f-a1fc-4590c18749d0",
@@ -1393,7 +1547,8 @@
       "type": "Texture2D",
       "name": "spirit-seed",
       "hash": "4f3717bcd76f9f9e1e155b5354cb043dcdf6ebb619cccd8306b0beac7f08cd20",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a9e4b9a6-1037-46cf-81e6-8c3724252d03",
@@ -1402,7 +1557,8 @@
       "type": "Texture2D",
       "name": "swift-scroll",
       "hash": "370cd41fdd1dc935fb39ec588b617ef2fcc65390e0db6b270945d0946bb6e26d",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "b3a5c735-4a87-47b1-a899-011f6e8de797",
@@ -1411,7 +1567,8 @@
       "type": "Texture2D",
       "name": "tab-brush-stroke",
       "hash": "8178e75650fbbd5bc152a2fb45be43117b5b14857b31cc972bd2e7c909c0c404",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "030c3116-7383-4be9-95a3-76e96c34a743",
@@ -1420,7 +1577,8 @@
       "type": "Texture2D",
       "name": "age",
       "hash": "9c973804bdebf7f1c3aeb6b8fbaf6c5a48c7f3435306519a75f48ced289ae71b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "3723dba2-38fd-46d2-bcbb-eaa711b022c4",
@@ -1429,7 +1587,8 @@
       "type": "Texture2D",
       "name": "alchemy",
       "hash": "50daa5e59bb9441a7e85b2db6bd60a133af9a96ac53671f6ccdd71dafba4b75c",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f2ddca74-3b7f-4df6-b48d-4da444543b02",
@@ -1438,7 +1597,8 @@
       "type": "Texture2D",
       "name": "close",
       "hash": "01b8812d57627b597e088674f7edcc9dfeffd362f135b5cbeb6f3790af6600d2",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e3891998-ef3f-486a-a27b-9b2d32ee5145",
@@ -1447,7 +1607,8 @@
       "type": "Texture2D",
       "name": "combat-attack",
       "hash": "5fbc7e34ba0684d503f9218fb3a56025a92c4f0b0dcda62b3bd6b309fcdd248e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "42186bc2-693c-414f-93b9-b992e6332d8e",
@@ -1456,7 +1617,8 @@
       "type": "Texture2D",
       "name": "combat-defense",
       "hash": "e72d4cf54764a33ecce4447da20bad32367a6abff83a638073a30bbca5950ee1",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "be4deab2-6ce8-445b-a168-11b3900706d0",
@@ -1465,7 +1627,8 @@
       "type": "Texture2D",
       "name": "combat-speed",
       "hash": "bcc928c6f7a8c94f5a4a09681ac0b09819ae60c444052696f58b77ad050004c8",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e81afe84-f7a8-4612-b097-129d335589e0",
@@ -1474,7 +1637,8 @@
       "type": "Texture2D",
       "name": "contamination-effect",
       "hash": "9511d4719657348f1a10f3ec3051cc21ba428dc8271c3585567be599aa904241",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "64bbaeee-4172-4789-89cd-7e19349cfa76",
@@ -1483,7 +1647,8 @@
       "type": "Texture2D",
       "name": "cultivation",
       "hash": "31f74d3aa444528e47deb0ad53f39f224dc3c7ef49d05afe2cf72a1203b01653",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "19d802ae-33e2-4133-84ce-d584c0b4b44c",
@@ -1492,7 +1657,8 @@
       "type": "Texture2D",
       "name": "death",
       "hash": "6994f95f3772a519ded57bdd41dc1214efe58671b0b49499233f13b154e3e84b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "5dada047-bd36-4777-9e2c-ede8134a92be",
@@ -1501,7 +1667,8 @@
       "type": "Texture2D",
       "name": "air",
       "hash": "9dba395d60bdd86f232e01389b37db5253d0f26c08ca420f72b6361b2858e24a",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "177a6b51-836f-4c35-96a7-1b072eda40c2",
@@ -1510,7 +1677,8 @@
       "type": "Texture2D",
       "name": "earth",
       "hash": "bcbd7477a14ac97a0a541e107513cd209666dcd4c2776d7a33c7c5e4d2692afb",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "9a297f07-f248-4262-861b-85fbd730b3b2",
@@ -1519,7 +1687,8 @@
       "type": "Texture2D",
       "name": "fire",
       "hash": "ca12d765604c6e2bf383963df01e129abd8a15381e1026bc374b2aa8be4d08ea",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "bac53972-1929-4d1b-8409-7cf752d62b80",
@@ -1528,7 +1697,8 @@
       "type": "Texture2D",
       "name": "void",
       "hash": "59f657de97c76c2007a8c9a98c35c5039fb8cf0c6efa7fd34115bb84aad2c33c",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a13babdc-2555-419b-922c-508c6e0cd520",
@@ -1537,7 +1707,8 @@
       "type": "Texture2D",
       "name": "water",
       "hash": "6a5817fc9d98596e79e637fd04d3f1dd81fa7bf987f70a0c4a2b98de82bd4985",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "fe4ee558-f264-42e8-aeda-155dfb6b0a4f",
@@ -1546,7 +1717,8 @@
       "type": "Texture2D",
       "name": "inventory",
       "hash": "60a8c27e9cfb653ecea1125d2efcf143b596860925a8909c0f22f6670b2147d2",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "fb9f3ba6-4022-448a-a9b6-9392b9d96def",
@@ -1555,7 +1727,8 @@
       "type": "Texture2D",
       "name": "missions",
       "hash": "5bf0aeda34ba5384f6a26659d62f0525ac06fb7f4c908349c7d8eaf351749e8b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "ee376da5-0b3f-4feb-a31a-bc573624a4e3",
@@ -1564,7 +1737,8 @@
       "type": "Texture2D",
       "name": "money",
       "hash": "991ab1d04c733b71f4105f21fb580ed459dd8c18a4d9b0391acf4699283473fc",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d13cf891-d15a-4245-a0d7-a678ecaae159",
@@ -1573,7 +1747,8 @@
       "type": "Texture2D",
       "name": "queue-left",
       "hash": "4a17f6b870271fed92fe14bf27b1d70098ef467f689d9460adf5620aa1657c69",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "7a5fc613-f8cc-4a0f-ae65-2551da7dda93",
@@ -1582,7 +1757,8 @@
       "type": "Texture2D",
       "name": "queue-right",
       "hash": "bca9c50739cebc6e05b13a4440a3c30b15180f51e127cf616cbd9e139f9dc002",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2a5185c7-eddf-4c74-a0af-ffcc15e06986",
@@ -1591,7 +1767,8 @@
       "type": "Texture2D",
       "name": "remove",
       "hash": "0efb2f37bb69bc0e81c1a7d2a74a5d76f160b4d315481881087e77dbc3f524bf",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a014752f-5fd0-47a6-bf31-623437e1a60a",
@@ -1600,7 +1777,8 @@
       "type": "Texture2D",
       "name": "settings",
       "hash": "9575640d08e4ccc19de2a1c37fff4d44ced664bcec24c78873d975b5862c474c",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "b1ec50be-1e50-4dfa-8d51-254ab0870276",
@@ -1609,7 +1787,8 @@
       "type": "Texture2D",
       "name": "shop",
       "hash": "901d18941fcc0a4982beabb1bb9600264fb38bd44df5759a0b76bd1c5a6dec4f",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "de66406b-a1c6-472b-b2f4-8326b27327e4",
@@ -1618,7 +1797,8 @@
       "type": "Texture2D",
       "name": "spirit",
       "hash": "f6d825aa6e3d2d91c64691e6d8e2afd345798eb33a92cffbf11e448d8fdb8d42",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "7132b6f4-7cfc-4859-a69a-d321c8acc526",
@@ -1627,7 +1807,8 @@
       "type": "Texture2D",
       "name": "star-gold",
       "hash": "ae8ae187e86981d5c832970bec06a127b7248bd333928dd64c12ce8bfdf90df9",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "cf0ed5a6-de3e-4c5d-b31e-79065eeff027",
@@ -1636,7 +1817,8 @@
       "type": "Texture2D",
       "name": "star-gray",
       "hash": "f7be32144c3560bdad7d79b8c0ded8976a847291d9301f7ddd79b42bf76a7625",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "34a4363a-35a7-432c-b118-8b83ef9478e0",
@@ -1645,7 +1827,8 @@
       "type": "Texture2D",
       "name": "star-rainbow",
       "hash": "7e9175ab7e5380dcde84f750a0cfdc54a722c2baaa59077d4257daff498cf773",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "bc469f2b-077d-4d45-a527-65658e7ad832",
@@ -1654,7 +1837,8 @@
       "type": "Texture2D",
       "name": "candle-cap",
       "hash": "be1fd4711b9f82695f931d3898b028a234a95051e42c3f77450221960df96ba3",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "985c0ae4-8d07-4264-a5e4-cfe630acdfd1",
@@ -1663,7 +1847,8 @@
       "type": "Texture2D",
       "name": "candle",
       "hash": "0400d9c1bf8718af01a8eff794a801e62765e3b990229dd3c4e710d951e20fef",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2defdd40-1577-45d6-8b52-84d1e6a9be51",
@@ -1672,7 +1857,8 @@
       "type": "Texture2D",
       "name": "flame-0",
       "hash": "8ac663bba327f5d81ca5cf90084b243909a16e257c5d226c40ef72c778899f53",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "9858afb3-f89d-4f49-88cb-70b838ee9efa",
@@ -1681,7 +1867,8 @@
       "type": "Texture2D",
       "name": "flame-1",
       "hash": "3efd28558ce5f2112551e6d242533f57ba4e14ce174e8347af93623edb988e71",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "970774fd-7d39-472c-ab30-f7c79f78160d",
@@ -1690,7 +1877,8 @@
       "type": "Texture2D",
       "name": "flame-2",
       "hash": "aa2a7c7d8318156c827b1194bd03f42708b1c5224686fb3837bf54f509fa2d46",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f1e47860-f874-47b2-acb7-eca99c2c7fa0",
@@ -1699,7 +1887,8 @@
       "type": "Texture2D",
       "name": "flame-3",
       "hash": "16c81ee76afb6974e7be1c7cf7ea6c489827b2c36e40bec0c8d28a7dbbb646fd",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "11192056-5ed1-44bd-9e44-2fa23b928ec0",
@@ -1708,7 +1897,8 @@
       "type": "Texture2D",
       "name": "flame-4",
       "hash": "761c37fb6cf0c78ae44463d015423a900e89b2c99edf6fbc8c176a0d63699a0c",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "23b5681f-b9bd-4282-a8ec-4f93acc213c3",
@@ -1717,7 +1907,8 @@
       "type": "Texture2D",
       "name": "flame-5",
       "hash": "16ca555d5079c9170ee8861087dbd58db73ae2a57801e197ee2518a7124db2ff",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "eab4311d-9b9f-42fc-a780-3c4cb64def7f",
@@ -1726,7 +1917,8 @@
       "type": "Texture2D",
       "name": "holder-front",
       "hash": "060c2620fdab60272d1f7f1002ef64ff5c50b4be72e39378bd45fd39bb487fdf",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "b229def3-ae34-48e9-93c0-b484f85beb2f",
@@ -1735,7 +1927,8 @@
       "type": "Texture2D",
       "name": "holder",
       "hash": "b53de7965b610200fb6d9d335ed502815f9b1779b13745b9f7084301d4792a48",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "74770359-ae1e-4ad0-9010-88856c12380b",
@@ -1744,7 +1937,8 @@
       "type": "Asset",
       "name": "THIRD_PARTY_ICONS",
       "hash": "dd044f0e9b6aa0e1f53c71ca393a33f10665f1eed6ea7f8447fcac6af1ed3ce9",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d75b5120-384c-4819-9bea-3b303204e5d8",
@@ -1755,7 +1949,8 @@
       "hash": "50a6cfc32ef8f7a767ceeccaed0a0d3e2cd08c93c41a48343ce2e079c48e434e",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "25fcfa5e-db33-4794-8500-7f5d8b5b4833",
@@ -1764,7 +1959,8 @@
       "type": "Asset",
       "name": "BreakthroughDocument",
       "hash": "e06a1dca9ee436824299afb9b0c143df541d0897870ebed3a8f56f7d571dc8a4",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "281f2f5b-8726-4aca-a433-09a668901d4c",
@@ -1775,7 +1971,8 @@
       "hash": "ad744be802451b9319f82cb97cebcd418defc2109655c9596b23471eb550ce30",
       "dependencies": [
         "ab8fe378-904f-4768-8f08-58224260ce65"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "472cc766-028d-4871-80ee-d05ebced0306",
@@ -1784,7 +1981,8 @@
       "type": "Asset",
       "name": "CheatOverlay",
       "hash": "c9fb9607f20d425dd102ff042464d1aeea5ccb587a045eb26152167474946656",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d70dbba8-40cd-4044-9a1e-6430540ae49c",
@@ -1795,7 +1993,8 @@
       "hash": "5e2a507326aabed4381ae34ae6d9a4e1741fa4cf7abc1ffafdcd27c0f0aa3db9",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d6b9737c-6a39-4e87-9b2f-5a68d9ab56cd",
@@ -1806,7 +2005,8 @@
       "hash": "e24b07da3e7808b3fc6f554d599981c3dedd949c6ab124d23c6eb07ff2d7482f",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "9f7b5819-03a3-4c9a-9b06-15e359f6359d",
@@ -1817,7 +2017,8 @@
       "hash": "436f204af23cf25bdf26aa1755c98d901a36bf2a97f8c9a0d910abc39f1eecf2",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "67e0f0f3-0c4c-46c0-a00a-24c63e4367e7",
@@ -1828,7 +2029,8 @@
       "hash": "821d4d3c2c0da315ab9928809caf0242ca354611f6baa84c5eaf2496919f86e8",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "57113e56-34b6-4139-82ab-b756cd236df2",
@@ -1839,7 +2041,8 @@
       "hash": "d1417ded00be7de2eef459a6b69439fc7df1362282aac5ae505baa337aa866e5",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e4136dfc-7ba3-44a5-8196-c023a51bc8b6",
@@ -1850,7 +2053,8 @@
       "hash": "7bb44f843cbfbdd54d12da2310217d8756d2e5ba19aa2877d7e2050ea5614d98",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "1bf921c4-2a16-417e-8dfc-2393ccd8d874",
@@ -1861,7 +2065,8 @@
       "hash": "c3bcc1ebfa3f992caa0b7cef9f41204bf9f1012859e7129536c5598ae5fdd6f8",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "ee31b3ad-60d1-4af9-9f39-bae5b33fa952",
@@ -1870,7 +2075,8 @@
       "type": "Asset",
       "name": "InventoryIcon",
       "hash": "0e40c4799a63d5baed9df4a1844ad24c5c4cc977f14bfe131d653d31dcf0c20a",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "4211d9d7-572b-4dc6-baa0-ccfb3c0b3323",
@@ -1881,7 +2087,8 @@
       "hash": "09cd46cc9b0766e4fccbeee59a5e84f2be8da1e4ef72f3f2a49183ad223eb93e",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "63b732e2-f802-4ef7-91cb-13317e17976a",
@@ -1890,7 +2097,8 @@
       "type": "Asset",
       "name": "MissionCard",
       "hash": "d4d165148a9bd656f2000bc820ce6f2116ec66e0ca237c6dd4332f50edf39775",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "19d27a4d-e701-4aa6-87a5-715f53867780",
@@ -1901,7 +2109,8 @@
       "hash": "18715eddf9a098e684820dcffa7dd568eb1af6bfdd9812cf5bdcb589f0693081",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "d977a87b-d3bf-43e4-9746-8c99142078d5",
@@ -1912,7 +2121,8 @@
       "hash": "b850af165ced422939578e8daf039f3b27b3ffa3b760fc4d3beae741837c9cc5",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f95709f1-87a2-40fd-ad48-4cb28f74f9e8",
@@ -1921,7 +2131,8 @@
       "type": "Asset",
       "name": "PrivacyPolicyWindow",
       "hash": "f498fd752c45cc524e0dbcc494f5c465a50edaca0b90b0ce884a5c587a4fe950",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "c59adb8b-d57e-4322-a617-2d79d1431685",
@@ -1932,7 +2143,8 @@
       "hash": "cb52e4e7d3b55b1af8babeb9f14c1976a4eedcc4d1929f9bdc8a22fa2ac04e2c",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "77bddcf5-7ecb-4400-a643-40b87b8440be",
@@ -1943,7 +2155,8 @@
       "hash": "03b1357d84363bfacc4bb2557afc6c44c5a1167e5e1b6824daaa0e00ea9a2582",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "45ccc057-06ad-4027-8ace-e1f455678bbc",
@@ -1954,7 +2167,8 @@
       "hash": "d4beea9099070973a5e2b7ba5e719e0f44a2590a47b384fae80927e0a5f444d8",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "040d67b5-d3e6-47d9-9174-1d4d41193f07",
@@ -1965,7 +2179,8 @@
       "hash": "00632773e916844958cae5a2aaca35b800b5c0f4450db33837c3343d38cbc118",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a34fd212-7b33-414d-a3d4-9bc834ae901b",
@@ -1974,7 +2189,8 @@
       "type": "Asset",
       "name": "DeathWindowDocument",
       "hash": "0964259b22abda51714a15e8d679130738d1264cbf11684fb13018d6d253be7e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "aea90e73-ea3c-4200-9b84-0638ad383d3b",
@@ -1983,7 +2199,8 @@
       "type": "Asset",
       "name": "EffectPopupDocument",
       "hash": "1215f2b98e271809adf2848ce90b0c69f2897977cc4a3f51d50d652c6dba90eb",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "1c914a60-0394-4891-b8e6-234f74caa30d",
@@ -1992,7 +2209,8 @@
       "type": "Asset",
       "name": "FloatingOverlay",
       "hash": "abe13a6c9682922539f1c119ac71eb3720fa0ddc530819e4c7a80835f3ba2e85",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "aaff76c5-051d-4052-97d9-8673c254876f",
@@ -2001,7 +2219,8 @@
       "type": "Asset",
       "name": "InfoPopupDocument",
       "hash": "f8cd69b318c02bc4ff4be11aa3eefef711d9aaa35478656a0508a4fff9770a4f",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "1fee6ab4-89ff-4e86-aa26-d4aabe64c4f9",
@@ -2012,7 +2231,8 @@
       "hash": "88ad8324bf5998ca51c7552c69f40d4cd7f06434b8caa70a0b6418bc50f164fd",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e6ba6e04-252d-4023-b9b9-b95676c3b94c",
@@ -2023,7 +2243,8 @@
       "hash": "8457a7ab74ba3f35bfbd58f5d907cd935be9d4ca565579b6662a58f7e149845d",
       "dependencies": [
         "ab8fe378-904f-4768-8f08-58224260ce65"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "7bb5e6e4-71a3-4e86-acfe-16f2eb0b142b",
@@ -2034,7 +2255,8 @@
       "hash": "1c4f65925ef7c4eac8962f080560b46a6b3bcc9291646ff72eea8b689ed29845",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "4df75c7a-87ad-4b1a-9e90-31219a2b32cd",
@@ -2043,7 +2265,8 @@
       "type": "Asset",
       "name": "MissionsWindowDocument",
       "hash": "7b1ab9a09ffc8573d35c1371495e7a7000b6a30d2e8ffdae42677811efbb1a65",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "f692848b-74c2-429b-a9bd-80b8d4a0b07a",
@@ -2052,7 +2275,8 @@
       "type": "Asset",
       "name": "PrivacyPolicyDocument",
       "hash": "9ea7ff0950c55d8c82d2bf975b2646b9167b9bd955358fbd0259a0a5d2e4e4b8",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "3f234399-6556-4cdf-b0b2-467d9a1c0970",
@@ -2061,7 +2285,8 @@
       "type": "Asset",
       "name": "SettingsWindowDocument",
       "hash": "1f1f1b3fe88034ceafbeb6a5a0c3cb9bdc705850aa7d95c82591df383f6a983c",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "35e98472-7b83-4172-9770-c52c4618739b",
@@ -2072,7 +2297,8 @@
       "hash": "d6af4335c48bdd56da4300665410d12e4cf53aa6a76d05240c2f16ee52224e76",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "c4a2d008-dc35-4fa5-a822-73739841818c",
@@ -2081,7 +2307,8 @@
       "type": "Asset",
       "name": "Alchemy",
       "hash": "e35439efe4600a1b3d9b72ea5b6228a2b6e19a2c9bd563aafff68d3b39cfcac3",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "736f2631-a727-4653-a91c-d8f0ba119f28",
@@ -2090,7 +2317,8 @@
       "type": "Asset",
       "name": "Breakthrough",
       "hash": "4dbeef8773654578bf4023d1cb55e06a4a159fda8cfe83088b9427d6d5f68fdb",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e10dd293-2781-41ba-8ba9-9ef011ed32e9",
@@ -2101,7 +2329,8 @@
       "hash": "f83af1a2eb71ceb263c3022958daada3941eba60e38a50f71aa55c5c33651365",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "4d95d39c-9dbb-400b-a6b3-fc252e909dff",
@@ -2110,7 +2339,8 @@
       "type": "Asset",
       "name": "Death",
       "hash": "bd4449ca1d60e52695d95754395bfc14086f460abd7def4ba46c6079e26b24f6",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "3e870aa2-ba9a-4480-93a3-d5303d7b1ac2",
@@ -2121,7 +2351,8 @@
       "hash": "99ec2ffc0df1301dd27a8f24de023d46eec4b3bef24c98c3c69c9cf6aef1131b",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "b589c0f5-6c5e-49a6-8dd6-a636492a1b57",
@@ -2130,7 +2361,8 @@
       "type": "Asset",
       "name": "InfoPopup",
       "hash": "efcd08ad3338901d5e501b8109b34e8c9acc23a336e6a83ca4fa33cb99516d8e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "6a461bc0-e671-4f7d-914a-e214644ee5a7",
@@ -2139,7 +2371,8 @@
       "type": "Asset",
       "name": "Inventory",
       "hash": "df744b78042327ed08831a6d7238dc72ad6d2b313b6784be9a9368ae911c7b2e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "1f78f3d0-db54-4306-9679-fc2ef3e7b27b",
@@ -2148,7 +2381,8 @@
       "type": "Asset",
       "name": "Missions",
       "hash": "4974d856086a7829d21b1e292208d4f4404ea017a25d276aa73ae8d6780f5ac3",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "75bbc456-1b3b-471d-ae94-edd8713ead2c",
@@ -2159,7 +2393,8 @@
       "hash": "a057abbc59110544966b1307612e8f6caaefacf8a1ea21dfd35d228a64f2fccf",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a7ccdf21-af8f-4a7c-9690-589c4336f4e7",
@@ -2170,7 +2405,8 @@
       "hash": "111b50c10fb4ed520722e331234584b9a86c2fc06499b982ce10eac7bd4c5ea8",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "a0193f31-e606-4065-8500-6b76e3662553",
@@ -2179,7 +2415,8 @@
       "type": "Asset",
       "name": "Shop",
       "hash": "041b9c3e34cdcf33164d23cf41775d98959c2521fa320a2cc8137f0827660fbf",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "ac224f8a-d5ac-4b9d-81b1-aceebc73eb17",
@@ -2188,7 +2425,8 @@
       "type": "Asset",
       "name": "Windows",
       "hash": "ac996bd8cef0b5281f9cb2b2998c66ed05f64866e5574b3bc286d675eb666ec7",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "15ab4601-fcea-4356-8973-41feb742efe3",
@@ -2197,7 +2435,8 @@
       "type": "Asset",
       "name": "TransientOverlay",
       "hash": "279b52118d4404b2e5ffc3f4c402ddef64f544d752ca31835a66b32ed7b501d0",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "59b6c4f4-bc7d-48f9-9990-16ea36b3896d",
@@ -2206,7 +2445,8 @@
       "type": "Config",
       "name": "EditorLayout",
       "hash": "6937b26f4fe36a4cee3ce84cf9f29f0b9c67995b88ac4de3415f32d608bc58b1",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2cf1c85c-21b3-4208-bff0-2f97680e2fd4",
@@ -2215,7 +2455,8 @@
       "type": "Config",
       "name": "Physics",
       "hash": "0fdffdfbb1e5da56db219d5bce3ab7f8a64f5d8347e74c4ad245f73ff29efd69",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "11105a38-3803-4723-80b6-1a6843d52253",
@@ -2224,7 +2465,8 @@
       "type": "Config",
       "name": "UI",
       "hash": "77731c1a538891ca90282b4af8902bc2132a01d39ebfd18170a9b3820b88a682",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "edde06e8-db00-41ef-8e91-4ac4ec744ba9",
@@ -2233,7 +2475,8 @@
       "type": "Input",
       "name": "Controls",
       "hash": "5de50818ba171c00acb6471fcc731264e85058a160244cb86a37a100c76ab2ae",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "394c11bd-efa7-47ca-a13d-cc95a130c30c",
@@ -2245,7 +2488,8 @@
       "dependencies": [
         "379f6fc2-6b79-401e-b32b-a2fe91528677",
         "86288b97-1e98-44a2-ab68-1df2c742b903"
-      ]
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "379f6fc2-6b79-401e-b32b-a2fe91528677",
@@ -2254,7 +2498,8 @@
       "type": "Shader",
       "name": "Lit",
       "hash": "03c821e780ad1567a8e7f2cadb562cd4d4a9fbb3332693474efbe08275f0930b",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "6f657d54-e9ec-4d6f-ae1f-4944450f5194",
@@ -2263,7 +2508,8 @@
       "type": "Shader",
       "name": "Copy",
       "hash": "15660dedc7c3e0b6910f06631453246a5f66a76ec356e278d720ecd42253e1cf",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "04929c92-6c14-4229-a65b-a2624a97faa8",
@@ -2272,7 +2518,8 @@
       "type": "Shader",
       "name": "Retro",
       "hash": "fd5a656082700207891558c428fab988375b068dec1de802ee0520cb50d83d9a",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "211c95e3-794b-4487-bff6-40ad1ef5b226",
@@ -2281,7 +2528,8 @@
       "type": "Shader",
       "name": "Vignette",
       "hash": "bed94aefaf6a5a03572587797cb0a300c12831b32a7a5fb8b9d0d0a653d249d4",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "deb19ec1-d6e3-4f1e-b056-21360ca541ae",
@@ -2290,7 +2538,8 @@
       "type": "Shader",
       "name": "Skybox",
       "hash": "fa6a84758c806f0be25cca168ede0e70fd4142625328c437ccff36d42aade6ac",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "383981d0-a142-445b-b8b4-f70b6e37997c",
@@ -2299,7 +2548,8 @@
       "type": "Shader",
       "name": "Sprite",
       "hash": "e7a72bad07714690a1b61cffa77282761dd1727f6cc016b5c51c10322aac85fd",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "46d9bf55-be94-48dd-9eff-93e8903e5ed8",
@@ -2308,7 +2558,8 @@
       "type": "Texture2D",
       "name": "nx",
       "hash": "2bcedf3e72574aacb058409d6fe60b708f631c2b367fcb68f6a0c9000b8bb071",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "2d72ae6e-fa67-433a-8b12-7c99ab5e7522",
@@ -2317,7 +2568,8 @@
       "type": "Texture2D",
       "name": "ny",
       "hash": "b6770fdad43a81cab686955836d76d293fc4d373a592eeaac969ff9961ba77e9",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "34995a4b-abf8-4f10-a347-ac75e61b1fd1",
@@ -2326,7 +2578,8 @@
       "type": "Texture2D",
       "name": "nz",
       "hash": "82207f0c6896552228e4c1f00eef4a6a050f72b7df4a37bf60b4d469657c52c2",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "4cb6e6c7-f662-4b85-bc7d-3ff40293c4e6",
@@ -2335,7 +2588,8 @@
       "type": "Texture2D",
       "name": "px",
       "hash": "f70cf4be9a042f577eead72d6d25f72e73aadd0e8dd857b176fc720cf8c8b979",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "ea7752b2-ff21-40c9-931f-79ff807ea64c",
@@ -2344,7 +2598,8 @@
       "type": "Texture2D",
       "name": "py",
       "hash": "27ed89c184fb1fbab0d795930d3965cbd3feff135c335f3d124661b4d1a42a7e",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "dd682058-0c84-43fa-a5c6-9da72b5e3838",
@@ -2353,7 +2608,8 @@
       "type": "Texture2D",
       "name": "pz",
       "hash": "489d87d72470a4fe3ab74350f32ffe472a62f8addc98c11e18e05d01fab6fa79",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "cd5af580-8909-4701-8db5-8e2112ee3211",
@@ -2362,7 +2618,8 @@
       "type": "Config",
       "name": "Skybox",
       "hash": "96a1527cba76a648cd2bba75215b857ff4337d445e0bf5f378a7223eda7293a5",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "170eee59-c988-4c47-90b5-105f342943fc",
@@ -2371,7 +2628,8 @@
       "type": "Texture2D",
       "name": "FmodLogo",
       "hash": "637a25a67d92d210c744f008ff3f19833d18f3945717ba7d8755565f588a7043",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "c594d509-5646-484e-9cc3-3f4728ad3d72",
@@ -2380,7 +2638,8 @@
       "type": "Texture2D",
       "name": "Logo",
       "hash": "31e72c3db4b39dc48847cbbc1c7f0dc6ba3bca5c11390f429c74167ffaa2a91f",
-      "dependencies": []
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "86288b97-1e98-44a2-ab68-1df2c742b903",
@@ -2389,6 +2648,16 @@
       "type": "Texture2D",
       "name": "T_Quad_White_64",
       "hash": "7329544873bd6ddf000d93361d7084fbc76063ad92a667721d8c1c9bb732363b",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    }
+  ],
+  "packages": [
+    {
+      "id": "98cbb7d7-e042-d142-6ea7-cbd84cd256be",
+      "name": "Game",
+      "descriptor": null,
+      "load": 0,
       "dependencies": []
     }
   ]

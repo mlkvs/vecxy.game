@@ -579,3 +579,6 @@ audio.Play(Assets.Sounds.UiClick);
 
 Главное правило: пути допустимы внутри asset-файлов и importers, но gameplay C# должен
 использовать generated handles.
+## VPack packages
+
+Для independently loadable DLC, уровней и локализаций Asset Pipeline поддерживает folder-based `.vpack` descriptors, binary block containers и typed package API. Полный workflow, YAML format, CLI и runtime lifetime описаны в [VPack.md](VPack.md).
