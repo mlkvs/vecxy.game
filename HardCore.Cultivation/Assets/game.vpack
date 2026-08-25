@@ -73,8 +73,9 @@ platforms:
       block-size: 512kb
 
   android:
-    # LZ4 быстрее распаковывается и подходит для мобильного startup-пакета.
-    # Для none и lz4 поле level не требуется.
+    # Для release-пакета используем плотное Zstd-сжатие. Уже сжатые OGG и изображения
+    # VPack оставляет raw, поэтому дополнительная нагрузка относится в основном к конфигам/UI.
     compression:
-      algorithm: lz4
+      algorithm: zstd
+      level: 12
       block-size: 256kb
