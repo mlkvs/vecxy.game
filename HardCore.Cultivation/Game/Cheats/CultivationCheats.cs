@@ -88,6 +88,20 @@ public sealed class CultivationCheats(GameController game)
         return "Предел возраста -10";
     }
 
+    [CheatAction("Предыдущая стадия", "Стадия", order: 10, groupOrder: 40)]
+    public string PreviousStage()
+    {
+        var stage = game.ChangeCultivationStageForCheat(-1);
+        return $"Стадия: {stage}";
+    }
+
+    [CheatAction("Следующая стадия", "Стадия", order: 20, groupOrder: 40)]
+    public string NextStage()
+    {
+        var stage = game.ChangeCultivationStageForCheat(1);
+        return $"Стадия: {stage}";
+    }
+
     [CheatAction("Сбросить сохранение", "Сохранение", order: 10, groupOrder: 100)]
     public string ResetSave()
     {

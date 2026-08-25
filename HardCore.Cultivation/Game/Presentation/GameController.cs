@@ -379,6 +379,18 @@ public sealed class GameController(
         CommitCheatChange();
     }
 
+    public string ChangeCultivationStageForCheat(int offset)
+    {
+        var currentStage = _state.Character.Cultivation.StageIndex;
+        var targetStage = Math.Clamp(currentStage + offset, 0, database.Cultivation.Stages.Count - 1);
+        _state.Character.Cultivation.Restore(targetStage, 1, database.Cultivation.Stages.Count);
+        _state.Character.ClearSpiritualPower();
+        combat.ConfigureHero(_state.Character);
+        CommitCheatChange();
+
+        return database.Cultivation.Stages[targetStage].Name;
+    }
+
     public void ResetSaveForCheat()
     {
         if (File.Exists(saves.SavePath))
