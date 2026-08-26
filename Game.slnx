@@ -1,25 +1,41 @@
 <Solution>
-  <Folder Name="/Sandbox/">
-    <Project Path="Sandbox/Tests/Tests.csproj" />
-  </Folder>
-  <Folder Name="/Tools/">
-    <Project Path="Engine/Vecxy/Code/Vecxy.CLI/Vecxy.CLI.csproj" />
+  <Folder Name="/Engine/">
+    <Project Path="Engine/Vecxy/Code/Vecxy.AssetCompiler/Vecxy.AssetCompiler.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Assets/Vecxy.Assets.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Audio/Vecxy.Audio.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Diagnostics/Vecxy.Diagnostics.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Engine/Vecxy.Engine.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Input/Vecxy.Input.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Kernel/Vecxy.Kernel.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Messaging/Vecxy.Messaging.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Physics/Vecxy.Physics.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Platforms/Vecxy.Platforms.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Platforms.Android/Vecxy.Platforms.Android.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Rendering/Vecxy.Rendering.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Scene/Vecxy.Scene.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.UI/Vecxy.UI.csproj" />
   </Folder>
   <Folder Name="/Editor/">
     <Project Path="Engine/Vecxy/Code/Vecxy.Editor/Vecxy.Editor.csproj" />
   </Folder>
-  <Folder Name="/Engine/">
-    <File Path="Engine\Vecxy\Code\Vecxy.UI\Vecxy.UI.csproj" />
-    <Project Path="Engine/Vecxy/Code/Vecxy.Assets/Vecxy.Assets.csproj" />
-    <Project Path="Engine/Vecxy/Code/Vecxy.Diagnostics/Vecxy.Diagnostics.csproj" />
-    <Project Path="Engine/Vecxy/Code/Vecxy.Engine/Vecxy.Engine.csproj" />
-    <Project Path="Engine/Vecxy/Code/Vecxy.Kernel/Vecxy.Kernel.csproj" />
-    <Project Path="Engine/Vecxy/Code/Vecxy.Rendering/Vecxy.Rendering.csproj" />
-  </Folder>
-  <Folder Name="/Game/">
-    <Project Path="Horror/Horror.csproj" />
+  <Folder Name="/Games/">
+    <Project Path="EmptyGame/EmptyGame.csproj" />
     <Project Path="HardCore.Cultivation/HardCore.Cultivation.csproj" />
-    <Project Path="HardCore.Cultivation.Tests/HardCore.Cultivation.Tests.csproj" />
+    <Project Path="Horror/Horror.csproj" />
     <Project Path="Sponza/Sponza.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Engine/Vecxy/Code/Vecxy.UI.Tests/Vecxy.UI.Tests.csproj" />
+    <Project Path="Engine/Vecxy/tools/Vecxy.AssetPipeline.Tests/Vecxy.AssetPipeline.Tests.csproj" />
+    <Project Path="HardCore.Cultivation.Tests/HardCore.Cultivation.Tests.csproj" />
+    <Project Path="Sandbox/Tests/Tests.csproj" />
+  </Folder>
+  <Folder Name="/Tools/Engine/">
+    <Project Path="Engine/Vecxy/Code/Vecxy.CLI/Vecxy.CLI.csproj" />
+  </Folder>
+  <Folder Name="/Tools/Pipeline/">
+    <Project Path="Engine/Vecxy/tools/Vecxy.AssetAnalyzer/Vecxy.AssetAnalyzer.csproj" />
+    <Project Path="Engine/Vecxy/tools/Vecxy.AssetPipeline/Vecxy.AssetPipeline.csproj" />
+    <Project Path="Engine/Vecxy/tools/Vecxy.Cli/Vecxy.Cli.csproj" />
   </Folder>
 </Solution>
