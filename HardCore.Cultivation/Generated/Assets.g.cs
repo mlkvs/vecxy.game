@@ -13,6 +13,8 @@ public static partial class Assets
         public static ConfigHandle Alchemy => new(new Guid("b42d27a9-9ddf-402b-a55e-f41d8e30aaee"));
         [AssetReference("a501e619-9e73-4ea5-aa8f-527d818a27ae")]
         public static ConfigHandle Analytics => new(new Guid("a501e619-9e73-4ea5-aa8f-527d818a27ae"));
+        [AssetReference("24382795-0657-4b3e-b3bb-c8910f85c6bd")]
+        public static ConfigHandle Application => new(new Guid("24382795-0657-4b3e-b3bb-c8910f85c6bd"));
         [AssetReference("d9d8a561-a323-4d51-a70a-cebb169a6356")]
         public static ConfigHandle Build => new(new Guid("d9d8a561-a323-4d51-a70a-cebb169a6356"));
         [AssetReference("c2ade27b-629d-4569-af6d-8700c4d5d1cf")]

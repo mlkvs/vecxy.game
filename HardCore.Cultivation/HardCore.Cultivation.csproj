@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <VecxyGenerateEntryPoint>true</VecxyGenerateEntryPoint>
     <VecxyApplicationId>game.vecxy.hardcorecultivation</VecxyApplicationId>
     <VecxyApplicationTitle Condition="'$(BuildGameName)' == ''">HardCore Cultivation</VecxyApplicationTitle>
     <VecxyApplicationTitle Condition="'$(BuildGameName)' != ''">$(BuildGameName)</VecxyApplicationTitle>

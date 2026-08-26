@@ -7,6 +7,12 @@ using Vecxy.Assets;
 
 public static partial class Assets
 {
+    public static class Configs
+    {
+        [AssetReference("75ef92a2-eab9-48b5-be75-bde9fd1ca73b")]
+        public static ConfigHandle Application => new(new Guid("75ef92a2-eab9-48b5-be75-bde9fd1ca73b"));
+    }
+
     public static class Engine
     {
         private static AssetPackage Package => AssetPackages.Get(new PackageId(new Guid("79e6ac0f-5f3f-e20a-2227-c63732e7dd1e")));

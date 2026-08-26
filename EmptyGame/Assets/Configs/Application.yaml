@@ -1,0 +1,16 @@
+application:
+  title: Vecxy Empty Game
+
+window:
+  width: 480
+  height: 800
+
+engine:
+  targetFrameRate: 60
+  showSplashScreen: false
+
+assets:
+  hotReload: true
+
+layers:
+  - engine

@@ -1,6 +1,29 @@
 using HardCore.Cultivation.Game.Application;
 using HardCore.Cultivation.Game.Domain;
 using HardCore.Cultivation.Game.Infrastructure;
+using Vecxy.Engine;
+using Vecxy.Platforms;
+
+Check(ApplicationResolver.Create() is HardCore.Cultivation.Application,
+    "The shared platform host did not discover the configured application.");
+var bootstrap = new HardCore.Cultivation.Application();
+var bootstrapContext = new PlatformContext(
+    PlatformKind.Desktop,
+    Path.GetFullPath(Path.Combine(
+        AppContext.BaseDirectory,
+        "../../../../HardCore.Cultivation/Assets")));
+var bootstrapOptions = new Engine.Options();
+var bootstrapLayers = new List<AAppLayer.IDefinition>();
+bootstrap.OnConfigureEngine(bootstrapContext, bootstrapOptions);
+bootstrap.OnConfigureLayers(bootstrapContext, bootstrapLayers);
+Check(bootstrapOptions.Window.Title == "HardCore Cultivation" &&
+      bootstrapOptions.Window.Width == 500 &&
+      bootstrapOptions.Window.Height == 900 &&
+      bootstrapOptions.TargetFrameRate == 60 &&
+      bootstrapOptions.ShowSplashScreen,
+    "Application.yaml was not applied to engine options.");
+Check(bootstrapLayers is [EngineLayer.Definition, HardCore.Cultivation.GameLayer.Definition, HardCore.Cultivation.CheatLayer.Definition],
+    "Application.yaml layers were not resolved in their configured order.");
 
 var database = BuildDatabase();
 var random = new StableRandom();

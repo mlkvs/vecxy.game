@@ -11,6 +11,7 @@ using JetBrains.Annotations;
 using Vecxy.Assets;
 using Vecxy.Audio;
 using Vecxy.Engine;
+using Vecxy.Kernel;
 using Vecxy.Scene;
 
 namespace HardCore.Cultivation;
@@ -33,6 +34,7 @@ public sealed class GameLayer
     private float _performanceElapsed;
     private int _performanceFrames;
     private float _performanceFrameMilliseconds;
+    [AppLayerDefinition("game")]
     public sealed class Definition : ADefinition<GameLayer>
     {
         public override void RegisterGlobal(ContainerBuilder builder)

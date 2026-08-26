@@ -2,6 +2,7 @@ using Autofac;
 using HardCore.Cultivation.Game.Cheats;
 using JetBrains.Annotations;
 using Vecxy.Engine;
+using Vecxy.Kernel;
 using Vecxy.Rendering;
 using Vecxy.UI;
 
@@ -14,6 +15,7 @@ public sealed class CheatLayer(
     IUiDiagnostics uiDiagnostics,
     CheatActionRegistry registry) : AAppLayer
 {
+    [AppLayerDefinition("cheats")]
     public sealed class Definition : ADefinition<CheatLayer>
     {
         public override void RegisterLocal(ContainerBuilder builder)

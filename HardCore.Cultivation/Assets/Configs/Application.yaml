@@ -1,0 +1,20 @@
+application:
+  title: HardCore Cultivation
+
+window:
+  width: 500
+  height: 900
+
+engine:
+  targetFrameRate: 60
+  showSplashScreen: true
+  splashScreenLogoPath: Textures/Logo.png
+
+assets:
+  hotReload: true
+  hotReloadDelayMilliseconds: 150
+
+layers:
+  - engine
+  - game
+  - cheats

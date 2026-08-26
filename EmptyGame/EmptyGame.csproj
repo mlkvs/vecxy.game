@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <VecxyGenerateEntryPoint>true</VecxyGenerateEntryPoint>
     <VecxyApplicationId>game.vecxy.empty</VecxyApplicationId>
     <VecxyApplicationTitle>Vecxy Empty Game</VecxyApplicationTitle>
     <VecxyApplicationVersion>1.0.0</VecxyApplicationVersion>

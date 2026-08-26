@@ -769,6 +769,7 @@ public sealed class GameController(
     {
         if (_view is null)
             return;
+        combat.ConfigureHero(_state.Character, activeEffects: _state.ActiveEffects);
         UpdateHud();
         UpdateMissionSummary();
         SyncEffects();

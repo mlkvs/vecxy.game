@@ -21,6 +21,16 @@
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
+      "id": "24382795-0657-4b3e-b3bb-c8910f85c6bd",
+      "source": "Game",
+      "path": "Configs/Application.yaml",
+      "type": "Config",
+      "name": "Application",
+      "hash": "cd37304959e11d0da1155e16d1f5ae1d6957fffd7e18d8b9e505f71926b644ab",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
       "id": "d9d8a561-a323-4d51-a70a-cebb169a6356",
       "source": "Game",
       "path": "Configs/Build.yaml",
