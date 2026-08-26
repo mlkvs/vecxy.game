@@ -107,8 +107,10 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
         if (!validation.CanCraft || validation.Output is null)
             return AlchemyCraftResult.Fail(validation.Message);
 
-        var successChance = CalculateSuccessChance(resolved.Units, mode);
-        if (random.NextDecimal(0m, 100m) >= successChance)
+        var successChance = mode == AlchemyMode.Distillation
+            ? 100m
+            : CalculateSuccessChance(resolved.Units, mode);
+        if (mode == AlchemyMode.Pill && random.NextDecimal(0m, 100m) >= successChance)
         {
             if (!RemoveSelected(state, selection))
                 return AlchemyCraftResult.Fail("Состав инвентаря изменился. Соберите смесь заново.");
