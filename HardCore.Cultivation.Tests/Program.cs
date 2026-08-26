@@ -11,30 +11,38 @@ var shopService = new ShopService(database, generator, random);
 var cultivation = new CultivationService(database, random);
 var processor = new TickProcessor(database, effectService, missionService, shopService, cultivation);
 
+var spreadsheetCultivation = new CultivationConfig
+{
+    InitialRequiredPower = [100m, 200m],
+    Stages =
+    [
+        new CultivationStageConfig
+        {
+            Id = "body_tempering",
+            RecursiveCoefficient = 0.7m,
+            SpiritualPowerMultiplier = 1m,
+            StatsPerLevel = new CharacterStats(5m, 0.1m, 0.5m, 0.05m, 0.5m)
+        }
+    ]
+};
 var spreadsheetBalance = new CultivationBalanceSnapshot(
     new GameBalanceConfig
     {
-        InitialCharacterStats = new CharacterStats(100m, 1m, 1m, 1m, 63m)
+        InitialCharacterStats = new CharacterStats(100m, 1m, 1m, 1m, 60m)
     },
-    new CultivationConfig
-    {
-        InitialRequiredPower = [100m, 200m],
-        Stages =
-        [
-            new CultivationStageConfig
-            {
-                Id = "body_tempering",
-                RecursiveCoefficient = 0.7m,
-                SpiritualPowerMultiplier = 1m,
-                StatsPerLevel = new CharacterStats(5m, 0.1m, 0.5m, 0.05m, 0.5m)
-            }
-        ]
-    });
+    spreadsheetCultivation);
 Check(spreadsheetBalance.GetCost(0, 3) == 210m && spreadsheetBalance.GetCost(0, 10) == 1103.987003m,
     "Cultivation costs do not match the spreadsheet recurrence.");
-Check(spreadsheetBalance.GetStart(0) == new CharacterStats(100m, 1m, 1m, 1m, 63m) &&
-      spreadsheetBalance.GetEnd(0) == new CharacterStats(150m, 2m, 6m, 1.5m, 68m),
+Check(spreadsheetBalance.GetStart(0) == new CharacterStats(100m, 1m, 1m, 1m, 60m) &&
+      spreadsheetBalance.GetEnd(0) == new CharacterStats(150m, 2m, 6m, 1.5m, 65m),
     "Cultivation statistics do not match the spreadsheet baseline.");
+var spreadsheetLevelOne = new CultivationProgress();
+var spreadsheetLevelTen = new CultivationProgress();
+spreadsheetLevelTen.Restore(0, 10, 1);
+Check(spreadsheetBalance.GetCurrent(spreadsheetLevelOne, spreadsheetCultivation) ==
+      new CharacterStats(105m, 1.1m, 1.5m, 1.05m, 60.5m) &&
+      spreadsheetBalance.GetCurrent(spreadsheetLevelTen, spreadsheetCultivation) == spreadsheetBalance.GetEnd(0),
+    "Runtime level statistics do not reach the spreadsheet stage endpoint.");
 var spreadsheetQualityBalance = new GameBalanceConfig
 {
     QualityPriceCurve =
@@ -67,6 +75,15 @@ state.SetActivityMode(ActivityMode.Missions);
 var missionWeek = processor.ProcessTick(state);
 Check(missionWeek.SpiritualPowerGained == 0 && missionWeek.MissionProgressAdded > 0, "Mission mode must only add mission progress.");
 Check(state.Character.SpiritualPower == powerAfterCultivation, "Mission mode changed spiritual power.");
+state.ActiveEffects.Add(new ActiveEffect("cultivation_efficiency", new ItemEffectDefinition
+{
+    Type = EffectType.TickEfficiency,
+    Operation = ModifierOperation.AdditivePercent,
+    Value = 100m
+}, 1m, null, ItemDurationType.Permanent, ItemRarity.Common, 1m));
+var missionWeekWithCultivationBonus = processor.ProcessTick(state);
+Check(missionWeekWithCultivationBonus.MissionProgressAdded == missionWeek.MissionProgressAdded,
+    "Spiritual power gain bonus must not accelerate mission progress.");
 
 var combat = new CombatService(database);
 Check(CombatService.CalculateDamage(3m, 2m) == 1m && CombatService.CalculateDamage(3m, 0m) == 3m,
@@ -249,15 +266,16 @@ Check(powerful.CanCraft && powerful.Output is { DistillationLevel: 2 } &&
           .SequenceEqual(extract.AlchemyProperties.Select(value => value.PropertyId)),
     "Repeated distillation did not preserve the extract properties.");
 
-var failedDistillationState = new GameState(database.Balance.TicksPerYear);
-var failedDistillationInput = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Common, Quality = 1m };
-failedDistillationInput.AddQuantity(1);
-failedDistillationState.Inventory.Add(failedDistillationInput);
-var failedDistillation = new AlchemyService(database, new MaximumRandom()).Craft(failedDistillationState,
-    [new(failedDistillationInput.InstanceId, 2)], AlchemyMode.Distillation);
-Check(!failedDistillation.Success && failedDistillation.IngredientsDestroyed && failedDistillation.SuccessChancePercent == 10m &&
-      failedDistillationState.Inventory.Items.Count == 0,
-    "A failed distillation did not destroy every selected item.");
+var guaranteedDistillationState = new GameState(database.Balance.TicksPerYear);
+var guaranteedDistillationInput = new ItemInstance { InstanceId = Guid.NewGuid(), ConfigId = "ingredient", Rarity = ItemRarity.Common, Quality = 1m };
+guaranteedDistillationInput.AddQuantity(1);
+guaranteedDistillationState.Inventory.Add(guaranteedDistillationInput);
+var guaranteedDistillation = new AlchemyService(database, new MaximumRandom()).Craft(guaranteedDistillationState,
+    [new(guaranteedDistillationInput.InstanceId, 2)], AlchemyMode.Distillation);
+Check(guaranteedDistillation.Success && !guaranteedDistillation.IngredientsDestroyed &&
+      guaranteedDistillation.SuccessChancePercent == 100m &&
+      guaranteedDistillation.Output is { DistillationLevel: 1 },
+    "Distillation was not guaranteed to succeed.");
 
 var savePath = Path.Combine(Path.GetTempPath(), $"cultivation-alchemy-{Guid.NewGuid():N}.json");
 var saveSystem = new GameSaveSystem(database) { SavePath = savePath };
@@ -442,7 +460,8 @@ tapState.ActiveEffects.Add(new ActiveEffect("tap", new ItemEffectDefinition
     Value = 1
 }, 1, null, ItemDurationType.Permanent, ItemRarity.Common, 1));
 var tapResult = processor.ProcessTap(tapState);
-Check(tapResult.SpiritualPowerGained == 200m, "Tap must ignore stage multiplier and retain item bonuses.");
+Check(tapResult.SpiritualPowerGained == 101m,
+    "Flat spiritual power bonus must be added as a number instead of used as a multiplier.");
 Check(tapState.CurrentMission!.CurrentProgress == 0m, "Tap must not advance mission progress.");
 Check(tapState.Calendar.TotalTicks == 0, "Tap must not advance calendar.");
 
@@ -479,8 +498,8 @@ var spiritBeforePill = processor.ProcessTick(eternalSpiritState).SpiritualPowerG
 var eternalSpiritPill = eternalSpiritState.Inventory.Items.Single(item => item.ConfigId == "eternal_spirit_pill");
 var eternalSpiritUse = effectService.Use(eternalSpiritState, eternalSpiritPill.InstanceId);
 var spiritAfterPill = processor.ProcessTick(eternalSpiritState).SpiritualPowerGained;
-Check(eternalSpiritUse.Success && spiritAfterPill == spiritBeforePill * 1.03m,
-    "Eternal spirit pill must permanently increase spiritual power gained per tick by 3%.");
+Check(eternalSpiritUse.Success && spiritAfterPill == spiritBeforePill + 1m,
+    "Eternal spirit pill must permanently add one spiritual power per tick.");
 Check(eternalSpiritState.ActiveEffects.Any(effect =>
         effect.SourceItemId == "eternal_spirit_pill" && effect.RemainingTicks is null),
     "Eternal spirit pill effect must not expire.");
@@ -540,7 +559,7 @@ static GameDatabase BuildDatabase()
                 new ItemConfig { Id = "longevity_pill", Name = "Longevity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Permanent,
                     BasePrice = 10, ShopWeight = 0, Effects = [new ItemEffectDefinition { Type = EffectType.LongevityYears, Operation = ModifierOperation.Flat, Value = 5m }] },
                 new ItemConfig { Id = "eternal_spirit_pill", Name = "Eternal spirit pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Permanent,
-                    BasePrice = 10, ShopWeight = 0, Effects = [new ItemEffectDefinition { Type = EffectType.TickEfficiency, Operation = ModifierOperation.AdditivePercent, Value = 3m }] },
+                    BasePrice = 10, ShopWeight = 0, Effects = [new ItemEffectDefinition { Type = EffectType.SpiritualPowerGain, Operation = ModifierOperation.Flat, Value = 1m }] },
                 new ItemConfig { Id = "alchemy_extract", Name = "Extract", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant,
                     BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "attempt", Name = "Attempt", Category = ItemCategory.Core, DurationType = ItemDurationType.UntilBreakthroughAttempt, BasePrice = 10,

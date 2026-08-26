@@ -124,7 +124,7 @@ public sealed class GameBalanceConfig : IYamlConfig
     public decimal MaximumBreakthroughChance { get; init; } = 100m;
     public long StartingMoney { get; init; } = 1000;
     public decimal StartingAgeYears { get; init; } = 16m;
-    public CharacterStats InitialCharacterStats { get; init; } = new(100m, 1m, 1m, 1m, 80m);
+    public CharacterStats InitialCharacterStats { get; init; } = new(100m, 1m, 1m, 1m, 60m);
     public int MaximumMissionQueueSize { get; init; } = 6;
     public List<QualityBand> QualityBands { get; init; } = [];
     public List<ContaminationBand> ContaminationBands { get; init; } = [];

@@ -57,17 +57,16 @@ items:
     value: 10
 - id: spiritual_growth_pill
   name: Пилюля духовного роста
-  description: Повышает общую эффективность духовного роста.
+  description: Навсегда увеличивает прирост духовной силы за тик на фиксированное значение.
   icon: Assets/Textures/Pills/spiritual-growth.png
   category: Pill
-  durationType: Temporary
-  temporaryDurationTicks: 24
+  durationType: Permanent
   basePrice: 120
   shopWeight: 18
   effects:
-  - type: TickEfficiency
-    operation: AdditivePercent
-    value: 10
+  - type: SpiritualPowerGain
+    operation: Flat
+    value: 1
 - id: eternal_spirit_pill
   name: Пилюля вечного духа
   description: Навсегда увеличивает количество духовной силы, получаемой за каждый тик.
@@ -77,9 +76,9 @@ items:
   basePrice: 980
   shopWeight: 3
   effects:
-  - type: TickEfficiency
-    operation: AdditivePercent
-    value: 3
+  - type: SpiritualPowerGain
+    operation: Flat
+    value: 1
 - id: spirit_gain_pill
   name: Пилюля духовного потока
   description: Временно увеличивает количество получаемого духа.

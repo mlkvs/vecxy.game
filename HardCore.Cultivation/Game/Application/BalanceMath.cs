@@ -54,7 +54,7 @@ public sealed class CultivationBalanceSnapshot
     public CharacterStats GetStart(int stage) => _starts[stage];
     public CharacterStats GetEnd(int stage) => _ends[stage];
     public CharacterStats GetCurrent(CultivationProgress cultivation, CultivationConfig config) =>
-        _starts[cultivation.StageIndex] + config.Stages[cultivation.StageIndex].StatsPerLevel * (cultivation.Level - 1);
+        _starts[cultivation.StageIndex] + config.Stages[cultivation.StageIndex].StatsPerLevel * cultivation.Level;
 }
 
 public static class ElementCompatibilityCalculator

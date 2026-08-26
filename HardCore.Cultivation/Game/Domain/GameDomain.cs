@@ -763,6 +763,7 @@ public readonly record struct TickModifiers(
     decimal TickEfficiency,
     decimal AgingMultiplier,
     decimal TimeAccelerationMultiplier,
+    decimal SpiritualPowerFlat,
     decimal SpiritualPowerMultiplier,
     decimal MissionProgressMultiplier,
     decimal BreakthroughChanceBonus);

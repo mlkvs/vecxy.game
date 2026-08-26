@@ -134,9 +134,9 @@ properties:
   - id: clarity
     displayName: Ясность
     resultPillItemId: spiritual_growth_pill
-    effectType: TickEfficiency
-    operation: AdditivePercent
-    baseValue: 0.1
+    effectType: SpiritualPowerGain
+    operation: Flat
+    baseValue: 1
 
   - id: longevity
     displayName: Долголетие
