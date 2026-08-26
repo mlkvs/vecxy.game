@@ -126,10 +126,11 @@ public sealed class GameController(
     private int _alchemyQualityFilter;
     private int _alchemyTypeFilter;
     private EffectType? _openEffectType;
+    private bool _openPermanentEffects;
     private readonly List<FloatingValueWidget> _floatingValues = [];
     private int _floatingValueIndex;
-    private readonly List<EffectType> _activeEffectTypes = [];
-    private readonly Dictionary<EffectType, (UiRadialProgress Panel, UiRadialProgress Icon)> _effectWidgets = [];
+    private readonly List<EffectDisplayKey> _activeEffectTypes = [];
+    private readonly Dictionary<EffectDisplayKey, (UiRadialProgress Panel, UiRadialProgress Icon)> _effectWidgets = [];
     private int _activeEffectsSignature = int.MinValue;
     private UiKeyedCollection<Guid, ShopSlot, ShopCardView>? _shopCards;
     private UiKeyedCollection<Guid, ItemInstance, InventoryIconView>? _inventoryIcons;
@@ -699,7 +700,7 @@ public sealed class GameController(
         var view = _view!;
         if (IsWindowOpen(view.MissionsWindow))
             SyncMissions();
-        if (_openEffectType is not null && IsWindowOpen(view.EffectPopup))
+        if ((_openEffectType is not null || _openPermanentEffects) && IsWindowOpen(view.EffectPopup))
             UpdateEffectPopup();
         if (result.SpiritualPowerGained != 0m)
         {
@@ -915,6 +916,9 @@ public sealed class GameController(
         _characterVisual?.PrewarmTextures(renderer);
 
         var missionMode = _state.ActivityMode == ActivityMode.Missions;
+        _characterVisual?.SetMissionMode(missionMode);
+        _backgroundVisual?.SetMissionMode(missionMode);
+
         var stageIndex = Math.Clamp(_state.Character.Cultivation.StageIndex, 0, database.Cultivation.Stages.Count - 1);
         if (_backgroundVisual is not null)
         {
@@ -932,8 +936,6 @@ public sealed class GameController(
                 Console.Error.WriteLine($"[Backgrounds] Could not acquire stage package: {exception.Message}");
             }
         }
-        _characterVisual?.SetMissionMode(missionMode);
-        _backgroundVisual?.SetMissionMode(missionMode);
     }
 
     private void UpdateMissionSummary()
@@ -1012,6 +1014,7 @@ public sealed class GameController(
     {
         _activeEffectTypes.Clear();
         var signature = new HashCode();
+        var hasPermanentPillEffects = false;
         foreach (var effect in _state.ActiveEffects)
         {
             if (effect.IsExpired)
@@ -1020,23 +1023,33 @@ public sealed class GameController(
             signature.Add(effect.SourceItemId);
             signature.Add(effect.Value);
             signature.Add(effect.DurationType);
-            if (!_activeEffectTypes.Contains(effect.Type))
-                _activeEffectTypes.Add(effect.Type);
+            if (IsPermanentPillEffect(effect))
+            {
+                hasPermanentPillEffects = true;
+                continue;
+            }
+            var key = EffectDisplayKey.ForType(effect.Type);
+            if (!_activeEffectTypes.Contains(key))
+                _activeEffectTypes.Add(key);
         }
+        if (hasPermanentPillEffects)
+            _activeEffectTypes.Add(EffectDisplayKey.PermanentPills);
         var contaminationLevel = ContaminationCalculator.GetLevel(_state.Character.Contamination, database.Balance);
         if (contaminationLevel is not null)
         {
-            _activeEffectTypes.Add(EffectType.Contamination);
+            _activeEffectTypes.Add(EffectDisplayKey.ForType(EffectType.Contamination));
             signature.Add(EffectType.Contamination);
             signature.Add(contaminationLevel.MinimumContamination);
         }
         _activeEffectTypes.Sort((left, right) =>
         {
-            var leftIsPermanent = IsPermanentEffectType(left);
-            var rightIsPermanent = IsPermanentEffectType(right);
+            var leftIsPermanent = left.IsPermanentPills || left.Type is { } leftType && IsPermanentEffectType(leftType);
+            var rightIsPermanent = right.IsPermanentPills || right.Type is { } rightType && IsPermanentEffectType(rightType);
             if (leftIsPermanent != rightIsPermanent)
                 return leftIsPermanent ? -1 : 1;
-            return left.CompareTo(right);
+            if (left.IsPermanentPills != right.IsPermanentPills)
+                return left.IsPermanentPills ? -1 : 1;
+            return Nullable.Compare(left.Type, right.Type);
         });
         var currentSignature = signature.ToHashCode();
         _view!.Effects.IsVisible = _activeEffectTypes.Count > 0;
@@ -1047,7 +1060,7 @@ public sealed class GameController(
             _effectWidgets.Clear();
             if (_activeEffectTypes.Count == 0)
                 return;
-            foreach (var type in _activeEffectTypes)
+            foreach (var key in _activeEffectTypes)
             {
                 var effectEntry = (UiRadialProgress)_document!.CreateElement("radial-progress", new Dictionary<string, string>
                 {
@@ -1061,34 +1074,47 @@ public sealed class GameController(
                     ["class"] = "status-effect-icon",
                     ["clockwise-depletion"] = "true"
                 });
-                if (type == EffectType.Contamination)
+                if (key.IsPermanentPills)
+                {
+                    effectIcon.SetAttribute("sprite", AssetSprite(Assets.Textures.GameUIAtlas, "alchemy"));
+                }
+                else if (key.Type == EffectType.Contamination)
                 {
                     effectIcon.SetAttribute("sprite", AssetSprite(Assets.Textures.GameUIAtlas, "contamination-effect"));
                 }
-                else if (TryGetFirstActiveEffect(type, out var firstEffect))
+                else if (key.Type is { } type && TryGetFirstActiveEffect(type, out var firstEffect))
                     effectIcon.SetAttribute("sprite", AtlasSprite(database.GetItem(firstEffect.SourceItemId).Icon));
                 else
                     continue;
                 effectEntry.Add(effectIcon);
-                effectEntry.Clicked += _ => ShowEffectPopup(type);
+                effectEntry.Clicked += _ =>
+                {
+                    if (key.IsPermanentPills)
+                        ShowPermanentEffectsPopup();
+                    else if (key.Type is { } type)
+                        ShowEffectPopup(type);
+                };
                 _view.Effects.Add(effectEntry);
-                _effectWidgets[type] = (effectEntry, effectIcon);
+                _effectWidgets[key] = (effectEntry, effectIcon);
             }
         }
-        foreach (var type in _activeEffectTypes)
-            if (_effectWidgets.TryGetValue(type, out var effectWidgets))
+        foreach (var key in _activeEffectTypes)
+            if (_effectWidgets.TryGetValue(key, out var effectWidgets))
             {
-                var progress = CalculateEffectTimer(type);
+                var progress = key.IsPermanentPills ? 1f : CalculateEffectTimer(key.Type!.Value);
                 effectWidgets.Panel.Progress = progress;
                 effectWidgets.Icon.Progress = progress;
             }
     }
 
+    private bool IsPermanentPillEffect(ActiveEffect effect) =>
+        effect.IsPermanent && database.GetItem(effect.SourceItemId).Category == ItemCategory.Pill;
+
     private bool TryGetFirstActiveEffect(EffectType type, out ActiveEffect active)
     {
         foreach (var effect in _state.ActiveEffects)
         {
-            if (!effect.IsExpired && effect.Type == type)
+            if (!effect.IsExpired && effect.Type == type && !IsPermanentPillEffect(effect))
             {
                 active = effect;
                 return true;
@@ -1103,6 +1129,7 @@ public sealed class GameController(
         _state.ActiveEffects.Any(effect =>
             effect.Type == type &&
             !effect.IsExpired &&
+            !IsPermanentPillEffect(effect) &&
             effect.IsPermanent);
 
     private void SyncShop()
@@ -1331,13 +1358,13 @@ public sealed class GameController(
         var rarity = database.GetRarity(item.Rarity);
         _view!.InventoryDetailIcon.Sprite = AtlasSprite(config.Icon);
         _view.InventoryDetailIconWell.Style.BorderColor = rarity.Color;
+        SetContaminationBadge(_view.InventoryDetailContamination, item.Contamination);
         BuildQualityStars(_view.InventoryDetailQuality, item.Quality);
         _view.InventoryDetailName.Value = $"{ItemDisplayName(config, item)} · ×{item.Quantity}";
         _view.InventoryDetailRarity.Value = rarity.DisplayName.ToUpperInvariant();
         _view.InventoryDetailRarity.Style.Color = rarity.Color;
         SetItemElement(_view.InventoryDetailElement, _view.InventoryDetailElementIcon, config.Element);
         _view.InventoryDetailEffect.Value = DescribeItemEffect(config, item);
-        _view.InventoryDetailEffect.Value += ContaminationDescription(item.Contamination);
         _view.InventoryUse.IsEnabled = config.Effects.Count > 0 || item.CraftedEffects.Count > 0;
         _view.InventorySell.Label = $"ПРОДАТЬ\n+{MoneyFormatter.Format(prices.GetSellPrice(item, _state.Shop))}";
         _view.InventoryDetails.IsVisible = true;
@@ -1556,13 +1583,20 @@ public sealed class GameController(
             quality.SetQuality(0m);
             qualityHost.Style.Set("visibility", "hidden");
             slot.Add(qualityHost);
+            var contamination = document.CreateText("0%", new Dictionary<string, string>
+            {
+                ["class"] = "alchemy-slot-contamination contamination-badge"
+            });
+            contamination.IsVisible = false;
+            slot.Add(contamination);
             var label = document.CreateText((index + 1).ToString(CultureInfo.InvariantCulture),
                 new Dictionary<string, string> { ["class"] = "alchemy-slot-index" });
             slot.Add(label);
             var slotIndex = index;
             slot.Clicked += _ => RemoveAlchemyIngredientAt(slotIndex);
             furnaceStage.Add(slot);
-            _alchemySlotWidgets.Add(new AlchemySlotWidget(slot, icon, elementIcon, qualityHost, quality, label));
+            _alchemySlotWidgets.Add(new AlchemySlotWidget(
+                slot, icon, elementIcon, qualityHost, quality, contamination, label));
             _renderedAlchemySlots.Add(null);
         }
 
@@ -1585,6 +1619,12 @@ public sealed class GameController(
         var coreQuality = CreateQualityStars(document, coreQualityHost);
         coreQuality.SetQuality(0m);
         coreSlot.Add(coreQualityHost);
+        var coreContamination = document.CreateText("0%", new Dictionary<string, string>
+        {
+            ["class"] = "alchemy-slot-contamination contamination-badge"
+        });
+        coreContamination.IsVisible = false;
+        coreSlot.Add(coreContamination);
         var coreLabel = document.CreateText("ЯДРО",
             new Dictionary<string, string> { ["class"] = "alchemy-core-label" });
         coreSlot.Add(coreLabel);
@@ -1597,7 +1637,7 @@ public sealed class GameController(
         };
         furnaceStage.Add(coreSlot);
         _alchemyCoreWidget = new AlchemySlotWidget(
-            coreSlot, coreIcon, coreElementIcon, coreQualityHost, coreQuality, coreLabel);
+            coreSlot, coreIcon, coreElementIcon, coreQualityHost, coreQuality, coreContamination, coreLabel);
         _renderedAlchemyCore = null;
         UpdateAlchemySlots();
     }
@@ -1623,7 +1663,10 @@ public sealed class GameController(
                 if (config.Element is { } element)
                     widget.ElementIcon.Sprite = AtlasSprite(ElementIcon(element));
                 widget.Quality.SetQuality(item.Quality);
+                SetContaminationBadge(widget.Contamination, item.Contamination);
             }
+            else
+                widget.Contamination.IsVisible = false;
             _renderedAlchemySlots[index] = instanceId;
         }
 
@@ -1639,6 +1682,7 @@ public sealed class GameController(
         SetPaintVisibility(coreWidget.Icon, distillation || core is not null);
         SetPaintVisibility(coreWidget.QualityHost, core is not null);
         SetPaintVisibility(coreWidget.Label, !distillation && core is null);
+        coreWidget.Contamination.IsVisible = false;
         if (distillation)
         {
             coreWidget.Icon.Sprite = AssetSprite(Assets.Textures.GameUIAtlas, "alchemy");
@@ -1652,6 +1696,7 @@ public sealed class GameController(
             if (config.Element is { } element)
                 coreWidget.ElementIcon.Sprite = AtlasSprite(ElementIcon(element));
             coreWidget.Quality.SetQuality(core.Quality);
+            SetContaminationBadge(coreWidget.Contamination, core.Contamination);
         }
         else
             SetPaintVisibility(coreWidget.ElementIcon, false);
@@ -1865,7 +1910,9 @@ public sealed class GameController(
             item.Quantity.ToString(CultureInfo.InvariantCulture),
             propertyText,
             () => AddAlchemyIngredient(instanceId),
-            config.Category == ItemCategory.Core ? "ПОМЕСТИТЬ В ЦЕНТР" : "ДОБАВИТЬ В СХЕМУ");
+            config.Category == ItemCategory.Core ? "ПОМЕСТИТЬ В ЦЕНТР" : "ДОБАВИТЬ В СХЕМУ",
+            sellAction: () => SellInventoryItem(instanceId),
+            sellPrice: prices.GetSellPrice(item, _state.Shop));
     }
 
     private void AddAlchemyIngredient(Guid instanceId)
@@ -2219,13 +2266,42 @@ public sealed class GameController(
 
     private void ShowEffectPopup(EffectType type)
     {
+        _openPermanentEffects = false;
         _openEffectType = type;
+        UpdateEffectPopup();
+        MountWindow(_view!.EffectPopup, exclusive: false);
+    }
+
+    private void ShowPermanentEffectsPopup()
+    {
+        _openEffectType = null;
+        _openPermanentEffects = true;
         UpdateEffectPopup();
         MountWindow(_view!.EffectPopup, exclusive: false);
     }
 
     private void UpdateEffectPopup()
     {
+        if (_openPermanentEffects)
+        {
+            var effects = _state.ActiveEffects
+                .Where(IsPermanentPillEffect)
+                .GroupBy(effect => (effect.Type, effect.Operation))
+                .OrderBy(group => group.Key.Type)
+                .ThenBy(group => group.Key.Operation)
+                .Select(group => DescribeEffect(new ItemEffectDefinition
+                {
+                    Type = group.Key.Type,
+                    Operation = group.Key.Operation,
+                    Value = group.Sum(effect => effect.Value)
+                }, 1m, false))
+                .ToArray();
+            _view!.EffectPopupTitle.Value = "Вечные эффекты";
+            _view.EffectPopupEffect.Value = effects.Length == 0
+                ? "Нет активных вечных эффектов от пилюль."
+                : string.Join("\n", effects.Select(effect => $"• {effect}"));
+            return;
+        }
         if (_openEffectType is not { } type)
             return;
         _view!.EffectPopupTitle.Value = type == EffectType.Contamination
@@ -2247,7 +2323,7 @@ public sealed class GameController(
         var description = string.Empty;
         foreach (var effect in _state.ActiveEffects)
         {
-            if (effect.Type != type)
+            if (effect.Type != type || effect.IsExpired || IsPermanentPillEffect(effect))
                 continue;
             hasActive = true;
             hasUntilBreakthrough |= effect.IsUntilBreakthroughAttempt;
@@ -2278,6 +2354,7 @@ public sealed class GameController(
         if (_view is not null)
             UnmountWindow(_view.EffectPopup);
         _openEffectType = null;
+        _openPermanentEffects = false;
     }
 
     private float CalculateEffectTimer(EffectType type)
@@ -2289,7 +2366,7 @@ public sealed class GameController(
         var remainingFraction = 1f;
         foreach (var effect in _state.ActiveEffects)
         {
-            if (effect.Type != type || effect.IsExpired)
+            if (effect.Type != type || effect.IsExpired || IsPermanentPillEffect(effect))
                 continue;
             if (effect.IsUntilBreakthroughAttempt || effect.IsPermanent)
                 return 1f;
@@ -2589,6 +2666,7 @@ public sealed class GameController(
         foreach (var window in _view.Windows)
             UnmountWindow(window);
         _openEffectType = null;
+        _openPermanentEffects = false;
         CloseAlchemyFilterMenus();
         _infoPopupAction = null;
         _infoPopupUseAction = null;
@@ -2852,6 +2930,12 @@ public sealed class GameController(
 
     private readonly record struct ActionToastRequest(string Message, string Icon, string ToneClass);
 
+    private readonly record struct EffectDisplayKey(EffectType? Type, bool IsPermanentPills)
+    {
+        public static EffectDisplayKey PermanentPills => new(null, true);
+        public static EffectDisplayKey ForType(EffectType type) => new(type, false);
+    }
+
     private void ShowItemPopup(
         ItemConfig config,
         ItemInstance? item,
@@ -2871,8 +2955,7 @@ public sealed class GameController(
         SetItemElement(view.InfoPopupElement, view.InfoPopupElementIcon, config.Element);
         view.InfoPopupKind.Value = ItemCategoryName(config.Category);
         view.InfoPopupTitle.Value = item is null ? config.Name : ItemDisplayName(config, item);
-        view.InfoPopupDescription.Value = (item?.CustomDescription ?? config.Description) +
-                                         (item is null ? string.Empty : ContaminationDescription(item.Contamination));
+        view.InfoPopupDescription.Value = item?.CustomDescription ?? config.Description;
         view.InfoPopupEffect.Value = item is null
             ? DescribeItemEffect(config, quality)
             : DescribeItemEffect(config, item);
@@ -2896,6 +2979,7 @@ public sealed class GameController(
         view.InfoPopupStatValue2.IsVisible = true;
         BuildQualityStars(view.InfoPopupQuality, item?.Quality);
         view.InfoPopupIcon.Sprite = AtlasSprite(config.Icon);
+        SetContaminationBadge(view.InfoPopupContamination, item?.Contamination ?? 0m);
         var accent = rarity?.Color ?? "#56d5a0";
         view.InfoPopupIconWell.Style.BorderColor = accent;
         MountWindow(view.InfoPopup, exclusive: false);
@@ -3030,9 +3114,6 @@ public sealed class GameController(
 
     private static string FormatContamination(decimal contamination) =>
         $"{Math.Clamp(contamination, 0m, 1m) * 100m:0.#}%";
-
-    private static string ContaminationDescription(decimal contamination) =>
-        $"\nЗагрязнение: {FormatContamination(contamination)}";
 
     private static void SetContaminationBadge(UiText badge, decimal contamination)
     {
@@ -3231,5 +3312,6 @@ public sealed class GameController(
         UiImage ElementIcon,
         UiPanel QualityHost,
         QualityStarsView Quality,
+        UiText Contamination,
         UiText Label);
 }

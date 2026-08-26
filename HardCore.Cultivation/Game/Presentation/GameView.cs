@@ -120,6 +120,7 @@ internal sealed class GameView
         InventoryDetails = Panel(windowDocuments.Inventory, "inventory-details");
         InventoryDetailIconWell = Panel(windowDocuments.Inventory, "inventory-detail-icon-well");
         InventoryDetailIcon = Image(windowDocuments.Inventory, "inventory-detail-icon");
+        InventoryDetailContamination = Text(windowDocuments.Inventory, "inventory-detail-contamination");
         InventoryDetailQuality = Panel(windowDocuments.Inventory, "inventory-detail-quality");
         InventoryDetailName = Text(windowDocuments.Inventory, "inventory-detail-name");
         InventoryDetailRarity = Text(windowDocuments.Inventory, "inventory-detail-rarity");
@@ -159,6 +160,7 @@ internal sealed class GameView
         InfoPopupCard = Panel(windowDocuments.InfoPopup, "info-popup-card");
         InfoPopupIconWell = Panel(windowDocuments.InfoPopup, "info-popup-icon-well");
         InfoPopupIcon = Image(windowDocuments.InfoPopup, "info-popup-icon");
+        InfoPopupContamination = Text(windowDocuments.InfoPopup, "info-popup-contamination");
         InfoPopupKind = Text(windowDocuments.InfoPopup, "info-popup-kind");
         InfoPopupTitle = Text(windowDocuments.InfoPopup, "info-popup-title");
         InfoPopupElement = Panel(windowDocuments.InfoPopup, "info-popup-element");
@@ -281,6 +283,7 @@ internal sealed class GameView
     public UiPanel InventoryDetails { get; }
     public UiPanel InventoryDetailIconWell { get; }
     public UiImage InventoryDetailIcon { get; }
+    public UiText InventoryDetailContamination { get; }
     public UiPanel InventoryDetailQuality { get; }
     public UiText InventoryDetailName { get; }
     public UiText InventoryDetailRarity { get; }
@@ -316,6 +319,7 @@ internal sealed class GameView
     public UiPanel InfoPopupCard { get; }
     public UiPanel InfoPopupIconWell { get; }
     public UiImage InfoPopupIcon { get; }
+    public UiText InfoPopupContamination { get; }
     public UiText InfoPopupKind { get; }
     public UiText InfoPopupTitle { get; }
     public UiPanel InfoPopupElement { get; }

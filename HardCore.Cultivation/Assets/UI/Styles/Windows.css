@@ -333,6 +333,9 @@
 .alchemy-slot-quality .quality-star-empty,
 .alchemy-slot-quality .quality-star-fill,
 .alchemy-slot-quality .quality-star-fill image { width: 9px; height: 9px; }
+.alchemy-slot > .alchemy-slot-contamination {
+    left: -8px; top: -8px; z-index: 8; min-width: 30px; padding: 2px 3px;
+}
 .alchemy-outer-slot.slot-1 { left: 50%; top: 30%; margin-left: -10%; margin-top: -10%; }
 .alchemy-outer-slot.slot-2 { left: 26%; top: 45%; margin-left: -10%; margin-top: -10%; }
 .alchemy-outer-slot.slot-3 { left: 74%; top: 45%; margin-left: -10%; margin-top: -10%; }

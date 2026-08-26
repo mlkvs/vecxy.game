@@ -6,6 +6,7 @@
         <panel id="info-popup-header" class="info-popup-header">
             <panel id="info-popup-icon-well" class="info-popup-icon-well">
                 <image id="info-popup-icon" class="info-popup-icon"/>
+                <text id="info-popup-contamination" class="contamination-badge" hidden="true">0%</text>
                 <panel id="info-popup-quality" class="info-popup-quality item-icon-quality"/>
             </panel>
             <panel class="info-popup-heading">

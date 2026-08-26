@@ -11,6 +11,7 @@
         <panel id="inventory-details" class="inventory-details" hidden="true">
             <panel id="inventory-detail-icon-well" class="inventory-detail-icon-well">
                 <image id="inventory-detail-icon" />
+                <text id="inventory-detail-contamination" class="contamination-badge" hidden="true">0%</text>
                 <panel id="inventory-detail-quality" class="inventory-detail-quality item-icon-quality" />
             </panel>
             <panel class="inventory-detail-copy">

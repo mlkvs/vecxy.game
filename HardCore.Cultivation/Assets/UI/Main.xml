@@ -53,7 +53,7 @@
                         <text id="combat-hero-damage" class="combat-damage-float combat-hero-damage" animation-trigger="manual">-0</text>
                         <text id="combat-enemy-damage" class="combat-damage-float combat-enemy-damage" animation-trigger="manual">-0</text>
                     </panel>
-                    <button id="combat-surrender-button" class="combat-surrender-button">ОТСТУПИТЬ</button>
+                    <button id="combat-surrender-button" class="combat-surrender-button"><panel class="combat-surrender-surface"><text>ОТСТУПИТЬ</text></panel></button>
                 </panel>
             </button>
             <panel class="side-tools">
