@@ -15,7 +15,7 @@ public sealed class CheatLayer(
     IUiDiagnostics uiDiagnostics,
     CheatActionRegistry registry) : AAppLayer
 {
-    [AppLayerDefinition("cheats")]
+    [AppLayerDef("cheats")]
     public sealed class Definition : ADefinition<CheatLayer>
     {
         public override void RegisterLocal(ContainerBuilder builder)

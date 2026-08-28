@@ -34,7 +34,7 @@ public sealed class GameLayer
     private float _performanceElapsed;
     private int _performanceFrames;
     private float _performanceFrameMilliseconds;
-    [AppLayerDefinition("game")]
+    [AppLayerDef("game")]
     public sealed class Definition : ADefinition<GameLayer>
     {
         public override void RegisterGlobal(ContainerBuilder builder)

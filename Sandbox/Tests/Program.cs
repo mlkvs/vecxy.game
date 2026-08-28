@@ -8,7 +8,7 @@ using Vecxy.Scene;
 PlatformRunner.RunDesktop<Application>();
 
 [UsedImplicitly]
-internal class Application : IEntryPoint
+internal class Application : IVEntry
 {
     public void OnConfigureEngine(PlatformContext context, Engine.Options options)
     {

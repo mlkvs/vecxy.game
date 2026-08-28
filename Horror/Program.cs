@@ -6,8 +6,8 @@ using Vecxy.Platforms;
 
 namespace Horror;
 
-[VecxyApplication]
-public sealed class Application : IEntryPoint
+[Vecxy]
+public sealed class Application : IVEntry
 {
     public void OnConfigureEngine(PlatformContext context, Engine.Options options)
     {
