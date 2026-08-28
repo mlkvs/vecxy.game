@@ -434,7 +434,9 @@ var missionState = new GameState(database.Balance.TicksPerYear);
 missionService.Refresh(missionState);
 Check(missionState.MissionBoard.Offers.Count == 8, "Mission board must always generate eight offers.");
 Check(missionState.MissionBoard.Offers.Select(offer => offer.OfferId).Distinct().Count() == 8,
-    "Repeated mission templates must remain individual offers.");
+    "Mission offers must have unique identities.");
+Check(missionState.MissionBoard.Offers.Select(offer => offer.MissionConfigId).Distinct().Count() == 8,
+    "Mission templates must be unique within one board.");
 Check(missionState.MissionBoard.Offers.All(offer => offer.DangerLevel == 1),
     "Each mission offer must receive its own danger level.");
 Check(missionState.MissionBoard.Offers.All(offer => offer.Rewards.Count is 1 or 2),
@@ -453,9 +455,9 @@ var itemMissionState = new GameState(database.Balance.TicksPerYear);
 itemMissionService.Refresh(itemMissionState);
 Check(itemMissionService.Start(itemMissionState, "mission").Success, "Item-reward mission could not be accepted.");
 var itemRewards = itemMissionState.CurrentMission!.Rewards;
-Check(itemRewards.Count == 2 && itemRewards.All(reward => reward.Type == MissionRewardType.Item), "Two-item mission reward was not generated.");
-Check(itemRewards.All(reward => reward.Quantity == 15), "Ingredient reward must allow up to 15 items.");
-Check(itemRewards.All(reward => reward.ItemRolls.Count == reward.Quantity),
+Check(itemRewards.Count == 1 && itemRewards[0].Type == MissionRewardType.Item, "Rank item reward was not generated.");
+Check(itemRewards[0].Quantity == 15, "Ingredient reward must allow up to 15 items.");
+Check(itemRewards.Where(reward => reward.Type == MissionRewardType.Item).All(reward => reward.ItemRolls.Count == reward.Quantity),
     "Mission item rewards were not rolled individually.");
 
 var categoryShopState = new ShopState();
@@ -592,9 +594,32 @@ static GameDatabase BuildDatabase()
         new MissionsConfig
         {
             BoardSlotCount = 8,
-            Missions = [new MissionConfig { Id = "mission", StageId = "one", Name = "Mission", MinimumDurationTicks = 1, MaximumDurationTicks = 10,
-                PossibleDangerLevels = [1], PossibleMonsterIds = ["training_spirit"], PossibleBackgroundIds = ["forest"],
-                Reward = new MissionRewardConfig { RequiredItemCategory = ItemCategory.Ingredient, MinimumQuantity = 1, MaximumQuantity = 15, Money = 10 } }]
+            Ranks =
+            [
+                new MissionRankConfig
+                {
+                    Id = "F", Order = 0, BoardRankWeights = new() { ["F"] = 100m },
+                    EnemyProfiles =
+                    [
+                        new EnemyStatProfileConfig { Id = "weak", MaximumHealth = new() { Minimum = 95m, Maximum = 95m }, HealthRegeneration = new() { Minimum = 1m, Maximum = 1m }, Attack = new() { Minimum = 1m, Maximum = 1m }, AttacksPerSecond = new() { Minimum = 1m, Maximum = 1m } },
+                        new EnemyStatProfileConfig { Id = "medium", MaximumHealth = new() { Minimum = 120m, Maximum = 120m }, HealthRegeneration = new() { Minimum = 1m, Maximum = 1m }, Attack = new() { Minimum = 2m, Maximum = 2m }, AttacksPerSecond = new() { Minimum = 1m, Maximum = 1m } }
+                    ],
+                    Reward = new MissionRankRewardConfig
+                    {
+                        Money = 10, MoneyChancePercent = 50m, ItemChancePercent = 100m,
+                        RarityWeights = new() { [ItemRarity.Common] = 1m },
+                        CategoryWeights = new() { [ItemCategory.Ingredient] = 1m },
+                        CategoryMaximumQuantities = new() { [ItemCategory.Ingredient] = 15 }
+                    }
+                }
+            ],
+            Missions = Enumerable.Range(0, 8).Select(index => new MissionConfig
+            {
+                Id = index == 0 ? "mission" : $"mission_{index}", StageId = "one", Name = $"Mission {index}",
+                MinimumDurationTicks = 1, MaximumDurationTicks = 10, PossibleDangerLevels = [1],
+                PossibleMonsterIds = ["training_spirit"], PossibleBackgroundIds = ["forest"],
+                Reward = new MissionRewardConfig { RequiredItemCategory = ItemCategory.Ingredient, MinimumQuantity = 1, MaximumQuantity = 15, Money = 10 }
+            }).ToList()
         },
         new CultivationConfig
         {

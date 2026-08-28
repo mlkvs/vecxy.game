@@ -285,11 +285,20 @@ public sealed class MissionEncounter
     public required string MonsterConfigId { get; init; }
     public required string BackgroundId { get; init; }
     public int DangerLevel { get; init; }
+    public EnemyCombatStats EnemyStats { get; init; } = new();
     public decimal TriggerProgress { get; init; }
     public bool Resolved { get; private set; }
 
     public void MarkResolved() => Resolved = true;
     public void RestoreResolved(bool resolved) => Resolved = resolved;
+}
+
+public sealed record EnemyCombatStats
+{
+    public decimal MaximumHealth { get; init; }
+    public decimal HealthRegeneration { get; init; }
+    public decimal Attack { get; init; }
+    public decimal AttacksPerSecond { get; init; }
 }
 
 public sealed class ActiveCombat
@@ -298,6 +307,9 @@ public sealed class ActiveCombat
     public required string BackgroundId { get; init; }
     public int DangerLevel { get; init; }
     public decimal EnemyMaximumHealth { get; init; }
+    public decimal EnemyHealthRegeneration { get; init; }
+    public decimal EnemyAttack { get; init; }
+    public decimal EnemyAttacksPerSecond { get; init; }
     public decimal EnemyHealth { get; private set; }
     public float HeroCooldown { get; private set; }
     public float EnemyCooldown { get; private set; }
@@ -331,6 +343,15 @@ public sealed class ActiveCombat
     {
         var applied = Math.Min(EnemyHealth, Math.Max(0m, amount));
         EnemyHealth -= applied;
+        return applied;
+    }
+
+    public decimal RegenerateEnemy(decimal amount)
+    {
+        if (amount <= 0m || EnemyHealth <= 0m)
+            return 0m;
+        var applied = Math.Min(EnemyMaximumHealth - EnemyHealth, amount);
+        EnemyHealth += applied;
         return applied;
     }
 
@@ -552,6 +573,7 @@ public sealed class ActiveMission
 {
     public Guid InstanceId { get; init; } = Guid.NewGuid();
     public required string MissionConfigId { get; init; }
+    public string RankId { get; init; } = "F";
     public int? DangerLevel { get; init; }
     public decimal RequiredProgress { get; init; }
     public decimal CurrentProgress { get; private set; }
@@ -676,8 +698,49 @@ public sealed class MissionOffer
 {
     public Guid OfferId { get; init; } = Guid.NewGuid();
     public required string MissionConfigId { get; init; }
+    public string RankId { get; init; } = "F";
     public int? DangerLevel { get; init; }
     public List<MissionReward> Rewards { get; init; } = [];
+}
+
+public sealed class DragonExamState
+{
+    public string RankId { get; private set; } = "F";
+    public long NextEligibleTick { get; private set; }
+    public ActiveCombat? Combat { get; private set; }
+    public string? TargetRankId { get; private set; }
+    public bool IsAvailable(long totalTicks) => Combat is null && totalTicks >= NextEligibleTick;
+
+    public void Initialize(string rankId, long nextEligibleTick)
+    {
+        RankId = rankId;
+        NextEligibleTick = Math.Max(0, nextEligibleTick);
+        Combat = null;
+        TargetRankId = null;
+    }
+
+    public void Start(string targetRankId, ActiveCombat combat, long nextEligibleTick)
+    {
+        TargetRankId = targetRankId;
+        Combat = combat;
+        NextEligibleTick = nextEligibleTick;
+    }
+
+    public void Complete(bool victory)
+    {
+        if (victory && TargetRankId is not null)
+            RankId = TargetRankId;
+        Combat = null;
+        TargetRankId = null;
+    }
+
+    public void Restore(string rankId, long nextEligibleTick, string? targetRankId, ActiveCombat? combat)
+    {
+        RankId = rankId;
+        NextEligibleTick = Math.Max(0, nextEligibleTick);
+        TargetRankId = targetRankId;
+        Combat = combat;
+    }
 }
 
 public sealed class GameState
@@ -689,6 +752,7 @@ public sealed class GameState
     public Inventory Inventory { get; } = new();
     public ShopState Shop { get; } = new();
     public MissionBoardState MissionBoard { get; } = new();
+    public DragonExamState DragonExam { get; } = new();
     public GameSettings Settings { get; } = new();
     public IReadOnlyList<ActiveMission> MissionQueue => _missionQueue;
     public ActiveMission? CurrentMission => _missionQueue.FirstOrDefault();
@@ -725,6 +789,12 @@ public sealed class GameState
     {
         var mission = _missionQueue.FirstOrDefault(candidate => candidate.InstanceId == instanceId);
         return mission is not null && _missionQueue.Remove(mission);
+    }
+
+    public void ClearMissions()
+    {
+        _missionQueue.Clear();
+        MissionBoard.ReplaceWith([]);
     }
 
     public bool MoveMission(Guid instanceId, int offset)

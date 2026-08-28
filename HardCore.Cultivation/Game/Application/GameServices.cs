@@ -293,23 +293,71 @@ public sealed class MissionService(
     ItemGenerator itemGenerator,
     IRandomSource random)
 {
+    public bool IsDragonExamAvailable(GameState state) =>
+        database.GetMissionRankIndex(state.DragonExam.RankId) < database.MissionRanks.Count - 1 &&
+        state.DragonExam.IsAvailable(state.Calendar.TotalTicks);
+
+    public TransactionResult StartDragonExam(GameState state)
+    {
+        if (!IsDragonExamAvailable(state))
+            return TransactionResult.Fail("Экзамен сейчас недоступен.");
+        if (state.CurrentMission?.Combat is not null)
+            return TransactionResult.Fail("Сначала завершите текущий бой.");
+        var currentIndex = database.GetMissionRankIndex(state.DragonExam.RankId);
+        var target = database.MissionRanks[currentIndex + 1];
+        var profile = target.EnemyProfiles[0];
+        var mission = database.Missions.Values.First(value => value.PossibleMonsterIds.Count > 0 && value.PossibleBackgroundIds.Count > 0);
+        var monster = database.GetMonster(mission.PossibleMonsterIds[0]);
+        var stats = RollEnemyStats(profile);
+        var combat = new ActiveCombat
+        {
+            MonsterConfigId = monster.Id,
+            BackgroundId = mission.PossibleBackgroundIds[0],
+            EnemyMaximumHealth = stats.MaximumHealth,
+            EnemyHealthRegeneration = stats.HealthRegeneration,
+            EnemyAttack = stats.Attack,
+            EnemyAttacksPerSecond = stats.AttacksPerSecond
+        };
+        combat.Initialize(stats.MaximumHealth, 0.35f, 0.7f);
+        var nextTick = checked(state.Calendar.TotalTicks + (long)database.DragonExam.IntervalYears * state.Calendar.TicksPerYear);
+        state.DragonExam.Start(target.Id, combat, nextTick);
+        return TransactionResult.Ok(0, $"Начат экзамен {state.DragonExam.RankId} > {target.Id}");
+    }
+
     public void Refresh(GameState state)
     {
-        var currentStage = state.Character.Cultivation.StageIndex;
-        var candidates = database.Missions.Values
-            .Where(mission => Math.Abs(database.GetCultivationStageIndex(mission.StageId) - currentStage) <= 1)
-            .ToList();
+        var candidates = database.Missions.Values.ToList();
         if (candidates.Count == 0)
-            throw new InvalidOperationException("No mission templates are available for the current cultivation stage.");
+            throw new InvalidOperationException("No mission templates are available.");
+        var currentRankIndex = database.GetMissionRankIndex(state.DragonExam.RankId);
+        var currentRank = database.MissionRanks[currentRankIndex];
+        var unlockedRanks = database.MissionRanks.Take(currentRankIndex + 1).ToArray();
+        var nextRank = currentRankIndex + 1 < database.MissionRanks.Count
+            ? database.MissionRanks[currentRankIndex + 1]
+            : null;
+        var lockedSlots = nextRank is null ? 0 : Math.Min(database.MissionBoardSlotCount,
+            (int)Math.Floor(database.MissionBoardSlotCount * database.MaximumLockedOfferPercent / 100m));
+        var ranks = new List<MissionRankConfig>(database.MissionBoardSlotCount);
+        for (var index = 0; index < lockedSlots; index++)
+            ranks.Add(nextRank!);
+        while (ranks.Count < Math.Min(database.MissionBoardSlotCount, candidates.Count))
+        {
+            var selectedRank = WeightedRandom.Select(unlockedRanks,
+                rank => currentRank.BoardRankWeights.TryGetValue(rank.Id, out var weight) ? weight : 1m,
+                random);
+            ranks.Add(selectedRank);
+        }
         var offers = new List<MissionOffer>(database.MissionBoardSlotCount);
-        while (offers.Count < database.MissionBoardSlotCount)
+        foreach (var rank in ranks.OrderBy(_ => random.NextInt(0, int.MaxValue)))
         {
             var selected = WeightedRandom.Select(candidates, mission => mission.BoardWeight, random);
+            candidates.Remove(selected);
             offers.Add(new MissionOffer
             {
                 MissionConfigId = selected.Id,
+                RankId = rank.Id,
                 DangerLevel = RollDangerLevel(selected),
-                Rewards = GenerateRewards(selected)
+                Rewards = GenerateRewards(rank)
             });
         }
         state.MissionBoard.ReplaceWith(offers);
@@ -323,14 +371,17 @@ public sealed class MissionService(
         if (offer is null)
             return TransactionResult.Fail("Это поручение уже недоступно.");
         var config = database.GetMission(offer.MissionConfigId);
+        if (database.GetMissionRankIndex(offer.RankId) > database.GetMissionRankIndex(state.DragonExam.RankId))
+            return TransactionResult.Fail($"Требуется ранг {offer.RankId}.");
         var required = random.NextInt(config.MinimumDurationTicks, config.MaximumDurationTicks + 1);
-        var encounter = RollEncounter(config, offer.DangerLevel, required);
+        var encounter = RollEncounter(config, offer.RankId, offer.DangerLevel, required);
         state.EnqueueMission(new ActiveMission
         {
             MissionConfigId = offer.MissionConfigId,
+            RankId = offer.RankId,
             DangerLevel = offer.DangerLevel,
             RequiredProgress = required,
-            Rewards = offer.Rewards.Count > 0 ? offer.Rewards : GenerateRewards(config),
+            Rewards = offer.Rewards.Count > 0 ? offer.Rewards : GenerateRewards(database.GetMissionRank(offer.RankId)),
             Encounter = encounter
         });
         state.MissionBoard.Take(offerId);
@@ -354,7 +405,7 @@ public sealed class MissionService(
         return levels.Count == 0 ? null : levels[random.NextInt(0, levels.Count)];
     }
 
-    private MissionEncounter? RollEncounter(MissionConfig mission, int? dangerLevel, decimal requiredProgress)
+    private MissionEncounter? RollEncounter(MissionConfig mission, string rankId, int? dangerLevel, decimal requiredProgress)
     {
         if (dangerLevel is not { } level)
             return null;
@@ -364,14 +415,28 @@ public sealed class MissionService(
         var monsters = mission.PossibleMonsterIds.Select(database.GetMonster).ToArray();
         var monster = WeightedRandom.Select(monsters, value => value.SelectionWeight, random);
         var background = mission.PossibleBackgroundIds[random.NextInt(0, mission.PossibleBackgroundIds.Count)];
+        var profile = WeightedRandom.Select(database.GetMissionRank(rankId).EnemyProfiles, value => value.Weight, random);
         return new MissionEncounter
         {
             MonsterConfigId = monster.Id,
             BackgroundId = background,
             DangerLevel = level,
+            EnemyStats = RollEnemyStats(profile),
             TriggerProgress = decimal.Round(requiredProgress * random.NextDecimal(0.25m, 0.75m), 2)
         };
     }
+
+    public EnemyCombatStats RollEnemyStats(EnemyStatProfileConfig profile) => new()
+    {
+        MaximumHealth = Roll(profile.MaximumHealth),
+        HealthRegeneration = Roll(profile.HealthRegeneration),
+        Attack = Roll(profile.Attack),
+        AttacksPerSecond = Roll(profile.AttacksPerSecond)
+    };
+
+    private decimal Roll(DecimalRangeConfig range) => range.Minimum == range.Maximum
+        ? range.Minimum
+        : random.NextDecimal(range.Minimum, range.Maximum);
 
     public TransactionResult Remove(GameState state, Guid missionInstanceId)
     {
@@ -436,55 +501,52 @@ public sealed class MissionService(
         return true;
     }
 
-    private List<MissionReward> GenerateRewards(MissionConfig mission)
+    private List<MissionReward> GenerateRewards(MissionRankConfig rank)
     {
         var result = new List<MissionReward>(2);
-        var candidates = database.Items.Values
-            .ToArray();
-        var canGiveMoney = mission.Reward.Money > 0;
-        var canGiveItem = candidates.Length > 0;
-
-        if (!canGiveMoney && !canGiveItem)
-            throw new InvalidOperationException($"Mission reward pool is empty: {mission.Id}");
-
-        var rewardCount = random.NextInt(1, 3);
-        var includeMoney = canGiveMoney && (!canGiveItem || random.NextInt(0, 2) == 0);
-
-        if (includeMoney)
+        var reward = rank.Reward;
+        var baseReward = database.MissionRanks[0].Reward;
+        var categoryWeights = reward.CategoryWeights.Count > 0 ? reward.CategoryWeights : baseReward.CategoryWeights;
+        var categoryMaximums = reward.CategoryMaximumQuantities.Count > 0
+            ? reward.CategoryMaximumQuantities
+            : baseReward.CategoryMaximumQuantities;
+        var itemMaximums = reward.ItemMaximumQuantities.Count > 0
+            ? reward.ItemMaximumQuantities
+            : baseReward.ItemMaximumQuantities;
+        if (reward.Money > 0 && random.NextDecimal(0m, 100m) < reward.MoneyChancePercent)
         {
             result.Add(new MissionReward
             {
                 Type = MissionRewardType.Money,
-                Money = mission.Reward.Money
+                Money = reward.Money
             });
         }
-
-        while (result.Count < rewardCount && canGiveItem)
+        if (random.NextDecimal(0m, 100m) < reward.ItemChancePercent)
         {
-            var config = WeightedRandom.Select(candidates, item => item.ShopWeight, random);
-            result.Add(GenerateItemReward(config.Id,
-                random.NextInt(mission.Reward.MinimumQuantity, mission.Reward.MaximumQuantity + 1)));
+            var category = WeightedRandom.Select(categoryWeights.Keys.ToArray(), value => categoryWeights[value], random);
+            var candidates = database.Items.Values.Where(item => item.Category == category && item.ShopWeight > 0m).ToArray();
+            if (candidates.Length > 0)
+            {
+                var item = WeightedRandom.Select(candidates, value => value.ShopWeight, random);
+                var maximum = itemMaximums.TryGetValue(item.Id, out var itemMaximum)
+                    ? itemMaximum
+                    : categoryMaximums.GetValueOrDefault(category, 1);
+                result.Add(GenerateItemReward(item.Id, random.NextInt(1, maximum + 1), reward.RarityWeights));
+            }
         }
-
-        if (result.Count == 0 && canGiveItem)
-        {
-            var config = WeightedRandom.Select(candidates, item => item.ShopWeight, random);
-            result.Add(GenerateItemReward(config.Id,
-                random.NextInt(mission.Reward.MinimumQuantity, mission.Reward.MaximumQuantity + 1)));
-        }
-
+        if (result.Count == 0)
+            result.Add(new MissionReward { Type = MissionRewardType.Money, Money = Math.Max(1, reward.Money) });
         return result;
     }
 
-    private MissionReward GenerateItemReward(string configId, int quantity)
+    private MissionReward GenerateItemReward(string configId, int quantity, IReadOnlyDictionary<ItemRarity, decimal> rarityWeights)
     {
         var rolls = Enumerable.Range(0, quantity)
-            .Select(_ => itemGenerator.Generate(configId))
-            .Select(item => new MissionItemRewardRoll
+            .Select(_ => new MissionItemRewardRoll
             {
-                Rarity = item.Rarity,
-                Quality = item.Quality,
-                Contamination = item.Contamination
+                Rarity = WeightedRandom.Select(rarityWeights.Keys.ToArray(), rarity => rarityWeights[rarity], random),
+                Quality = RollQuality(),
+                Contamination = itemGenerator.RollContamination(configId)
             })
             .ToList();
         return new MissionReward
@@ -496,6 +558,12 @@ public sealed class MissionService(
             Quantity = quantity,
             ItemRolls = rolls
         };
+    }
+
+    private decimal RollQuality()
+    {
+        var band = WeightedRandom.Select(database.Balance.QualityBands, value => value.Weight, random);
+        return band.Index - 1 + random.NextInt(1, 11) / 10m;
     }
 }
 
@@ -754,6 +822,8 @@ public sealed class CombatService(GameDatabase database)
 
     public bool Surrender(GameState state)
     {
+        if (state.DragonExam.Combat is not null)
+            return false;
         var active = state.CurrentMission?.Combat;
         if (active is null || active.IsFinished)
             return false;
@@ -767,7 +837,8 @@ public sealed class CombatService(GameDatabase database)
         var result = new CombatUpdate();
         ConfigureHero(state.Character, activeEffects: state.ActiveEffects);
         var mission = state.CurrentMission;
-        if (mission?.Combat is null && state.Character.Health < state.Character.MaximumHealth && deltaTime > 0f)
+        var examCombat = state.DragonExam.Combat;
+        if (mission?.Combat is null && examCombat is null && state.Character.Health < state.Character.MaximumHealth && deltaTime > 0f)
         {
             var regeneration = GetHeroHealthRegeneration(state.Character, state.ActiveEffects);
             if (state.ActivityMode == ActivityMode.Cultivation)
@@ -777,10 +848,10 @@ public sealed class CombatService(GameDatabase database)
             result.HealthRestored = state.Character.Health - before;
             result.HealthChanged = result.HealthRestored > 0m;
         }
-        if (mission is null)
+        if (mission is null && examCombat is null)
             return result;
 
-        if (state.ActivityMode == ActivityMode.Missions && mission.Combat is null && mission.Encounter is { Resolved: false } encounter &&
+        if (mission is not null && state.ActivityMode == ActivityMode.Missions && mission.Combat is null && mission.Encounter is { Resolved: false } encounter &&
             mission.CurrentProgress >= encounter.TriggerProgress)
         {
             var monster = database.GetMonster(encounter.MonsterConfigId);
@@ -791,14 +862,17 @@ public sealed class CombatService(GameDatabase database)
                 MonsterConfigId = monster.Id,
                 BackgroundId = encounter.BackgroundId,
                 DangerLevel = encounter.DangerLevel,
-                EnemyMaximumHealth = maximumHealth
+                EnemyMaximumHealth = encounter.EnemyStats.MaximumHealth > 0m ? encounter.EnemyStats.MaximumHealth : maximumHealth,
+                EnemyHealthRegeneration = encounter.EnemyStats.HealthRegeneration,
+                EnemyAttack = encounter.EnemyStats.Attack,
+                EnemyAttacksPerSecond = encounter.EnemyStats.AttacksPerSecond
             };
-            combat.Initialize(maximumHealth, 0.35f, 0.7f);
+            combat.Initialize(combat.EnemyMaximumHealth, 0.35f, 0.7f);
             mission.StartCombat(combat);
             result.Events.Add(new CombatEvent(CombatEventType.Started));
         }
 
-        var active = mission.Combat;
+        var active = examCombat ?? mission?.Combat;
         if (active is null)
             return result;
         if (active.IsFinished)
@@ -806,10 +880,18 @@ public sealed class CombatService(GameDatabase database)
             if (!active.AdvanceFinishDelay(deltaTime))
                 return result;
             var victory = active.Phase == CombatPhase.Victory;
-            mission.ResolveCombat();
+            if (examCombat is not null)
+            {
+                state.DragonExam.Complete(victory);
+            }
+            else
+            {
+                mission!.ResolveCombat();
+            }
             if (!victory)
             {
-                state.RemoveMission(mission.InstanceId);
+                if (examCombat is null)
+                    state.RemoveMission(mission!.InstanceId);
                 if (active.Phase == CombatPhase.Defeat)
                 {
                     state.Character.RestoreHealth(
@@ -823,9 +905,17 @@ public sealed class CombatService(GameDatabase database)
         }
 
         active.AdvanceCooldowns(Math.Clamp(deltaTime, 0f, 0.25f));
+        active.RegenerateEnemy(active.EnemyHealthRegeneration * (decimal)Math.Clamp(deltaTime, 0f, 0.25f));
         var monsterConfig = database.GetMonster(active.MonsterConfigId);
-        var missionStage = database.GetCultivationStageIndex(database.GetMission(mission.MissionConfigId).StageId);
-        var enemyStats = GetEnemyStats(missionStage, active.DangerLevel);
+        var enemyAttack = active.EnemyAttack;
+        var enemyAttacksPerSecond = active.EnemyAttacksPerSecond;
+        if (enemyAttack <= 0m || enemyAttacksPerSecond <= 0m)
+        {
+            var missionStage = mission is null ? 0 : database.GetCultivationStageIndex(database.GetMission(mission.MissionConfigId).StageId);
+            var legacyEnemyStats = GetEnemyStats(missionStage, active.DangerLevel);
+            enemyAttack = enemyAttack > 0m ? enemyAttack : legacyEnemyStats.Attack;
+            enemyAttacksPerSecond = enemyAttacksPerSecond > 0m ? enemyAttacksPerSecond : legacyEnemyStats.AttacksPerSecond;
+        }
 
         while (active.HeroCooldown <= 0f && active.Phase == CombatPhase.Fighting)
         {
@@ -844,9 +934,9 @@ public sealed class CombatService(GameDatabase database)
 
         while (active.EnemyCooldown <= 0f && active.Phase == CombatPhase.Fighting)
         {
-            var damage = CalculateDamage(enemyStats.Attack, GetHeroDefense(state.Character));
+            var damage = CalculateDamage(enemyAttack, GetHeroDefense(state.Character));
             var appliedDamage = state.Character.TakeDamage(damage);
-            active.ResetCooldown(CombatActor.Enemy, 1f / (float)enemyStats.AttacksPerSecond);
+            active.ResetCooldown(CombatActor.Enemy, 1f / (float)enemyAttacksPerSecond);
             result.Events.Add(new CombatEvent(CombatEventType.EnemyAttack, appliedDamage));
             result.Events.Add(new CombatEvent(CombatEventType.HeroHurt, appliedDamage));
             if (state.Character.Health <= 0m)
@@ -883,12 +973,12 @@ public sealed class TickProcessor(
         var missionCompleted = false;
         var spiritualPower = 0m;
         var levelsGained = 0;
-        if (state.ActivityMode == ActivityMode.Missions && state.CurrentMission?.IsInCombat != true)
+        if (state.DragonExam.Combat is null && state.ActivityMode == ActivityMode.Missions && state.CurrentMission?.IsInCombat != true)
         {
             missionProgress = modifiers.TimeAccelerationMultiplier * modifiers.MissionProgressMultiplier;
             missionCompleted = missions.AdvanceCurrentMission(state, missionProgress);
         }
-        else if (state.ActivityMode == ActivityMode.Cultivation)
+        else if (state.DragonExam.Combat is null && state.ActivityMode == ActivityMode.Cultivation)
         {
             spiritualPower = (database.Balance.BaseSpiritualPowerPerTick + modifiers.SpiritualPowerFlat) *
                              modifiers.TickEfficiency *

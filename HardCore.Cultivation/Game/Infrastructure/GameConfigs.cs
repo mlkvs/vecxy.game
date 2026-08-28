@@ -257,13 +257,57 @@ public sealed class AlchemyPropertyConfig
 public sealed class MissionsConfig : IYamlConfig
 {
     public int BoardSlotCount { get; init; } = 8;
+    public decimal MaximumLockedOfferPercent { get; init; } = 20m;
+    public DragonExamConfig DragonExam { get; init; } = new();
+    public List<MissionRankConfig> Ranks { get; init; } = [];
     public List<MissionConfig> Missions { get; init; } = [];
+}
+
+public sealed class DragonExamConfig
+{
+    public int IntervalYears { get; init; } = 4;
+}
+
+public sealed class MissionRankConfig
+{
+    public string Id { get; init; } = string.Empty;
+    public int Order { get; init; }
+    public Dictionary<string, decimal> BoardRankWeights { get; init; } = [];
+    public List<EnemyStatProfileConfig> EnemyProfiles { get; init; } = [];
+    public MissionRankRewardConfig Reward { get; init; } = new();
+}
+
+public sealed class DecimalRangeConfig
+{
+    public decimal Minimum { get; init; }
+    public decimal Maximum { get; init; }
+}
+
+public sealed class EnemyStatProfileConfig
+{
+    public string Id { get; init; } = string.Empty;
+    public decimal Weight { get; init; } = 1m;
+    public DecimalRangeConfig MaximumHealth { get; init; } = new();
+    public DecimalRangeConfig HealthRegeneration { get; init; } = new();
+    public DecimalRangeConfig Attack { get; init; } = new();
+    public DecimalRangeConfig AttacksPerSecond { get; init; } = new();
+}
+
+public sealed class MissionRankRewardConfig
+{
+    public long Money { get; init; }
+    public decimal MoneyChancePercent { get; init; } = 50m;
+    public decimal ItemChancePercent { get; init; } = 100m;
+    public Dictionary<ItemRarity, decimal> RarityWeights { get; init; } = [];
+    public Dictionary<ItemCategory, decimal> CategoryWeights { get; init; } = [];
+    public Dictionary<ItemCategory, int> CategoryMaximumQuantities { get; init; } = [];
+    public Dictionary<string, int> ItemMaximumQuantities { get; init; } = [];
 }
 
 public sealed class MissionConfig
 {
     public string Id { get; init; } = string.Empty;
-    // The board offers only the player's stage and its adjacent stage pools.
+    // Legacy content grouping. Mission rank now controls board availability and enemy stats.
     public string StageId { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
@@ -386,6 +430,9 @@ public sealed class GameDatabase
     public AlchemyConfig Alchemy { get; private set; } = new();
     public CultivationBalanceSnapshot CultivationBalance { get; private set; } = null!;
     public int MissionBoardSlotCount { get; private set; } = 8;
+    public decimal MaximumLockedOfferPercent { get; private set; } = 20m;
+    public DragonExamConfig DragonExam { get; private set; } = new();
+    public IReadOnlyList<MissionRankConfig> MissionRanks { get; private set; } = [];
     public IReadOnlyDictionary<string, ItemConfig> Items => _items;
     public IReadOnlyDictionary<string, MissionConfig> Missions => _missions;
     public IReadOnlyDictionary<string, MonsterConfig> Monsters => _monsters;
@@ -421,6 +468,9 @@ public sealed class GameDatabase
         Combat = combat ?? CreateDefaultCombat();
         Alchemy = alchemy ?? CreateDefaultAlchemy();
         MissionBoardSlotCount = missions.BoardSlotCount;
+        MaximumLockedOfferPercent = missions.MaximumLockedOfferPercent;
+        DragonExam = missions.DragonExam;
+        MissionRanks = missions.Ranks.OrderBy(rank => rank.Order).ToArray();
         _items.Clear();
         _missions.Clear();
         _rarities.Clear();
@@ -455,6 +505,15 @@ public sealed class GameDatabase
     public MissionConfig GetMission(string id) => _missions.TryGetValue(id, out var mission)
         ? mission
         : throw new KeyNotFoundException($"Unknown mission: {id}");
+
+    public MissionRankConfig GetMissionRank(string id) => MissionRanks.FirstOrDefault(rank => rank.Id == id)
+        ?? throw new KeyNotFoundException($"Unknown mission rank: {id}");
+
+    public int GetMissionRankIndex(string id)
+    {
+        var index = MissionRanks.ToList().FindIndex(rank => rank.Id == id);
+        return index >= 0 ? index : throw new KeyNotFoundException($"Unknown mission rank: {id}");
+    }
 
     public int GetCultivationStageIndex(string id)
     {
@@ -522,6 +581,28 @@ public sealed class GameDatabase
             throw new InvalidDataException("Items and missions cannot be empty.");
         if (MissionBoardSlotCount <= 0)
             throw new InvalidDataException("Mission board slot count is invalid.");
+        if (MissionRanks.Count == 0 || DragonExam.IntervalYears <= 0 || MaximumLockedOfferPercent is < 0m or > 100m ||
+            MissionRanks.Select(rank => rank.Id).Distinct(StringComparer.Ordinal).Count() != MissionRanks.Count ||
+            MissionRanks.Select(rank => rank.Order).Distinct().Count() != MissionRanks.Count)
+            throw new InvalidDataException("Mission rank settings are invalid.");
+        foreach (var rank in MissionRanks)
+        {
+            var baseReward = MissionRanks[0].Reward;
+            var categoryWeights = rank.Reward.CategoryWeights.Count > 0
+                ? rank.Reward.CategoryWeights
+                : baseReward.CategoryWeights;
+            if (string.IsNullOrWhiteSpace(rank.Id) || rank.EnemyProfiles.Count != 2 ||
+                rank.EnemyProfiles.Any(profile => profile.Weight <= 0m || !ValidRange(profile.MaximumHealth, true) ||
+                    !ValidRange(profile.HealthRegeneration, false) || !ValidRange(profile.Attack, false) ||
+                    !ValidRange(profile.AttacksPerSecond, true)) ||
+                rank.Reward.RarityWeights.Count == 0 || rank.Reward.RarityWeights.Values.Sum() <= 0m ||
+                categoryWeights.Count == 0 || categoryWeights.Values.Sum() <= 0m)
+                throw new InvalidDataException($"Invalid mission rank balance: {rank.Id}");
+            foreach (var target in rank.BoardRankWeights.Keys)
+                _ = GetMissionRank(target);
+            foreach (var itemId in rank.Reward.ItemMaximumQuantities.Keys)
+                _ = GetItem(itemId);
+        }
         if (Shop.IngredientSlotCount <= 0 || Shop.PillAndCoreSlotCount <= 0 ||
             Shop.MinimumQuantity <= 0 || Shop.MaximumQuantity < Shop.MinimumQuantity ||
             Shop.MinimumBuyMarkup < 0 || Shop.MaximumBuyMarkup < Shop.MinimumBuyMarkup)
@@ -618,6 +699,9 @@ public sealed class GameDatabase
             if (monster.Defense < 0m || monster.SelectionWeight <= 0m || string.IsNullOrWhiteSpace(monster.SpriteSet))
                 throw new InvalidDataException($"Invalid monster balance: {monster.Id}");
     }
+
+    private static bool ValidRange(DecimalRangeConfig range, bool positive) =>
+        range.Maximum >= range.Minimum && (positive ? range.Minimum > 0m : range.Minimum >= 0m);
 
     private static MonstersConfig CreateDefaultMonsters() => new()
     {

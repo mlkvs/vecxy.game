@@ -245,11 +245,6 @@
     font-size: 32px;
 }
 .mission-danger { height: 23px; color: #ff8d78; font-size: 17px; }
-.mission-danger.difficulty-very-easy { color: #69a66a; }
-.mission-danger.difficulty-easy { color: #8da85c; }
-.mission-danger.difficulty-equal { color: #8b7860; }
-.mission-danger.difficulty-dangerous { color: #c77a43; }
-.mission-danger.difficulty-suicidal { color: #bf4e4e; }
 
 .mission-card-description {
     min-height: 70px;
@@ -2571,10 +2566,6 @@
 }
 
 .mission-difficulty { color: #8b7860; font-size: 12px; }
-.mission-difficulty.difficulty-very-easy { color: #4d8b50; }
-.mission-difficulty.difficulty-easy { color: #718a43; }
-.mission-difficulty.difficulty-dangerous { color: #b46834; }
-.mission-difficulty.difficulty-suicidal { color: #af403f; }
 
 .mission-progress-track {
     position: relative;

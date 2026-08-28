@@ -8,7 +8,7 @@ namespace HardCore.Cultivation.Game.Infrastructure;
 
 public sealed class GameSaveSystem(GameDatabase database)
 {
-    public const int CurrentVersion = 18;
+    public const int CurrentVersion = 19;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -26,6 +26,13 @@ public sealed class GameSaveSystem(GameDatabase database)
             TotalTicks = state.Calendar.TotalTicks,
             ActivityMode = state.ActivityMode,
             RecoveryRequired = state.RecoveryRequired,
+            DragonExam = new DragonExamSaveData
+            {
+                RankId = state.DragonExam.RankId,
+                NextEligibleTick = state.DragonExam.NextEligibleTick,
+                TargetRankId = state.DragonExam.TargetRankId,
+                Combat = state.DragonExam.Combat is null ? null : ToCombatData(state.DragonExam.Combat)
+            },
             Settings = new GameSettingsSaveData
             {
                 MusicEnabled = state.Settings.MusicEnabled,
@@ -51,6 +58,7 @@ public sealed class GameSaveSystem(GameDatabase database)
             {
                 InstanceId = mission.InstanceId,
                 ConfigId = mission.MissionConfigId,
+                RankId = mission.RankId,
                 DangerLevel = mission.DangerLevel,
                 RequiredProgress = mission.RequiredProgress,
                 CurrentProgress = mission.CurrentProgress,
@@ -62,25 +70,16 @@ public sealed class GameSaveSystem(GameDatabase database)
                     BackgroundId = mission.Encounter.BackgroundId,
                     DangerLevel = mission.Encounter.DangerLevel,
                     TriggerProgress = mission.Encounter.TriggerProgress,
-                    Resolved = mission.Encounter.Resolved
+                    Resolved = mission.Encounter.Resolved,
+                    EnemyStats = mission.Encounter.EnemyStats
                 },
-                Combat = mission.Combat is null ? null : new CombatSaveData
-                {
-                    MonsterConfigId = mission.Combat.MonsterConfigId,
-                    BackgroundId = mission.Combat.BackgroundId,
-                    DangerLevel = mission.Combat.DangerLevel,
-                    EnemyMaximumHealth = mission.Combat.EnemyMaximumHealth,
-                    EnemyHealth = mission.Combat.EnemyHealth,
-                    HeroCooldown = mission.Combat.HeroCooldown,
-                    EnemyCooldown = mission.Combat.EnemyCooldown,
-                    Phase = mission.Combat.Phase,
-                    FinishDelay = mission.Combat.FinishDelay
-                }
+                Combat = mission.Combat is null ? null : ToCombatData(mission.Combat)
             }).ToList(),
             AvailableMissions = state.MissionBoard.Offers.Select(offer => new MissionOfferSaveData
             {
                 OfferId = offer.OfferId,
                 MissionConfigId = offer.MissionConfigId,
+                RankId = offer.RankId,
                 DangerLevel = offer.DangerLevel,
                 Rewards = offer.Rewards.Select(ToRewardData).ToList()
             }).ToList(),
@@ -159,6 +158,12 @@ public sealed class GameSaveSystem(GameDatabase database)
                     data.Character.MaximumHealthOffset,
                     data.Character.MaximumAgeOffsetYears);
             state.RestoreDefeatRecovery(false);
+            var firstExamTick = (long)database.DragonExam.IntervalYears * database.Balance.TicksPerYear;
+            if (data.Version >= 19)
+                state.DragonExam.Restore(data.DragonExam.RankId, data.DragonExam.NextEligibleTick,
+                    data.DragonExam.TargetRankId, RestoreCombat(data.DragonExam.Combat));
+            else
+                state.DragonExam.Initialize(database.MissionRanks[0].Id, firstExamTick);
             state.Inventory.ReplaceWith(data.Inventory.Select(FromItemData));
             state.ActiveEffects.AddRange(data.ActiveEffects.Select(effect =>
             {
@@ -180,7 +185,7 @@ public sealed class GameSaveSystem(GameDatabase database)
                 return active;
             }));
 
-            var savedMissions = data.MissionQueue.Count > 0
+            var savedMissions = data.Version < 19 ? [] : data.MissionQueue.Count > 0
                 ? data.MissionQueue
                 : data.Mission is null ? [] : [data.Mission];
             foreach (var savedMission in savedMissions)
@@ -190,6 +195,7 @@ public sealed class GameSaveSystem(GameDatabase database)
                 {
                     InstanceId = savedMission.InstanceId == Guid.Empty ? Guid.NewGuid() : savedMission.InstanceId,
                     MissionConfigId = savedMission.ConfigId,
+                    RankId = savedMission.RankId,
                     DangerLevel = savedMission.DangerLevel,
                     RequiredProgress = savedMission.RequiredProgress,
                     Rewards = savedMission.Rewards.Count > 0
@@ -201,7 +207,7 @@ public sealed class GameSaveSystem(GameDatabase database)
                 mission.RestoreCombat(RestoreCombat(savedMission.Combat));
                 state.EnqueueMission(mission);
             }
-            if (data.AvailableMissions.Count > 0)
+            if (data.Version >= 19 && data.AvailableMissions.Count > 0)
             {
                 foreach (var offer in data.AvailableMissions)
                     _ = database.GetMission(offer.MissionConfigId);
@@ -209,11 +215,12 @@ public sealed class GameSaveSystem(GameDatabase database)
                 {
                     OfferId = offer.OfferId == Guid.Empty ? Guid.NewGuid() : offer.OfferId,
                     MissionConfigId = offer.MissionConfigId,
+                    RankId = offer.RankId,
                     DangerLevel = offer.DangerLevel,
                     Rewards = offer.Rewards.Select(FromRewardData).ToList()
                 }));
             }
-            else
+            else if (data.Version >= 19)
             {
                 foreach (var missionId in data.AvailableMissionIds)
                     _ = database.GetMission(missionId);
@@ -363,6 +370,7 @@ public sealed class GameSaveSystem(GameDatabase database)
             MonsterConfigId = data.MonsterConfigId,
             BackgroundId = data.BackgroundId,
             DangerLevel = data.DangerLevel,
+            EnemyStats = data.EnemyStats,
             TriggerProgress = data.TriggerProgress
         };
         encounter.RestoreResolved(data.Resolved);
@@ -380,11 +388,30 @@ public sealed class GameSaveSystem(GameDatabase database)
             MonsterConfigId = data.MonsterConfigId,
             BackgroundId = data.BackgroundId,
             DangerLevel = data.DangerLevel,
-            EnemyMaximumHealth = data.EnemyMaximumHealth
+            EnemyMaximumHealth = data.EnemyMaximumHealth,
+            EnemyHealthRegeneration = data.EnemyHealthRegeneration,
+            EnemyAttack = data.EnemyAttack,
+            EnemyAttacksPerSecond = data.EnemyAttacksPerSecond
         };
         combat.Restore(data.EnemyHealth, data.HeroCooldown, data.EnemyCooldown, data.Phase, data.FinishDelay);
         return combat;
     }
+
+    private static CombatSaveData ToCombatData(ActiveCombat combat) => new()
+    {
+        MonsterConfigId = combat.MonsterConfigId,
+        BackgroundId = combat.BackgroundId,
+        DangerLevel = combat.DangerLevel,
+        EnemyMaximumHealth = combat.EnemyMaximumHealth,
+        EnemyHealthRegeneration = combat.EnemyHealthRegeneration,
+        EnemyAttack = combat.EnemyAttack,
+        EnemyAttacksPerSecond = combat.EnemyAttacksPerSecond,
+        EnemyHealth = combat.EnemyHealth,
+        HeroCooldown = combat.HeroCooldown,
+        EnemyCooldown = combat.EnemyCooldown,
+        Phase = combat.Phase,
+        FinishDelay = combat.FinishDelay
+    };
 }
 
 public sealed class SaveData
@@ -393,6 +420,7 @@ public sealed class SaveData
     public long TotalTicks { get; init; }
     public ActivityMode ActivityMode { get; init; } = ActivityMode.Cultivation;
     public bool RecoveryRequired { get; init; }
+    public DragonExamSaveData DragonExam { get; init; } = new();
     public GameSettingsSaveData Settings { get; init; } = new();
     public CharacterSaveData Character { get; init; } = new();
     public List<ItemSaveData> Inventory { get; init; } = [];
@@ -405,10 +433,19 @@ public sealed class SaveData
     public List<EffectSaveData> ActiveEffects { get; init; } = [];
 }
 
+public sealed class DragonExamSaveData
+{
+    public string RankId { get; init; } = "F";
+    public long NextEligibleTick { get; init; }
+    public string? TargetRankId { get; init; }
+    public CombatSaveData? Combat { get; init; }
+}
+
 public sealed class MissionOfferSaveData
 {
     public Guid OfferId { get; init; }
     public string MissionConfigId { get; init; } = string.Empty;
+    public string RankId { get; init; } = "F";
     public int? DangerLevel { get; init; }
     public List<MissionRewardSaveData> Rewards { get; init; } = [];
 }
@@ -457,6 +494,7 @@ public sealed class MissionSaveData
 {
     public Guid InstanceId { get; init; }
     public string ConfigId { get; init; } = string.Empty;
+    public string RankId { get; init; } = "F";
     public int? DangerLevel { get; init; }
     public decimal RequiredProgress { get; init; }
     public decimal CurrentProgress { get; init; }
@@ -473,6 +511,7 @@ public sealed class MissionEncounterSaveData
     public int DangerLevel { get; init; }
     public decimal TriggerProgress { get; init; }
     public bool Resolved { get; init; }
+    public EnemyCombatStats EnemyStats { get; init; } = new();
 }
 
 public sealed class CombatSaveData
@@ -481,6 +520,9 @@ public sealed class CombatSaveData
     public string BackgroundId { get; init; } = string.Empty;
     public int DangerLevel { get; init; }
     public decimal EnemyMaximumHealth { get; init; }
+    public decimal EnemyHealthRegeneration { get; init; }
+    public decimal EnemyAttack { get; init; }
+    public decimal EnemyAttacksPerSecond { get; init; }
     public decimal EnemyHealth { get; init; }
     public float HeroCooldown { get; init; }
     public float EnemyCooldown { get; init; }
