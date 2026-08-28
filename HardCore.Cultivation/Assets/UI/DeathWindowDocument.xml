@@ -1,4 +1,4 @@
-<ui class="screen" styles="Main.css, Styles/Windows.css, Styles/Death.css"
+<ui class="screen" styles="Main.css, Styles/Windows.css, Styles/Cards.css, Styles/InfoPopup.css, Styles/Death.css"
     scale-mode="fit" reference-width="620" reference-height="1180">
     <panel id="window-layer">
         <panel id="window-backdrop" hidden="true" />

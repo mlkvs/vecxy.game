@@ -1,20 +1,37 @@
-.death-overlay {
-    pointer-events: auto;
-    position: absolute;
-    inset: 0;
-    align-items: center;
-    justify-content: center;
-    padding: 34px;
-    background-color: transparent;
-}
-
+.death-overlay { pointer-events: auto; position: absolute; inset: 0; align-items: center; justify-content: center; padding: 34px; }
 .death-dialog {
-    width: 100%;
-    max-width: 620px;
-    padding: 34px;
-    align-items: center;
-    background-color: #151c17fc;
-    border: 3px solid #b85b4e;
-    border-radius: 36px;
-    box-shadow: 0 14px 20px 0 #000000f2;
+    position: relative; width: 520px; max-width: 520px; min-height: 0; padding: 18px; align-items: stretch;
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
+    background-size: fill; background-slice: 12px; background-color: #00000000;
+    border: 0; border-radius: 12px; box-shadow: none;
 }
+.death-close { position: absolute; z-index: 2; top: 22px; right: 22px; }
+.death-heading {
+    flex-shrink: 0; width: 100%; align-items: center; padding: 10px 58px 16px;
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
+    background-size: fill; background-slice: 12px; background-color: #00000000;
+    border: 0; border-radius: 10px;
+}
+.death-icon-shell {
+    width: 76px; height: 76px; align-items: center; justify-content: center;
+    background-color: transparent; border: 0; border-radius: 10px;
+}
+.death-icon-shell image { width: 62px; height: 62px; object-fit: contain; }
+.death-kicker { margin-top: 7px; color: #bd665c; font-size: 16px; text-align: center; }
+.death-title { margin-top: 5px; width: 100%; color: #4b3829; font-size: 28px; text-align: center; white-space: normal; }
+.death-description {
+    flex-shrink: 0; width: 100%; height: 92px; margin-top: 8px; padding: 8px 14px;
+    color: #5a4634; font-size: 20px; line-height: 1.3;
+    text-align: center; vertical-align: middle; white-space: normal; overflow: hidden;
+}
+.death-stat {
+    flex-shrink: 0; width: 100%; height: 62px; min-height: 62px; margin-top: 8px; padding: 10px 18px;
+    flex-direction: row; align-items: center;
+    background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
+    background-size: fill; background-slice: 12px; background-color: #00000000;
+    border: 1px solid #b49a6688; border-radius: 10px; box-shadow: none;
+}
+.death-stat-first { margin-top: 8px; }
+.death-dialog .death-stat-label { flex-shrink: 0; width: 42%; color: #806a45; font-size: 17px; text-align: left; }
+.death-dialog .death-stat-value { flex-shrink: 0; width: 58%; color: #4b3829; font-size: 20px; text-align: right; }
+.death-restart { width: 100%; height: 56px; min-height: 56px; margin-top: 12px; padding: 9px 12px; }

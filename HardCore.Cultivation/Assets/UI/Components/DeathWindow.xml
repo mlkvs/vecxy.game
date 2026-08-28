@@ -1,14 +1,15 @@
-<panel id="death-window" class="death-overlay" hidden="true">
+<panel id="death-window" class="info-popup-overlay death-overlay" hidden="true">
     <panel class="death-dialog">
-        <panel class="death-icon-shell"><image sprite="Assets/Textures/GameUIAtlas.atlas#death" /></panel>
-        <text class="death-kicker">ПУТЬ ЗАВЕРШЁН</text>
-        <text class="death-title">Отведённое время истекло</text>
-        <text class="death-description">Тело достигло предела смертной жизни. Накопленные предметы и прогресс будут утрачены.</text>
-        <panel class="death-stats">
-            <panel><text class="death-stat-label">ПРОЖИТО</text><text id="death-age" class="death-stat-value">80 лет</text></panel>
-            <panel><text class="death-stat-label">ДОСТИГНУТО</text><text id="death-stage" class="death-stat-value">Закалка тела</text></panel>
-            <panel><text class="death-stat-label">ГОД</text><text id="death-year" class="death-stat-value">65</text></panel>
+        <button class="window-close death-close" aria-label="Закрыть"><image sprite="Assets/Textures/GameUIAtlas.atlas#close" /></button>
+        <panel class="death-heading">
+            <panel class="death-icon-shell"><image sprite="Assets/Textures/GameUIAtlas.atlas#death" /></panel>
+            <text class="death-kicker">ПУТЬ ЗАВЕРШЁН</text>
+            <text class="death-title">Отведённое время истекло</text>
         </panel>
-        <button id="restart-button" class="restart-button">НАЧАТЬ НОВЫЙ ПУТЬ</button>
+        <text class="death-description">Тело достигло предела смертной жизни.&#10;Накопленные предметы и прогресс&#10;будут утрачены.</text>
+        <panel class="death-stat death-stat-first"><text class="death-stat-label">ПРОЖИТО</text><text id="death-age" class="death-stat-value">80 лет</text></panel>
+        <panel class="death-stat"><text class="death-stat-label">ДОСТИГНУТО</text><text id="death-stage" class="death-stat-value">Закалка тела</text></panel>
+        <panel class="death-stat"><text class="death-stat-label">ГОД</text><text id="death-year" class="death-stat-value">65</text></panel>
+        <button id="restart-button" class="wide-action death-restart">НАЧАТЬ НОВЫЙ ПУТЬ</button>
     </panel>
 </panel>
