@@ -120,6 +120,17 @@ text {
 }
 .settings-button image { width: 84px; height: 84px; object-fit: contain; }
 .settings-button:hover { background-color: #ffffff12; }
+.dragon-exam-badge {
+    pointer-events: auto; position: absolute; z-index: 50; right: 0; bottom: 92px; width: 232px; height: 58px;
+    padding: 8px 12px; flex-direction: row; align-items: center; justify-content: center; gap: 9px;
+    color: #40362b; background-image: sprite('../Textures/GameUIAtlas.atlas', 'panel-slice');
+    background-size: fill; background-slice: 12px; background-color: #00000000;
+    border: 0; border-radius: 10px; box-shadow: none; font-family: "Rubik UI";
+}
+.dragon-exam-badge:hover { color: #255c48; background-color: #00000000; opacity: 0.84; }
+.dragon-exam-badge:active { color: #75483f; opacity: 0.72; }
+.dragon-exam-badge image { width: 34px; height: 34px; object-fit: contain; }
+.dragon-exam-badge text { flex: 1; min-width: 0; font-size: 15px; text-align: center; }
 .calendar-block {
     flex-shrink: 0; width: 172px; align-items: flex-end; padding-left: 16px;
     border-left: 3px solid var(--gold);

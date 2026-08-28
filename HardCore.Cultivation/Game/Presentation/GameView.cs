@@ -10,6 +10,7 @@ internal sealed class GameWindowDocuments
         UiDocument alchemy,
         UiDocument missions,
         UiDocument breakthrough,
+        UiDocument dragonExam,
         UiDocument death,
         UiDocument infoPopup,
         UiDocument effectPopup,
@@ -21,12 +22,13 @@ internal sealed class GameWindowDocuments
         Alchemy = alchemy;
         Missions = missions;
         Breakthrough = breakthrough;
+        DragonExam = dragonExam;
         Death = death;
         InfoPopup = infoPopup;
         EffectPopup = effectPopup;
         Settings = settings;
         PrivacyPolicy = privacyPolicy;
-        All = [shop, inventory, alchemy, missions, breakthrough, death, infoPopup, effectPopup, settings, privacyPolicy];
+        All = [shop, inventory, alchemy, missions, breakthrough, dragonExam, death, infoPopup, effectPopup, settings, privacyPolicy];
     }
 
     public UiDocument Shop { get; }
@@ -34,6 +36,7 @@ internal sealed class GameWindowDocuments
     public UiDocument Alchemy { get; }
     public UiDocument Missions { get; }
     public UiDocument Breakthrough { get; }
+    public UiDocument DragonExam { get; }
     public UiDocument Death { get; }
     public UiDocument InfoPopup { get; }
     public UiDocument EffectPopup { get; }
@@ -88,6 +91,7 @@ internal sealed class GameView
         HeroContaminationText = Text("hero-contamination-text");
         Effects = Panel("effects-list");
         SettingsButton = Button("settings-button");
+        DragonExamBadge = Button("dragon-exam-badge");
 
         ShopButton = Button("shop-button");
         AlchemyButton = Button("alchemy-button");
@@ -149,6 +153,14 @@ internal sealed class GameView
         BreakthroughResultTitle = Text(windowDocuments.Breakthrough, "breakthrough-result-title");
         BreakthroughResultText = Text(windowDocuments.Breakthrough, "breakthrough-result-text");
         BreakthroughResultOk = Button(windowDocuments.Breakthrough, "breakthrough-result-ok");
+
+        DragonExamOverlay = Register(windowDocuments.DragonExam, "dragon-exam-popup");
+        DragonExamCurrentRank = Text(windowDocuments.DragonExam, "dragon-exam-current-rank");
+        DragonExamNextRank = Text(windowDocuments.DragonExam, "dragon-exam-next-rank");
+        DragonExamCopy = Text(windowDocuments.DragonExam, "dragon-exam-copy");
+        DragonExamStartLabel = Text(windowDocuments.DragonExam, "dragon-exam-start-label");
+        DragonExamStart = Button(windowDocuments.DragonExam, "dragon-exam-start");
+        DragonExamLater = Button(windowDocuments.DragonExam, "dragon-exam-later");
 
         DeathWindow = Register(windowDocuments.Death, "death-window");
         DeathAge = Text(windowDocuments.Death, "death-age");
@@ -255,6 +267,14 @@ internal sealed class GameView
     public UiText HeroContaminationText { get; }
     public UiPanel Effects { get; }
     public UiButton SettingsButton { get; }
+    public UiButton DragonExamBadge { get; }
+    public UiPanel DragonExamOverlay { get; }
+    public UiText DragonExamCurrentRank { get; }
+    public UiText DragonExamNextRank { get; }
+    public UiText DragonExamCopy { get; }
+    public UiText DragonExamStartLabel { get; }
+    public UiButton DragonExamStart { get; }
+    public UiButton DragonExamLater { get; }
     public UiButton ShopButton { get; }
     public UiButton AlchemyButton { get; }
     public UiButton InventoryButton { get; }

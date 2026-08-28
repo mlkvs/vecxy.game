@@ -162,13 +162,17 @@ public sealed class GameController(
             shop.Refresh(_state.Shop);
         if (_state.MissionBoard.Offers.Count == 0 ||
             _state.MissionBoard.Offers.Any(offer => offer.Rewards.Count == 0) ||
-            _state.MissionBoard.Offers.Any(offer =>
-                Math.Abs(database.GetCultivationStageIndex(database.GetMission(offer.MissionConfigId).StageId) -
-                         _state.Character.Cultivation.StageIndex) > 1))
+            _state.MissionBoard.Offers.Select(offer => offer.MissionConfigId).Distinct().Count() != _state.MissionBoard.Offers.Count)
             missions.Refresh(_state);
         combat.ConfigureHero(_state.Character, _state.Character.MaximumHealth <= 0m);
         combatScene.Initialize();
         _gameOver = _state.Character.Age.TotalYears >= cultivation.GetMaximumAge(_state.Character, _state.ActiveEffects);
+        if (loadedSave && _gameOver)
+        {
+            InitializeNewGame();
+            _gameOver = false;
+            Save();
+        }
 
         _document = ui.Load(Assets.UI.Main2);
         _document.Reloaded += BuildUi;
@@ -211,8 +215,10 @@ public sealed class GameController(
         if (_gameOver)
             return;
 
+        var rankBeforeCombat = _state.DragonExam.RankId;
         var combatUpdate = combat.Update(_state, deltaTime);
-        if (_state.CurrentMission?.Combat is { } activeCombat)
+        var activeCombat = _state.DragonExam.Combat ?? _state.CurrentMission?.Combat;
+        if (activeCombat is not null)
         {
             if (!combatScene.IsVisible)
                 combatScene.Show(activeCombat);
@@ -228,7 +234,7 @@ public sealed class GameController(
         if (combatUpdate.StateChanged)
         {
             var combatMission = _state.CurrentMission;
-            var combatSnapshot = combatMission?.Combat;
+            var combatSnapshot = _state.DragonExam.Combat ?? combatMission?.Combat;
             if (combatUpdate.Events.Any(value => value.Type == CombatEventType.Started))
             {
                 _combatWasVictory = false;
@@ -261,6 +267,11 @@ public sealed class GameController(
             }
             if (combatUpdate.Events.Any(value => value.Type == CombatEventType.Closed))
             {
+                if (_state.DragonExam.RankId != rankBeforeCombat)
+                {
+                    missions.Refresh(_state);
+                    ShowAchievement($"РАНГ {_state.DragonExam.RankId}");
+                }
                 Track(new CombatCompletedEvent(_combatWasVictory ? "victory" : "defeat", _combatMissionId,
                     _combatEnemyId, _state.Character.Health));
                 if (!_combatWasVictory)
@@ -460,6 +471,8 @@ public sealed class GameController(
         _state = new GameState(database.Balance.TicksPerYear);
         _state.Character.Restore(0m, 0, database.Balance.StartingAgeYears);
         _state.Character.AddMoney(database.Balance.StartingMoney);
+        _state.DragonExam.Initialize(database.MissionRanks[0].Id,
+            (long)database.DragonExam.IntervalYears * database.Balance.TicksPerYear);
         combat.ConfigureHero(_state.Character, true);
         _state.SetActivityMode(ActivityMode.Cultivation);
         shop.Refresh(_state.Shop);
@@ -513,6 +526,7 @@ public sealed class GameController(
             ui.Load(Assets.UI.AlchemyWindowDocument),
             ui.Load(Assets.UI.MissionsWindowDocument),
             ui.Load(Assets.UI.BreakthroughDocument),
+            ui.Load(Assets.UI.DragonExamDocument),
             ui.Load(Assets.UI.DeathWindowDocument),
             ui.Load(Assets.UI.InfoPopupDocument),
             ui.Load(Assets.UI.EffectPopupDocument),
@@ -550,6 +564,8 @@ public sealed class GameController(
             document.Instantiate(Assets.UI.BreakthroughWindow, layer);
             document.Instantiate(Assets.UI.BreakthroughResult, layer);
         }
+        else if (ReferenceEquals(document, _windowDocuments.DragonExam))
+            document.Instantiate(Assets.UI.DragonExamPopup, layer);
         else if (ReferenceEquals(document, _windowDocuments.Death))
             document.Instantiate(Assets.UI.DeathWindow, layer);
         else if (ReferenceEquals(document, _windowDocuments.InfoPopup))
@@ -584,6 +600,9 @@ public sealed class GameController(
             SyncInventory();
         });
         BindClick(view.SettingsButton, OpenSettings);
+        BindClick(view.DragonExamBadge, OpenDragonExam);
+        BindClick(view.DragonExamStart, StartDragonExam);
+        BindClick(view.DragonExamLater, CloseDragonExam);
         BindClick(view.MissionSummaryButton, OpenMissions);
         BindClick(view.CombatSurrender, SurrenderCombat);
         BindClick(view.ActivityMode, ToggleActivityMode);
@@ -627,7 +646,7 @@ public sealed class GameController(
         view.EffectPopupCard.Clicked += _ => { };
         foreach (var windowDocument in view.WindowDocuments.All)
         {
-            foreach (var dialogClass in new[] { ".breakthrough-dialog", ".death-dialog", ".privacy-policy-card" })
+            foreach (var dialogClass in new[] { ".breakthrough-dialog", ".dragon-exam-dialog", ".death-dialog", ".privacy-policy-card" })
             foreach (var dialog in windowDocument.QueryAll(dialogClass))
                 dialog.Clicked += _ => { };
         }
@@ -694,12 +713,17 @@ public sealed class GameController(
         else
             ApplyStateToView();
         if (result.NewYearStarted)
+        {
             SyncShop();
+            SyncDragonExam();
+        }
         if (result.MissionCompleted)
             SyncInventory();
         var view = _view!;
         if (IsWindowOpen(view.MissionsWindow))
             SyncMissions();
+        if (IsWindowOpen(view.DragonExamOverlay))
+            SyncDragonExam();
         if ((_openEffectType is not null || _openPermanentEffects) && IsWindowOpen(view.EffectPopup))
             UpdateEffectPopup();
         if (result.SpiritualPowerGained != 0m)
@@ -771,6 +795,7 @@ public sealed class GameController(
             return;
         combat.ConfigureHero(_state.Character, activeEffects: _state.ActiveEffects);
         UpdateHud();
+        SyncDragonExam();
         UpdateMissionSummary();
         SyncEffects();
     }
@@ -941,6 +966,15 @@ public sealed class GameController(
 
     private void UpdateMissionSummary()
     {
+        if (_state.DragonExam.Combat is not null)
+        {
+            _view!.MissionName.Value = $"Экзамен: {_state.DragonExam.RankId} > {_state.DragonExam.TargetRankId}";
+            _view.MissionDangerIndicator.IsVisible = true;
+            _view.MissionDifficulty.Value = "ЭКЗАМЕН";
+            _view.MissionCombatMarker.IsVisible = false;
+            UpdateCombatUi();
+            return;
+        }
         var mission = _state.CurrentMission;
         if (mission is null)
         {
@@ -955,14 +989,8 @@ public sealed class GameController(
             return;
         }
         var config = database.GetMission(mission.MissionConfigId);
-        var difficulty = GetMissionDifficulty(config, mission.DangerLevel ?? mission.Encounter?.DangerLevel);
         _view!.MissionDangerIndicator.IsVisible = true;
-        _view.MissionDifficulty.Value = difficulty.Label;
-        _view.MissionDifficulty.ToggleClass("difficulty-very-easy", difficulty.CssClass == "difficulty-very-easy");
-        _view.MissionDifficulty.ToggleClass("difficulty-easy", difficulty.CssClass == "difficulty-easy");
-        _view.MissionDifficulty.ToggleClass("difficulty-equal", difficulty.CssClass == "difficulty-equal");
-        _view.MissionDifficulty.ToggleClass("difficulty-dangerous", difficulty.CssClass == "difficulty-dangerous");
-        _view.MissionDifficulty.ToggleClass("difficulty-suicidal", difficulty.CssClass == "difficulty-suicidal");
+        _view.MissionDifficulty.Value = $"РАНГ {mission.RankId}";
         var encounter = mission.Encounter;
         var pendingEncounter = encounter is { Resolved: false } && mission.Combat is null;
         _view.MissionCombatMarker.IsVisible = pendingEncounter;
@@ -987,12 +1015,13 @@ public sealed class GameController(
     {
         if (_view is null)
             return;
-        var active = _state.CurrentMission?.Combat;
+        var active = _state.DragonExam.Combat ?? _state.CurrentMission?.Combat;
         _view.MissionNormalState.IsVisible = active is null;
         _view.MissionCombatState.IsVisible = active is not null;
         if (active is null)
             return;
-        _view.CombatSurrender.IsEnabled = !active.IsFinished;
+        _view.CombatSurrender.IsVisible = _state.DragonExam.Combat is null;
+        _view.CombatSurrender.IsEnabled = !active.IsFinished && _state.DragonExam.Combat is null;
         if (combatScene.RenderTarget is not null)
             _view.MissionCombatPreview.Texture = combatScene.RenderTarget.ColorTexture;
         combatScene.SetHealth(
@@ -1805,7 +1834,7 @@ public sealed class GameController(
             var value = quality;
             AddAlchemyFilterOption(
                 _view.AlchemyQualityMenu,
-                $"{quality - 1}–{quality}★",
+                $"{quality - 1}–{quality} зв.",
                 value,
                 selected => _alchemyQualityFilter = selected);
         }
@@ -1864,7 +1893,7 @@ public sealed class GameController(
             : database.GetRarity((ItemRarity)(_alchemyRarityFilter - 1)).DisplayName.ToUpperInvariant();
         var qualityLabel = _alchemyQualityFilter == 0
             ? "ВСЕ"
-            : $"{_alchemyQualityFilter - 1}–{_alchemyQualityFilter}★";
+            : $"{_alchemyQualityFilter - 1}–{_alchemyQualityFilter} зв.";
         var typeLabel = _alchemyTypeFilter switch
         {
             1 => "СЫРЬЁ",
@@ -2113,30 +2142,12 @@ public sealed class GameController(
         var mission = database.GetMission(offer.MissionConfigId);
         card.Name.Value = mission.Name;
         card.Description.Value = mission.Description;
-        var difficulty = GetMissionDifficulty(mission, offer.DangerLevel);
         card.Danger.IsVisible = true;
-        card.Danger.Value = difficulty.Label;
-        card.Danger.ToggleClass("difficulty-very-easy", difficulty.CssClass == "difficulty-very-easy");
-        card.Danger.ToggleClass("difficulty-easy", difficulty.CssClass == "difficulty-easy");
-        card.Danger.ToggleClass("difficulty-equal", difficulty.CssClass == "difficulty-equal");
-        card.Danger.ToggleClass("difficulty-dangerous", difficulty.CssClass == "difficulty-dangerous");
-        card.Danger.ToggleClass("difficulty-suicidal", difficulty.CssClass == "difficulty-suicidal");
+        var locked = database.GetMissionRankIndex(offer.RankId) > database.GetMissionRankIndex(_state.DragonExam.RankId);
+        card.Danger.Value = $"РАНГ {offer.RankId}";
         card.Duration.Value = $"{mission.MinimumDurationTicks}–{mission.MaximumDurationTicks} недель";
-        card.Start.IsEnabled = _state.MissionQueue.Count < database.Balance.MaximumMissionQueueSize;
-    }
-
-    private (string Label, string CssClass) GetMissionDifficulty(MissionConfig mission, int? dangerLevel)
-    {
-        var delta = database.GetCultivationStageIndex(mission.StageId) - _state.Character.Cultivation.StageIndex;
-        if (delta < 0)
-            return dangerLevel.GetValueOrDefault() >= 2
-                ? ("ЛЕГКО", "difficulty-easy")
-                : ("ОЧЕНЬ ЛЕГКО", "difficulty-very-easy");
-        if (delta == 0)
-            return ("НАРАВНЕ", "difficulty-equal");
-        return dangerLevel.GetValueOrDefault() >= 3
-            ? ("САМОУБИЙСТВО", "difficulty-suicidal")
-            : ("ОПАСНО", "difficulty-dangerous");
+        card.Start.Label = locked ? $"НУЖЕН {offer.RankId}" : "ПРИНЯТЬ";
+        card.Start.IsEnabled = !locked && _state.MissionQueue.Count < database.Balance.MaximumMissionQueueSize;
     }
 
     private void StartMission(Guid offerId)
@@ -2200,7 +2211,7 @@ public sealed class GameController(
     {
         var config = database.GetMission(mission.MissionConfigId);
         card.Number.Value = (index + 1).ToString(CultureInfo.InvariantCulture);
-        card.Name.Value = config.Name;
+        card.Name.Value = $"[{mission.RankId}] {config.Name}";
         card.Progress.Value = index == 0
             ? $"{Format(mission.CurrentProgress)} / {Format(mission.RequiredProgress)}"
             : $"{Format(mission.RequiredProgress)} недель";
@@ -2403,6 +2414,75 @@ public sealed class GameController(
             Track(new ContaminationLevelChangedEvent(beforeLevel, afterLevel, after));
         if (after < before)
             Track(new PurificationAppliedEvent(before, after, before - after));
+    }
+
+    private void SyncDragonExam()
+    {
+        if (_view is null)
+            return;
+        var currentIndex = database.GetMissionRankIndex(_state.DragonExam.RankId);
+        var hasNext = currentIndex + 1 < database.MissionRanks.Count;
+        _view.DragonExamBadge.IsVisible = true;
+        _view.DragonExamCurrentRank.Value = _state.DragonExam.RankId;
+        _view.DragonExamNextRank.Value = hasNext ? database.MissionRanks[currentIndex + 1].Id : "—";
+        _view.DragonExamStart.IsEnabled = false;
+        if (hasNext)
+        {
+            if (_state.DragonExam.Combat is not null)
+            {
+                _view.DragonExamCopy.Value = "Экзамен уже идёт.\nПобедите противника,\nчтобы получить следующий ранг.";
+                _view.DragonExamStartLabel.Value = "ЭКЗАМЕН ИДЁТ";
+            }
+            else if (_state.Calendar.TotalTicks < _state.DragonExam.NextEligibleTick)
+            {
+                var ticks = _state.DragonExam.NextEligibleTick - _state.Calendar.TotalTicks;
+                var years = ticks / _state.Calendar.TicksPerYear;
+                var weeks = ticks % _state.Calendar.TicksPerYear;
+                var wait = years > 0 && weeks > 0 ? $"{years} г. {weeks} нед." :
+                    years > 0 ? $"{years} г." : $"{weeks} нед.";
+                _view.DragonExamCopy.Value = $"Следующий экзамен\nстанет доступен через {wait}";
+                _view.DragonExamStartLabel.Value = "ЕЩЁ НЕ ВРЕМЯ";
+            }
+            else if (_state.CurrentMission?.Combat is not null)
+            {
+                _view.DragonExamCopy.Value = "Экзамен доступен.\nСначала завершите текущий\nбой на миссии.";
+                _view.DragonExamStartLabel.Value = "ЗАВЕРШИТЕ БОЙ";
+            }
+            else
+            {
+                _view.DragonExamCopy.Value = $"Принять участие в экзамене\nна повышение ранга?\nСледующий шанс — через {database.DragonExam.IntervalYears} года.";
+                _view.DragonExamStartLabel.Value = "ПОВЫСИТЬ РАНГ";
+                _view.DragonExamStart.IsEnabled = true;
+            }
+        }
+        else
+        {
+            _view.DragonExamCopy.Value = "Вы достигли максимального ранга.\nНовые экзамены больше\nне требуются.";
+            _view.DragonExamStartLabel.Value = "МАКСИМАЛЬНЫЙ РАНГ";
+        }
+    }
+
+    private void OpenDragonExam()
+    {
+        SyncDragonExam();
+        OpenWindow(_view!.DragonExamOverlay);
+    }
+
+    private void CloseDragonExam() => UnmountWindow(_view!.DragonExamOverlay);
+
+    private void StartDragonExam()
+    {
+        var result = missions.StartDragonExam(_state);
+        ShowActionFeedback(result.Message, AssetPath(Assets.Textures.Missions), result.Success);
+        if (result.Success)
+        {
+            CloseDragonExam();
+            SyncDragonExam();
+            UpdateMissionSummary();
+            Save();
+        }
+        else
+            SyncDragonExam();
     }
 
     private void OpenSettings()
@@ -2664,6 +2744,11 @@ public sealed class GameController(
     {
         if (_view is null)
             return;
+        if (_gameOver && IsWindowOpen(_view.DeathWindow))
+        {
+            RestartGame();
+            return;
+        }
         foreach (var window in _view.Windows)
             UnmountWindow(window);
         _openEffectType = null;

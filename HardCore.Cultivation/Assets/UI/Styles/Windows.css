@@ -46,6 +46,7 @@
 .info-popup-overlay.window-fade-surface > .info-popup-card,
 .info-popup-overlay.window-fade-surface > .effect-popup-card,
 .info-popup-overlay.window-fade-surface > .breakthrough-dialog,
+.info-popup-overlay.window-fade-surface > .dragon-exam-dialog,
 .death-overlay.window-fade-surface > .death-dialog,
 .privacy-policy-overlay.window-fade-surface > .privacy-policy-card {
     transform: translateX(110%);
@@ -55,6 +56,7 @@
 .info-popup-overlay.window-exit-to-left > .info-popup-card,
 .info-popup-overlay.window-exit-to-left > .effect-popup-card,
 .info-popup-overlay.window-exit-to-left > .breakthrough-dialog,
+.info-popup-overlay.window-exit-to-left > .dragon-exam-dialog,
 .death-overlay.window-exit-to-left > .death-dialog,
 .privacy-policy-overlay.window-exit-to-left > .privacy-policy-card {
     transform: translateX(-110%);
@@ -63,6 +65,7 @@
 .info-popup-overlay.window-fade-open > .info-popup-card,
 .info-popup-overlay.window-fade-open > .effect-popup-card,
 .info-popup-overlay.window-fade-open > .breakthrough-dialog,
+.info-popup-overlay.window-fade-open > .dragon-exam-dialog,
 .death-overlay.window-fade-open > .death-dialog,
 .privacy-policy-overlay.window-fade-open > .privacy-policy-card {
     transform: translateX(0);

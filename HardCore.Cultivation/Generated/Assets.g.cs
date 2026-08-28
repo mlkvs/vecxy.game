@@ -409,6 +409,8 @@ public static partial class Assets
         public static AssetHandle BreakthroughWindow => new(new Guid("67e0f0f3-0c4c-46c0-a00a-24c63e4367e7"));
         [AssetReference("57113e56-34b6-4139-82ab-b756cd236df2")]
         public static AssetHandle DeathWindow => new(new Guid("57113e56-34b6-4139-82ab-b756cd236df2"));
+        [AssetReference("4f9a457b-96aa-4f64-8614-e5e8e2d3e6a4")]
+        public static AssetHandle DragonExamPopup => new(new Guid("4f9a457b-96aa-4f64-8614-e5e8e2d3e6a4"));
         [AssetReference("e4136dfc-7ba3-44a5-8196-c023a51bc8b6")]
         public static AssetHandle EffectPopup => new(new Guid("e4136dfc-7ba3-44a5-8196-c023a51bc8b6"));
         [AssetReference("1bf921c4-2a16-417e-8dfc-2393ccd8d874")]
@@ -435,6 +437,8 @@ public static partial class Assets
         public static AssetHandle ShopWindow => new(new Guid("040d67b5-d3e6-47d9-9174-1d4d41193f07"));
         [AssetReference("a34fd212-7b33-414d-a3d4-9bc834ae901b")]
         public static AssetHandle DeathWindowDocument => new(new Guid("a34fd212-7b33-414d-a3d4-9bc834ae901b"));
+        [AssetReference("7e61fa52-8861-454f-b3b1-c492e813e994")]
+        public static AssetHandle DragonExamDocument => new(new Guid("7e61fa52-8861-454f-b3b1-c492e813e994"));
         [AssetReference("aea90e73-ea3c-4200-9b84-0638ad383d3b")]
         public static AssetHandle EffectPopupDocument => new(new Guid("aea90e73-ea3c-4200-9b84-0638ad383d3b"));
         [AssetReference("1c914a60-0394-4891-b8e6-234f74caa30d")]
@@ -463,6 +467,8 @@ public static partial class Assets
         public static AssetHandle Cards => new(new Guid("e10dd293-2781-41ba-8ba9-9ef011ed32e9"));
         [AssetReference("4d95d39c-9dbb-400b-a6b3-fc252e909dff")]
         public static AssetHandle Death => new(new Guid("4d95d39c-9dbb-400b-a6b3-fc252e909dff"));
+        [AssetReference("18a0c7f0-4608-4c24-ac9c-64fe3c789dd9")]
+        public static AssetHandle DragonExam => new(new Guid("18a0c7f0-4608-4c24-ac9c-64fe3c789dd9"));
         [AssetReference("3e870aa2-ba9a-4480-93a3-d5303d7b1ac2")]
         public static AssetHandle EffectPopup2 => new(new Guid("3e870aa2-ba9a-4480-93a3-d5303d7b1ac2"));
         [AssetReference("b589c0f5-6c5e-49a6-8dd6-a636492a1b57")]

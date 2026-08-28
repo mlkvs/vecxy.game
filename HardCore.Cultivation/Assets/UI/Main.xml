@@ -36,7 +36,7 @@
             <button id="mission-summary-button" class="mission-float glass-panel">
                 <panel class="float-heading"><image sprite="Assets/Textures/GameUIAtlas.atlas#missions" /><text>ТЕКУЩАЯ МИССИЯ</text></panel>
                 <panel id="mission-danger-indicator" class="mission-danger-indicator" hidden="true">
-                    <text id="mission-difficulty" class="mission-difficulty">НАРАВНЕ</text>
+                    <text id="mission-difficulty" class="mission-difficulty">РАНГ F</text>
                 </panel>
                 <text id="mission-name" class="float-title">Нет активной миссии</text>
                 <panel id="mission-normal-state">
@@ -59,6 +59,9 @@
             <panel class="side-tools">
                 <panel id="effects-list" class="effects-list" />
             </panel>
+            <button id="dragon-exam-badge" class="dragon-exam-badge" aria-label="Экзамен дракона">
+                <image sprite="Assets/Textures/GameUIAtlas.atlas#missions" /><text>ЭКЗАМЕН ДРАКОНА</text>
+            </button>
             <button id="activity-mode-button" class="activity-toggle">
                 <panel class="activity-toggle-icon-shell"><image id="activity-mode-icon" sprite="Assets/Textures/GameUIAtlas.atlas#cultivation" /></panel>
                 <text id="activity-mode-text">КУЛЬТИВАЦИЯ</text>

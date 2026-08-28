@@ -86,7 +86,7 @@
       "path": "Configs/Missions.yaml",
       "type": "Config",
       "name": "Missions",
-      "hash": "0696b8d91df4851979b8312053c2bd48e2328afa2f1991807c4cf081db51018e",
+      "hash": "644ac018b3db787bc3d56407ae930d067b6deb3e89d865b5d81d8fb6ca04e4ac",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -2048,7 +2048,19 @@
       "path": "UI/Components/DeathWindow.xml",
       "type": "Asset",
       "name": "DeathWindow",
-      "hash": "9990d71f34eef6d16c0c3cc67c10fca1d0154326f474d674c17d8623c0c398a9",
+      "hash": "29cdd8ccaec99977df03e61493ef992e6eacd7a4292c0aad330bfb6a91181341",
+      "dependencies": [
+        "b444fc52-e800-4a75-9beb-299282fc3682"
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "4f9a457b-96aa-4f64-8614-e5e8e2d3e6a4",
+      "source": "Game",
+      "path": "UI/Components/DragonExamPopup.xml",
+      "type": "Asset",
+      "name": "DragonExamPopup",
+      "hash": "100acf94371bc9dc0a51dc15c4507a52ed88d9ed1cc314db78747b7fe5db20a0",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
       ],
@@ -2198,7 +2210,17 @@
       "path": "UI/DeathWindowDocument.xml",
       "type": "Asset",
       "name": "DeathWindowDocument",
-      "hash": "23b270152ae9fe5adb519cac839353bc24acfa849547c562314121af554239e7",
+      "hash": "e059a47ff4a120f5f2ff00a249e3163b1c741b753307085f13e9cd294400567a",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "7e61fa52-8861-454f-b3b1-c492e813e994",
+      "source": "Game",
+      "path": "UI/DragonExamDocument.xml",
+      "type": "Asset",
+      "name": "DragonExamDocument",
+      "hash": "bdfe26de4d214fbd9d0634d00593f47a6c6420a23ef9fee4aea4dd96e3ca3215",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -2250,9 +2272,10 @@
       "path": "UI/Main.css",
       "type": "Asset",
       "name": "Main",
-      "hash": "2f980a5aaed2394681d35e398b7c1cce8e54ad2805414e66c8cc0400f3646ed0",
+      "hash": "6b264a471c00f3728e21db9748880f4277c33921fbe9b2c86596172eacea59aa",
       "dependencies": [
-        "ab8fe378-904f-4768-8f08-58224260ce65"
+        "ab8fe378-904f-4768-8f08-58224260ce65",
+        "b444fc52-e800-4a75-9beb-299282fc3682"
       ],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -2262,7 +2285,7 @@
       "path": "UI/Main.xml",
       "type": "Asset",
       "name": "Main",
-      "hash": "d9e94f8095128f291b9191bc271a4024f9ecc4b6a9f3f1d866fec5049f060b3f",
+      "hash": "32f6a4832b83066ced5cdad9bb5daf3314d1579d553e63fee067dfefe0d97759",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
       ],
@@ -2336,7 +2359,7 @@
       "path": "UI/Styles/Cards.css",
       "type": "Asset",
       "name": "Cards",
-      "hash": "fb884ff96a4b7f9ce7f30dfe3d4dff16bb7010bec8c9b2033b75cca84bcd44d4",
+      "hash": "b3feb3b1f609a023fa7b82feebbc3a9f5d0bc44fcec10af4b019229f321e1aa1",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
       ],
@@ -2348,8 +2371,22 @@
       "path": "UI/Styles/Death.css",
       "type": "Asset",
       "name": "Death",
-      "hash": "3a62319f918cb95d7dbdb77f9c87a72457339ab6d0fa0dfdc86859f274a3ebaf",
-      "dependencies": [],
+      "hash": "2df60b17aa6e4d5977a9832deee641ad609c6f34b9f92624e4d290d8cc49b28b",
+      "dependencies": [
+        "b444fc52-e800-4a75-9beb-299282fc3682"
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "18a0c7f0-4608-4c24-ac9c-64fe3c789dd9",
+      "source": "Game",
+      "path": "UI/Styles/DragonExam.css",
+      "type": "Asset",
+      "name": "DragonExam",
+      "hash": "18c7050ac98004166a2c6d058ef79d80e2bfc6ef1034e6120efb1338ab14a7e5",
+      "dependencies": [
+        "b444fc52-e800-4a75-9beb-299282fc3682"
+      ],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
@@ -2434,7 +2471,7 @@
       "path": "UI/Styles/Windows.css",
       "type": "Asset",
       "name": "Windows",
-      "hash": "f12c93948bfe0bb3e7fa85bfabe747a2ff3152969e04fe2ea14c76b4620e7cde",
+      "hash": "51c66bb29366bfedf83752b922f02e983a37f2abb46dcb2de51af57cdd43f35e",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
