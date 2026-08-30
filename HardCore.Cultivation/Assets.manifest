@@ -66,7 +66,7 @@
       "path": "Configs/GameBalance.yaml",
       "type": "Config",
       "name": "GameBalance",
-      "hash": "0c99ad38b39de9aa42651b94a94c077b7e4695565f07963b0019dae98c92357d",
+      "hash": "e42119aae0bf8337b8cd5b8148f56990fb5b94b629ee4df32969cb8bf510ee87",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -86,7 +86,7 @@
       "path": "Configs/Missions.yaml",
       "type": "Config",
       "name": "Missions",
-      "hash": "644ac018b3db787bc3d56407ae930d067b6deb3e89d865b5d81d8fb6ca04e4ac",
+      "hash": "ea7e7ee0eb0f5d7a4d20ab8b9490a08b096ae1439217c554a4d52128774e1d9a",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -96,7 +96,7 @@
       "path": "Configs/Monsters.yaml",
       "type": "Config",
       "name": "Monsters",
-      "hash": "59f1f95cc3c12dee6ef12abbba0fd997bdd15286dd11fd106dd899eccf766e79",
+      "hash": "78634681279d78eefa0d4e3969801702f9a475826f8ceeeb9defdbef839d5666",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -906,7 +906,7 @@
       "path": "Textures/GameUIAtlas.atlas",
       "type": "Asset",
       "name": "GameUIAtlas",
-      "hash": "05c10aff8c72e9f35aa479d05a8f1a0f22b17c5401c4acefc9bf4004130beff6",
+      "hash": "c27b3b80a9cc44142a980c6703c619bb6f0bb4cd8e61d806617d03e05135d440",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -1671,6 +1671,16 @@
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
+      "id": "5c766344-cc2b-4e39-af3d-ee4b0aad34ef",
+      "source": "Game",
+      "path": "Textures/UIIcons/dragon-exam.png",
+      "type": "Texture2D",
+      "name": "dragon-exam",
+      "hash": "95d6ce108c71098a0d5a354c84cac1a1616398f7e361c7149fcba4eda721f22e",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
       "id": "5dada047-bd36-4777-9e2c-ede8134a92be",
       "source": "Game",
       "path": "Textures/UIIcons/Elements/air.png",
@@ -2060,7 +2070,7 @@
       "path": "UI/Components/DragonExamPopup.xml",
       "type": "Asset",
       "name": "DragonExamPopup",
-      "hash": "100acf94371bc9dc0a51dc15c4507a52ed88d9ed1cc314db78747b7fe5db20a0",
+      "hash": "3f1fb0e55a58263cca5968fb9125063c990c164818440ec98e29e1e528a29e60",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
       ],
@@ -2118,7 +2128,7 @@
       "path": "UI/Components/MissionCard.xml",
       "type": "Asset",
       "name": "MissionCard",
-      "hash": "bf9d80d0b5a139d5dbdafd8bbd329bfc273f272d847fc12894b988942bf82133",
+      "hash": "92a61c8eeb7235dc50b0a65210c6acc364c762c7c8a4302d9993e0fdf7fb462d",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -2272,10 +2282,9 @@
       "path": "UI/Main.css",
       "type": "Asset",
       "name": "Main",
-      "hash": "6b264a471c00f3728e21db9748880f4277c33921fbe9b2c86596172eacea59aa",
+      "hash": "4a98ec37ef7d8e40ac81fa463fd807ae190312eaa7bf0a02bc36b9e2243ddf94",
       "dependencies": [
-        "ab8fe378-904f-4768-8f08-58224260ce65",
-        "b444fc52-e800-4a75-9beb-299282fc3682"
+        "ab8fe378-904f-4768-8f08-58224260ce65"
       ],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -2285,7 +2294,7 @@
       "path": "UI/Main.xml",
       "type": "Asset",
       "name": "Main",
-      "hash": "32f6a4832b83066ced5cdad9bb5daf3314d1579d553e63fee067dfefe0d97759",
+      "hash": "222f1e09cafde40a2766d3bb7ade6963e1758951ce9f84271425a98a40c1e8aa",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
       ],
@@ -2359,7 +2368,7 @@
       "path": "UI/Styles/Cards.css",
       "type": "Asset",
       "name": "Cards",
-      "hash": "b3feb3b1f609a023fa7b82feebbc3a9f5d0bc44fcec10af4b019229f321e1aa1",
+      "hash": "b4aae76567c3dedff96233f583c3bb3d1d74e36d78d6e7e706207b1b819366d9",
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
       ],
