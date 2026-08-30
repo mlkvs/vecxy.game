@@ -343,6 +343,8 @@ public static partial class Assets
         public static TextureHandle Cultivation => new(new Guid("64bbaeee-4172-4789-89cd-7e19349cfa76"));
         [AssetReference("19d802ae-33e2-4133-84ce-d584c0b4b44c")]
         public static TextureHandle Death => new(new Guid("19d802ae-33e2-4133-84ce-d584c0b4b44c"));
+        [AssetReference("5c766344-cc2b-4e39-af3d-ee4b0aad34ef")]
+        public static TextureHandle DragonExam => new(new Guid("5c766344-cc2b-4e39-af3d-ee4b0aad34ef"));
         [AssetReference("fe4ee558-f264-42e8-aeda-155dfb6b0a4f")]
         public static TextureHandle Inventory => new(new Guid("fe4ee558-f264-42e8-aeda-155dfb6b0a4f"));
         [AssetReference("fb9f3ba6-4022-448a-a9b6-9392b9d96def")]
