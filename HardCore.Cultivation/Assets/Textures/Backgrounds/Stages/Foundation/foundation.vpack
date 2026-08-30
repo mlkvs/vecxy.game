@@ -1,5 +1,4 @@
-# Remote progression package. Replace cdn.example.com with the production CDN host.
-# `size` and `sha256` are intentionally absent: Vecxy writes both to packages.json.
+# Bundled progression package, activated when the stage is first entered.
 name: FoundationBackgrounds
 version: 1.0.0
 load: on-demand
@@ -8,8 +7,3 @@ compression: balanced
 platforms:
   android:
     compression: fast
-remote:
-  manifest: https://s3.eponesh.com/games/draft/21228/packages.json
-  cache: persistent
-  update: check
-  integrity: sha256

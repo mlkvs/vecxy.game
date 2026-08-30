@@ -26,7 +26,7 @@
       "path": "Configs/Application.yaml",
       "type": "Config",
       "name": "Application",
-      "hash": "cd37304959e11d0da1155e16d1f5ae1d6957fffd7e18d8b9e505f71926b644ab",
+      "hash": "bb6c79173c4d8173ba29d7546add477f099196b976dfed4942708eb3d9ef26d7",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -2645,15 +2645,7 @@
       "load": 1,
       "dependencies": [],
       "version": "1.0.0",
-      "remote": {
-        "manifest": "https://s3.eponesh.com/games/draft/21228/packages.json",
-        "url": null,
-        "cache": 0,
-        "update": 1,
-        "integrity": 0,
-        "size": null,
-        "sha256": null
-      }
+      "remote": null
     },
     {
       "id": "3a461268-ba65-d44c-1f6e-94d6d78c906c",
@@ -2662,15 +2654,7 @@
       "load": 1,
       "dependencies": [],
       "version": "1.0.0",
-      "remote": {
-        "manifest": "https://s3.eponesh.com/games/draft/21228/packages.json",
-        "url": null,
-        "cache": 0,
-        "update": 1,
-        "integrity": 0,
-        "size": null,
-        "sha256": null
-      }
+      "remote": null
     },
     {
       "id": "a38cc685-6624-ddb1-cb4b-78e64e24db78",
@@ -2679,15 +2663,7 @@
       "load": 1,
       "dependencies": [],
       "version": "1.0.0",
-      "remote": {
-        "manifest": "https://s3.eponesh.com/games/draft/21228/packages.json",
-        "url": null,
-        "cache": 0,
-        "update": 1,
-        "integrity": 0,
-        "size": null,
-        "sha256": null
-      }
+      "remote": null
     },
     {
       "id": "f0ea19b7-30ca-4741-1f0d-c7d0578c7941",
@@ -2696,15 +2672,7 @@
       "load": 1,
       "dependencies": [],
       "version": "1.0.0",
-      "remote": {
-        "manifest": "https://s3.eponesh.com/games/draft/21228/packages.json",
-        "url": null,
-        "cache": 0,
-        "update": 1,
-        "integrity": 0,
-        "size": null,
-        "sha256": null
-      }
+      "remote": null
     },
     {
       "id": "7547cd0b-c580-7017-a505-9c539c765cef",
@@ -2713,15 +2681,7 @@
       "load": 1,
       "dependencies": [],
       "version": "1.0.0",
-      "remote": {
-        "manifest": "https://s3.eponesh.com/games/draft/21228/packages.json",
-        "url": null,
-        "cache": 0,
-        "update": 1,
-        "integrity": 0,
-        "size": null,
-        "sha256": null
-      }
+      "remote": null
     },
     {
       "id": "19b6ee19-7cf9-7a55-f2ca-58a204fbbb27",
@@ -2730,15 +2690,7 @@
       "load": 1,
       "dependencies": [],
       "version": "1.0.0",
-      "remote": {
-        "manifest": "https://s3.eponesh.com/games/draft/21228/packages.json",
-        "url": null,
-        "cache": 0,
-        "update": 1,
-        "integrity": 0,
-        "size": null,
-        "sha256": null
-      }
+      "remote": null
     },
     {
       "id": "9ba620b0-0098-3ae3-d680-fc9ca4240ae8",
@@ -2747,15 +2699,7 @@
       "load": 1,
       "dependencies": [],
       "version": "1.0.0",
-      "remote": {
-        "manifest": "https://s3.eponesh.com/games/draft/21228/packages.json",
-        "url": null,
-        "cache": 0,
-        "update": 1,
-        "integrity": 0,
-        "size": null,
-        "sha256": null
-      }
+      "remote": null
     },
     {
       "id": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e",

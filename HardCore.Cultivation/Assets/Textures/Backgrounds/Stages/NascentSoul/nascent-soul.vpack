@@ -1,4 +1,4 @@
-# Downloaded on first entry into the Nascent Soul stage and kept between launches.
+# Bundled with the game and activated on first entry into the Nascent Soul stage.
 name: NascentSoulBackgrounds
 version: 1.0.0
 load: on-demand
@@ -7,8 +7,3 @@ compression: balanced
 platforms:
   android:
     compression: fast
-remote:
-  manifest: https://s3.eponesh.com/games/draft/21228/packages.json
-  cache: persistent
-  update: check
-  integrity: sha256
