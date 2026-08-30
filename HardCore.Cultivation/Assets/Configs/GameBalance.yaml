@@ -63,7 +63,7 @@ startingAgeYears: 12.0
 # Это исходная строка таблицы баланса: 100 HP, 1 HP/с, 1 атака,
 # 1 атака/с и 60 лет долголетия. Остальные значения вычисляются из
 # Cultivation.yaml и не дублируются здесь.
-initialCharacterStats: { maximumHealth: 100, healthRegeneration: 1, attack: 1, attacksPerSecond: 1, longevityYears: 60 }
+initialCharacterStats: { maximumHealth: 10, healthRegeneration: 1, attack: 1, attacksPerSecond: 1, longevityYears: 60 }
 
 # Максимальное количество миссий в очереди.
 # Если увеличить слишком сильно, игрок будет реже принимать решения.

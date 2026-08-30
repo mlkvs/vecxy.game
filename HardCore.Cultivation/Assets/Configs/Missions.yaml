@@ -106,49 +106,49 @@ ranks:
     enemyProfiles:
       - { id: nascent_soul_medium, weight: 1, maximumHealth: { minimum: 1662.5, maximum: 1662.5 }, healthRegeneration: { minimum: 14.25, maximum: 14.25 }, attack: { minimum: 81.7, maximum: 81.7 }, attacksPerSecond: { minimum: 6.4125, maximum: 6.4125 } }
       - { id: nascent_soul_strong, weight: 1, maximumHealth: { minimum: 1900, maximum: 1900 }, healthRegeneration: { minimum: 17.8125, maximum: 17.8125 }, attack: { minimum: 95.95, maximum: 95.95 }, attacksPerSecond: { minimum: 7.3625, maximum: 7.3625 } }
-    reward: { money: 220, rarityWeights: { Common: 1, Uncommon: 24, Rare: 40, Epic: 30, Legendary: 5 } }
+    reward: { money: 220, rarityWeights: { Common: 1, Uncommon: 19, Rare: 40, Epic: 30, Legendary: 10 } }
   - id: B
     order: 6
     boardRankWeights: { D+: 2, C: 5, C+: 13, B: 60 }
     enemyProfiles:
       - { id: soul_formation_weak, weight: 1, maximumHealth: { minimum: 3325, maximum: 3325 }, healthRegeneration: { minimum: 22.5625, maximum: 22.5625 }, attack: { minimum: 133.95, maximum: 133.95 }, attacksPerSecond: { minimum: 8.55, maximum: 8.55 } }
       - { id: soul_formation_medium, weight: 1, maximumHealth: { minimum: 4037.5, maximum: 4037.5 }, healthRegeneration: { minimum: 32.0625, maximum: 32.0625 }, attack: { minimum: 152.95, maximum: 152.95 }, attacksPerSecond: { minimum: 9.7375, maximum: 9.7375 } }
-    reward: { money: 310, rarityWeights: { Uncommon: 10, Rare: 30, Epic: 50, Legendary: 9, Mythic: 1 } }
+    reward: { money: 310, rarityWeights: { Uncommon: 10, Rare: 24, Epic: 50, Legendary: 15, Mythic: 1 } }
   - id: B+
     order: 7
     boardRankWeights: { C: 2, C+: 5, B: 13, B+: 60 }
     enemyProfiles:
       - { id: soul_formation_strong, weight: 1, maximumHealth: { minimum: 4750, maximum: 4750 }, healthRegeneration: { minimum: 41.5625, maximum: 41.5625 }, attack: { minimum: 171.95, maximum: 171.95 }, attacksPerSecond: { minimum: 10.925, maximum: 10.925 } }
       - { id: void_refinement_weak, weight: 1, maximumHealth: { minimum: 7125, maximum: 7125 }, healthRegeneration: { minimum: 51.0625, maximum: 51.0625 }, attack: { minimum: 247.95, maximum: 247.95 }, attacksPerSecond: { minimum: 12.825, maximum: 12.825 } }
-    reward: { money: 480, rarityWeights: { Uncommon: 5, Rare: 20, Epic: 50, Legendary: 15, Mythic: 5 } }
+    reward: { money: 480, rarityWeights: { Uncommon: 5, Rare: 20, Epic: 40, Legendary: 30, Mythic: 5 } }
   - id: A
     order: 8
     boardRankWeights: { C+: 2, B: 5, B+: 13, A: 60 }
     enemyProfiles:
       - { id: void_refinement_medium, weight: 1, maximumHealth: { minimum: 8312.5, maximum: 8312.5 }, healthRegeneration: { minimum: 70.0625, maximum: 70.0625 }, attack: { minimum: 271.7, maximum: 271.7 }, attacksPerSecond: { minimum: 14.25, maximum: 14.25 } }
       - { id: void_refinement_strong, weight: 1, maximumHealth: { minimum: 9500, maximum: 9500 }, healthRegeneration: { minimum: 89.0625, maximum: 89.0625 }, attack: { minimum: 295.45, maximum: 295.45 }, attacksPerSecond: { minimum: 15.675, maximum: 15.675 } }
-    reward: { money: 700, rarityWeights: { Uncommon: 1, Rare: 35, Epic: 25, Legendary: 15, Mythic: 4, Divine: 1 } }
+    reward: { money: 700, rarityWeights: { Rare: 14, Epic: 35, Legendary: 40, Mythic: 10, Divine: 1 } }
   - id: A+
     order: 9
     boardRankWeights: { B: 2, B+: 5, A: 13, A+: 60 }
     enemyProfiles:
       - { id: immortal_ascension_weak, weight: 1, maximumHealth: { minimum: 14250, maximum: 14250 }, healthRegeneration: { minimum: 108.0625, maximum: 108.0625 }, attack: { minimum: 437.95, maximum: 437.95 }, attacksPerSecond: { minimum: 18.525, maximum: 18.525 } }
       - { id: immortal_ascension_medium, weight: 1, maximumHealth: { minimum: 16625, maximum: 16625 }, healthRegeneration: { minimum: 146.0625, maximum: 146.0625 }, attack: { minimum: 485.45, maximum: 485.45 }, attacksPerSecond: { minimum: 20.9, maximum: 20.9 } }
-    reward: { money: 1000, rarityWeights: { Rare: 25, Epic: 35, Legendary: 24, Mythic: 9, Divine: 1 } }
+    reward: { money: 1000, rarityWeights: { Rare: 5, Epic: 20, Legendary: 55, Mythic: 15, Divine: 5 } }
   - id: S
     order: 10
     boardRankWeights: { B+: 2, A: 5, A+: 13, S: 60 }
     enemyProfiles:
       - { id: immortal_ascension_strong, weight: 1, maximumHealth: { minimum: 19000, maximum: 19000 }, healthRegeneration: { minimum: 184.0625, maximum: 184.0625 }, attack: { minimum: 532.95, maximum: 532.95 }, attacksPerSecond: { minimum: 23.275, maximum: 23.275 } }
       - { id: supermind_weak, weight: 1, maximumHealth: { minimum: 25000, maximum: 25000 }, healthRegeneration: { minimum: 242.1875, maximum: 242.1875 }, attack: { minimum: 576.25, maximum: 576.25 }, attacksPerSecond: { minimum: 24.375, maximum: 24.375 } }
-    reward: { money: 1500, rarityWeights: { Rare: 5, Epic: 25, Legendary: 40, Mythic: 24, Divine: 5, Transcendent: 1 } }
+    reward: { money: 1500, rarityWeights: { Rare: 1, Epic: 9, Legendary: 30, Mythic: 35, Divine: 25 } }
   - id: SR
     order: 11
     boardRankWeights: { A: 2, A+: 5, S: 13, SR: 80 }
     enemyProfiles:
       - { id: supermind_medium, weight: 1, maximumHealth: { minimum: 30000, maximum: 30000 }, healthRegeneration: { minimum: 290.625, maximum: 290.625 }, attack: { minimum: 691.5, maximum: 691.5 }, attacksPerSecond: { minimum: 29.25, maximum: 29.25 } }
       - { id: supermind_strong, weight: 1, maximumHealth: { minimum: 35000, maximum: 35000 }, healthRegeneration: { minimum: 339.0625, maximum: 339.0625 }, attack: { minimum: 806.75, maximum: 806.75 }, attacksPerSecond: { minimum: 34.125, maximum: 34.125 } }
-    reward: { money: 2200, rarityWeights: { Epic: 10, Legendary: 30, Mythic: 35, Divine: 20, Transcendent: 5 } }
+    reward: { money: 2200, rarityWeights: { Legendary: 25, Mythic: 45, Divine: 30 } }
 
 missions:
   # id — уникальный технический идентификатор
