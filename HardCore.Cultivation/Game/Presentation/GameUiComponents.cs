@@ -51,19 +51,19 @@ internal sealed class MissionCardView : AUiComponent
 {
     public MissionCardView(UiElement root) : base(root)
     {
-        Danger = Element<UiText>(".mission-danger");
         Name = Element<UiText>(".mission-card-title");
         Description = Element<UiText>(".mission-card-description");
         Duration = Element<UiText>(".mission-duration-value");
+        Rank = Element<UiText>(".mission-rank");
         RewardIcons = Element<UiPanel>(".mission-reward-icons");
         Start = Element<UiButton>(".mission-start");
     }
 
     public UiElement Card => Root;
-    public UiText Danger { get; }
     public UiText Name { get; }
     public UiText Description { get; }
     public UiText Duration { get; }
+    public UiText Rank { get; }
     public UiPanel RewardIcons { get; }
     public UiButton Start { get; }
 }

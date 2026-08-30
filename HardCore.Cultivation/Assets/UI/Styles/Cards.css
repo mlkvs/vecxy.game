@@ -2488,8 +2488,30 @@
 .mission-card .mission-reward-icons {
     flex-shrink: 0;
     height: 64px;
-    margin-top: 2px;
+    margin-top: 0;
     gap: 3px;
+}
+
+.mission-card .mission-reward-line {
+    flex-shrink: 0;
+    width: 134px;
+    height: 64px;
+    margin-top: 2px;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+}
+
+.mission-card .mission-rank {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    color: #c48324;
+    font-size: 54px;
+    min-font-size: 36px;
+    text-fit: shrink;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .mission-card .reward-icon-tile {

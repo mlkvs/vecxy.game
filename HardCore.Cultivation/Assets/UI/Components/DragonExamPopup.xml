@@ -1,7 +1,7 @@
 <panel id="dragon-exam-popup" class="info-popup-overlay" hidden="true">
     <panel class="dragon-exam-dialog">
         <panel class="dragon-exam-header horizontal">
-            <panel class="dragon-exam-icon-well"><image sprite="Assets/Textures/GameUIAtlas.atlas#missions" /></panel>
+            <panel class="dragon-exam-icon-well"><image sprite="Assets/Textures/GameUIAtlas.atlas#dragon-exam" /></panel>
             <panel class="dragon-exam-heading">
                 <text class="info-popup-kind">ЭКЗАМЕН ДРАКОНА</text>
                 <text class="dragon-exam-title">Испытание на повышение</text>

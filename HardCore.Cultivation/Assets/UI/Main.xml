@@ -17,9 +17,14 @@
                     </panel>
                 </panel>
             </panel>
-            <button id="settings-button" class="settings-button" aria-label="Настройки">
-                <image sprite="Assets/Textures/GameUIAtlas.atlas#settings" />
-            </button>
+            <panel class="top-actions">
+                <button id="settings-button" class="settings-button top-action-button" aria-label="Настройки">
+                    <image sprite="Assets/Textures/GameUIAtlas.atlas#settings" />
+                </button>
+                <button id="dragon-exam-badge" class="dragon-exam-badge top-action-button" hidden="true" aria-label="Экзамен дракона">
+                    <image sprite="Assets/Textures/GameUIAtlas.atlas#dragon-exam" />
+                </button>
+            </panel>
             <panel class="calendar-slot">
                 <panel class="calendar-dial year-candle">
                     <image class="year-candle-holder year-candle-holder-back" sprite="Assets/Textures/GameUIAtlas.atlas#year-candle-holder" />
@@ -59,9 +64,6 @@
             <panel class="side-tools">
                 <panel id="effects-list" class="effects-list" />
             </panel>
-            <button id="dragon-exam-badge" class="dragon-exam-badge" aria-label="Экзамен дракона">
-                <image sprite="Assets/Textures/GameUIAtlas.atlas#missions" /><text>ЭКЗАМЕН ДРАКОНА</text>
-            </button>
             <button id="activity-mode-button" class="activity-toggle">
                 <panel class="activity-toggle-icon-shell"><image id="activity-mode-icon" sprite="Assets/Textures/GameUIAtlas.atlas#cultivation" /></panel>
                 <text id="activity-mode-text">КУЛЬТИВАЦИЯ</text>

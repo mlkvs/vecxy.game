@@ -77,6 +77,7 @@ public sealed class GameController(
     private const float SettingsContentGap = 14f;
     private const float SettingsVersionHeight = 20f;
     private const float SettingsWindowVerticalPadding = 36f;
+    private long _announcedDragonExamEligibilityTick = long.MinValue;
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
@@ -88,7 +89,6 @@ public sealed class GameController(
     private int _yearCandleWaxPixel = int.MinValue;
     private int _yearCandleCapPixel = int.MinValue;
     private string? _yearCandleCapOpacity;
-    private bool _deferredHudRefresh;
     private bool _gameOver;
     private bool _applicationPaused;
     private bool _backgroundMusicPaused;
@@ -286,6 +286,7 @@ public sealed class GameController(
                 _combatEnemyId = null;
                 ApplyStateToView();
                 SyncMissions();
+                TryOpenNewlyAvailableDragonExam();
                 Save();
             }
             else
@@ -668,6 +669,8 @@ public sealed class GameController(
             CloseWindows();
         if (!_state.Settings.PrivacyPolicyAccepted)
             OpenPrivacyPolicy();
+        else
+            TryOpenNewlyAvailableDragonExam();
     }
 
     private void ProcessWeek()
@@ -708,15 +711,13 @@ public sealed class GameController(
         if (result.TickNumber % database.Balance.AutoSaveEveryTicks == 0)
             Save();
 
-        if (HasOpenWindow())
-            _deferredHudRefresh = true;
-        else
-            ApplyStateToView();
+        ApplyStateToView();
         if (result.NewYearStarted)
         {
             SyncShop();
             SyncDragonExam();
         }
+        TryOpenNewlyAvailableDragonExam();
         if (result.MissionCompleted)
             SyncInventory();
         var view = _view!;
@@ -1020,8 +1021,8 @@ public sealed class GameController(
         _view.MissionCombatState.IsVisible = active is not null;
         if (active is null)
             return;
-        _view.CombatSurrender.IsVisible = _state.DragonExam.Combat is null;
-        _view.CombatSurrender.IsEnabled = !active.IsFinished && _state.DragonExam.Combat is null;
+        _view.CombatSurrender.IsVisible = true;
+        _view.CombatSurrender.IsEnabled = !active.IsFinished;
         if (combatScene.RenderTarget is not null)
             _view.MissionCombatPreview.Texture = combatScene.RenderTarget.ColorTexture;
         combatScene.SetHealth(
@@ -2142,11 +2143,10 @@ public sealed class GameController(
         var mission = database.GetMission(offer.MissionConfigId);
         card.Name.Value = mission.Name;
         card.Description.Value = mission.Description;
-        card.Danger.IsVisible = true;
         var locked = database.GetMissionRankIndex(offer.RankId) > database.GetMissionRankIndex(_state.DragonExam.RankId);
-        card.Danger.Value = $"РАНГ {offer.RankId}";
+        card.Rank.Value = offer.RankId;
         card.Duration.Value = $"{mission.MinimumDurationTicks}–{mission.MaximumDurationTicks} недель";
-        card.Start.Label = locked ? $"НУЖЕН {offer.RankId}" : "ПРИНЯТЬ";
+        card.Start.Label = "ПРИНЯТЬ";
         card.Start.IsEnabled = !locked && _state.MissionQueue.Count < database.Balance.MaximumMissionQueueSize;
     }
 
@@ -2325,7 +2325,7 @@ public sealed class GameController(
             _view.EffectPopupEffect.Value = level is null
                 ? "Загрязнение отсутствует."
                 : $"Загрязнение Ур. {GetContaminationLevelNumber()} · {level.Name}\n" +
-                  string.Join("; ", level.Effects.Select(effect => DescribeEffect(effect, 1m, false)));
+                  string.Join("\n", level.Effects.Select(effect => DescribeEffect(effect, 1m, false)));
             return;
         }
         var hasActive = false;
@@ -2422,7 +2422,7 @@ public sealed class GameController(
             return;
         var currentIndex = database.GetMissionRankIndex(_state.DragonExam.RankId);
         var hasNext = currentIndex + 1 < database.MissionRanks.Count;
-        _view.DragonExamBadge.IsVisible = true;
+        _view.DragonExamBadge.IsVisible = hasNext && missions.IsDragonExamAvailable(_state);
         _view.DragonExamCurrentRank.Value = _state.DragonExam.RankId;
         _view.DragonExamNextRank.Value = hasNext ? database.MissionRanks[currentIndex + 1].Id : "—";
         _view.DragonExamStart.IsEnabled = false;
@@ -2466,6 +2466,18 @@ public sealed class GameController(
     {
         SyncDragonExam();
         OpenWindow(_view!.DragonExamOverlay);
+    }
+
+    private void TryOpenNewlyAvailableDragonExam()
+    {
+        if (_view is null || _gameOver || !_state.Settings.PrivacyPolicyAccepted ||
+            !missions.IsDragonExamAvailable(_state))
+            return;
+        var eligibilityTick = _state.DragonExam.NextEligibleTick;
+        if (_announcedDragonExamEligibilityTick == eligibilityTick)
+            return;
+        _announcedDragonExamEligibilityTick = eligibilityTick;
+        OpenDragonExam();
     }
 
     private void CloseDragonExam() => UnmountWindow(_view!.DragonExamOverlay);
@@ -2737,9 +2749,6 @@ public sealed class GameController(
     private static bool IsWindowOpen(UiElement window) =>
         !string.Equals(window.Style["visibility"], "hidden", StringComparison.OrdinalIgnoreCase);
 
-    private bool HasOpenWindow() =>
-        _view is not null && _view.Windows.Any(IsWindowOpen);
-
     private void CloseWindows()
     {
         if (_view is null)
@@ -2759,11 +2768,6 @@ public sealed class GameController(
         _infoPopupSellAction = null;
         _alchemyResultPopupQueue.Clear();
         UpdateWindowLayerState();
-        if (_deferredHudRefresh)
-        {
-            _deferredHudRefresh = false;
-            ApplyStateToView();
-        }
     }
 
     private void CloseInfoPopup()

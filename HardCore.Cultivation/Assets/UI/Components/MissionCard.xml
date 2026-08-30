@@ -1,9 +1,14 @@
 <panel class="mission-card" data-key="{{key}}">
-    <text class="mission-danger" hidden="true">ОПАСНОСТЬ I</text>
     <text class="mission-card-title">{{name}}</text>
     <text class="mission-card-description">{{description}}</text>
     <panel class="mission-card-footer">
-        <panel><text class="mission-duration-value">{{duration}}</text><panel class="mission-reward-icons" /></panel>
+        <panel>
+            <text class="mission-duration-value">{{duration}}</text>
+            <panel class="mission-reward-line horizontal">
+                <text class="mission-rank">F</text>
+                <panel class="mission-reward-icons" />
+            </panel>
+        </panel>
         <button class="mission-start">ПРИНЯТЬ</button>
     </panel>
 </panel>
