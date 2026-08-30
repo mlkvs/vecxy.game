@@ -22,12 +22,15 @@ Check(bootstrapOptions.Window.Title == "HardCore Cultivation" &&
       bootstrapOptions.TargetFrameRate == 60 &&
       bootstrapOptions.ShowSplashScreen,
     "Application.yaml was not applied to engine options.");
-Check(bootstrapLayers is [EngineLayer.Definition, HardCore.Cultivation.GameLayer.Definition, HardCore.Cultivation.CheatLayer.Definition],
+Check(bootstrapLayers is [EngineLayer.Definition, HardCore.Cultivation.GameLayer.Definition],
     "Application.yaml layers were not resolved in their configured order.");
 
 var database = BuildDatabase();
 var random = new StableRandom();
 var generator = new ItemGenerator(database, random);
+Check(generator.NormalizeContamination("purity_pill", 0.75m) == 0m &&
+      generator.NormalizeContamination("vitality_pill", 0.75m) == 0.75m,
+    "Non-crafted purification pills must be clean without changing ordinary pill contamination.");
 var effectService = new ItemEffectService(database);
 var missionService = new MissionService(database, generator, random);
 var shopService = new ShopService(database, generator, random);
@@ -138,6 +141,9 @@ for (var index = 0; index < 1200 && combatState.CurrentMission?.Encounter?.Resol
     combatEvents.AddRange(combat.Update(combatState, 0.1f).Events);
 Check(combatEvents.Any(value => value.Type == CombatEventType.Started), "Combat did not start at encounter progress.");
 Check(combatEvents.Any(value => value.Type == CombatEventType.Victory), "Hero did not win the deterministic training combat.");
+Check(combatEvents.First(value => value.Type == CombatEventType.HeroAttack).Amount ==
+      combat.GetHeroAttack(combatState.Character, combatState.ActiveEffects),
+    "Ordinary mission combat must not reduce hero attack by legacy monster defense.");
 Check(combatState.CurrentMission?.Encounter?.Resolved == true, "Victory did not resolve the mission encounter.");
 
 var alchemy = new AlchemyService(database, new AlchemyCraftRandom());
@@ -392,6 +398,24 @@ _ = combat.Update(surrenderedState, 0.1f);
 Check(surrenderedState.CurrentMission is null && surrenderedState.Character.Health == healthBeforeSurrender,
     "Surrender must remove the mission without damaging the character.");
 
+var surrenderedExamState = new GameState(database.Balance.TicksPerYear);
+combat.ConfigureHero(surrenderedExamState.Character, true);
+var examHealthBeforeSurrender = surrenderedExamState.Character.Health;
+var surrenderedExamCombat = new ActiveCombat
+{
+    MonsterConfigId = "training_spirit",
+    BackgroundId = "forest",
+    EnemyMaximumHealth = 100
+};
+surrenderedExamCombat.Initialize(100, 1, 1);
+surrenderedExamState.DragonExam.Initialize("F", 0);
+surrenderedExamState.DragonExam.Start("F+", surrenderedExamCombat, database.Balance.TicksPerYear * 4L);
+Check(combat.Surrender(surrenderedExamState), "Combat surrender must be available during a dragon exam.");
+_ = combat.Update(surrenderedExamState, 0.1f);
+Check(surrenderedExamState.DragonExam.Combat is null && surrenderedExamState.DragonExam.RankId == "F" &&
+      surrenderedExamState.Character.Health == examHealthBeforeSurrender,
+    "Surrendering an exam must end it as a loss without changing rank or health.");
+
 var stageHealth = new CharacterState();
 stageHealth.Cultivation.Restore(0, 10, database.Cultivation.Stages.Count);
 var maximumHealthBeforeBreakthrough = combat.GetHeroMaximumHealth(stageHealth);
@@ -439,12 +463,12 @@ Check(missionState.MissionBoard.Offers.Select(offer => offer.MissionConfigId).Di
     "Mission templates must be unique within one board.");
 Check(missionState.MissionBoard.Offers.All(offer => offer.DangerLevel == 1),
     "Each mission offer must receive its own danger level.");
-Check(missionState.MissionBoard.Offers.All(offer => offer.Rewards.Count is 1 or 2),
-    "Each mission offer must receive its own rolled rewards.");
+Check(missionState.MissionBoard.Offers.All(offer => offer.Rewards.Count == 1),
+    "Each mission offer must receive exactly one rolled reward.");
 var expectedMissionRewards = missionState.MissionBoard.FindByMissionId("mission")!.Rewards;
 Check(missionService.Start(missionState, "mission").Success, "Mission could not be accepted.");
 var rewards = missionState.CurrentMission!.Rewards;
-Check(rewards.Count is 1 or 2, "Mission must contain one or two rewards.");
+Check(rewards.Count == 1, "Mission must contain exactly one reward.");
 Check(rewards.SequenceEqual(expectedMissionRewards),
     "Accepted mission must use the rewards rolled for its board offer.");
 Check(rewards.Where(reward => reward.Type == MissionRewardType.Item).All(reward => reward.Quantity is >= 1 and <= 15), "Mission item quantity is outside allowed bounds.");

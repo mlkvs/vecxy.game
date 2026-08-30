@@ -105,7 +105,9 @@ public sealed class ItemGenerator(GameDatabase database, IRandomSource random)
     public decimal NormalizeContamination(string configId, decimal contamination)
     {
         var config = database.GetItem(configId);
-        return config.Category == ItemCategory.Ingredient &&
+        var purificationPillId = database.GetAlchemyProperty(database.Alchemy.PurificationPropertyId).ResultPillItemId;
+        return string.Equals(configId, purificationPillId, StringComparison.Ordinal) ||
+               config.Category == ItemCategory.Ingredient &&
                config.AlchemyProperties.Any(property => property.PropertyId == database.Alchemy.PurificationPropertyId)
             ? 0m
             : Math.Clamp(contamination, 0m, 1m);
@@ -295,6 +297,7 @@ public sealed class MissionService(
 {
     public bool IsDragonExamAvailable(GameState state) =>
         database.GetMissionRankIndex(state.DragonExam.RankId) < database.MissionRanks.Count - 1 &&
+        state.CurrentMission?.Combat is null &&
         state.DragonExam.IsAvailable(state.Calendar.TotalTicks);
 
     public TransactionResult StartDragonExam(GameState state)
@@ -503,7 +506,6 @@ public sealed class MissionService(
 
     private List<MissionReward> GenerateRewards(MissionRankConfig rank)
     {
-        var result = new List<MissionReward>(2);
         var reward = rank.Reward;
         var baseReward = database.MissionRanks[0].Reward;
         var categoryWeights = reward.CategoryWeights.Count > 0 ? reward.CategoryWeights : baseReward.CategoryWeights;
@@ -513,15 +515,20 @@ public sealed class MissionService(
         var itemMaximums = reward.ItemMaximumQuantities.Count > 0
             ? reward.ItemMaximumQuantities
             : baseReward.ItemMaximumQuantities;
-        if (reward.Money > 0 && random.NextDecimal(0m, 100m) < reward.MoneyChancePercent)
-        {
-            result.Add(new MissionReward
-            {
-                Type = MissionRewardType.Money,
-                Money = reward.Money
-            });
-        }
-        if (random.NextDecimal(0m, 100m) < reward.ItemChancePercent)
+        var moneyWeight = reward.Money > 0 ? Math.Max(0m, reward.MoneyChancePercent) : 0m;
+        var itemWeight = Math.Max(0m, reward.ItemChancePercent);
+        var chooseMoney = moneyWeight > 0m &&
+            (itemWeight <= 0m || random.NextDecimal(0m, moneyWeight + itemWeight) < moneyWeight);
+        if (chooseMoney)
+            return
+            [
+                new MissionReward
+                {
+                    Type = MissionRewardType.Money,
+                    Money = reward.Money
+                }
+            ];
+        if (itemWeight > 0m)
         {
             var category = WeightedRandom.Select(categoryWeights.Keys.ToArray(), value => categoryWeights[value], random);
             var candidates = database.Items.Values.Where(item => item.Category == category && item.ShopWeight > 0m).ToArray();
@@ -531,12 +538,10 @@ public sealed class MissionService(
                 var maximum = itemMaximums.TryGetValue(item.Id, out var itemMaximum)
                     ? itemMaximum
                     : categoryMaximums.GetValueOrDefault(category, 1);
-                result.Add(GenerateItemReward(item.Id, random.NextInt(1, maximum + 1), reward.RarityWeights));
+                return [GenerateItemReward(item.Id, random.NextInt(1, maximum + 1), reward.RarityWeights)];
             }
         }
-        if (result.Count == 0)
-            result.Add(new MissionReward { Type = MissionRewardType.Money, Money = Math.Max(1, reward.Money) });
-        return result;
+        return [new MissionReward { Type = MissionRewardType.Money, Money = Math.Max(1, reward.Money) }];
     }
 
     private MissionReward GenerateItemReward(string configId, int quantity, IReadOnlyDictionary<ItemRarity, decimal> rarityWeights)
@@ -822,9 +827,7 @@ public sealed class CombatService(GameDatabase database)
 
     public bool Surrender(GameState state)
     {
-        if (state.DragonExam.Combat is not null)
-            return false;
-        var active = state.CurrentMission?.Combat;
+        var active = state.DragonExam.Combat ?? state.CurrentMission?.Combat;
         if (active is null || active.IsFinished)
             return false;
 
@@ -906,7 +909,6 @@ public sealed class CombatService(GameDatabase database)
 
         active.AdvanceCooldowns(Math.Clamp(deltaTime, 0f, 0.25f));
         active.RegenerateEnemy(active.EnemyHealthRegeneration * (decimal)Math.Clamp(deltaTime, 0f, 0.25f));
-        var monsterConfig = database.GetMonster(active.MonsterConfigId);
         var enemyAttack = active.EnemyAttack;
         var enemyAttacksPerSecond = active.EnemyAttacksPerSecond;
         if (enemyAttack <= 0m || enemyAttacksPerSecond <= 0m)
@@ -919,7 +921,10 @@ public sealed class CombatService(GameDatabase database)
 
         while (active.HeroCooldown <= 0f && active.Phase == CombatPhase.Fighting)
         {
-            var damage = GetHeroDamageAgainst(state.Character, monsterConfig.Defense, state.ActiveEffects);
+            // Enemy defense is not part of the mission-rank balance. Applying the
+            // legacy per-monster value made otherwise identical encounters reduce
+            // a trained hero's damage to the minimum of one.
+            var damage = GetHeroAttack(state.Character, state.ActiveEffects);
             var appliedDamage = active.DamageEnemy(damage);
             active.ResetCooldown(CombatActor.Hero, 1f / (float)GetHeroAttacksPerSecond(state.Character, state.ActiveEffects));
             result.Events.Add(new CombatEvent(CombatEventType.HeroAttack, appliedDamage));
