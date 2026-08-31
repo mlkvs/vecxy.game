@@ -125,6 +125,16 @@ public static partial class Assets
         public static TextureHandle _62 => new(new Guid("e8f24f00-b5f6-4d6b-a12b-971ff13da991"));
         [AssetReference("466008ff-5bba-4d13-a3fa-e3b0d01f3cf7")]
         public static TextureHandle Character => new(new Guid("466008ff-5bba-4d13-a3fa-e3b0d01f3cf7"));
+        [AssetReference("4177f69a-e6be-4bae-88a0-b0ceee614f8d")]
+        public static TextureHandle CharacterCombo1 => new(new Guid("4177f69a-e6be-4bae-88a0-b0ceee614f8d"));
+        [AssetReference("01747900-92f5-422e-854c-c08b0af0b0dd")]
+        public static TextureHandle CharacterCombo2 => new(new Guid("01747900-92f5-422e-854c-c08b0af0b0dd"));
+        [AssetReference("17d44049-82f1-40cd-91d8-8bca5f030abc")]
+        public static TextureHandle CharacterCombo3 => new(new Guid("17d44049-82f1-40cd-91d8-8bca5f030abc"));
+        [AssetReference("0ad42c97-844a-4c5d-b15d-e0cb53d9ef2a")]
+        public static TextureHandle CharacterCombo4 => new(new Guid("0ad42c97-844a-4c5d-b15d-e0cb53d9ef2a"));
+        [AssetReference("16637495-388d-4c35-81ab-e5a4852e5d6b")]
+        public static TextureHandle CharacterCombo5 => new(new Guid("16637495-388d-4c35-81ab-e5a4852e5d6b"));
         [AssetReference("e81891d1-b1b5-48cb-b883-a2515161b0c5")]
         public static TextureHandle CharacterMissionsTransparent => new(new Guid("e81891d1-b1b5-48cb-b883-a2515161b0c5"));
         [AssetReference("65d43dc2-1616-47d7-8e76-0898a0ff03e1")]

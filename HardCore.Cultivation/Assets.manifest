@@ -66,7 +66,11 @@
       "path": "Configs/GameBalance.yaml",
       "type": "Config",
       "name": "GameBalance",
+<<<<<<< HEAD
       "hash": "626515aedd08aa113b5958315a5da474029567a19bc1040c447e37ed383c234e",
+=======
+      "hash": "37815bcc1b61661dd1b2326a3ff8f698c7109e61756fc1daa5737ddcbefa8826",
+>>>>>>> 4c5ba73 (assets: add cultivation combo character states)
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -619,6 +623,56 @@
       "hash": "e9ebbcb3adbc7188fcd787da62c3fbcf97455a8f4b49fd16ff4fba514e345afc",
       "dependencies": [],
       "package": "9ba620b0-0098-3ae3-d680-fc9ca4240ae8"
+    },
+    {
+      "id": "4177f69a-e6be-4bae-88a0-b0ceee614f8d",
+      "source": "Game",
+      "path": "Textures/Character_Combo_1.png",
+      "type": "Texture2D",
+      "name": "Character_Combo_1",
+      "hash": "d77caa6d02b1e63b2ac8de0e0d408513ce94ae351d86f2bde2ed26423399bc7b",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "01747900-92f5-422e-854c-c08b0af0b0dd",
+      "source": "Game",
+      "path": "Textures/Character_Combo_2.png",
+      "type": "Texture2D",
+      "name": "Character_Combo_2",
+      "hash": "d1f35c7a0105fe4fb2d247ed2daa624d2bac4284f76f81b7ec41072ba7a94b93",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "17d44049-82f1-40cd-91d8-8bca5f030abc",
+      "source": "Game",
+      "path": "Textures/Character_Combo_3.png",
+      "type": "Texture2D",
+      "name": "Character_Combo_3",
+      "hash": "6d47e78fd0b81c219a8966db82a6615b7f61226463fa3bc9fe4fa56040a7a2ba",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "0ad42c97-844a-4c5d-b15d-e0cb53d9ef2a",
+      "source": "Game",
+      "path": "Textures/Character_Combo_4.png",
+      "type": "Texture2D",
+      "name": "Character_Combo_4",
+      "hash": "ac78f263435b784cdb10abc0a61c19d257b4a4ac3af0a63f0eeea6f6db20e3f9",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "16637495-388d-4c35-81ab-e5a4852e5d6b",
+      "source": "Game",
+      "path": "Textures/Character_Combo_5.png",
+      "type": "Texture2D",
+      "name": "Character_Combo_5",
+      "hash": "3f15ed6455065ead420e1e2e7e4a0505f8be8bc298c5df0aff98ecf0afce59c5",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
       "id": "e81891d1-b1b5-48cb-b883-a2515161b0c5",
@@ -2282,7 +2336,11 @@
       "path": "UI/Main.css",
       "type": "Asset",
       "name": "Main",
+<<<<<<< HEAD
       "hash": "08bf711d586f1721840f515b8e631a45da4a2de2ead5a9fbcd21948cb8ed9a6b",
+=======
+      "hash": "3bc5e6ca149674a67a0db50d23f778d7a6a24e02e92d10be4806fec1e0e9ace6",
+>>>>>>> 4c5ba73 (assets: add cultivation combo character states)
       "dependencies": [
         "ab8fe378-904f-4768-8f08-58224260ce65"
       ],
@@ -2294,7 +2352,11 @@
       "path": "UI/Main.xml",
       "type": "Asset",
       "name": "Main",
+<<<<<<< HEAD
       "hash": "daab43a780d970411e3bab486d7740ab08ec2d93d30574b325f0fa1db72d8df0",
+=======
+      "hash": "672b50a777c5d63df87663c1ad9de8c4e3c8d39c06d75d890abe745b25a79f20",
+>>>>>>> 4c5ba73 (assets: add cultivation combo character states)
       "dependencies": [
         "b444fc52-e800-4a75-9beb-299282fc3682"
       ],
