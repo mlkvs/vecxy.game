@@ -1,6 +1,7 @@
 <ui class="screen" styles="Main.css, Styles/Cards.css"
     scale-mode="fit" reference-width="620" reference-height="1180">
     <panel id="hud">
+        <panel id="combo-screen-glow" class="combo-screen-glow" hidden="true" />
         <panel class="top-card">
             <panel class="top-stat horizontal money-stat">
                 <panel class="top-stat-icon-shell"><image class="top-stat-icon" sprite="Assets/Textures/GameUIAtlas.atlas#money" /></panel>
@@ -37,6 +38,11 @@
         </panel>
 
         <panel class="character-space">
+            <panel id="cultivation-combo" class="cultivation-combo" hidden="true">
+                <text id="cultivation-combo-value" class="cultivation-combo-value">x1</text>
+                <text id="cultivation-combo-tier" class="cultivation-combo-tier">ПОТОК I</text>
+                <panel class="combo-progress-track"><progress id="cultivation-combo-progress" class="combo-progress-fill" /></panel>
+            </panel>
             <button id="character-tap-target" class="character-tap-target" aria-label="Медитировать" />
             <button id="mission-summary-button" class="mission-float glass-panel">
                 <panel class="float-heading"><image sprite="Assets/Textures/GameUIAtlas.atlas#missions" /><text>ТЕКУЩАЯ МИССИЯ</text></panel>

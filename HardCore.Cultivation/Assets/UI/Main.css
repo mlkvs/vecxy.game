@@ -84,6 +84,11 @@ text {
 }
 
 #hud { width: 100%; height: 100%; padding: 16px 18px 14px; gap: 12px; position: relative; }
+.combo-screen-glow {
+    pointer-events: none; position: absolute; z-index: 0; inset: 0; opacity: 0;
+    background-color: #287ee6; box-shadow: inset 0 0 150px 46px #7bc8ff;
+    transition: opacity 0.18s ease-out;
+}
 
 .top-card {
     height: 78px; flex-direction: row; align-items: center; gap: 10px;
@@ -138,6 +143,30 @@ text {
 .calendar-tick { width: 100%; height: 24px; margin-top: 3px; color: var(--muted); font-size: 18px; text-align: right; white-space: nowrap; }
 
 .character-space { flex: 1; min-height: 0; position: relative; }
+.cultivation-combo {
+    pointer-events: none; position: absolute; z-index: 12; left: 50%; top: 188px;
+    width: 176px; height: 92px; margin-left: -88px; padding: 8px 13px;
+    align-items: center; color: #eaf8ff; background-color: #102946d9;
+    border: 2px solid #79c8ff; border-radius: 20px;
+    box-shadow: 0 0 24px 5px #51aaff99;
+}
+.cultivation-combo-value {
+    width: 100%; height: 42px; color: #ffffff; font-size: 37px; min-font-size: 26px;
+    text-align: center; text-shadow: 0 0 9px #58b9ff;
+}
+.cultivation-combo-tier {
+    width: 100%; height: 19px; margin-top: -2px; color: #9edcff; font-size: 13px;
+    text-align: center; white-space: nowrap;
+}
+.combo-progress-track {
+    width: 100%; height: 8px; margin-top: 5px; overflow: hidden;
+    background-color: #071728cc; border: 1px solid #8cd6ff88; border-radius: 4px;
+}
+.combo-progress-fill { width: 100%; height: 100%; background-color: #77d5ff; border-radius: 4px; }
+.cultivation-combo.combo-level-2 { border-color: #83dbff; box-shadow: 0 0 30px 7px #4fb8ffbb; }
+.cultivation-combo.combo-level-3 { border-color: #a8e8ff; box-shadow: 0 0 38px 9px #66c7ffcc; }
+.cultivation-combo.combo-level-4 { border-color: #d3f5ff; box-shadow: 0 0 48px 12px #80d8ffee; }
+.cultivation-combo.combo-level-5 { border-color: #ffffff; box-shadow: 0 0 62px 17px #9ee7ffff; }
 .tick-float-layer { pointer-events: none; position: absolute; inset: 0; overflow: hidden; }
 .tick-float-layer.floating-overlay { left: 18px; right: 18px; top: 234px; bottom: 292px; }
 .tick-float {

@@ -82,11 +82,17 @@ public class Character(
     public float PeriodSeconds { get; set; } = 3.6f;
 
     private bool _missionMode;
+    private int _comboLevel;
 
     private void PrewarmTextures()
     {
         _ = GetTexture(Assets.Textures.Character);
         _ = GetTexture(Assets.Textures.CharacterMissionsTransparent);
+        _ = GetTexture(Assets.Textures.CharacterCombo1);
+        _ = GetTexture(Assets.Textures.CharacterCombo2);
+        _ = GetTexture(Assets.Textures.CharacterCombo3);
+        _ = GetTexture(Assets.Textures.CharacterCombo4);
+        _ = GetTexture(Assets.Textures.CharacterCombo5);
     }
 
     public void PrewarmTextures(IRenderer renderer)
@@ -114,9 +120,33 @@ public class Character(
             return;
 
         _missionMode = missionMode;
-        var texture = GetTexture(missionMode
-            ? Assets.Textures.CharacterMissionsTransparent
-            : Assets.Textures.Character);
+        ApplyTexture();
+    }
+
+    public void SetCultivationCombo(int level, float amplitude, float periodSeconds)
+    {
+        level = Math.Clamp(level, 0, 5);
+        Amplitude = Math.Max(0f, amplitude);
+        PeriodSeconds = Math.Max(0.1f, periodSeconds);
+        if (_comboLevel == level)
+            return;
+        _comboLevel = level;
+        if (!_missionMode)
+            ApplyTexture();
+    }
+
+    private void ApplyTexture()
+    {
+        var handle = _missionMode ? Assets.Textures.CharacterMissionsTransparent : _comboLevel switch
+        {
+            1 => Assets.Textures.CharacterCombo1,
+            2 => Assets.Textures.CharacterCombo2,
+            3 => Assets.Textures.CharacterCombo3,
+            4 => Assets.Textures.CharacterCombo4,
+            5 => Assets.Textures.CharacterCombo5,
+            _ => Assets.Textures.Character
+        };
+        var texture = GetTexture(handle);
         sprite.SetTexture(texture);
         sprite.PixelsPerUnit = texture.Value.Height / referenceTextureHeight;
     }

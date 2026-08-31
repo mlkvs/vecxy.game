@@ -133,6 +133,28 @@ public sealed class GameBalanceConfig : IYamlConfig
     public List<ContaminationLevelConfig> ContaminationLevels { get; init; } = [];
     public List<PriceCurvePoint> QualityPriceCurve { get; init; } = [];
     public Dictionary<ItemCategory, PriceCurvePoint> LowQualityPriceMultipliers { get; init; } = [];
+    public TapComboConfig TapCombo { get; init; } = new();
+}
+
+public sealed class TapComboConfig
+{
+    public bool Enabled { get; init; } = true;
+    public float BaseLevitationAmplitude { get; init; } = 24f;
+    public float BaseLevitationPeriodSeconds { get; init; } = 3.6f;
+    public float GracePeriodSeconds { get; init; } = 1.25f;
+    public float DecayPerSecond { get; init; } = 4f;
+    public float PointsPerTap { get; init; } = 1f;
+    public float MaximumCombo { get; init; } = 40f;
+    public List<TapComboLevelConfig> Levels { get; init; } = [];
+}
+
+public sealed class TapComboLevelConfig
+{
+    public int MinimumCombo { get; init; } = 1;
+    public decimal PowerMultiplier { get; init; } = 1m;
+    public float LevitationAmplitude { get; init; } = 24f;
+    public float LevitationPeriodSeconds { get; init; } = 3.6f;
+    public float ScreenGlowOpacity { get; init; }
 }
 
 public sealed class QualityBand
@@ -570,6 +592,15 @@ public sealed class GameDatabase
             throw new InvalidDataException("Contamination requires four uniquely-thresholded levels.");
         if (Balance.QualityPriceCurve.Count < 2)
             throw new InvalidDataException("Quality price curve requires at least two points.");
+        var combo = Balance.TapCombo;
+        if (combo.BaseLevitationAmplitude < 0f || combo.BaseLevitationPeriodSeconds <= 0f ||
+            combo.GracePeriodSeconds < 0f || combo.DecayPerSecond <= 0f || combo.PointsPerTap <= 0f ||
+            combo.MaximumCombo < 1f || combo.Levels.Count != 5 ||
+            combo.Levels.Select(level => level.MinimumCombo).Order().Distinct().Count() != combo.Levels.Count ||
+            combo.Levels.Any(level => level.MinimumCombo < 1 || level.MinimumCombo > combo.MaximumCombo ||
+                level.PowerMultiplier < 1m || level.LevitationAmplitude < 0f || level.LevitationPeriodSeconds <= 0f ||
+                level.ScreenGlowOpacity is < 0f or > 1f))
+            throw new InvalidDataException("Tap combo settings are invalid.");
         if (_rarities.Count != Enum.GetValues<ItemRarity>().Length)
             throw new InvalidDataException("Every item rarity must be configured.");
         if (Cultivation.InitialRequiredPower.Count != 2 || Cultivation.InitialRequiredPower.Any(value => value <= 0m) ||

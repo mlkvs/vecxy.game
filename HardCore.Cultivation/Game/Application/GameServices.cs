@@ -1012,13 +1012,14 @@ public sealed class TickProcessor(
             characterDied);
     }
 
-    public TapResult ProcessTap(GameState state)
+    public TapResult ProcessTap(GameState state, decimal comboMultiplier = 1m)
     {
         var modifiers = effects.CalculateModifiers(state);
         // Taps always start from the same base; stage multipliers apply only to idle ticks.
         var spiritualPower = (database.Balance.BaseSpiritualPowerPerTick + modifiers.SpiritualPowerFlat) *
                              modifiers.TickEfficiency *
-                             modifiers.SpiritualPowerMultiplier;
+                             modifiers.SpiritualPowerMultiplier *
+                             Math.Max(1m, comboMultiplier);
         state.Character.AddSpiritualPower(spiritualPower);
         var levelsGained = cultivation.AdvanceLevelsAutomatically(state.Character);
         return new TapResult(spiritualPower, levelsGained);

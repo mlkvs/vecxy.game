@@ -79,6 +79,7 @@ public sealed class GameController(
     private const float SettingsWindowVerticalPadding = 36f;
     private long _announcedDragonExamEligibilityTick = long.MinValue;
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
+    private TapComboTracker _tapCombo = null!;
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
     private UiText? _achievementText;
@@ -151,6 +152,9 @@ public sealed class GameController(
 
     public void Initialize()
     {
+        // GameController is constructed before GameDatabase receives its YAML configs.
+        // Capture the combo balance only now, after GameLayer has initialized the database.
+        _tapCombo = new TapComboTracker(database.Balance.TapCombo);
         var loadedSave = saves.TryLoad(out _state);
         if (!loadedSave)
         {
@@ -202,6 +206,10 @@ public sealed class GameController(
         if (_spiritualPowerBatchElapsed >= 30f)
             FlushSpiritualPowerBatch();
         UpdateYearCandleAnimation(deltaTime);
+        var comboAllowed = !_gameOver && _state.ActivityMode == ActivityMode.Cultivation;
+        var comboChanged = comboAllowed ? _tapCombo.Update(deltaTime) : _tapCombo.Reset();
+        if (comboChanged)
+            SyncTapCombo();
         if (_actionToast is not null && Environment.TickCount64 >= _actionToastExpiresAt)
         {
             HideActionToast();
@@ -759,7 +767,12 @@ public sealed class GameController(
             _tapFeedback.SetStyle("top", $"{absoluteY:0}px");
             _floatingDocument?.RestartAnimation(_tapFeedback);
         }
-        var result = ticks.ProcessTap(_state);
+        if (_state.ActivityMode == ActivityMode.Cultivation)
+            _tapCombo.RegisterTap();
+        else
+            _tapCombo.Reset();
+        var result = ticks.ProcessTap(_state, _tapCombo.PowerMultiplier);
+        SyncTapCombo();
         _batchedTapCount++;
         _batchedTapPower += result.SpiritualPowerGained;
         if (result.SpiritualPowerGained != 0m)
@@ -781,6 +794,8 @@ public sealed class GameController(
     {
         Track(new UiActionEvent("main", "activity_mode", mode.ToString()));
         _state.SetActivityMode(mode);
+        _tapCombo.Reset();
+        SyncTapCombo();
         UpdateActivityButtons();
         Save();
     }
@@ -799,6 +814,7 @@ public sealed class GameController(
         SyncDragonExam();
         UpdateMissionSummary();
         SyncEffects();
+        SyncTapCombo();
     }
 
     private void UpdateYearCandleAnimation(float deltaTime)
@@ -944,6 +960,7 @@ public sealed class GameController(
 
         var missionMode = _state.ActivityMode == ActivityMode.Missions;
         _characterVisual?.SetMissionMode(missionMode);
+        SyncTapCombo();
         _backgroundVisual?.SetMissionMode(missionMode);
 
         var stageIndex = Math.Clamp(_state.Character.Cultivation.StageIndex, 0, database.Cultivation.Stages.Count - 1);
@@ -963,6 +980,46 @@ public sealed class GameController(
                 Console.Error.WriteLine($"[Backgrounds] Could not acquire stage package: {exception.Message}");
             }
         }
+    }
+
+    private void SyncTapCombo()
+    {
+        if (_view is null)
+            return;
+        var config = database.Balance.TapCombo;
+        var active = _tapCombo.IsActive && _state.ActivityMode == ActivityMode.Cultivation;
+        _view.CultivationCombo.IsVisible = active;
+        _view.ComboScreenGlow.IsVisible = active;
+        if (!active)
+        {
+            _view.ComboScreenGlow.SetStyle("opacity", "0");
+            _characterVisual?.SetCultivationCombo(0, config.BaseLevitationAmplitude,
+                config.BaseLevitationPeriodSeconds);
+            return;
+        }
+
+        var levelIndex = _tapCombo.LevelIndex;
+        _view.CultivationComboValue.Value = $"x{_tapCombo.DisplayCount}";
+        if (_tapCombo.CurrentLevel is not { } level)
+        {
+            _view.CultivationComboTier.Value = "НАКОПЛЕНИЕ ПОТОКА";
+            _view.CultivationComboProgress.Progress = _tapCombo.RetentionProgress;
+            for (var index = 1; index <= 5; index++)
+                _view.CultivationCombo.ToggleClass($"combo-level-{index}", false);
+            _view.ComboScreenGlow.SetStyle("opacity", "0");
+            _characterVisual?.SetCultivationCombo(0, config.BaseLevitationAmplitude,
+                config.BaseLevitationPeriodSeconds);
+            return;
+        }
+        _view.CultivationComboTier.Value =
+            $"ПОТОК {levelIndex + 1} · СИЛА ×{level.PowerMultiplier:0.##}";
+        _view.CultivationComboProgress.Progress = _tapCombo.RetentionProgress;
+        for (var index = 1; index <= 5; index++)
+            _view.CultivationCombo.ToggleClass($"combo-level-{index}", index == levelIndex + 1);
+        _view.ComboScreenGlow.SetStyle("opacity",
+            level.ScreenGlowOpacity.ToString("0.##", CultureInfo.InvariantCulture));
+        _characterVisual?.SetCultivationCombo(levelIndex + 1, level.LevitationAmplitude,
+            level.LevitationPeriodSeconds);
     }
 
     private void UpdateMissionSummary()
@@ -2830,6 +2887,7 @@ public sealed class GameController(
     private void RestartGame()
     {
         InitializeNewGame();
+        _tapCombo.Reset();
         _elapsedMilliseconds = 0f;
         _healthUiElapsed = 0f;
         _gameOver = false;

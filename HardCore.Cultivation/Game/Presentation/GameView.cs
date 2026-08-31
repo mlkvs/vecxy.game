@@ -55,6 +55,11 @@ internal sealed class GameView
         WindowDocuments = windowDocuments;
 
         CharacterTapTarget = Button("character-tap-target");
+        ComboScreenGlow = Panel("combo-screen-glow");
+        CultivationCombo = Panel("cultivation-combo");
+        CultivationComboValue = Text("cultivation-combo-value");
+        CultivationComboTier = Text("cultivation-combo-tier");
+        CultivationComboProgress = Progress("cultivation-combo-progress");
         MissionSummaryButton = Button("mission-summary-button");
         YearCandleWax = Progress("year-candle-wax");
         YearCandleCap = Image("year-candle-cap");
@@ -232,6 +237,11 @@ internal sealed class GameView
     public IReadOnlyList<UiPanel> WindowBackdrops { get; }
     public IReadOnlyList<UiText> ModalMoneyTexts { get; }
     public UiButton CharacterTapTarget { get; }
+    public UiPanel ComboScreenGlow { get; }
+    public UiPanel CultivationCombo { get; }
+    public UiText CultivationComboValue { get; }
+    public UiText CultivationComboTier { get; }
+    public UiProgress CultivationComboProgress { get; }
     public UiButton MissionSummaryButton { get; }
     public UiProgress YearCandleWax { get; }
     public UiImage YearCandleCap { get; }

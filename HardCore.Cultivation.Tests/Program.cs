@@ -46,6 +46,27 @@ var missionService = new MissionService(database, generator, random);
 var shopService = new ShopService(database, generator, random);
 var cultivation = new CultivationService(database, random);
 var processor = new TickProcessor(database, effectService, missionService, shopService, cultivation);
+var combo = new TapComboTracker(database.Balance.TapCombo);
+combo.RegisterTap();
+Check(combo.DisplayCount == 0 && combo.LevelIndex == -1 && combo.PowerMultiplier == 1m,
+    "A single tap incorrectly granted the first combo level.");
+for (var tap = 1; tap < 11; tap++)
+    combo.RegisterTap();
+Check(combo.DisplayCount == 1 && combo.LevelIndex == 0 && combo.PowerMultiplier == 1m,
+    "Tap combo displayed a tap count instead of its configured level.");
+combo.RegisterTap();
+Check(combo.DisplayCount == 2 && combo.LevelIndex == 1 && combo.PowerMultiplier == 1.15m,
+    "Tap combo did not reach its configured second level.");
+combo.Update(2f);
+Check(combo.DisplayCount == 2, "Tap combo decayed during its grace period.");
+combo.Update(1f);
+Check(combo.DisplayCount == 0 && combo.LevelIndex == -1 && !combo.IsActive,
+    "Tap combo did not reset completely after its retention timer expired.");
+var normalTapState = new GameState(database.Balance.TicksPerYear);
+var comboTapState = new GameState(database.Balance.TicksPerYear);
+var normalTapPower = processor.ProcessTap(normalTapState).SpiritualPowerGained;
+var comboTapPower = processor.ProcessTap(comboTapState, 1.5m).SpiritualPowerGained;
+Check(comboTapPower == normalTapPower * 1.5m, "Tap combo multiplier was not applied to spiritual power.");
 
 var spreadsheetCultivation = new CultivationConfig
 {
@@ -582,6 +603,21 @@ static GameDatabase BuildDatabase()
         {
             TicksPerYear = 48, RealMillisecondsPerTick = 1000, BaseSpiritualPowerPerTick = 100,
             StartingAgeYears = 16, MaximumMissionQueueSize = 6,
+            TapCombo = new TapComboConfig
+            {
+                GracePeriodSeconds = 2.5f,
+                DecayPerSecond = 3f,
+                PointsPerTap = 1f,
+                MaximumCombo = 50f,
+                Levels =
+                [
+                    new TapComboLevelConfig { MinimumCombo = 5, PowerMultiplier = 1m },
+                    new TapComboLevelConfig { MinimumCombo = 12, PowerMultiplier = 1.15m },
+                    new TapComboLevelConfig { MinimumCombo = 22, PowerMultiplier = 1.35m },
+                    new TapComboLevelConfig { MinimumCombo = 35, PowerMultiplier = 1.65m },
+                    new TapComboLevelConfig { MinimumCombo = 50, PowerMultiplier = 2.1m }
+                ]
+            },
             QualityBands = [new QualityBand { Index = 1, Weight = 1 }],
             ContaminationBands = [new ContaminationBand { Minimum = 0m, Maximum = 0m, Weight = 1m }],
             ContaminationLevels =
