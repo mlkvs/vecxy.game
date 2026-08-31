@@ -2,7 +2,7 @@
 
 Build settings, signing credentials and analytics are stored in repository YAML files:
 
-- `HardCore.Cultivation/Assets/Configs/Build.yaml` defines game name, version, Android icon, Google Play version code, bundle version and keystore credentials;
+- `HardCore.Cultivation/Assets/Configs/Build.yaml` defines game name, application version, internal build version, Android icon, Google Play version code and keystore credentials;
 - `HardCore.Cultivation/Assets/Configs/Analytics.yaml` contains the AppMetrica API key.
 
 Use the root build command for both build flavours:
@@ -36,7 +36,7 @@ scan -> generate -> analyze -> validate -> publish
 проверяет missing assets и добавляет `Assets.manifest` в APK/AAB. Глобальная установка
 CLI не нужна: MSBuild запускает `Engine/Vecxy/tools/Vecxy.Cli` из submodule.
 
-`release` builds with `GAME_RELEASE_BUILD`. `--build` overrides the Google Play version code and must increase for every upload. `--version` overrides the bundle version. `Build.yaml` selects the target platform and supports comma-separated `definesCommon` plus `definesAndroid` or `definesDesktop`. Android builds produce both formats in `artifacts/android/<mode>` unless `--output` is set.
+`release` builds with `GAME_RELEASE_BUILD`. `game.version` is used both in the game and as the Android/Google Play version name. `--build` overrides the Google Play version code and must increase for every upload. `--version` overrides the application version. `--build-version` overrides the internal build number. After a successful desktop or Android build, the build command writes the next internal build number back to `build.buildVersion`; it can also be edited manually. `Build.yaml` selects the target platform and supports comma-separated `definesCommon` plus `definesAndroid` or `definesDesktop`. Android builds produce both formats in `artifacts/android/<mode>` unless `--output` is set.
 
 Set `build.platform` to `desktop` and choose `desktop.runtimeIdentifier` (for example `linux-x64`, `win-x64`, or `osx-arm64`) to publish a self-contained desktop build in `artifacts/desktop/<mode>`. The desktop package includes the YAML files, so its in-game settings use the same version fields as an IDE launch.
 

@@ -26,7 +26,8 @@ Options:
   -c, --config PATH        Build YAML. Default: HardCore.Cultivation/Assets/Configs/Build.yaml.
       --analytics-config PATH Analytics YAML. Default: HardCore.Cultivation/Assets/Configs/Analytics.yaml.
   -b, --build NUMBER       Override Google Play version code from Build.yaml.
-  -v, --version VERSION    Override bundle version from Build.yaml.
+      --build-version NUMBER Override the internal build version from Build.yaml.
+  -v, --version VERSION    Override the application version from Build.yaml.
   -k, --keystore PATH      Override keystore path from Build.yaml.
   -a, --alias NAME         Override keystore alias from Build.yaml.
   -o, --output PATH        Output directory. Default: artifacts/<platform>/<mode>.
@@ -75,6 +76,7 @@ esac
 build_config="$ROOT_DIR/HardCore.Cultivation/Assets/Configs/Build.yaml"
 analytics_config="$ROOT_DIR/HardCore.Cultivation/Assets/Configs/Analytics.yaml"
 build_number=""
+build_version=""
 version=""
 keystore=""
 alias_name=""
@@ -85,6 +87,7 @@ while [[ $# -gt 0 ]]; do
         -c|--config) build_config="${2:-}"; shift 2 ;;
         --analytics-config) analytics_config="${2:-}"; shift 2 ;;
         -b|--build) build_number="${2:-}"; shift 2 ;;
+        --build-version) build_version="${2:-}"; shift 2 ;;
         -v|--version) version="${2:-}"; shift 2 ;;
         -k|--keystore) keystore="${2:-}"; shift 2 ;;
         -a|--alias) alias_name="${2:-}"; shift 2 ;;
@@ -100,7 +103,9 @@ game_name="$(yaml_value "$build_config" name)"
 game_version="$(yaml_value "$build_config" version)"
 icon_path="$(yaml_value "$build_config" icon)"
 build_number="${build_number:-$(yaml_value "$build_config" versionCode)}"
-version="${version:-$(yaml_value "$build_config" bundleVersion)}"
+build_version="${build_version:-$(yaml_value "$build_config" buildVersion)}"
+version="${version:-$game_version}"
+game_version="$version"
 keystore="${keystore:-$(yaml_value "$build_config" keystore)}"
 alias_name="${alias_name:-$(yaml_value "$build_config" alias)}"
 store_password="$(yaml_value "$build_config" storePassword)"
@@ -113,6 +118,7 @@ mode_defines="$(yaml_value "$build_config" "defines${mode^}")"
 desktop_runtime="$(yaml_value "$build_config" runtimeIdentifier)"
 
 [[ "$build_number" =~ ^[1-9][0-9]*$ ]] || fail "--build must be a positive integer"
+[[ "$build_version" =~ ^[1-9][0-9]*$ ]] || fail "--build-version must be a positive integer"
 [[ -n "$version" ]] || fail "could not determine version; provide --version"
 [[ -n "$game_name" && -n "$game_version" ]] || fail "game name and version are required in $build_config"
 [[ -n "$icon_path" && -f "$ROOT_DIR/$icon_path" ]] || fail "icon file not found: $icon_path"
@@ -124,6 +130,26 @@ done
 build_defines="${build_defines//,/%3B}"
 output_dir="${output_dir:-$ROOT_DIR/artifacts/$platform/$mode}"
 temp_dir="$output_dir/.tmp"
+
+increment_build_version() {
+    local next_build_version=$((build_version + 1))
+    local temp_config="$build_config.tmp.$$"
+    awk -v next="$next_build_version" '
+        /^[[:space:]]*buildVersion:[[:space:]]*[0-9]+[[:space:]]*$/ && !updated {
+            match($0, /^[[:space:]]*/)
+            print substr($0, 1, RLENGTH) "buildVersion: " next
+            updated = 1
+            next
+        }
+        { print }
+        END { if (!updated) exit 1 }
+    ' "$build_config" > "$temp_config" || {
+        rm -f "$temp_config"
+        fail "could not increment buildVersion in $build_config"
+    }
+    mv "$temp_config" "$build_config"
+    printf 'Next build version: %s\n' "$next_build_version"
+}
 
 # A previous build run through sudo can leave artifacts owned by another user.
 # Fail before compiling, with an actionable command, rather than failing inside rm.
@@ -165,7 +191,7 @@ common_args=(
     "-p:BuildGameVersion=$game_version"
     "-p:BuildPlatform=$platform"
     "-p:BuildGooglePlayVersionCode=$build_number"
-    "-p:BuildBundleVersion=$version"
+    "-p:BuildVersion=$build_version"
     "-p:BuildDefines=$build_defines"
 )
 
@@ -198,6 +224,7 @@ if [[ "$platform" == desktop ]]; then
         -p:VecxyPlatform=Desktop \
         -p:ErrorOnDuplicatePublishOutputFiles=false
     printf 'Desktop build: %s\n' "$output_dir"
+    increment_build_version
     exit 0
 fi
 
@@ -245,3 +272,4 @@ rm -rf "$publish_dir"
 rm -rf "$temp_dir"
 
 printf 'Google Play bundle: %s\nTest APK: %s\n' "$bundle_artifact" "$apk_artifact"
+increment_build_version

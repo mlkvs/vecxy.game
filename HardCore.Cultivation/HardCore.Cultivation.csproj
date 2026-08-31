@@ -38,7 +38,7 @@
     <AssemblyMetadata Include="BuildGameName" Value="$(BuildGameName)" />
     <AssemblyMetadata Include="BuildGameVersion" Value="$(BuildGameVersion)" />
     <AssemblyMetadata Include="BuildGooglePlayVersionCode" Value="$(BuildGooglePlayVersionCode)" />
-    <AssemblyMetadata Include="BuildBundleVersion" Value="$(BuildBundleVersion)" />
+    <AssemblyMetadata Include="BuildVersion" Value="$(BuildVersion)" />
     <AssemblyMetadata Include="BuildDefines" Value="$(BuildDefines)" />
     <AssemblyMetadata Include="AppMetricaApiKey" Value="$(AppMetricaApiKey)" />
   </ItemGroup>

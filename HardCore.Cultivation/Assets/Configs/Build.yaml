@@ -7,11 +7,15 @@
 # assets, so the keystore passwords below are never shipped to players.
 #
 # To make a new Google Play release:
-# 1. Update game.version and googlePlay.bundleVersion when the visible version changes.
+# 1. Update game.version when the visible version changes.
 # 2. Increase googlePlay.versionCode. Google Play rejects a repeated or lower value.
-# 3. Run `./build release` from the repository root.
+# 3. Run `./build release` from the repository root. build.buildVersion is
+#    increased automatically after a successful build and can also be edited manually.
 # ============================================================================
 build:
+  # Internal build number shown in the game. The build command uses this value and
+  # increases it after a successful build, so the produced package keeps this number.
+  buildVersion: 45
   # Target platform. Supported values:
   # - android: creates a signed .aab for Google Play and a signed .apk for testers.
   # - desktop: publishes a runnable desktop build for the runtime selected below.
@@ -55,9 +59,6 @@ googlePlay:
   # Android versionCode. Increase this positive integer for EVERY Google Play upload,
   # including internal, closed and production tracks. It must never be decreased.
   versionCode: 1
-  # Android versionName shown to players in Google Play. It may use semantic versioning,
-  # for example "1.1.0" or "1.1.0-beta.2". Usually it matches game.version.
-  bundleVersion: "1.0.3"
   signing:
     # Path from repository root to the JKS/keystore used for Google Play signing.
     keystore: "Signing/Keystores/hardcore-cultivation-google-play.jks"

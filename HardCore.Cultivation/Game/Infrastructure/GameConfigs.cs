@@ -15,6 +15,7 @@ public sealed class BuildConfig : IYamlConfig
 
 public sealed class BuildTargetConfig
 {
+    public int BuildVersion { get; init; }
     public string Platform { get; init; } = string.Empty;
     public string DefinesCommon { get; init; } = string.Empty;
     public string DefinesAndroid { get; init; } = string.Empty;
@@ -33,7 +34,6 @@ public sealed class BuildGameConfig
 public sealed class GooglePlayBuildConfig
 {
     public int VersionCode { get; init; }
-    public string BundleVersion { get; init; } = "1.0.0";
 }
 
 public sealed class AnalyticsConfig : IYamlConfig
@@ -52,9 +52,9 @@ public sealed class GameBuildInfo
     public string Name { get; private set; } = "HardCore Cultivation";
     public string Version { get; private set; } = "1.0.0";
     public int VersionCode { get; private set; }
-    public string BundleVersion { get; private set; } = "1.0.0";
+    public int BuildVersion { get; private set; }
     public string Defines { get; private set; } = string.Empty;
-    public string DisplayVersion => VersionCode > 0 ? $"{Version} #{VersionCode}" : Version;
+    public string DisplayVersion => $"v{Version} #{VersionCode} ({BuildVersion})";
 
     public void Initialize(BuildConfig config)
     {
@@ -64,7 +64,7 @@ public sealed class GameBuildInfo
         Name = config.Game.Name;
         Version = config.Game.Version;
         VersionCode = config.GooglePlay.VersionCode;
-        BundleVersion = config.GooglePlay.BundleVersion;
+        BuildVersion = config.Build.BuildVersion;
         var platformDefines = config.Build.Platform.Equals("android", StringComparison.OrdinalIgnoreCase)
             ? config.Build.DefinesAndroid
             : config.Build.DefinesDesktop;
@@ -84,9 +84,9 @@ public sealed class GameBuildInfo
         Platform = Get(metadata, "BuildPlatform", "android");
         Name = Get(metadata, "BuildGameName", Name);
         Version = Get(metadata, "BuildGameVersion", Version);
-        BundleVersion = Get(metadata, "BuildBundleVersion", Version);
         Defines = Get(metadata, "BuildDefines", string.Empty);
         VersionCode = int.TryParse(Get(metadata, "BuildGooglePlayVersionCode", "0"), out var code) ? code : 0;
+        BuildVersion = int.TryParse(Get(metadata, "BuildVersion", "0"), out var build) ? build : 0;
     }
 
     private static string JoinDefines(params string[] values) => string.Join(",", values.Where(value => !string.IsNullOrWhiteSpace(value)));

@@ -2552,7 +2552,7 @@ public sealed class GameController(
             return;
         SetSettingsToggle(_view.SettingsMusicToggle, "МУЗЫКА", _state.Settings.MusicEnabled);
         SetSettingsToggle(_view.SettingsSoundsToggle, "ЗВУКИ", _state.Settings.SoundsEnabled);
-        _view.SettingsBuildVersion.Value = $"Версия {buildInfo.DisplayVersion}";
+        _view.SettingsBuildVersion.Value = buildInfo.DisplayVersion;
     }
 
     private void OpenPrivacyPolicy()

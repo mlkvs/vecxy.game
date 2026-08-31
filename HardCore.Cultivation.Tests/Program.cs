@@ -25,6 +25,16 @@ Check(bootstrapOptions.Window.Title == "HardCore Cultivation" &&
 Check(bootstrapLayers is [EngineLayer.Definition, HardCore.Cultivation.GameLayer.Definition],
     "Application.yaml layers were not resolved in their configured order.");
 
+var buildInfo = new GameBuildInfo();
+buildInfo.Initialize(new BuildConfig
+{
+    Build = new BuildTargetConfig { Platform = "android", BuildVersion = 45 },
+    Game = new BuildGameConfig { Version = "1.0.3" },
+    GooglePlay = new GooglePlayBuildConfig { VersionCode = 1 }
+});
+Check(buildInfo.DisplayVersion == "v1.0.3 #1 (45)",
+    "The settings build label must include app, Google Play and internal build versions.");
+
 var database = BuildDatabase();
 var random = new StableRandom();
 var generator = new ItemGenerator(database, random);
