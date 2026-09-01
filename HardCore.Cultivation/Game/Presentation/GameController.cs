@@ -79,6 +79,7 @@ public sealed class GameController(
     private const float SettingsWindowVerticalPadding = 36f;
     private long _announcedDragonExamEligibilityTick = long.MinValue;
     private readonly Queue<ActionToastRequest> _actionToastQueue = new();
+    private TapComboTracker _tapCombo = null!;
     private UiPanel? _tapFeedback;
     private UiPanel? _achievementEffect;
     private UiText? _achievementText;
@@ -113,7 +114,8 @@ public sealed class GameController(
     private enum ShopSection
     {
         Ingredients,
-        PillsAndCores
+        Pills,
+        Cores
     }
     private readonly List<Guid?> _alchemySlots = [];
     private readonly List<AlchemySlotWidget> _alchemySlotWidgets = [];
@@ -151,6 +153,9 @@ public sealed class GameController(
 
     public void Initialize()
     {
+        // GameController is constructed before GameDatabase receives its YAML configs.
+        // Capture the combo balance only now, after GameLayer has initialized the database.
+        _tapCombo = new TapComboTracker(database.Balance.TapCombo);
         var loadedSave = saves.TryLoad(out _state);
         if (!loadedSave)
         {
@@ -202,6 +207,10 @@ public sealed class GameController(
         if (_spiritualPowerBatchElapsed >= 30f)
             FlushSpiritualPowerBatch();
         UpdateYearCandleAnimation(deltaTime);
+        var comboAllowed = !_gameOver && _state.ActivityMode == ActivityMode.Cultivation;
+        var comboChanged = comboAllowed ? _tapCombo.Update(deltaTime) : _tapCombo.Reset();
+        if (comboChanged)
+            SyncTapCombo();
         if (_actionToast is not null && Environment.TickCount64 >= _actionToastExpiresAt)
         {
             HideActionToast();
@@ -270,7 +279,7 @@ public sealed class GameController(
                 if (_state.DragonExam.RankId != rankBeforeCombat)
                 {
                     missions.Refresh(_state);
-                    ShowAchievement($"РАНГ {_state.DragonExam.RankId}");
+                    ShowAchievement("НОВЫЙ РАНГ");
                 }
                 Track(new CombatCompletedEvent(_combatWasVictory ? "victory" : "defeat", _combatMissionId,
                     _combatEnemyId, _state.Character.Health));
@@ -592,7 +601,8 @@ public sealed class GameController(
 
         BindClick(view.ShopButton, OpenShop);
         BindClick(view.ShopIngredientsTab, () => SelectShopSection(ShopSection.Ingredients));
-        BindClick(view.ShopPillsAndCoresTab, () => SelectShopSection(ShopSection.PillsAndCores));
+        BindClick(view.ShopPillsTab, () => SelectShopSection(ShopSection.Pills));
+        BindClick(view.ShopCoresTab, () => SelectShopSection(ShopSection.Cores));
         BindClick(view.AlchemyButton, OpenAlchemy);
         BindClick(view.InventoryButton, () =>
         {
@@ -605,6 +615,7 @@ public sealed class GameController(
         BindClick(view.DragonExamStart, StartDragonExam);
         BindClick(view.DragonExamLater, CloseDragonExam);
         BindClick(view.MissionSummaryButton, OpenMissions);
+        BindClick(view.MissionAbandon, AbandonCurrentMission);
         BindClick(view.CombatSurrender, SurrenderCombat);
         BindClick(view.ActivityMode, ToggleActivityMode);
         BindClick(view.Breakthrough, OpenBreakthrough);
@@ -759,7 +770,12 @@ public sealed class GameController(
             _tapFeedback.SetStyle("top", $"{absoluteY:0}px");
             _floatingDocument?.RestartAnimation(_tapFeedback);
         }
-        var result = ticks.ProcessTap(_state);
+        if (_state.ActivityMode == ActivityMode.Cultivation)
+            _tapCombo.RegisterTap();
+        else
+            _tapCombo.Reset();
+        var result = ticks.ProcessTap(_state, _tapCombo.PowerMultiplier);
+        SyncTapCombo();
         _batchedTapCount++;
         _batchedTapPower += result.SpiritualPowerGained;
         if (result.SpiritualPowerGained != 0m)
@@ -781,6 +797,8 @@ public sealed class GameController(
     {
         Track(new UiActionEvent("main", "activity_mode", mode.ToString()));
         _state.SetActivityMode(mode);
+        _tapCombo.Reset();
+        SyncTapCombo();
         UpdateActivityButtons();
         Save();
     }
@@ -799,6 +817,7 @@ public sealed class GameController(
         SyncDragonExam();
         UpdateMissionSummary();
         SyncEffects();
+        SyncTapCombo();
     }
 
     private void UpdateYearCandleAnimation(float deltaTime)
@@ -944,6 +963,7 @@ public sealed class GameController(
 
         var missionMode = _state.ActivityMode == ActivityMode.Missions;
         _characterVisual?.SetMissionMode(missionMode);
+        SyncTapCombo();
         _backgroundVisual?.SetMissionMode(missionMode);
 
         var stageIndex = Math.Clamp(_state.Character.Cultivation.StageIndex, 0, database.Cultivation.Stages.Count - 1);
@@ -965,13 +985,53 @@ public sealed class GameController(
         }
     }
 
+    private void SyncTapCombo()
+    {
+        if (_view is null)
+            return;
+        var config = database.Balance.TapCombo;
+        var active = _tapCombo.IsActive && _state.ActivityMode == ActivityMode.Cultivation;
+        _view.CultivationCombo.IsVisible = active;
+        _view.ComboScreenGlow.IsVisible = active;
+        if (!active)
+        {
+            _view.ComboScreenGlow.SetStyle("opacity", "0");
+            _characterVisual?.SetCultivationCombo(0, config.BaseLevitationAmplitude,
+                config.BaseLevitationPeriodSeconds);
+            return;
+        }
+
+        var levelIndex = _tapCombo.LevelIndex;
+        _view.CultivationComboValue.Value = $"x{_tapCombo.DisplayCount}";
+        if (_tapCombo.CurrentLevel is not { } level)
+        {
+            _view.CultivationComboTier.Value = "НАКОПЛЕНИЕ ПОТОКА";
+            _view.CultivationComboProgress.Progress = 0f;
+            for (var index = 1; index <= 3; index++)
+                _view.CultivationCombo.ToggleClass($"combo-level-{index}", false);
+            _view.ComboScreenGlow.SetStyle("opacity", "0");
+            _characterVisual?.SetCultivationCombo(0, config.BaseLevitationAmplitude,
+                config.BaseLevitationPeriodSeconds);
+            return;
+        }
+        _view.CultivationComboTier.Value =
+            $"ПОТОК {levelIndex + 1} · СИЛА ×{level.PowerMultiplier:0.##}";
+        _view.CultivationComboProgress.Progress = _tapCombo.LevelProgress;
+        for (var index = 1; index <= 3; index++)
+            _view.CultivationCombo.ToggleClass($"combo-level-{index}", index == levelIndex + 1);
+        _view.ComboScreenGlow.SetStyle("opacity",
+            level.ScreenGlowOpacity.ToString("0.##", CultureInfo.InvariantCulture));
+        _characterVisual?.SetCultivationCombo(levelIndex + 1, config.BaseLevitationAmplitude,
+            config.BaseLevitationPeriodSeconds);
+    }
+
     private void UpdateMissionSummary()
     {
         if (_state.DragonExam.Combat is not null)
         {
-            _view!.MissionName.Value = $"Экзамен: {_state.DragonExam.RankId} > {_state.DragonExam.TargetRankId}";
+            _view!.MissionName.Value = "Экзамен дракона";
             _view.MissionDangerIndicator.IsVisible = true;
-            _view.MissionDifficulty.Value = "ЭКЗАМЕН";
+            _view.MissionDifficulty.Sprite = MissionRankSprite(_state.DragonExam.TargetRankId ?? _state.DragonExam.RankId);
             _view.MissionCombatMarker.IsVisible = false;
             UpdateCombatUi();
             return;
@@ -986,12 +1046,13 @@ public sealed class GameController(
             _view.MissionDangerIndicator.IsVisible = false;
             _view.MissionCombatMarker.IsVisible = false;
             _view.MissionNormalState.IsVisible = true;
+            _view.MissionAbandon.IsVisible = false;
             _view.MissionCombatState.IsVisible = false;
             return;
         }
         var config = database.GetMission(mission.MissionConfigId);
         _view!.MissionDangerIndicator.IsVisible = true;
-        _view.MissionDifficulty.Value = $"РАНГ {mission.RankId}";
+        _view.MissionDifficulty.Sprite = MissionRankSprite(mission.RankId);
         var encounter = mission.Encounter;
         var pendingEncounter = encounter is { Resolved: false } && mission.Combat is null;
         _view.MissionCombatMarker.IsVisible = pendingEncounter;
@@ -1004,6 +1065,8 @@ public sealed class GameController(
                 markerPosition.ToString("0.##", CultureInfo.InvariantCulture) + "%");
         }
         _view!.MissionName.Value = config.Name;
+        _view.MissionAbandon.IsVisible = mission.Combat is null;
+        _view.MissionAbandon.IsEnabled = mission.Combat is null;
         _view.MissionDescription.Value = _state.ActivityMode == ActivityMode.Missions
             ? "Выполняется сейчас"
             : "Ожидает: включите режим миссий";
@@ -1039,6 +1102,13 @@ public sealed class GameController(
 
         _view!.CombatSurrender.IsEnabled = false;
         Save();
+    }
+
+    private void AbandonCurrentMission()
+    {
+        if (_state.CurrentMission is not { Combat: null } mission)
+            return;
+        RemoveMission(mission.InstanceId);
     }
 
     private void SyncEffects()
@@ -1169,7 +1239,8 @@ public sealed class GameController(
             return;
         UpdateShopWindowHeight();
         _view.ShopIngredientsTab.ToggleClass("active", _shopSection == ShopSection.Ingredients);
-        _view.ShopPillsAndCoresTab.ToggleClass("active", _shopSection == ShopSection.PillsAndCores);
+        _view.ShopPillsTab.ToggleClass("active", _shopSection == ShopSection.Pills);
+        _view.ShopCoresTab.ToggleClass("active", _shopSection == ShopSection.Cores);
         var availableSlots = _state.Shop.Slots
             .Where(slot => slot.AvailableQuantity > 0 && IsInShopSection(slot))
             .ToArray();
@@ -1205,8 +1276,10 @@ public sealed class GameController(
     private bool HasExpectedShopStock() =>
         _state.Shop.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category == ItemCategory.Ingredient) ==
         database.Shop.IngredientSlotCount &&
-        _state.Shop.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category is ItemCategory.Pill or ItemCategory.Core) ==
-        database.Shop.PillAndCoreSlotCount;
+        _state.Shop.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category == ItemCategory.Pill) ==
+        database.Shop.PillSlotCount &&
+        _state.Shop.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category == ItemCategory.Core) ==
+        database.Shop.CoreSlotCount;
 
     private void SelectShopSection(ShopSection section)
     {
@@ -1218,9 +1291,13 @@ public sealed class GameController(
     private bool IsInShopSection(ShopSlot slot)
     {
         var category = database.GetItem(slot.Item.ConfigId).Category;
-        return _shopSection == ShopSection.Ingredients
-            ? category == ItemCategory.Ingredient
-            : category is ItemCategory.Pill or ItemCategory.Core;
+        return category == (_shopSection switch
+        {
+            ShopSection.Ingredients => ItemCategory.Ingredient,
+            ShopSection.Pills => ItemCategory.Pill,
+            ShopSection.Cores => ItemCategory.Core,
+            _ => throw new ArgumentOutOfRangeException()
+        });
     }
 
     private void UpdateShopWindowHeight()
@@ -1290,8 +1367,7 @@ public sealed class GameController(
             return;
         var config = database.GetItem(slot.Item.ConfigId);
         var unitPrice = prices.GetBuyPrice(slot.Item, _state.Shop);
-        ShowItemPopup(config, slot.Item, "1",
-            "Цена покупки указана на карточке товара");
+        ShowItemPopup(config, slot.Item, "1", string.Empty);
     }
 
     private void BuyShopItem(Guid slotId)
@@ -1393,7 +1469,7 @@ public sealed class GameController(
         BuildQualityStars(_view.InventoryDetailQuality, item.Quality);
         _view.InventoryDetailName.Value = $"{ItemDisplayName(config, item)} · ×{item.Quantity}";
         _view.InventoryDetailRarity.Value = rarity.DisplayName.ToUpperInvariant();
-        _view.InventoryDetailRarity.Style.Color = rarity.Color;
+        _view.InventoryDetailRarity.Style.Color = item.Rarity == ItemRarity.Common ? "#66533c" : rarity.Color;
         SetItemElement(_view.InventoryDetailElement, _view.InventoryDetailElementIcon, config.Element);
         _view.InventoryDetailEffect.Value = DescribeItemEffect(config, item);
         _view.InventoryUse.IsEnabled = config.Effects.Count > 0 || item.CraftedEffects.Count > 0;
@@ -1568,9 +1644,15 @@ public sealed class GameController(
 
         UpdateAlchemySlots();
         BuildAlchemyIngredients();
-        var preview = alchemy.Preview(_state, CurrentAlchemySelection(), _alchemyMode);
+        var selection = CurrentAlchemySelection();
+        var preview = alchemy.Preview(_state, selection, _alchemyMode);
         _view.AlchemyCraft.IsEnabled = preview.CanCraft;
-        _view.AlchemyCraft.Label = _alchemyMode == AlchemyMode.Pill ? "СОЗДАТЬ ПИЛЮЛЮ" : "РАФИНИРОВАТЬ";
+        var successChance = preview.CanCraft
+            ? alchemy.GetSuccessChancePercent(_state, selection, _alchemyMode)
+            : 0m;
+        _view.AlchemyCraft.Label = _alchemyMode == AlchemyMode.Pill
+            ? preview.CanCraft ? $"СОЗДАТЬ · {Format(successChance)}%" : "СОЗДАТЬ ПИЛЮЛЮ"
+            : "РАФИНИРОВАТЬ";
     }
 
     private void BuildAlchemySelection()
@@ -2144,7 +2226,7 @@ public sealed class GameController(
         card.Name.Value = mission.Name;
         card.Description.Value = mission.Description;
         var locked = database.GetMissionRankIndex(offer.RankId) > database.GetMissionRankIndex(_state.DragonExam.RankId);
-        card.Rank.Value = offer.RankId;
+        card.Rank.Sprite = MissionRankSprite(offer.RankId);
         card.Duration.Value = $"{mission.MinimumDurationTicks}–{mission.MaximumDurationTicks} недель";
         card.Start.Label = "ПРИНЯТЬ";
         card.Start.IsEnabled = !locked && _state.MissionQueue.Count < database.Balance.MaximumMissionQueueSize;
@@ -2211,7 +2293,8 @@ public sealed class GameController(
     {
         var config = database.GetMission(mission.MissionConfigId);
         card.Number.Value = (index + 1).ToString(CultureInfo.InvariantCulture);
-        card.Name.Value = $"[{mission.RankId}] {config.Name}";
+        card.Rank.Sprite = MissionRankSprite(mission.RankId);
+        card.Name.Value = config.Name;
         card.Progress.Value = index == 0
             ? $"{Format(mission.CurrentProgress)} / {Format(mission.RequiredProgress)}"
             : $"{Format(mission.RequiredProgress)} недель";
@@ -2235,6 +2318,8 @@ public sealed class GameController(
         ShowActionFeedback(result.Message, AssetPath(Assets.Textures.Missions), result.Success, result.Success);
         SyncMissions();
         UpdateMissionSummary();
+        if (result.Success)
+            Save();
     }
 
     private void OpenBreakthrough()
@@ -2423,8 +2508,10 @@ public sealed class GameController(
         var currentIndex = database.GetMissionRankIndex(_state.DragonExam.RankId);
         var hasNext = currentIndex + 1 < database.MissionRanks.Count;
         _view.DragonExamBadge.IsVisible = hasNext && missions.IsDragonExamAvailable(_state);
-        _view.DragonExamCurrentRank.Value = _state.DragonExam.RankId;
-        _view.DragonExamNextRank.Value = hasNext ? database.MissionRanks[currentIndex + 1].Id : "—";
+        _view.DragonExamCurrentRank.Sprite = MissionRankSprite(_state.DragonExam.RankId);
+        _view.DragonExamNextRank.IsVisible = hasNext;
+        if (hasNext)
+            _view.DragonExamNextRank.Sprite = MissionRankSprite(database.MissionRanks[currentIndex + 1].Id);
         _view.DragonExamStart.IsEnabled = false;
         if (hasNext)
         {
@@ -2830,6 +2917,7 @@ public sealed class GameController(
     private void RestartGame()
     {
         InitializeNewGame();
+        _tapCombo.Reset();
         _elapsedMilliseconds = 0f;
         _healthUiElapsed = 0f;
         _gameOver = false;
@@ -3039,16 +3127,28 @@ public sealed class GameController(
     {
         var rarity = item is null ? null : database.GetRarity(item.Rarity);
         var quality = item?.Quality ?? 2.5m;
+        var hasSeparateEffect = config.Effects.Count > 0 ||
+                                item is not null && item.CraftedEffects.Count > 0;
         var view = _view!;
-        view.InfoPopupCard.SetAttribute("class", "info-popup-card");
+        view.InfoPopupCard.SetAttribute(
+            "class",
+            hasSeparateEffect ? "info-popup-card" : "info-popup-card single-description");
         SetInfoPopupDetailVisibility(view, true);
         SetItemElement(view.InfoPopupElement, view.InfoPopupElementIcon, config.Element);
         view.InfoPopupKind.Value = ItemCategoryName(config.Category);
         view.InfoPopupTitle.Value = item is null ? config.Name : ItemDisplayName(config, item);
         view.InfoPopupDescription.Value = item?.CustomDescription ?? config.Description;
-        view.InfoPopupEffect.Value = item is null
-            ? DescribeItemEffect(config, quality)
-            : DescribeItemEffect(config, item);
+        view.InfoPopupEffect.IsVisible = hasSeparateEffect;
+        if (hasSeparateEffect)
+        {
+            view.InfoPopupEffect.Value = item is null
+                ? DescribeItemEffect(config, quality)
+                : DescribeItemEffect(config, item);
+        }
+        else
+        {
+            view.InfoPopupEffect.Value = string.Empty;
+        }
         view.InfoPopupStatLabel1.Value = sellPrice is null ? "КОЛИЧЕСТВО" : "ЦЕНА ПРОДАЖИ";
         view.InfoPopupPriceIcon.IsVisible = sellPrice is not null;
         view.InfoPopupStatValue1.Value = sellPrice is null ? quantity : MoneyFormatter.Format(sellPrice.Value);
@@ -3056,6 +3156,7 @@ public sealed class GameController(
         view.InfoPopupStatLabel3.Value = "РЕДКОСТЬ";
         view.InfoPopupStatValue3.Value = rarity?.DisplayName ?? "Определится при получении";
         view.InfoPopupDetails.Value = context;
+        view.InfoPopupDetails.IsVisible = !string.IsNullOrWhiteSpace(context);
         view.InfoPopupOk.Label = actionLabel ?? "ПОНЯТНО";
         _infoPopupAction = action;
         _infoPopupUseAction = useAction;
@@ -3219,13 +3320,9 @@ public sealed class GameController(
             ? item.CraftedEffects
             : config.Effects;
         if (definitions.Count == 0)
-        {
-            var properties = alchemy.GetProperties(item);
-            return properties.Count == 0
-                ? "Материал для алхимии."
-                : string.Join(" · ", properties.Select(value =>
-                    database.GetAlchemyProperty(value.PropertyId).DisplayName));
-        }
+            return string.IsNullOrWhiteSpace(item.CustomDescription)
+                ? config.Description
+                : item.CustomDescription;
         var strength = item.CraftedEffects.Count > 0
             ? 1m
             : ItemBalanceFormula.GetEffectStrength(item, config, database);
@@ -3242,7 +3339,7 @@ public sealed class GameController(
     private string DescribeItemEffect(ItemConfig config, decimal quality)
     {
         if (config.Effects.Count == 0)
-            return "Материал для алхимии.";
+            return config.Description;
         // The rarity is still unknown in this preview, so show the common-rarity value.
         var strength = ItemBalanceFormula.GetQualityMultiplier(database.Balance, config.Category, quality);
         var effectText = string.Join("; ", config.Effects.Select(effect =>
@@ -3386,6 +3483,24 @@ public sealed class GameController(
                 : AssetPath(Assets.Textures.GameUIAtlas);
         return $"{atlas}#{Path.GetFileNameWithoutExtension(normalized)}";
     }
+
+    private static string MissionRankSprite(string rankId) =>
+        $"Assets/Textures/MissionRanks.atlas#{rankId switch
+        {
+            "F" => "f",
+            "F+" => "f-plus",
+            "D" => "d",
+            "D+" => "d-plus",
+            "C" => "c",
+            "C+" => "c-plus",
+            "B" => "b",
+            "B+" => "b-plus",
+            "A" => "a",
+            "A+" => "a-plus",
+            "S" => "s",
+            "SR" => "sr",
+            _ => throw new InvalidDataException($"Unknown mission rank icon: {rankId}")
+        }}";
 
     private string AssetPath(IAssetHandle handle) => $"Assets/{assets.GetPath(handle)}";
 

@@ -38,8 +38,7 @@
     background-size: fill; background-slice: 12px; background-color: #00000000;
     border: 2px solid #b9a27088; border-radius: 10px;
 }
-.dragon-rank-plate text { width: 100%; color: #6f5a37; font-size: 40px; text-align: center; }
-.dragon-rank-target text { color: #33715a; }
+.dragon-rank-icon { width: 100%; height: 100%; padding: 5px; object-fit: contain; }
 .dragon-rank-transition .dragon-rank-arrow { flex-shrink: 0; width: 30px; color: #806a45; font-size: 32px; text-align: center; }
 .dragon-exam-actions { flex-shrink: 0; width: 100%; margin-top: 6px; gap: 7px; }
 .dragon-exam-actions > button { width: 100%; min-height: 52px; height: 52px; padding: 8px 12px; }

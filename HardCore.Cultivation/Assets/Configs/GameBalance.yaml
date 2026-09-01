@@ -35,6 +35,26 @@ autoSaveEveryTicks: 12
 # а временные эффекты и загрязнение могут её снижать.
 baseSpiritualPowerPerTick: 1.0
 
+# Серия ручной культивации. Комбо не сохраняется и действует только в режиме культивации.
+# gracePeriodSeconds — короткое безопасное окно после последнего тапа до начала убывания;
+# decayPerSecond — скорость убывания полосы в секунду;
+# pointsPerTap — прирост серии за один тап;
+# levels — три визуальные ступени: порог, сила тапа, левитация и синее свечение экрана.
+tapCombo:
+  enabled: true
+  baseLevitationAmplitude: 24
+  baseLevitationPeriodSeconds: 3.60
+  gracePeriodSeconds: 0.45
+  decayPerSecond: 6.0
+  pointsPerTap: 1.0
+  # После открытия x3 оставшиеся 10 очков заполняют его полосу устойчивости.
+  maximumCombo: 32
+  levels:
+    # Временные пороги: x1 / x2 / x3 открываются на 5 / 12 / 22 тапах.
+    - { minimumCombo: 5,  powerMultiplier: 1.00, levitationAmplitude: 24, levitationPeriodSeconds: 3.60, screenGlowOpacity: 0.05 }
+    - { minimumCombo: 12, powerMultiplier: 1.15, levitationAmplitude: 24, levitationPeriodSeconds: 3.60, screenGlowOpacity: 0.10 }
+    - { minimumCombo: 22, powerMultiplier: 1.35, levitationAmplitude: 24, levitationPeriodSeconds: 3.60, screenGlowOpacity: 0.16 }
+
 # Нижняя граница эффективности тика.
 # Нужна как защита от слишком сильных штрафов.
 # 0.1 = тик никогда не станет слабее 10% от базы.

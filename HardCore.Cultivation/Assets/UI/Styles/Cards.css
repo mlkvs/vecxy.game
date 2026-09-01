@@ -2506,12 +2506,16 @@
     flex-shrink: 0;
     width: 64px;
     height: 64px;
-    color: #c48324;
-    font-size: 54px;
-    min-font-size: 36px;
-    text-fit: shrink;
-    text-align: center;
-    vertical-align: middle;
+    padding: 4px;
+    object-fit: contain;
+}
+
+.queue-rank {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    padding: 3px;
+    object-fit: contain;
 }
 
 .mission-card .reward-icon-tile {
@@ -2579,15 +2583,16 @@
     z-index: 5;
     right: 14px;
     top: 15px;
-    height: 24px;
-    padding: 4px 5px;
+    width: 52px;
+    height: 34px;
+    padding: 3px 5px;
     flex-direction: row;
     align-items: center;
     background-color: #efe2c7dd;
     border-radius: 6px;
 }
 
-.mission-difficulty { color: #8b7860; font-size: 12px; }
+.mission-difficulty { width: 42px; height: 28px; object-fit: contain; }
 
 .mission-progress-track {
     position: relative;
@@ -2883,6 +2888,13 @@
     color: #4e3b29;
     font-size: 18px;
     min-font-size: 14px;
+}
+
+.info-popup-card.single-description .info-popup-description {
+    margin-top: 10px;
+    padding: 9px 8px;
+    font-size: 22px;
+    line-height: 1.25;
 }
 
 .info-popup-stat-label {
@@ -3257,6 +3269,13 @@
 .breakthrough-result-text {
     font-size: 16px;
     min-font-size: 12px;
+}
+
+/* Ingredient explanations must stay readable on the light parchment cards. */
+.item-effect,
+.shop-card .item-effect,
+.inventory-detail-effect {
+    color: #493729;
 }
 
 .top-stat-label {

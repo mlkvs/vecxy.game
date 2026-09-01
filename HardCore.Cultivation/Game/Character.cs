@@ -82,6 +82,7 @@ public class Character(
     public float PeriodSeconds { get; set; } = 3.6f;
 
     private bool _missionMode;
+    private int _comboLevel;
 
     private void PrewarmTextures()
     {
@@ -114,9 +115,29 @@ public class Character(
             return;
 
         _missionMode = missionMode;
-        var texture = GetTexture(missionMode
+        ApplyTexture();
+    }
+
+    public void SetCultivationCombo(int level, float amplitude, float periodSeconds)
+    {
+        level = Math.Clamp(level, 0, 3);
+        Amplitude = Math.Max(0f, amplitude);
+        PeriodSeconds = Math.Max(0.1f, periodSeconds);
+        if (_comboLevel == level)
+            return;
+        _comboLevel = level;
+        if (!_missionMode)
+            ApplyTexture();
+    }
+
+    private void ApplyTexture()
+    {
+        // Combo intensity is rendered by the UI glow until the replacement state sprites
+        // have clean native alpha. This keeps the character itself perfectly consistent.
+        var handle = _missionMode
             ? Assets.Textures.CharacterMissionsTransparent
-            : Assets.Textures.Character);
+            : Assets.Textures.Character;
+        var texture = GetTexture(handle);
         sprite.SetTexture(texture);
         sprite.PixelsPerUnit = texture.Value.Height / referenceTextureHeight;
     }

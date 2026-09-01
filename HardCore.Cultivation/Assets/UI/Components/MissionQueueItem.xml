@@ -1,5 +1,6 @@
 <panel class="queue-item" data-key="{{key}}">
     <panel class="queue-number"><text class="queue-number-text">{{number}}</text></panel>
+    <image class="queue-rank" sprite="Assets/Textures/MissionRanks.atlas#f" />
     <panel class="queue-copy"><text class="queue-item-name">{{name}}</text><text class="queue-progress">{{progress}}</text></panel>
     <panel class="queue-controls">
         <button class="queue-control queue-left"><image sprite="Assets/Textures/GameUIAtlas.atlas#queue-left" /></button>
