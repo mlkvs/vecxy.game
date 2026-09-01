@@ -81,9 +81,10 @@ internal sealed class GameView
         MissionProgressText = Text("mission-progress-text");
         MissionProgress = Progress("mission-progress");
         MissionDangerIndicator = Panel("mission-danger-indicator");
-        MissionDifficulty = Text("mission-difficulty");
+        MissionDifficulty = Image("mission-difficulty");
         MissionCombatMarker = Panel("mission-combat-marker");
         MissionNormalState = Panel("mission-normal-state");
+        MissionAbandon = Button("mission-abandon-button");
         MissionCombatState = Panel("mission-combat-state");
         MissionCombatPreview = Image("mission-combat-preview");
         CombatHeroDamage = Text("combat-hero-damage");
@@ -104,7 +105,8 @@ internal sealed class GameView
 
         ShopWindow = Register(windowDocuments.Shop, "shop-window");
         ShopIngredientsTab = Button(windowDocuments.Shop, "shop-ingredients-tab");
-        ShopPillsAndCoresTab = Button(windowDocuments.Shop, "shop-pills-cores-tab");
+        ShopPillsTab = Button(windowDocuments.Shop, "shop-pills-tab");
+        ShopCoresTab = Button(windowDocuments.Shop, "shop-cores-tab");
         ShopGrid = Panel(windowDocuments.Shop, "shop-grid");
 
         AlchemyWindow = Register(windowDocuments.Alchemy, "alchemy-window");
@@ -160,8 +162,8 @@ internal sealed class GameView
         BreakthroughResultOk = Button(windowDocuments.Breakthrough, "breakthrough-result-ok");
 
         DragonExamOverlay = Register(windowDocuments.DragonExam, "dragon-exam-popup");
-        DragonExamCurrentRank = Text(windowDocuments.DragonExam, "dragon-exam-current-rank");
-        DragonExamNextRank = Text(windowDocuments.DragonExam, "dragon-exam-next-rank");
+        DragonExamCurrentRank = Image(windowDocuments.DragonExam, "dragon-exam-current-rank");
+        DragonExamNextRank = Image(windowDocuments.DragonExam, "dragon-exam-next-rank");
         DragonExamCopy = Text(windowDocuments.DragonExam, "dragon-exam-copy");
         DragonExamStartLabel = Text(windowDocuments.DragonExam, "dragon-exam-start-label");
         DragonExamStart = Button(windowDocuments.DragonExam, "dragon-exam-start");
@@ -262,9 +264,10 @@ internal sealed class GameView
     public UiText MissionProgressText { get; }
     public UiProgress MissionProgress { get; }
     public UiPanel MissionDangerIndicator { get; }
-    public UiText MissionDifficulty { get; }
+    public UiImage MissionDifficulty { get; }
     public UiPanel MissionCombatMarker { get; }
     public UiPanel MissionNormalState { get; }
+    public UiButton MissionAbandon { get; }
     public UiPanel MissionCombatState { get; }
     public UiImage MissionCombatPreview { get; }
     public UiText CombatHeroDamage { get; }
@@ -279,8 +282,8 @@ internal sealed class GameView
     public UiButton SettingsButton { get; }
     public UiButton DragonExamBadge { get; }
     public UiPanel DragonExamOverlay { get; }
-    public UiText DragonExamCurrentRank { get; }
-    public UiText DragonExamNextRank { get; }
+    public UiImage DragonExamCurrentRank { get; }
+    public UiImage DragonExamNextRank { get; }
     public UiText DragonExamCopy { get; }
     public UiText DragonExamStartLabel { get; }
     public UiButton DragonExamStart { get; }
@@ -290,7 +293,8 @@ internal sealed class GameView
     public UiButton InventoryButton { get; }
     public UiPanel ShopWindow { get; }
     public UiButton ShopIngredientsTab { get; }
-    public UiButton ShopPillsAndCoresTab { get; }
+    public UiButton ShopPillsTab { get; }
+    public UiButton ShopCoresTab { get; }
     public UiPanel ShopGrid { get; }
     public UiPanel AlchemyWindow { get; }
     public UiButton AlchemyPillTab { get; }

@@ -10,9 +10,9 @@
         <panel class="dragon-exam-body">
             <text id="dragon-exam-copy" class="dragon-exam-copy">Принять участие в экзамене&#10;на повышение ранга?&#10;Следующий шанс — через 4 года.</text>
             <panel class="dragon-rank-transition horizontal">
-                <panel class="dragon-rank-plate"><text id="dragon-exam-current-rank">F</text></panel>
+                <panel class="dragon-rank-plate"><image id="dragon-exam-current-rank" class="dragon-rank-icon" sprite="Assets/Textures/MissionRanks.atlas#f" /></panel>
                 <text class="dragon-rank-arrow">&gt;</text>
-                <panel class="dragon-rank-plate dragon-rank-target"><text id="dragon-exam-next-rank">F+</text></panel>
+                <panel class="dragon-rank-plate dragon-rank-target"><image id="dragon-exam-next-rank" class="dragon-rank-icon" sprite="Assets/Textures/MissionRanks.atlas#f-plus" /></panel>
             </panel>
             <panel class="dragon-exam-actions">
                 <button id="dragon-exam-start" class="wide-action"><text id="dragon-exam-start-label">ПОВЫСИТЬ РАНГ</text></button>

@@ -1,0 +1,17 @@
+{
+  "texture": "ranks-missions.png",
+  "sprites": {
+    "f":      { "x": 52,   "y": 14,  "width": 220, "height": 322 },
+    "f-plus": { "x": 254,  "y": 14,  "width": 302, "height": 322 },
+    "d":      { "x": 544,  "y": 14,  "width": 272, "height": 322 },
+    "d-plus": { "x": 778,  "y": 14,  "width": 314, "height": 322 },
+    "c":      { "x": 1038, "y": 14,  "width": 268, "height": 322 },
+    "c-plus": { "x": 1264, "y": 14,  "width": 272, "height": 322 },
+    "b":      { "x": 18,   "y": 332, "width": 276, "height": 352 },
+    "b-plus": { "x": 272,  "y": 332, "width": 322, "height": 352 },
+    "a":      { "x": 558,  "y": 332, "width": 322, "height": 352 },
+    "a-plus": { "x": 848,  "y": 332, "width": 372, "height": 352 },
+    "s":      { "x": 1200, "y": 332, "width": 336, "height": 352 },
+    "sr":     { "x": 8,    "y": 664, "width": 520, "height": 360 }
+  }
+}

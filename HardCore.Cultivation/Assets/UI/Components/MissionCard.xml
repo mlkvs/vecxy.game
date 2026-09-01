@@ -5,7 +5,7 @@
         <panel>
             <text class="mission-duration-value">{{duration}}</text>
             <panel class="mission-reward-line horizontal">
-                <text class="mission-rank">F</text>
+                <image class="mission-rank" sprite="Assets/Textures/MissionRanks.atlas#f" />
                 <panel class="mission-reward-icons" />
             </panel>
         </panel>

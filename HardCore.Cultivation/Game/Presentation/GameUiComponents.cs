@@ -54,7 +54,7 @@ internal sealed class MissionCardView : AUiComponent
         Name = Element<UiText>(".mission-card-title");
         Description = Element<UiText>(".mission-card-description");
         Duration = Element<UiText>(".mission-duration-value");
-        Rank = Element<UiText>(".mission-rank");
+        Rank = Element<UiImage>(".mission-rank");
         RewardIcons = Element<UiPanel>(".mission-reward-icons");
         Start = Element<UiButton>(".mission-start");
     }
@@ -63,7 +63,7 @@ internal sealed class MissionCardView : AUiComponent
     public UiText Name { get; }
     public UiText Description { get; }
     public UiText Duration { get; }
-    public UiText Rank { get; }
+    public UiImage Rank { get; }
     public UiPanel RewardIcons { get; }
     public UiButton Start { get; }
 }
@@ -73,6 +73,7 @@ internal sealed class MissionQueueItemView : AUiComponent
     public MissionQueueItemView(UiElement root) : base(root)
     {
         Number = Element<UiText>(".queue-number-text");
+        Rank = Element<UiImage>(".queue-rank");
         Name = Element<UiText>(".queue-item-name");
         Progress = Element<UiText>(".queue-progress");
         MoveUp = Element<UiButton>(".queue-left");
@@ -82,6 +83,7 @@ internal sealed class MissionQueueItemView : AUiComponent
 
     public UiElement Card => Root;
     public UiText Number { get; }
+    public UiImage Rank { get; }
     public UiText Name { get; }
     public UiText Progress { get; }
     public UiButton MoveUp { get; }
