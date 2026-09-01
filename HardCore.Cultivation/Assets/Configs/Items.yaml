@@ -2,7 +2,7 @@
 # ПРЕДМЕТЫ
 # ============================================================
 # Актуальный набор предметов:
-# - 16 базовых пилюль в порядке эффектов, заданном игровой системой
+# - 18 базовых пилюль в порядке эффектов, заданном игровой системой
 # - 15 алхимических ингредиентов для создаваемых пилюль
 # - 5 ядер стихий: Earth, Water, Air, Fire, Void
 #
@@ -45,7 +45,7 @@ items:
   # ------------------------------------------------------------
 - id: spiritual_energy_pill
   name: Пилюля духовной энергии
-  description: Мгновенно увеличивает духовную энергию.
+  description: Сразу добавляет духовную силу.
   icon: Assets/Textures/Pills/spiritual-energy.png
   category: Pill
   durationType: Instant
@@ -57,7 +57,7 @@ items:
     value: 10
 - id: spiritual_growth_pill
   name: Пилюля духовного роста
-  description: Навсегда увеличивает прирост духовной силы за тик на фиксированное значение.
+  description: Навсегда повышает духовную силу за тик.
   icon: Assets/Textures/Pills/spiritual-growth.png
   category: Pill
   durationType: Permanent
@@ -69,7 +69,7 @@ items:
     value: 1
 - id: eternal_spirit_pill
   name: Пилюля вечного духа
-  description: Навсегда увеличивает количество духовной силы, получаемой за каждый тик.
+  description: Навсегда добавляет духовную силу к каждому тику.
   icon: Assets/Textures/Pills/spiritual-growth.png
   category: Pill
   durationType: Permanent
@@ -81,7 +81,7 @@ items:
     value: 1
 - id: spirit_gain_pill
   name: Пилюля духовного потока
-  description: Временно увеличивает количество получаемого духа.
+  description: Временно повышает получение духовной силы.
   icon: Assets/Textures/Pills/spirit-gain.png
   category: Pill
   durationType: Temporary
@@ -94,7 +94,7 @@ items:
     value: 1
 - id: vitality_pill
   name: Пилюля жизненной силы
-  description: На время ускоряет естественное восстановление тела.
+  description: Временно добавляет регенерацию здоровья.
   icon: Assets/Textures/Pills/vitality.png
   category: Pill
   durationType: Temporary
@@ -107,7 +107,7 @@ items:
     value: 0.1
 - id: bloodspring_pill
   name: Пилюля кровавого источника
-  description: На время увеличивает регенерацию здоровья.
+  description: Временно повышает регенерацию здоровья.
   icon: Assets/Textures/Pills/bloodspring.png
   category: Pill
   durationType: Temporary
@@ -120,7 +120,7 @@ items:
     value: 1
 - id: jade_body_pill
   name: Пилюля нефритового тела
-  description: Навсегда увеличивает максимальный запас здоровья.
+  description: Навсегда добавляет максимальное здоровье.
   icon: Assets/Textures/Pills/jade-body.png
   category: Pill
   durationType: Permanent
@@ -132,7 +132,7 @@ items:
     value: 1
 - id: healing_dew
   name: Роса живой крови
-  description: Сразу восстанавливает здоровье.
+  description: Мгновенно восстанавливает часть здоровья.
   icon: Assets/Textures/Pills/healing-dew.png
   category: Pill
   durationType: Instant
@@ -144,7 +144,7 @@ items:
     value: 2
 - id: eternal_swiftness_pill
   name: Пилюля вечной стремительности
-  description: Навсегда увеличивает скорость атаки.
+  description: Навсегда повышает скорость атаки.
   icon: Assets/Textures/Pills/eternal-swiftness.png
   category: Pill
   durationType: Permanent
@@ -156,7 +156,7 @@ items:
     value: 1
 - id: gale_step_pill
   name: Пилюля порыва ветра
-  description: Временно увеличивает скорость.
+  description: Временно повышает скорость атаки.
   icon: Assets/Textures/Pills/gale-step.png
   category: Pill
   durationType: Temporary
@@ -169,7 +169,7 @@ items:
     value: 1
 - id: blade_intent_permanent_pill
   name: Пилюля вечного намерения
-  description: Навсегда увеличивает силу атаки.
+  description: Навсегда добавляет силу атаки.
   icon: Assets/Textures/Pills/blade-intent-permanent.png
   category: Pill
   durationType: Permanent
@@ -181,7 +181,7 @@ items:
     value: 0.1
 - id: blade_intent_pill
   name: Пилюля ярости
-  description: Временно увеличивает силу атаки.
+  description: Временно повышает силу атаки.
   icon: Assets/Textures/Pills/blade-intent.png
   category: Pill
   durationType: Temporary
@@ -194,8 +194,7 @@ items:
     value: 1
 - id: time_acceleration_pill
   name: Пилюля ускорения времени
-  description: Временно ускоряет течение внутреннего времени, повышая прирост 
-    духовной силы и прогресс миссий за тик.
+  description: Временно ускоряет тики мира и все действия.
   icon: Assets/Textures/Pills/time-acceleration.png
   category: Pill
   durationType: Temporary
@@ -208,7 +207,7 @@ items:
     value: 1
 - id: mission_speed_pill
   name: Пилюля пространства
-  description: Временно ускоряет выполнение миссий.
+  description: Временно повышает прогресс миссий за тик.
   icon: Assets/Textures/Pills/mission-speed.png
   category: Pill
   durationType: Temporary
@@ -221,19 +220,19 @@ items:
     value: 1
 - id: insight_pill
   name: Пилюля прозрения
-  description: Увеличивает вероятность успешного прорыва до следующей попытки.
+  description: Повышает шанс следующей попытки прорыва.
   icon: Assets/Textures/Pills/insight.png
   category: Pill
   durationType: UntilBreakthroughAttempt
   basePrice: 100
-  shopWeight: 0
+  shopWeight: 8
   effects:
   - type: BreakthroughChance
     operation: Flat
     value: 1
 - id: purity_pill
   name: Пилюля чистоты
-  description: Мгновенно очищает загрязнение.
+  description: Мгновенно уменьшает загрязнение до нуля.
   icon: Assets/Textures/Pills/purity.png
   category: Pill
   durationType: Instant
@@ -245,7 +244,7 @@ items:
     value: 1
 - id: spiritgrass_body
   name: Стебель духоцвета
-  description: Редкий материал, насыщенный ци.
+  description: Даёт пилюлям эффект духовного потока.
   icon: Assets/Textures/Ingredients/spiritgrass-body.png
   category: Ingredient
   element: Water
@@ -257,7 +256,7 @@ items:
 
 - id: spiritgrass_root
   name: Корень духоцвета
-  description: Редкий материал, насыщенный ци.
+  description: Даёт пилюлям постоянный прирост духовной силы.
   icon: Assets/Textures/Ingredients/spiritgrass-root.png
   category: Ingredient
   element: Water
@@ -269,7 +268,7 @@ items:
 
 - id: spiritgrass_young
   name: Росток духоцвета
-  description: Молодой побег редкого растения, насыщенный ци.
+  description: Даёт пилюлям эффект духовного потока.
   icon: Assets/Textures/Ingredients/spiritgrass-young.png
   category: Ingredient
   element: Water
@@ -281,8 +280,7 @@ items:
 
 - id: demon_spider_web
   name: Паутина демонического паука
-  description: Паутина, поглощающая жизненную ци; при правильной обработке 
-    становится мощным лекарством.
+  description: Даёт пилюлям эффект регенерации здоровья.
   icon: Assets/Textures/Ingredients/demon-spider-web.png
   category: Ingredient
   element: Water
@@ -294,7 +292,7 @@ items:
 
 - id: azure_spirit_core
   name: Лазурная пыль
-  description: Редкий материал, насыщенный ци.
+  description: Даёт пилюлям эффект замедления старения.
   icon: Assets/Textures/Ingredients/azure-spirit-core.png
   category: Ingredient
   element: Water
@@ -306,7 +304,7 @@ items:
 
 - id: meat_root
   name: Мясной корень
-  description: Практически неубиваемый дикий корнеплод.
+  description: Даёт пилюлям эффект максимального здоровья.
   icon: Assets/Textures/Ingredients/meat-root.png
   category: Ingredient
   element: Earth
@@ -318,7 +316,7 @@ items:
 
 - id: heal_grass
   name: Подорожник
-  description: Распространённое, но всё ещё эффективное лечебное растение.
+  description: Даёт пилюлям эффект регенерации здоровья.
   icon: Assets/Textures/Ingredients/heal-grass.png
   category: Ingredient
   element: Earth
@@ -330,7 +328,7 @@ items:
 
 - id: wind_cotton
   name: Ветряной хлопок
-  description: Хлопок, взращённый на ци ветра.
+  description: Даёт пилюлям эффект скорости атаки.
   icon: Assets/Textures/Ingredients/wind-cotton.png
   category: Ingredient
   element: Air
@@ -342,7 +340,7 @@ items:
 
 - id: cauke_leaves
   name: Листья каки
-  description: Листья болотного дерева, которые заметно тонизируют тело.
+  description: Даёт пилюлям эффект скорости атаки.
   icon: Assets/Textures/Ingredients/cauke-leaves.png
   category: Ingredient
   element: Air
@@ -354,7 +352,7 @@ items:
 
 - id: yan_nuts
   name: Орешки янь
-  description: Орехи с высокогорья, обладающие мощными тонизирующими свойствами.
+  description: Даёт пилюлям эффект силы атаки.
   icon: Assets/Textures/Ingredients/yan-nuts.png
   category: Ingredient
   element: Fire
@@ -366,8 +364,7 @@ items:
 
 - id: chicken_flower
   name: Куриный цветок
-  description: Говорят, даже домашняя птица становится неожиданно боевой, если 
-    склюёт этот цветок.
+  description: Даёт пилюлям эффект силы атаки.
   icon: Assets/Textures/Ingredients/chicken-flower.png
   category: Ingredient
   element: Fire
@@ -379,7 +376,7 @@ items:
 
 - id: sealed_blackhole
   name: Запечатанная червоточина
-  description: Запечатанная аномалия, содержащая следы законов времени.
+  description: Даёт пилюлям эффект замедления старения.
   icon: Assets/Textures/Ingredients/sealed-blackhole.png
   category: Ingredient
   element: Void
@@ -391,7 +388,7 @@ items:
 
 - id: space_dust
   name: Космическая пыль
-  description: Микроскопическая пыльца, содержащая в себе законы пространства.
+  description: Даёт пилюлям эффект ускорения времени.
   icon: Assets/Textures/Ingredients/space-dust.png
   category: Ingredient
   element: Void
@@ -403,7 +400,7 @@ items:
 
 - id: ying_yang_flower
   name: Цветок инь и янь
-  description: Цветок, удерживающий противоположные энергии в редком равновесии.
+  description: Даёт пилюлям бонус к шансу прорыва.
   icon: Assets/Textures/Ingredients/ying-yang-flower.png
   category: Ingredient
   element: Void
@@ -415,7 +412,7 @@ items:
 
 - id: purity_herb
   name: Чистотел
-  description: Дикая трава, известная своими сильными очищающими свойствами.
+  description: Создаёт пилюли, очищающие загрязнение.
   icon: Assets/Textures/Ingredients/purity-herb.png
   category: Ingredient
   element: Void
@@ -481,27 +478,35 @@ items:
 
 - id: spirit_flow_pill
   name: Пилюля потока ци
-  description: Ускоряет накопление духовной силы.
+  description: Временно повышает получение духовной силы.
   icon: Assets/Textures/Pills/spirit-flow.png
   category: Pill
   durationType: Temporary
   temporaryDurationTicks: 48
   basePrice: 260
-  shopWeight: 0
+  shopWeight: 8
+  effects:
+  - type: SpiritualPowerGain
+    operation: AdditivePercent
+    value: 1
 
 - id: still_age_pill
   name: Пилюля остановленного возраста
-  description: Замедляет течение времени для тела культиватора.
+  description: Временно замедляет старение культиватора.
   icon: Assets/Textures/Pills/still-age.png
   category: Pill
   durationType: Temporary
   temporaryDurationTicks: 48
   basePrice: 260
-  shopWeight: 0
+  shopWeight: 8
+  effects:
+  - type: AgingSpeed
+    operation: AdditivePercent
+    value: -1
 
 - id: alchemy_extract
   name: Алхимический экстракт
-  description: Очищенный порошок для повторного рафинирования или создания пилюль.
+  description: Нейтральная основа для повторной алхимии.
   icon: Assets/Textures/Items/alchemy-extract.png
   category: Ingredient
   durationType: Instant

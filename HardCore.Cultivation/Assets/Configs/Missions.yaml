@@ -33,6 +33,10 @@
 boardSlotCount: 6
 maximumLockedOfferPercent: 20
 
+# Значения maximumHealth в профилях ниже рассчитаны таблицей для героя со 100 HP.
+# В игре они автоматически умножаются на initialCharacterStats.maximumHealth / enemyHealthReference.
+enemyHealthReference: 100
+
 dragonExam:
   intervalYears: 4
 

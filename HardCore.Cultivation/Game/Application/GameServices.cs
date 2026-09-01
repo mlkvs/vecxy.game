@@ -431,11 +431,20 @@ public sealed class MissionService(
 
     public EnemyCombatStats RollEnemyStats(EnemyStatProfileConfig profile) => new()
     {
-        MaximumHealth = Roll(profile.MaximumHealth),
+        // The spreadsheet profiles use EnemyHealthReference as the original hero-health scale.
+        // Rescale only HP so changing the player's starting HP preserves every enemy/player HP ratio.
+        MaximumHealth = ScaleEnemyMaximumHealth(
+            Roll(profile.MaximumHealth),
+            database.Balance.InitialCharacterStats.MaximumHealth,
+            database.EnemyHealthReference),
         HealthRegeneration = Roll(profile.HealthRegeneration),
         Attack = Roll(profile.Attack),
         AttacksPerSecond = Roll(profile.AttacksPerSecond)
     };
+
+    public static decimal ScaleEnemyMaximumHealth(decimal spreadsheetHealth, decimal heroStartingHealth,
+        decimal spreadsheetHeroHealthReference) =>
+        spreadsheetHealth * heroStartingHealth / spreadsheetHeroHealthReference;
 
     private decimal Roll(DecimalRangeConfig range) => range.Minimum == range.Maximum
         ? range.Minimum
@@ -579,13 +588,15 @@ public sealed class ShopService(
 {
     public void Refresh(ShopState shop)
     {
-        var slots = new List<ShopSlot>(database.Shop.IngredientSlotCount + database.Shop.PillAndCoreSlotCount);
+        var slots = new List<ShopSlot>(database.Shop.IngredientSlotCount + database.Shop.PillSlotCount +
+                                       database.Shop.CoreSlotCount);
         AddSlots(slots,
             database.Items.Values.Where(item => item.Category == ItemCategory.Ingredient).ToArray(),
             database.Shop.IngredientSlotCount);
-        AddSlots(slots,
-            database.Items.Values.Where(item => item.Category is ItemCategory.Pill or ItemCategory.Core).ToArray(),
-            database.Shop.PillAndCoreSlotCount);
+        AddSlots(slots, database.Items.Values.Where(item => item.Category == ItemCategory.Pill).ToArray(),
+            database.Shop.PillSlotCount);
+        AddSlots(slots, database.Items.Values.Where(item => item.Category == ItemCategory.Core).ToArray(),
+            database.Shop.CoreSlotCount);
         shop.ReplaceStock(
             slots,
             random.NextInt(database.Shop.MinimumBuyMarkup, database.Shop.MaximumBuyMarkup + 1),

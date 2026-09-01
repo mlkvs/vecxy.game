@@ -43,6 +43,8 @@ Check(generator.NormalizeContamination("purity_pill", 0.75m) == 0m &&
     "Non-crafted purification pills must be clean without changing ordinary pill contamination.");
 var effectService = new ItemEffectService(database);
 var missionService = new MissionService(database, generator, random);
+Check(MissionService.ScaleEnemyMaximumHealth(95m, 10m, 100m) == 9.5m,
+    "Enemy health did not follow the spreadsheet ratio after changing the hero's starting health.");
 var shopService = new ShopService(database, generator, random);
 var cultivation = new CultivationService(database, random);
 var processor = new TickProcessor(database, effectService, missionService, shopService, cultivation);
@@ -57,11 +59,19 @@ Check(combo.DisplayCount == 1 && combo.LevelIndex == 0 && combo.PowerMultiplier 
 combo.RegisterTap();
 Check(combo.DisplayCount == 2 && combo.LevelIndex == 1 && combo.PowerMultiplier == 1.15m,
     "Tap combo did not reach its configured second level.");
-combo.Update(2f);
-Check(combo.DisplayCount == 2, "Tap combo decayed during its grace period.");
+Check(combo.LevelProgress == 0f, "Tap combo progress did not reset after reaching a new level.");
+combo.RegisterTap();
+combo.RegisterTap();
+var progressBeforeDecay = combo.LevelProgress;
+combo.Update(0.25f);
+Check(combo.DisplayCount == 2 && combo.LevelProgress == progressBeforeDecay,
+    "Tap combo decayed during its short safety window.");
+combo.Update(0.30f);
+Check(combo.DisplayCount == 2 && combo.LevelProgress < progressBeforeDecay,
+    "Tap combo progress did not decay after its safety window.");
 combo.Update(1f);
 Check(combo.DisplayCount == 0 && combo.LevelIndex == -1 && !combo.IsActive,
-    "Tap combo did not reset completely after its retention timer expired.");
+    "Tap combo did not reset completely when the current progress reached zero.");
 var normalTapState = new GameState(database.Balance.TicksPerYear);
 var comboTapState = new GameState(database.Balance.TicksPerYear);
 var normalTapPower = processor.ProcessTap(normalTapState).SpiritualPowerGained;
@@ -222,8 +232,8 @@ var pillResult = alchemy.Craft(alchemyState, pillSelection, AlchemyMode.Pill);
 Check(pillResult.Success && pillResult.Output is { ConfigId: "vitality_pill", Quantity: 6 } &&
       pillResult.ProducedQuantity == 6,
     "Crafted pill batch did not use the configured output type and quantity distribution.");
-Check(pillResult.SuccessChancePercent == 65.2m,
-    "Pill success chance must combine core, average ingredient, and best ingredient quality.");
+Check(pillResult.SuccessChancePercent == 80.2m,
+    "Pill success chance must combine quality with the additional-ingredient bonus.");
 var craftedPill = pillResult.Output!;
 Check(alchemyState.Inventory.Find(craftedPill.InstanceId) is not null,
     "Alchemy did not return the stored item instance required by popup actions.");
@@ -519,8 +529,10 @@ var categoryShopState = new ShopState();
 shopService.Refresh(categoryShopState);
 Check(categoryShopState.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category == ItemCategory.Ingredient) == 2,
     "Shop must generate the configured number of ingredient slots.");
-Check(categoryShopState.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category is ItemCategory.Pill or ItemCategory.Core) == 2,
-    "Shop must generate the configured number of pill and core slots.");
+Check(categoryShopState.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category == ItemCategory.Pill) == 2,
+    "Shop must generate the configured number of pill slots.");
+Check(categoryShopState.Slots.Count(slot => database.GetItem(slot.Item.ConfigId).Category == ItemCategory.Core) == 2,
+    "Shop must generate the configured number of core slots.");
 
 var failedCultivation = new CultivationService(database, new MaximumRandom());
 var failedCharacter = new CharacterState();
@@ -605,17 +617,15 @@ static GameDatabase BuildDatabase()
             StartingAgeYears = 16, MaximumMissionQueueSize = 6,
             TapCombo = new TapComboConfig
             {
-                GracePeriodSeconds = 2.5f,
+                GracePeriodSeconds = 0.45f,
                 DecayPerSecond = 3f,
                 PointsPerTap = 1f,
-                MaximumCombo = 50f,
+                MaximumCombo = 32f,
                 Levels =
                 [
                     new TapComboLevelConfig { MinimumCombo = 5, PowerMultiplier = 1m },
                     new TapComboLevelConfig { MinimumCombo = 12, PowerMultiplier = 1.15m },
-                    new TapComboLevelConfig { MinimumCombo = 22, PowerMultiplier = 1.35m },
-                    new TapComboLevelConfig { MinimumCombo = 35, PowerMultiplier = 1.65m },
-                    new TapComboLevelConfig { MinimumCombo = 50, PowerMultiplier = 2.1m }
+                    new TapComboLevelConfig { MinimumCombo = 22, PowerMultiplier = 1.35m }
                 ]
             },
             QualityBands = [new QualityBand { Index = 1, Weight = 1 }],
@@ -644,7 +654,7 @@ static GameDatabase BuildDatabase()
                 new ItemConfig { Id = "swiftness_ingredient", Name = "Swiftness", Category = ItemCategory.Ingredient, DurationType = ItemDurationType.Instant, BasePrice = 10,
                     AlchemyProperties = [new AlchemyPropertyAmount { PropertyId = "swiftness" }] },
                 new ItemConfig { Id = "vitality_pill", Name = "Vitality pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
-                    TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
+                    TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 1 },
                 new ItemConfig { Id = "clarity_pill", Name = "Clarity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Temporary,
                     TemporaryDurationTicks = 48, BasePrice = 10, ShopWeight = 0 },
                 new ItemConfig { Id = "purity_pill", Name = "Purity pill", Category = ItemCategory.Pill, DurationType = ItemDurationType.Instant,
@@ -677,7 +687,7 @@ static GameDatabase BuildDatabase()
                     Reward = new MissionRankRewardConfig
                     {
                         Money = 10, MoneyChancePercent = 50m, ItemChancePercent = 100m,
-                        RarityWeights = new() { [ItemRarity.Common] = 1m },
+                        RarityWeights = new() { [ItemRarity.Common] = 100m },
                         CategoryWeights = new() { [ItemCategory.Ingredient] = 1m },
                         CategoryMaximumQuantities = new() { [ItemCategory.Ingredient] = 15 }
                     }
@@ -701,7 +711,7 @@ static GameDatabase BuildDatabase()
                 new CultivationStageConfig { Id = "three", Name = "Three", BaseBreakthroughChance = 50, RecursiveCoefficient = 0.7m }
             ]
         },
-        new ShopConfig { IngredientSlotCount = 2, PillAndCoreSlotCount = 2, MinimumQuantity = 1, MaximumQuantity = 1, MinimumBuyMarkup = 0, MaximumBuyMarkup = 0, SellAdjustmentPercent = -33 },
+        new ShopConfig { IngredientSlotCount = 2, PillSlotCount = 2, CoreSlotCount = 2, MinimumQuantity = 1, MaximumQuantity = 1, MinimumBuyMarkup = 0, MaximumBuyMarkup = 0, SellAdjustmentPercent = -33 },
         alchemy: new AlchemyConfig
         {
             Enabled = true,

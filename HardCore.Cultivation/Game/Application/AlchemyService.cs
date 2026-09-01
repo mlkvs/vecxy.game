@@ -150,6 +150,22 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             SuccessChancePercent: successChance);
     }
 
+    public decimal GetSuccessChancePercent(
+        GameState state,
+        IReadOnlyCollection<AlchemySelection> selection,
+        AlchemyMode mode)
+    {
+        var resolved = Resolve(state, selection);
+        if (resolved.Error is not null)
+            return 0m;
+        var validation = mode == AlchemyMode.Pill
+            ? PreviewPill(resolved.Units, resolveMixedPurification: false)
+            : PreviewDistillation(resolved.Units);
+        if (!validation.CanCraft)
+            return 0m;
+        return mode == AlchemyMode.Distillation ? 100m : CalculateSuccessChance(resolved.Units, mode);
+    }
+
     private decimal CalculateSuccessChance(IReadOnlyList<IngredientUnit> units, AlchemyMode mode)
     {
         var ingredients = units.Where(unit => unit.Config.Category == ItemCategory.Ingredient).ToArray();
@@ -158,9 +174,11 @@ public sealed class AlchemyService(GameDatabase database, IRandomSource random)
             : 0m;
         var ingredientQuality = 0.4m * ingredients.Average(unit => unit.Item.Quality) +
                                 0.6m * ingredients.Max(unit => unit.Item.Quality);
+        var quantityBonus = Math.Max(0, ingredients.Length - database.Alchemy.MinimumIngredients) *
+                            database.Alchemy.CraftSuccessChancePerAdditionalIngredient;
         return Math.Min(
             database.Alchemy.MaximumCraftSuccessChance,
-            database.Alchemy.CraftSuccessChancePerQuality * (coreQuality + ingredientQuality));
+            database.Alchemy.CraftSuccessChancePerQuality * (coreQuality + ingredientQuality) + quantityBonus);
     }
 
     private static bool RemoveSelected(GameState state, IReadOnlyCollection<AlchemySelection> selection)

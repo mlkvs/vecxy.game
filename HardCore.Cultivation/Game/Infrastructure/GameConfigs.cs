@@ -243,6 +243,7 @@ public sealed class AlchemyConfig : IYamlConfig
     public decimal DistillationQualityPerIngredient { get; init; } = 0.12m;
     public decimal DistillationQualityPerLevel { get; init; } = 0.18m;
     public decimal CraftSuccessChancePerQuality { get; init; } = 10m;
+    public decimal CraftSuccessChancePerAdditionalIngredient { get; init; } = 5m;
     public decimal MaximumCraftSuccessChance { get; init; } = 95m;
     public string PurificationPropertyId { get; init; } = "purification";
     public decimal PurificationMixedRecipeChance { get; init; } = 0.5m;
@@ -280,6 +281,7 @@ public sealed class MissionsConfig : IYamlConfig
 {
     public int BoardSlotCount { get; init; } = 8;
     public decimal MaximumLockedOfferPercent { get; init; } = 20m;
+    public decimal EnemyHealthReference { get; init; } = 100m;
     public DragonExamConfig DragonExam { get; init; } = new();
     public List<MissionRankConfig> Ranks { get; init; } = [];
     public List<MissionConfig> Missions { get; init; } = [];
@@ -428,7 +430,8 @@ public sealed class CultivationStageConfig
 public sealed class ShopConfig : IYamlConfig
 {
     public int IngredientSlotCount { get; init; } = 6;
-    public int PillAndCoreSlotCount { get; init; } = 6;
+    public int PillSlotCount { get; init; } = 6;
+    public int CoreSlotCount { get; init; } = 6;
     public int MinimumQuantity { get; init; } = 1;
     public int MaximumQuantity { get; init; } = 1;
     public int MinimumBuyMarkup { get; init; } = 25;
@@ -453,6 +456,7 @@ public sealed class GameDatabase
     public CultivationBalanceSnapshot CultivationBalance { get; private set; } = null!;
     public int MissionBoardSlotCount { get; private set; } = 8;
     public decimal MaximumLockedOfferPercent { get; private set; } = 20m;
+    public decimal EnemyHealthReference { get; private set; } = 100m;
     public DragonExamConfig DragonExam { get; private set; } = new();
     public IReadOnlyList<MissionRankConfig> MissionRanks { get; private set; } = [];
     public IReadOnlyDictionary<string, ItemConfig> Items => _items;
@@ -491,6 +495,7 @@ public sealed class GameDatabase
         Alchemy = alchemy ?? CreateDefaultAlchemy();
         MissionBoardSlotCount = missions.BoardSlotCount;
         MaximumLockedOfferPercent = missions.MaximumLockedOfferPercent;
+        EnemyHealthReference = missions.EnemyHealthReference;
         DragonExam = missions.DragonExam;
         MissionRanks = missions.Ranks.OrderBy(rank => rank.Order).ToArray();
         _items.Clear();
@@ -595,7 +600,7 @@ public sealed class GameDatabase
         var combo = Balance.TapCombo;
         if (combo.BaseLevitationAmplitude < 0f || combo.BaseLevitationPeriodSeconds <= 0f ||
             combo.GracePeriodSeconds < 0f || combo.DecayPerSecond <= 0f || combo.PointsPerTap <= 0f ||
-            combo.MaximumCombo < 1f || combo.Levels.Count != 5 ||
+            combo.MaximumCombo < 1f || combo.Levels.Count != 3 ||
             combo.Levels.Select(level => level.MinimumCombo).Order().Distinct().Count() != combo.Levels.Count ||
             combo.Levels.Any(level => level.MinimumCombo < 1 || level.MinimumCombo > combo.MaximumCombo ||
                 level.PowerMultiplier < 1m || level.LevitationAmplitude < 0f || level.LevitationPeriodSeconds <= 0f ||
@@ -610,7 +615,7 @@ public sealed class GameDatabase
             throw new InvalidDataException("Cultivation coefficients and initial costs are invalid.");
         if (_items.Count == 0 || _missions.Count == 0)
             throw new InvalidDataException("Items and missions cannot be empty.");
-        if (MissionBoardSlotCount <= 0)
+        if (MissionBoardSlotCount <= 0 || EnemyHealthReference <= 0m)
             throw new InvalidDataException("Mission board slot count is invalid.");
         if (MissionRanks.Count == 0 || DragonExam.IntervalYears <= 0 || MaximumLockedOfferPercent is < 0m or > 100m ||
             MissionRanks.Select(rank => rank.Id).Distinct(StringComparer.Ordinal).Count() != MissionRanks.Count ||
@@ -626,7 +631,7 @@ public sealed class GameDatabase
                 rank.EnemyProfiles.Any(profile => profile.Weight <= 0m || !ValidRange(profile.MaximumHealth, true) ||
                     !ValidRange(profile.HealthRegeneration, false) || !ValidRange(profile.Attack, false) ||
                     !ValidRange(profile.AttacksPerSecond, true)) ||
-                rank.Reward.RarityWeights.Count == 0 || rank.Reward.RarityWeights.Values.Sum() <= 0m ||
+                rank.Reward.RarityWeights.Count == 0 || rank.Reward.RarityWeights.Values.Sum() != 100m ||
                 categoryWeights.Count == 0 || categoryWeights.Values.Sum() <= 0m)
                 throw new InvalidDataException($"Invalid mission rank balance: {rank.Id}");
             foreach (var target in rank.BoardRankWeights.Keys)
@@ -634,7 +639,7 @@ public sealed class GameDatabase
             foreach (var itemId in rank.Reward.ItemMaximumQuantities.Keys)
                 _ = GetItem(itemId);
         }
-        if (Shop.IngredientSlotCount <= 0 || Shop.PillAndCoreSlotCount <= 0 ||
+        if (Shop.IngredientSlotCount <= 0 || Shop.PillSlotCount <= 0 || Shop.CoreSlotCount <= 0 ||
             Shop.MinimumQuantity <= 0 || Shop.MaximumQuantity < Shop.MinimumQuantity ||
             Shop.MinimumBuyMarkup < 0 || Shop.MaximumBuyMarkup < Shop.MinimumBuyMarkup)
         {
@@ -647,7 +652,8 @@ public sealed class GameDatabase
         if (Alchemy.Enabled && (Alchemy.MinimumIngredients <= 0 || Alchemy.MaximumIngredients < Alchemy.MinimumIngredients ||
             Alchemy.MaximumQuality <= 0m ||
             Alchemy.DistillationQualityPerIngredient < 0m || Alchemy.DistillationQualityPerLevel < 0m ||
-            Alchemy.CraftSuccessChancePerQuality < 0m || Alchemy.MaximumCraftSuccessChance is < 0m or > 100m ||
+            Alchemy.CraftSuccessChancePerQuality < 0m || Alchemy.CraftSuccessChancePerAdditionalIngredient < 0m ||
+            Alchemy.MaximumCraftSuccessChance is < 0m or > 100m ||
             Alchemy.PurificationMixedRecipeChance is < 0m or > 1m || Alchemy.PurificationMinimumPercent is < 0m or > 100m ||
             Alchemy.PurificationMaximumPercent < Alchemy.PurificationMinimumPercent || Alchemy.PurificationMaximumPercent > 100m ||
             Alchemy.PillOutputQuantityChances.Count == 0 ||
