@@ -3,5 +3,5 @@ using Vecxy.Platforms;
 
 namespace HardCore.Cultivation;
 
-[Vecxy]
+[App]
 public sealed class Application : AApp;

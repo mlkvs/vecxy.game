@@ -1,0 +1,33 @@
+{
+  "profiles": {
+    "Server": {
+      "commandName": "Executable",
+      "executablePath": "D:\\Projects\\vecxy.game\\Pathfinding.Tests\\bin\\Debug\\net10.0\\Profiles\\Server\\Pathfinding.Tests.exe",
+      "workingDirectory": "D:\\Projects\\vecxy.game\\Pathfinding.Tests\\bin\\Debug\\net10.0\\Profiles\\Server",
+      "commandLineArgs": "--server --port 7777",
+      "environmentVariables": {
+        "VECXY_ROLE": "Server"
+      }
+    },
+    "Client 1": {
+      "commandName": "Executable",
+      "executablePath": "D:\\Projects\\vecxy.game\\Pathfinding.Tests\\bin\\Debug\\net10.0\\Profiles\\Client1\\Pathfinding.Tests.exe",
+      "workingDirectory": "D:\\Projects\\vecxy.game\\Pathfinding.Tests\\bin\\Debug\\net10.0\\Profiles\\Client1",
+      "commandLineArgs": "--client --name Client1 --host 127.0.0.1 --port 7777",
+      "environmentVariables": {
+        "VECXY_ROLE": "Client",
+        "VECXY_CLIENT_NAME": "Client1"
+      }
+    },
+    "Client 2": {
+      "commandName": "Executable",
+      "executablePath": "D:\\Projects\\vecxy.game\\Pathfinding.Tests\\bin\\Debug\\net10.0\\Profiles\\Client2\\Pathfinding.Tests.exe",
+      "workingDirectory": "D:\\Projects\\vecxy.game\\Pathfinding.Tests\\bin\\Debug\\net10.0\\Profiles\\Client2",
+      "commandLineArgs": "--client --name Client2 --host 127.0.0.1 --port 7777",
+      "environmentVariables": {
+        "VECXY_ROLE": "Client",
+        "VECXY_CLIENT_NAME": "Client2"
+      }
+    }
+  }
+}

@@ -9,13 +9,13 @@ using Vecxy.UI;
 namespace HardCore.Cultivation;
 
 [UsedImplicitly]
+[Layer("cheats")]
 public sealed class CheatLayer(
     IUiManager ui,
     IRenderer renderer,
     IUiDiagnostics uiDiagnostics,
     CheatActionRegistry registry) : AAppLayer
 {
-    [AppLayerDef("cheats")]
     public sealed class Definition : ADefinition<CheatLayer>
     {
         public override void RegisterLocal(ContainerBuilder builder)

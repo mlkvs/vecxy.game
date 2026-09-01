@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\Engine\Vecxy\Code\Vecxy.Platforms\build\Vecxy.Platforms.props" />
+
+    <PropertyGroup>
+        <VecxyGenerateEntryPoint>true</VecxyGenerateEntryPoint>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Kernel\Vecxy.Kernel.csproj" />
+      <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Pathfinding\Vecxy.Pathfinding.csproj" />
+      <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Platforms\Vecxy.Platforms.csproj" />
+    </ItemGroup>
+
+    <Target Name="PrepareIdeLaunchProfiles" AfterTargets="VecxyWeaveNetworking">
+        <ItemGroup>
+            <_LaunchProfileFile Include="$(TargetDir)**\*.*"
+                                Exclude="$(TargetDir)Profiles\**\*;$(TargetDir)rpc-manifest.json" />
+        </ItemGroup>
+        <Copy SourceFiles="@(_LaunchProfileFile)"
+              DestinationFiles="@(_LaunchProfileFile->'$(TargetDir)Profiles\Server\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"
+              Retries="0"
+              ContinueOnError="WarnAndContinue" />
+        <Copy SourceFiles="@(_LaunchProfileFile)"
+              DestinationFiles="@(_LaunchProfileFile->'$(TargetDir)Profiles\Client1\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"
+              Retries="0"
+              ContinueOnError="WarnAndContinue" />
+        <Copy SourceFiles="@(_LaunchProfileFile)"
+              DestinationFiles="@(_LaunchProfileFile->'$(TargetDir)Profiles\Client2\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"
+              Retries="0"
+              ContinueOnError="WarnAndContinue" />
+    </Target>
+
+</Project>

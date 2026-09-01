@@ -1,0 +1,3 @@
+<ui styles="Styles/World.css">
+    <panel id="world" />
+</ui>

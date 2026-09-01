@@ -17,6 +17,7 @@ using Vecxy.Scene;
 namespace HardCore.Cultivation;
 
 [UsedImplicitly]
+[Layer("game")]
 public sealed class GameLayer
 (
     ISceneManager scenes,
@@ -34,7 +35,6 @@ public sealed class GameLayer
     private float _performanceElapsed;
     private int _performanceFrames;
     private float _performanceFrameMilliseconds;
-    [AppLayerDef("game")]
     public sealed class Definition : ADefinition<GameLayer>
     {
         public override void RegisterGlobal(ContainerBuilder builder)

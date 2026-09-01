@@ -3,5 +3,5 @@ using Vecxy.Platforms;
 
 namespace EmptyGame;
 
-[Vecxy]
+[App]
 public sealed class Application : AApp;

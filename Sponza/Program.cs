@@ -6,7 +6,7 @@ using Vecxy.Platforms;
 
 namespace Sponza;
 
-[Vecxy]
+[App]
 public sealed class Application : IVEntry
 {
     public void OnConfigureEngine(PlatformContext context, Engine.Options options)
