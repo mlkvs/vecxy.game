@@ -41,6 +41,22 @@ public sealed class TapComboTracker
     public float RetentionProgress => !IsActive || _config.GracePeriodSeconds <= 0f
         ? 0f
         : Math.Clamp(1f - _secondsSinceTap / _config.GracePeriodSeconds, 0f, 1f);
+    public float LevelProgress
+    {
+        get
+        {
+            var index = LevelIndex;
+            if (index < 0)
+                return 0f;
+            var minimum = _levels[index].MinimumCombo;
+            var nextMinimum = index < _levels.Length - 1
+                ? _levels[index + 1].MinimumCombo
+                : _config.MaximumCombo;
+            if (nextMinimum <= minimum)
+                return 1f;
+            return Math.Clamp((Value - minimum) / (nextMinimum - minimum), 0f, 1f);
+        }
+    }
 
     public bool RegisterTap()
     {
@@ -59,12 +75,24 @@ public sealed class TapComboTracker
         if (!_config.Enabled || Value <= 0f || _levels.Length == 0 || deltaTime <= 0f)
             return false;
         var before = Snapshot();
+        var previousSecondsSinceTap = _secondsSinceTap;
         _secondsSinceTap += deltaTime;
-        if (_secondsSinceTap >= _config.GracePeriodSeconds)
+        var decayDuration = Math.Max(0f, _secondsSinceTap - Math.Max(
+            previousSecondsSinceTap,
+            _config.GracePeriodSeconds));
+        if (decayDuration <= 0f)
+            return before != Snapshot();
+        var level = LevelIndex;
+        if (level >= 0)
         {
-            Value = 0f;
-            _firstLevelUnlocked = false;
-            _secondsSinceTap = 0f;
+            var levelMinimum = _levels[level].MinimumCombo;
+            Value = Math.Max(levelMinimum, Value - _config.DecayPerSecond * decayDuration);
+            if (Value <= levelMinimum)
+            {
+                Value = 0f;
+                _firstLevelUnlocked = false;
+                _secondsSinceTap = 0f;
+            }
         }
         return before != Snapshot();
     }
@@ -79,6 +107,7 @@ public sealed class TapComboTracker
         return true;
     }
 
-    private (int Count, int Level, int Retention) Snapshot() =>
-        (DisplayCount, LevelIndex, (int)MathF.Round(RetentionProgress * 100f));
+    private (int Count, int Level, int Progress, int Retention) Snapshot() =>
+        (DisplayCount, LevelIndex, (int)MathF.Round(LevelProgress * 100f),
+            (int)MathF.Round(RetentionProgress * 100f));
 }

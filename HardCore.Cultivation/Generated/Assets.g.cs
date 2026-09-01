@@ -79,62 +79,52 @@ public static partial class Assets
         public static TextureHandle Background => new(new Guid("2bfd3154-decc-4a0a-9131-e29cbb7d175c"));
         [AssetReference("69020bba-de61-4ffa-9350-06d53449b6c0")]
         public static TextureHandle BackgroundMissions => new(new Guid("69020bba-de61-4ffa-9350-06d53449b6c0"));
-        [AssetReference("ca8ed694-b241-4a6d-b1c9-2b753df2b86c")]
-        public static TextureHandle _1 => new(new Guid("ca8ed694-b241-4a6d-b1c9-2b753df2b86c"));
-        [AssetReference("4d334f77-c259-4b81-a5fd-31254eefa80c")]
-        public static TextureHandle _2 => new(new Guid("4d334f77-c259-4b81-a5fd-31254eefa80c"));
-        [AssetReference("72a8eb4a-9abc-482d-8417-129ee4e411e5")]
-        public static TextureHandle _3 => new(new Guid("72a8eb4a-9abc-482d-8417-129ee4e411e5"));
-        [AssetReference("23d1479a-d527-4cdd-bec7-2e6507666889")]
-        public static TextureHandle _4 => new(new Guid("23d1479a-d527-4cdd-bec7-2e6507666889"));
-        [AssetReference("68f55ec3-6951-41b6-9019-5e166bb4196a")]
-        public static TextureHandle _5 => new(new Guid("68f55ec3-6951-41b6-9019-5e166bb4196a"));
-        [AssetReference("b55c9e17-9bbe-45c1-8872-7cb16665fe02")]
-        public static TextureHandle _12 => new(new Guid("b55c9e17-9bbe-45c1-8872-7cb16665fe02"));
-        [AssetReference("27ece9b6-2fc9-49a8-84aa-4bbc8161d339")]
-        public static TextureHandle _22 => new(new Guid("27ece9b6-2fc9-49a8-84aa-4bbc8161d339"));
-        [AssetReference("32177a5a-6ecc-4d3f-a71f-92d916d3818b")]
-        public static TextureHandle _32 => new(new Guid("32177a5a-6ecc-4d3f-a71f-92d916d3818b"));
-        [AssetReference("900239b6-cb16-4f91-a7ea-6c7171114c8a")]
-        public static TextureHandle _42 => new(new Guid("900239b6-cb16-4f91-a7ea-6c7171114c8a"));
-        [AssetReference("a7f95d31-ffdc-43a2-aa3c-ac2771946fcc")]
-        public static TextureHandle _52 => new(new Guid("a7f95d31-ffdc-43a2-aa3c-ac2771946fcc"));
-        [AssetReference("cc198ac3-de0b-4619-96e7-d25a7c48032e")]
-        public static TextureHandle _6 => new(new Guid("cc198ac3-de0b-4619-96e7-d25a7c48032e"));
-        [AssetReference("29934917-bdc7-428e-80a7-f60ce1cd9665")]
-        public static TextureHandle _13 => new(new Guid("29934917-bdc7-428e-80a7-f60ce1cd9665"));
-        [AssetReference("641bf4e9-3f2f-4ab2-929a-dd3fdba1674d")]
-        public static TextureHandle _23 => new(new Guid("641bf4e9-3f2f-4ab2-929a-dd3fdba1674d"));
-        [AssetReference("f493bbab-fd23-4381-bfd3-cc8184140780")]
-        public static TextureHandle _33 => new(new Guid("f493bbab-fd23-4381-bfd3-cc8184140780"));
-        [AssetReference("2f30441f-6083-4371-b331-eb1e4c3b0db6")]
-        public static TextureHandle _43 => new(new Guid("2f30441f-6083-4371-b331-eb1e4c3b0db6"));
-        [AssetReference("cecb699a-1f6c-4e0a-855f-56d0fba46004")]
-        public static TextureHandle _53 => new(new Guid("cecb699a-1f6c-4e0a-855f-56d0fba46004"));
-        [AssetReference("d426e76c-848c-4280-95a9-5b76a63e2b68")]
-        public static TextureHandle _14 => new(new Guid("d426e76c-848c-4280-95a9-5b76a63e2b68"));
-        [AssetReference("59c104b6-14db-483e-9f8b-18aba79c2821")]
-        public static TextureHandle _24 => new(new Guid("59c104b6-14db-483e-9f8b-18aba79c2821"));
-        [AssetReference("86b97537-f6c6-4bcf-9399-37ad9992804e")]
-        public static TextureHandle _34 => new(new Guid("86b97537-f6c6-4bcf-9399-37ad9992804e"));
-        [AssetReference("1861b590-674d-48ce-ba9c-6e73c107da02")]
-        public static TextureHandle _44 => new(new Guid("1861b590-674d-48ce-ba9c-6e73c107da02"));
-        [AssetReference("34e594d9-8ca2-4e08-80be-1a4e54fc8e8b")]
-        public static TextureHandle _54 => new(new Guid("34e594d9-8ca2-4e08-80be-1a4e54fc8e8b"));
-        [AssetReference("e8f24f00-b5f6-4d6b-a12b-971ff13da991")]
-        public static TextureHandle _62 => new(new Guid("e8f24f00-b5f6-4d6b-a12b-971ff13da991"));
+        [AssetReference("55c0a9a3-4ed8-41ab-aea9-2320d4784f4a")]
+        public static TextureHandle _1 => new(new Guid("55c0a9a3-4ed8-41ab-aea9-2320d4784f4a"));
+        [AssetReference("330f982e-d1e0-415a-8e49-6853ba429aaa")]
+        public static TextureHandle _2 => new(new Guid("330f982e-d1e0-415a-8e49-6853ba429aaa"));
+        [AssetReference("500e9a31-1d87-4691-ae0d-40bf0217b159")]
+        public static TextureHandle _3 => new(new Guid("500e9a31-1d87-4691-ae0d-40bf0217b159"));
+        [AssetReference("492ea90d-ed3a-4bc3-bffe-3516e2af0879")]
+        public static TextureHandle _4 => new(new Guid("492ea90d-ed3a-4bc3-bffe-3516e2af0879"));
+        [AssetReference("f118f78d-a082-4a7a-a974-a19f360238db")]
+        public static TextureHandle _5 => new(new Guid("f118f78d-a082-4a7a-a974-a19f360238db"));
+        [AssetReference("f84c98a5-7fe5-427d-ac49-e5a9397912c3")]
+        public static TextureHandle _12 => new(new Guid("f84c98a5-7fe5-427d-ac49-e5a9397912c3"));
+        [AssetReference("515d3486-21d2-4e4c-b221-cf190736869f")]
+        public static TextureHandle _22 => new(new Guid("515d3486-21d2-4e4c-b221-cf190736869f"));
+        [AssetReference("438fa978-0db8-42e5-bd36-be8aef156290")]
+        public static TextureHandle _32 => new(new Guid("438fa978-0db8-42e5-bd36-be8aef156290"));
+        [AssetReference("df44ad1c-cb48-4883-93ef-47e5eb613346")]
+        public static TextureHandle _42 => new(new Guid("df44ad1c-cb48-4883-93ef-47e5eb613346"));
+        [AssetReference("841148e9-3310-492a-991a-79a806f4b13d")]
+        public static TextureHandle _52 => new(new Guid("841148e9-3310-492a-991a-79a806f4b13d"));
+        [AssetReference("71e3d359-43ce-4a7b-8d51-8dbe4cc0de8e")]
+        public static TextureHandle _6 => new(new Guid("71e3d359-43ce-4a7b-8d51-8dbe4cc0de8e"));
+        [AssetReference("da0cbeb1-1a18-4500-bc4f-3d298934e2d1")]
+        public static TextureHandle _13 => new(new Guid("da0cbeb1-1a18-4500-bc4f-3d298934e2d1"));
+        [AssetReference("46b12302-3bc1-4bfe-ae2e-aa6045351380")]
+        public static TextureHandle _23 => new(new Guid("46b12302-3bc1-4bfe-ae2e-aa6045351380"));
+        [AssetReference("2d252f5c-227b-44a1-8acc-d3bc9cbe3142")]
+        public static TextureHandle _33 => new(new Guid("2d252f5c-227b-44a1-8acc-d3bc9cbe3142"));
+        [AssetReference("57845042-190f-43cb-a24b-cfbc4f3aa185")]
+        public static TextureHandle _43 => new(new Guid("57845042-190f-43cb-a24b-cfbc4f3aa185"));
+        [AssetReference("b1ba5bca-7cd4-480c-a456-9e484eb0e532")]
+        public static TextureHandle _53 => new(new Guid("b1ba5bca-7cd4-480c-a456-9e484eb0e532"));
+        [AssetReference("09e27231-be25-4546-aa0e-9b53cb405721")]
+        public static TextureHandle _14 => new(new Guid("09e27231-be25-4546-aa0e-9b53cb405721"));
+        [AssetReference("bc3673a1-55f8-4df6-ae7b-9a3ccd13e448")]
+        public static TextureHandle _24 => new(new Guid("bc3673a1-55f8-4df6-ae7b-9a3ccd13e448"));
+        [AssetReference("9c8c4ffc-e467-49df-9e70-9ce61bef8d0f")]
+        public static TextureHandle _34 => new(new Guid("9c8c4ffc-e467-49df-9e70-9ce61bef8d0f"));
+        [AssetReference("408e95cc-7df0-469e-ae5d-e58e9be4ac3a")]
+        public static TextureHandle _44 => new(new Guid("408e95cc-7df0-469e-ae5d-e58e9be4ac3a"));
+        [AssetReference("0cadb7a6-2da7-4f73-9a52-0fa208e7677f")]
+        public static TextureHandle _54 => new(new Guid("0cadb7a6-2da7-4f73-9a52-0fa208e7677f"));
+        [AssetReference("2655872b-50b4-4407-9df6-2e8948c1fc07")]
+        public static TextureHandle _62 => new(new Guid("2655872b-50b4-4407-9df6-2e8948c1fc07"));
         [AssetReference("466008ff-5bba-4d13-a3fa-e3b0d01f3cf7")]
         public static TextureHandle Character => new(new Guid("466008ff-5bba-4d13-a3fa-e3b0d01f3cf7"));
-        [AssetReference("4177f69a-e6be-4bae-88a0-b0ceee614f8d")]
-        public static TextureHandle CharacterCombo1 => new(new Guid("4177f69a-e6be-4bae-88a0-b0ceee614f8d"));
-        [AssetReference("01747900-92f5-422e-854c-c08b0af0b0dd")]
-        public static TextureHandle CharacterCombo2 => new(new Guid("01747900-92f5-422e-854c-c08b0af0b0dd"));
-        [AssetReference("17d44049-82f1-40cd-91d8-8bca5f030abc")]
-        public static TextureHandle CharacterCombo3 => new(new Guid("17d44049-82f1-40cd-91d8-8bca5f030abc"));
-        [AssetReference("0ad42c97-844a-4c5d-b15d-e0cb53d9ef2a")]
-        public static TextureHandle CharacterCombo4 => new(new Guid("0ad42c97-844a-4c5d-b15d-e0cb53d9ef2a"));
-        [AssetReference("16637495-388d-4c35-81ab-e5a4852e5d6b")]
-        public static TextureHandle CharacterCombo5 => new(new Guid("16637495-388d-4c35-81ab-e5a4852e5d6b"));
         [AssetReference("e81891d1-b1b5-48cb-b883-a2515161b0c5")]
         public static TextureHandle CharacterMissionsTransparent => new(new Guid("e81891d1-b1b5-48cb-b883-a2515161b0c5"));
         [AssetReference("65d43dc2-1616-47d7-8e76-0898a0ff03e1")]
@@ -255,6 +245,8 @@ public static partial class Assets
         public static TextureHandle SpiritSeed => new(new Guid("4f5ea19a-ff9c-4f62-afce-6de0a2cca4ee"));
         [AssetReference("52a6527c-63c2-4f67-bbe6-64848500c626")]
         public static TextureHandle SwiftScroll => new(new Guid("52a6527c-63c2-4f67-bbe6-64848500c626"));
+        [AssetReference("f09bde4d-22d2-45d3-b078-0bd3c0a5fdfb")]
+        public static AssetHandle MissionRanks => new(new Guid("f09bde4d-22d2-45d3-b078-0bd3c0a5fdfb"));
         [AssetReference("19a93e42-493a-4d4c-be21-eda0c260662e")]
         public static AssetHandle PillIcons => new(new Guid("19a93e42-493a-4d4c-be21-eda0c260662e"));
         [AssetReference("2ff86df2-d54e-475b-8bc1-1cb13352f594")]
@@ -399,6 +391,8 @@ public static partial class Assets
         public static TextureHandle HolderFront => new(new Guid("eab4311d-9b9f-42fc-a780-3c4cb64def7f"));
         [AssetReference("b229def3-ae34-48e9-93c0-b484f85beb2f")]
         public static TextureHandle Holder => new(new Guid("b229def3-ae34-48e9-93c0-b484f85beb2f"));
+        [AssetReference("8131312a-b115-4392-8053-9a046b31f48c")]
+        public static TextureHandle RanksMissions => new(new Guid("8131312a-b115-4392-8053-9a046b31f48c"));
     }
 
     public static class UI

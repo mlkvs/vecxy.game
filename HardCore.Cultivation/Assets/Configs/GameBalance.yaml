@@ -36,25 +36,24 @@ autoSaveEveryTicks: 12
 baseSpiritualPowerPerTick: 1.0
 
 # Серия ручной культивации. Комбо не сохраняется и действует только в режиме культивации.
-# gracePeriodSeconds — время после тапа до начала спада;
-# decayPerSecond — резервный параметр скорости спада для будущих режимов;
+# gracePeriodSeconds — короткое безопасное окно после последнего тапа до начала убывания;
+# decayPerSecond — скорость убывания полосы в секунду;
 # pointsPerTap — прирост серии за один тап;
-# levels — пять визуальных ступеней: порог, сила тапа, левитация и синее свечение экрана.
+# levels — три визуальные ступени: порог, сила тапа, левитация и синее свечение экрана.
 tapCombo:
   enabled: true
   baseLevitationAmplitude: 24
   baseLevitationPeriodSeconds: 3.60
-  gracePeriodSeconds: 2.50
-  decayPerSecond: 3.0
+  gracePeriodSeconds: 0.45
+  decayPerSecond: 6.0
   pointsPerTap: 1.0
-  maximumCombo: 50
+  # После открытия x3 оставшиеся 10 очков заполняют его полосу устойчивости.
+  maximumCombo: 32
   levels:
-    # Временные пороги: x1 / x2 / x3 / x4 / x5 открываются на 5 / 12 / 22 / 35 / 50 тапах.
-    - { minimumCombo: 5,  powerMultiplier: 1.00, levitationAmplitude: 26, levitationPeriodSeconds: 3.20, screenGlowOpacity: 0.05 }
-    - { minimumCombo: 12, powerMultiplier: 1.15, levitationAmplitude: 32, levitationPeriodSeconds: 2.80, screenGlowOpacity: 0.10 }
-    - { minimumCombo: 22, powerMultiplier: 1.35, levitationAmplitude: 40, levitationPeriodSeconds: 2.35, screenGlowOpacity: 0.16 }
-    - { minimumCombo: 35, powerMultiplier: 1.65, levitationAmplitude: 52, levitationPeriodSeconds: 1.90, screenGlowOpacity: 0.24 }
-    - { minimumCombo: 50, powerMultiplier: 2.10, levitationAmplitude: 68, levitationPeriodSeconds: 1.45, screenGlowOpacity: 0.34 }
+    # Временные пороги: x1 / x2 / x3 открываются на 5 / 12 / 22 тапах.
+    - { minimumCombo: 5,  powerMultiplier: 1.00, levitationAmplitude: 24, levitationPeriodSeconds: 3.60, screenGlowOpacity: 0.05 }
+    - { minimumCombo: 12, powerMultiplier: 1.15, levitationAmplitude: 24, levitationPeriodSeconds: 3.60, screenGlowOpacity: 0.10 }
+    - { minimumCombo: 22, powerMultiplier: 1.35, levitationAmplitude: 24, levitationPeriodSeconds: 3.60, screenGlowOpacity: 0.16 }
 
 # Нижняя граница эффективности тика.
 # Нужна как защита от слишком сильных штрафов.

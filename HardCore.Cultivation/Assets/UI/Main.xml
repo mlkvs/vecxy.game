@@ -47,7 +47,7 @@
             <button id="mission-summary-button" class="mission-float glass-panel">
                 <panel class="float-heading"><image sprite="Assets/Textures/GameUIAtlas.atlas#missions" /><text>ТЕКУЩАЯ МИССИЯ</text></panel>
                 <panel id="mission-danger-indicator" class="mission-danger-indicator" hidden="true">
-                    <text id="mission-difficulty" class="mission-difficulty">РАНГ F</text>
+                    <image id="mission-difficulty" class="mission-difficulty" sprite="Assets/Textures/MissionRanks.atlas#f" />
                 </panel>
                 <text id="mission-name" class="float-title">Нет активной миссии</text>
                 <panel id="mission-normal-state">
@@ -57,6 +57,7 @@
                         <panel id="mission-combat-marker" class="mission-combat-marker" hidden="true" />
                     </panel>
                     <text id="mission-progress-text" class="progress-caption">0 / 0</text>
+                    <button id="mission-abandon-button" class="combat-surrender-button" hidden="true"><panel class="combat-surrender-surface"><text>ОТКАЗАТЬСЯ</text></panel></button>
                 </panel>
                     <panel id="mission-combat-state" hidden="true">
                     <panel class="combat-preview-shell">

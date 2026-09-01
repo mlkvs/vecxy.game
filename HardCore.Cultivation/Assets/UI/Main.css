@@ -144,29 +144,24 @@ text {
 
 .character-space { flex: 1; min-height: 0; position: relative; }
 .cultivation-combo {
-    pointer-events: none; position: absolute; z-index: 12; left: 50%; top: 188px;
-    width: 176px; height: 92px; margin-left: -88px; padding: 8px 13px;
-    align-items: center; color: #eaf8ff; background-color: #102946d9;
-    border: 2px solid #79c8ff; border-radius: 20px;
-    box-shadow: 0 0 24px 5px #51aaff99;
+    pointer-events: none; position: absolute; z-index: 12; left: 50%; top: 44%;
+    width: 250px; height: 96px; margin-left: -125px; padding: 0 12px;
+    align-items: center; color: #eaf8ff; background-color: transparent;
+    border: 0; border-radius: 0; box-shadow: none;
 }
 .cultivation-combo-value {
-    width: 100%; height: 42px; color: #ffffff; font-size: 37px; min-font-size: 26px;
-    text-align: center; text-shadow: 0 0 9px #58b9ff;
+    width: 100%; height: 68px; color: #ffffff; font-size: 58px; min-font-size: 40px;
+    text-align: center; text-shadow: 0 2px 4px #071728, 0 0 10px #58b9ff;
 }
-.cultivation-combo-tier {
-    width: 100%; height: 19px; margin-top: -2px; color: #9edcff; font-size: 13px;
-    text-align: center; white-space: nowrap;
-}
+.cultivation-combo-tier { display: none; }
 .combo-progress-track {
-    width: 100%; height: 8px; margin-top: 5px; overflow: hidden;
-    background-color: #071728cc; border: 1px solid #8cd6ff88; border-radius: 4px;
+    width: 100%; height: 12px; margin-top: 4px; overflow: hidden;
+    background-color: #071728cc; border: 1px solid #8cd6ff88; border-radius: 6px;
+    box-shadow: 0 1px 4px #000000aa;
 }
 .combo-progress-fill { width: 100%; height: 100%; background-color: #77d5ff; border-radius: 4px; }
-.cultivation-combo.combo-level-2 { border-color: #83dbff; box-shadow: 0 0 30px 7px #4fb8ffbb; }
-.cultivation-combo.combo-level-3 { border-color: #a8e8ff; box-shadow: 0 0 38px 9px #66c7ffcc; }
-.cultivation-combo.combo-level-4 { border-color: #d3f5ff; box-shadow: 0 0 48px 12px #80d8ffee; }
-.cultivation-combo.combo-level-5 { border-color: #ffffff; box-shadow: 0 0 62px 17px #9ee7ffff; }
+.cultivation-combo.combo-level-2 .cultivation-combo-value { text-shadow: 0 2px 4px #071728, 0 0 14px #58b9ff; }
+.cultivation-combo.combo-level-3 .cultivation-combo-value { text-shadow: 0 2px 4px #071728, 0 0 19px #8bdcff; }
 .tick-float-layer { pointer-events: none; position: absolute; inset: 0; overflow: hidden; }
 .tick-float-layer.floating-overlay { left: 18px; right: 18px; top: 234px; bottom: 292px; }
 .tick-float {

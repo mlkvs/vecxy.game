@@ -88,11 +88,6 @@ public class Character(
     {
         _ = GetTexture(Assets.Textures.Character);
         _ = GetTexture(Assets.Textures.CharacterMissionsTransparent);
-        _ = GetTexture(Assets.Textures.CharacterCombo1);
-        _ = GetTexture(Assets.Textures.CharacterCombo2);
-        _ = GetTexture(Assets.Textures.CharacterCombo3);
-        _ = GetTexture(Assets.Textures.CharacterCombo4);
-        _ = GetTexture(Assets.Textures.CharacterCombo5);
     }
 
     public void PrewarmTextures(IRenderer renderer)
@@ -125,7 +120,7 @@ public class Character(
 
     public void SetCultivationCombo(int level, float amplitude, float periodSeconds)
     {
-        level = Math.Clamp(level, 0, 5);
+        level = Math.Clamp(level, 0, 3);
         Amplitude = Math.Max(0f, amplitude);
         PeriodSeconds = Math.Max(0.1f, periodSeconds);
         if (_comboLevel == level)
@@ -137,15 +132,11 @@ public class Character(
 
     private void ApplyTexture()
     {
-        var handle = _missionMode ? Assets.Textures.CharacterMissionsTransparent : _comboLevel switch
-        {
-            1 => Assets.Textures.CharacterCombo1,
-            2 => Assets.Textures.CharacterCombo2,
-            3 => Assets.Textures.CharacterCombo3,
-            4 => Assets.Textures.CharacterCombo4,
-            5 => Assets.Textures.CharacterCombo5,
-            _ => Assets.Textures.Character
-        };
+        // Combo intensity is rendered by the UI glow until the replacement state sprites
+        // have clean native alpha. This keeps the character itself perfectly consistent.
+        var handle = _missionMode
+            ? Assets.Textures.CharacterMissionsTransparent
+            : Assets.Textures.Character;
         var texture = GetTexture(handle);
         sprite.SetTexture(texture);
         sprite.PixelsPerUnit = texture.Value.Height / referenceTextureHeight;
