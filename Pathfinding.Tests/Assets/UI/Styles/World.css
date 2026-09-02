@@ -1,27 +1,13 @@
-ui, #world, .world-grid {
-    width: 100%;
-    height: 100%;
-    background-color: #000000;
+ui, #hud {
+    pointer-events: none; width: 100%; height: 100%; position: relative;
 }
 
-.world-grid {
-    display: grid;
+#status {
+    position: absolute; z-index: 20; left: 14px; top: 10px; height: 30px;
+    color: #e7f3ff; font-size: 18px; text-shadow: 0 2px 3px #000000cc;
 }
 
-.world-cell {
-    display: flex;
-    background-color: #000000;
-    align-items: center;
-    justify-content: center;
-}
-
-.world-cell:hover {
-    background-color: #101010;
-}
-
-.player {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-    border-radius: 2px;
+#help {
+    position: absolute; z-index: 20; right: 14px; top: 12px; height: 26px;
+    color: #9bb2c5; font-size: 15px; text-shadow: 0 2px 3px #000000cc;
 }

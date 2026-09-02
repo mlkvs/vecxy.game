@@ -93,6 +93,44 @@ cd HardCore.Cultivation
 dotnet run --project Engine/Vecxy/tools/Vecxy.Cli -- ...
 ```
 
+### Создание нового проекта
+
+Минимальный запускаемый проект можно создать через тот же CLI:
+
+```powershell
+.\vecxy.cmd new MyGame
+```
+
+```bash
+./vecxy.sh new MyGame
+```
+
+По умолчанию проект создаётся в `./MyGame`. Другой каталог задаётся через
+`--output`:
+
+```bash
+./vecxy.sh new MyGame --output Games/MyGame
+```
+
+Команда создаёт `.csproj`, простую точку входа на основе `AApp`,
+`Properties/launchSettings.json`, базовые `Application.yaml` и `game.vpack`, после
+чего выполняет scan и generate. Каталог назначения должен отсутствовать или быть
+пустым — существующие файлы команда не перезаписывает.
+
+Обычно CLI сам находит `Engine/Vecxy`. При запуске отдельно от репозитория путь
+можно передать явно:
+
+```bash
+vecxy new MyGame --engine /path/to/Engine/Vecxy
+```
+
+Созданный проект сразу можно запустить:
+
+```bash
+cd MyGame
+dotnet run
+```
+
 ### Ассеты игры и движка
 
 CLI читает `ProjectReference` игрового `.csproj` и автоматически находит

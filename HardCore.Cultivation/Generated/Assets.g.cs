@@ -475,8 +475,12 @@ public static partial class Assets
         public static AssetHandle GameUIAtlas => new(new Guid("b444fc52-e800-4a75-9beb-299282fc3682"));
         [AssetReference("72326220-7620-4d46-bcc5-bfe1752bf979")]
         public static AssetHandle IngredientIcons => new(new Guid("72326220-7620-4d46-bcc5-bfe1752bf979"));
+        [AssetReference("07094485-8bb2-45a7-a9e6-3a007bf90f34")]
+        public static AssetHandle MissionRanks => new(new Guid("07094485-8bb2-45a7-a9e6-3a007bf90f34"));
         [AssetReference("19a93e42-493a-4d4c-be21-eda0c260662e")]
         public static AssetHandle PillIcons => new(new Guid("19a93e42-493a-4d4c-be21-eda0c260662e"));
+        [AssetReference("ca014641-57f3-4052-a5f0-a7fb34964db1")]
+        public static TextureHandle RanksMissions => new(new Guid("ca014641-57f3-4052-a5f0-a7fb34964db1"));
     }
 
     public static class UI

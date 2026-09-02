@@ -1,3 +1,6 @@
 <ui styles="Styles/World.css">
-    <panel id="world" />
+    <panel id="hud">
+        <text id="status">Connecting…</text>
+        <text id="help">WASD — move   Mouse — aim   LMB — fire</text>
+    </panel>
 </ui>
