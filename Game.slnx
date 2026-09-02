@@ -28,6 +28,7 @@
     <Project Path="HardCore.Cultivation/HardCore.Cultivation.csproj" />
     <Project Path="Horror/Horror.csproj" />
     <Project Path="Sponza/Sponza.csproj" />
+    <Project Path="TicTacToe/TicTacToe.csproj" />
   </Folder>
   <Folder Name="/Tests/">
     <Project Path="Engine/Vecxy/Code/Vecxy.UI.Tests/Vecxy.UI.Tests.csproj" />

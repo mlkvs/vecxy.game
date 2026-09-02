@@ -1,0 +1,25 @@
+{
+  "assets": [
+    {
+      "id": "79d6f53f-e840-4374-89ad-d28b8fbecd0f",
+      "source": "Game",
+      "path": "Configs/Application.yaml",
+      "type": "Config",
+      "name": "Application",
+      "hash": "341416bf5ed247c864348a8e9c349b2eb9d728a48642d556ecb7a7eaab1cdce5",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    }
+  ],
+  "packages": [
+    {
+      "id": "98cbb7d7-e042-d142-6ea7-cbd84cd256be",
+      "name": "Game",
+      "descriptor": "game.vpack",
+      "load": 0,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": null
+    }
+  ]
+}

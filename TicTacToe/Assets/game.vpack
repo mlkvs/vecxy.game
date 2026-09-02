@@ -1,0 +1,5 @@
+name: Game
+version: 1.0.0
+load: startup
+dependencies: []
+compression: balanced

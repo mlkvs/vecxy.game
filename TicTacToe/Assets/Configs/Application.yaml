@@ -1,0 +1,16 @@
+application:
+  title: "TicTacToe"
+
+window:
+  width: 1280
+  height: 720
+
+engine:
+  targetFrameRate: 60
+  showSplashScreen: false
+
+assets:
+  hotReload: true
+
+layers:
+  - engine

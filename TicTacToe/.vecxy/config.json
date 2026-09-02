@@ -1,0 +1,6 @@
+{
+  "engine": {
+    "repository": "https://github.com/mlkvs/vecxy.git",
+    "ref": "develop"
+  }
+}
