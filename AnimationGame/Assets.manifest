@@ -1,0 +1,45 @@
+{
+  "assets": [
+    {
+      "id": "59799feb-b5de-4d59-9b9a-06dc42624581",
+      "source": "Game",
+      "path": "Configs/Application.yaml",
+      "type": "Config",
+      "name": "Application",
+      "hash": "775746aa7b88e2a15106e36239fd480cd00a995aab8f28b0d7e1d0e78decdaac",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "a81c40b9-6401-45a2-8d07-a324bef92bfc",
+      "source": "Game",
+      "path": "Models/Fox.glb",
+      "type": "Model",
+      "name": "Fox",
+      "hash": "d97044e701822bac5a62696459b27d7b375aada5de8574ed4362edbba94771f7",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "db11a2b6-f951-43e3-b812-9ef5b3baed67",
+      "source": "Game",
+      "path": "Models/SOURCE.md",
+      "type": "Asset",
+      "name": "SOURCE",
+      "hash": "cf3d1fd76451f436909699b206c7424585a3c9dad91bd4e80ead9906c064c708",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    }
+  ],
+  "packages": [
+    {
+      "id": "98cbb7d7-e042-d142-6ea7-cbd84cd256be",
+      "name": "Game",
+      "descriptor": null,
+      "load": 0,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": null
+    }
+  ]
+}
