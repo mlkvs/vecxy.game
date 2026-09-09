@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <VecxyGenerateEntryPoint>true</VecxyGenerateEntryPoint>
+    <RootNamespace>AnimationGame</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="..\Engine\Vecxy\Code\Vecxy.Platforms\build\Vecxy.Platforms.props" />
+</Project>

@@ -1,0 +1,14 @@
+application:
+  title: Vecxy Animations Demo
+window:
+  width: 1280
+  height: 720
+engine:
+  targetFrameRate: 60
+  showSplashScreen: false
+assets:
+  hotReload: true
+  hotReloadDelayMilliseconds: 150
+layers:
+  - engine
+  - animation-demo
