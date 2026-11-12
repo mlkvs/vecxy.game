@@ -70,7 +70,7 @@
       "path": "Models/EntranceDoor.glb",
       "type": "Model",
       "name": "EntranceDoor",
-      "hash": "ed1ade295586a5ca8276e2366b3d67b50689f5ac0596916ad390abcbdba99fe9",
+      "hash": "a0db18ef414c5676dce5915384d0823a44e5069d94a9022954f67ec01801a0b4",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -80,7 +80,7 @@
       "path": "Models/Laundromat.glb",
       "type": "Model",
       "name": "Laundromat",
-      "hash": "b07e210dfe8cb2a24e01d2feda1b3e43fb2aeb17b047f09cbebdd97a6ea2e662",
+      "hash": "0ce01ee3e6d3ebd66640bed422bc6af60a3aa3c19ce8b66a2671f343bc48e5e7",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -100,7 +100,7 @@
       "path": "Models/Weather.glb",
       "type": "Model",
       "name": "Weather",
-      "hash": "33ee97fa3c6deabfdbbef5e38eba748f3b0ad0134641a975f53729e07d17a527",
+      "hash": "079fb63c0fad12ed79f6a8821b5f665c0a8e847eb449c680c2e4734b38f58b54",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
