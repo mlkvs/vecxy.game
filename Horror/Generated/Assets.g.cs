@@ -9,6 +9,8 @@ public static partial class Assets
 {
     public static class Configs
     {
+        [AssetReference("c7a38960-635a-4dd2-929c-856c9b58c7e5")]
+        public static ConfigHandle Laundromat => new(new Guid("c7a38960-635a-4dd2-929c-856c9b58c7e5"));
         [AssetReference("7ce3da38-5b1e-439c-b5d3-0156002c14af")]
         public static ConfigHandle Physics => new(new Guid("7ce3da38-5b1e-439c-b5d3-0156002c14af"));
     }
@@ -21,6 +23,8 @@ public static partial class Assets
 
     public static class Models
     {
+        [AssetReference("c0f1abea-a8c7-401c-8b86-226a41f2a2bd")]
+        public static ModelHandle Laundromat => new(new Guid("c0f1abea-a8c7-401c-8b86-226a41f2a2bd"));
         [AssetReference("16353ce0-05ff-4ab2-be14-df8ccebac7d2")]
         public static ModelHandle Room => new(new Guid("16353ce0-05ff-4ab2-be14-df8ccebac7d2"));
     }

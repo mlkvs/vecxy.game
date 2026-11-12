@@ -18,6 +18,5 @@
     <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Diagnostics/Vecxy.Diagnostics.csproj" />
     <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Physics/Vecxy.Physics.csproj" />
     <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Input/Vecxy.Input.csproj" />
-    <ProjectReference Include="..\Engine\Vecxy\Code\Vecxy.Editor\Vecxy.Editor.csproj" />
   </ItemGroup>
 </Project>

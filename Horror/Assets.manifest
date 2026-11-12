@@ -1,12 +1,22 @@
 {
   "assets": [
     {
+      "id": "c7a38960-635a-4dd2-929c-856c9b58c7e5",
+      "source": "Game",
+      "path": "Configs/Laundromat.yaml",
+      "type": "Config",
+      "name": "Laundromat",
+      "hash": "95fc3fc83afc268afc2461c6e95be82f307e4d9a730fe6776d0218bfa97daae6",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
       "id": "7ce3da38-5b1e-439c-b5d3-0156002c14af",
       "source": "Game",
       "path": "Configs/Physics.yaml",
       "type": "Config",
       "name": "Physics",
-      "hash": "335c0ece43bc12a669e603aace026d5b331f371690b26f820b9818c235324cfa",
+      "hash": "15becb9c22de156890f5172b94e13288608e2628513ee587a3bc53a4f3ae2e8f",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -17,6 +27,16 @@
       "type": "Input",
       "name": "Controls",
       "hash": "3df5a35d53bc66668109f37e8e7b5e1cd896061cf8ddcce77c5ee3b4a06f9af1",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "c0f1abea-a8c7-401c-8b86-226a41f2a2bd",
+      "source": "Game",
+      "path": "Models/Laundromat.glb",
+      "type": "Model",
+      "name": "Laundromat",
+      "hash": "d8fca7cdcd5cdcd74d1354ee265728ef0e8a936884380ceebeaa5dade41d6034",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -109,7 +129,7 @@
       "path": "Shaders/Lit.glsl",
       "type": "Shader",
       "name": "Lit",
-      "hash": "e0e4138798a91ea8b235f0fce3793aa8a48a4e1b79d439b2d24837beb753aef7",
+      "hash": "723c40dd239d671188e81451bc03cb24da9e85a251438909701804d3f6cc6c87",
       "dependencies": [],
       "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
     },

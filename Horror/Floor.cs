@@ -1,5 +1,6 @@
 using System.Numerics;
 using Vecxy.Physics;
+using Vecxy.Prototypes;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 
@@ -9,7 +10,7 @@ public sealed class Floor : AComponent
 {
     public sealed class Prototype : APrototype<Floor, Prototype.Options>
     {
-        public sealed class Options : IPrototype.IOptions
+        public sealed class Options
         {
             public Vector3 Position { get; init; }
             public Vector2 Size { get; init; } = new(20.0f, 20.0f);
@@ -18,12 +19,10 @@ public sealed class Floor : AComponent
             public Material? Material { get; init; }
         }
 
-        protected override Floor Instantiate(InstantiateContext ctx)
+        protected override Floor Instantiate(IPrototypeContext context)
         {
-            if (ctx.Scene is null)
-                throw new InvalidOperationException("Floor requires a scene.");
-
-            return ctx.Scene.CreateObject("Floor", isStatic: true)
+            var ctx = RequireContext<ScenePrototypeContext>(context);
+            return ctx.CreateObject("Floor", isStatic: true)
                 .AddComponent<Floor>();
         }
 
@@ -49,16 +48,20 @@ public sealed class Floor : AComponent
             collider.Center = new Vector3(0.0f, -options.Thickness * 0.5f, 0.0f);
 
             floor._mesh = options.Mesh;
+            floor._material = options.Material;
             floor.SceneObject.AddComponent<MeshRenderer>()
                 .SetMesh(floor._mesh, options.Material);
         }
     }
 
     private Mesh? _mesh;
+    private Material? _material;
 
     public override void OnDestroy()
     {
         _mesh?.Dispose();
         _mesh = null;
+        _material?.Dispose();
+        _material = null;
     }
 }

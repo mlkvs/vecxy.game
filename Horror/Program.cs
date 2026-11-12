@@ -1,5 +1,4 @@
 using Vecxy.Assets;
-using Vecxy.Editor;
 using Vecxy.Engine;
 using Vecxy.Kernel;
 using Vecxy.Platforms;
@@ -22,7 +21,6 @@ public sealed class Application : IVEntry
         {
             AssetsDirectory = context.AssetsDirectory
         }));
-        layers.Add(new EditorLayer.Definition());
         layers.Add(new HorrorLayer.Definition());
     }
 }

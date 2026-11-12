@@ -2,6 +2,7 @@ using System.Numerics;
 using Vecxy.Input;
 using Vecxy.Kernel;
 using Vecxy.Physics;
+using Vecxy.Prototypes;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 
@@ -13,31 +14,36 @@ public sealed class Player : AComponent
         IWindow window,
         IInputManager inputManager) : APrototype<Player, Prototype.Options>
     {
-        public sealed class Options : IPrototype.IOptions
+        public sealed class Options
         {
             public InputMap? Input { get; init; }
             public Camera? Camera { get; init; }
             public IPhysicsSystem? Physics { get; init; }
-            public float WalkSpeed { get; init; } = 3.5f;
+            public float WalkSpeed { get; init; } = 2.5f;
             public float SprintMultiplier { get; init; } = 1.8f;
             public float GroundAcceleration { get; init; } = 24.0f;
             public float GroundDeceleration { get; init; } = 30.0f;
             public float AirAcceleration { get; init; } = 8.0f;
-            public float JumpVelocity { get; init; } = 5.2f;
+            public float JumpVelocity { get; init; } = 2.8f;
             public float LookSensitivity { get; init; } = 0.0025f;
             public float MaximumPitch { get; init; } = 1.45f;
             public float Height { get; init; } = 1.8f;
             public float Radius { get; init; } = 0.35f;
-            public float EyeHeight { get; init; } = 1.62f;
+            public float EyeHeight { get; init; } = 1.6f;
             public float GroundProbeDistance { get; init; } = 0.15f;
         }
 
-        protected override Player Instantiate(InstantiateContext ctx)
+        protected override Player Instantiate(IPrototypeContext context)
         {
-            if (ctx.Parent is null)
-                throw new InvalidOperationException("Player requires a parent object.");
+            var ctx = RequireContext<ScenePrototypeContext>(context);
+            var playerObject = ctx.Object ?? ctx.CreateObject("Player");
+            if (ctx.Object is null)
+            {
+                playerObject.Transform.Position = ctx.Position;
+                playerObject.Transform.Rotation = ctx.Rotation;
+            }
 
-            return ctx.Parent.AddComponent<Player>();
+            return playerObject.AddComponent<Player>();
         }
 
         protected override void Configure(Player player, Options options)
@@ -87,23 +93,28 @@ public sealed class Player : AComponent
     private float _yaw;
     private float _pitch;
     private bool _jumpWasPressed;
+    private bool _jumpRequested;
+    private Vector3 _spawnPosition;
+    private Quaternion _spawnRotation;
 
-    public float WalkSpeed { get; private set; } = 3.5f;
+    public float WalkSpeed { get; private set; } = 2.5f;
     public float SprintMultiplier { get; private set; } = 1.8f;
     public float GroundAcceleration { get; private set; } = 24.0f;
     public float GroundDeceleration { get; private set; } = 30.0f;
     public float AirAcceleration { get; private set; } = 8.0f;
-    public float JumpVelocity { get; private set; } = 5.2f;
+    public float JumpVelocity { get; private set; } = 2.8f;
     public float LookSensitivity { get; private set; } = 0.0025f;
     public float MaximumPitch { get; private set; } = 1.45f;
     public float Height { get; private set; } = 1.8f;
     public float Radius { get; private set; } = 0.35f;
-    public float EyeHeight { get; private set; } = 1.62f;
+    public float EyeHeight { get; private set; } = 1.6f;
     public float GroundProbeDistance { get; private set; } = 0.15f;
     public bool IsGrounded { get; private set; }
 
     public override void Start()
     {
+        _spawnPosition = Transform.WorldPosition;
+        _spawnRotation = Transform.WorldRotation;
         var forward = Transform.Forward;
         _yaw = MathF.Atan2(-forward.X, -forward.Z);
         ApplyBodyRotation();
@@ -119,6 +130,24 @@ public sealed class Player : AComponent
     public override void Update(float deltaTime)
     {
         UpdateLook();
+        var jumpPressed = Window.IsCursorCaptured && Input.GetAction("Jump").IsPressed;
+        _jumpRequested |= jumpPressed && !_jumpWasPressed;
+        _jumpWasPressed = jumpPressed;
+    }
+
+    public override void FixedUpdate(float deltaTime)
+    {
+        if (Transform.WorldPosition.Y < _spawnPosition.Y - 10.0f)
+        {
+            Physics.Teleport(Body, _spawnPosition, _spawnRotation);
+            Body.Velocity = Vector3.Zero;
+            Body.AngularVelocity = Vector3.Zero;
+            var spawnForward = Vector3.Transform(-Vector3.UnitZ, _spawnRotation);
+            _yaw = MathF.Atan2(-spawnForward.X, -spawnForward.Z);
+            _pitch = 0.0f;
+            _jumpRequested = false;
+        }
+
         UpdateGroundedState();
         UpdateMovement(deltaTime);
         ApplyBodyRotation();
@@ -163,7 +192,9 @@ public sealed class Player : AComponent
 
     private void UpdateMovement(float deltaTime)
     {
-        var move = Input.GetAction<Vector2>("Move").Value;
+        var move = Window.IsCursorCaptured
+            ? Input.GetAction<Vector2>("Move").Value
+            : Vector2.Zero;
         if (move.LengthSquared() > 1.0f)
             move = Vector2.Normalize(move);
 
@@ -192,8 +223,7 @@ public sealed class Player : AComponent
         if (IsGrounded && verticalVelocity < -1.0f)
             verticalVelocity = -1.0f;
 
-        var jumpPressed = Input.GetAction("Jump").IsPressed;
-        if (IsGrounded && jumpPressed && !_jumpWasPressed)
+        if (Window.IsCursorCaptured && IsGrounded && _jumpRequested)
         {
             verticalVelocity = JumpVelocity;
             IsGrounded = false;
@@ -201,7 +231,7 @@ public sealed class Player : AComponent
 
         Body.Velocity = new Vector3(horizontalVelocity.X, verticalVelocity, horizontalVelocity.Z);
         Body.AngularVelocity = Vector3.Zero;
-        _jumpWasPressed = jumpPressed;
+        _jumpRequested = false;
     }
 
     private void ApplyBodyRotation() =>
