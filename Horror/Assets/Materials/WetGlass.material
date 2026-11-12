@@ -1,0 +1,5 @@
+shader: Shaders/WetGlass.glsl
+surface: Transparent
+parameters:
+  uTime:
+    float: 0

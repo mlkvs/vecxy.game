@@ -1,12 +1,22 @@
 {
   "assets": [
     {
+      "id": "116e80ce-e721-4150-ba18-9fa1bd6b8479",
+      "source": "Game",
+      "path": "Audio/Rain.wav",
+      "type": "Sound",
+      "name": "Rain",
+      "hash": "d10c760c71171967f0e1d11d55fde61df559dd047cea20a3a2d772b494f5786c",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
       "id": "c7a38960-635a-4dd2-929c-856c9b58c7e5",
       "source": "Game",
       "path": "Configs/Laundromat.yaml",
       "type": "Config",
       "name": "Laundromat",
-      "hash": "95fc3fc83afc268afc2461c6e95be82f307e4d9a730fe6776d0218bfa97daae6",
+      "hash": "cbaafdc9be1ce77b886e7920593a0def4d9ad80d99589500d1df9a61b649023c",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -26,7 +36,41 @@
       "path": "Controls.input",
       "type": "Input",
       "name": "Controls",
-      "hash": "3df5a35d53bc66668109f37e8e7b5e1cd896061cf8ddcce77c5ee3b4a06f9af1",
+      "hash": "d8a206572264cc9df49fc0ae6df8d94f88b8cd007a5067e927a5bf1c11dd1b37",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "94890db2-b021-44c7-a5af-72146c9c7f3a",
+      "source": "Game",
+      "path": "Materials/Rain.material",
+      "type": "Material",
+      "name": "Rain",
+      "hash": "f94971fe284de96e90963f25b93818af5d92c218fbc15015b5386a84bafac688",
+      "dependencies": [
+        "6d449907-3439-4bf2-8302-964e90680604"
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "69ce6ec5-ae56-4ea4-aa5e-4a0e067ecc37",
+      "source": "Game",
+      "path": "Materials/WetGlass.material",
+      "type": "Material",
+      "name": "WetGlass",
+      "hash": "8d82999708156bf4dca147a0217b2e522cd20c3ebcf5deaaad6abf8ec0ca57f6",
+      "dependencies": [
+        "4ec8190e-c0ac-47a1-8d77-fef983ee1902"
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "233afec7-1143-4981-b903-18913fff0128",
+      "source": "Game",
+      "path": "Models/EntranceDoor.glb",
+      "type": "Model",
+      "name": "EntranceDoor",
+      "hash": "ed1ade295586a5ca8276e2366b3d67b50689f5ac0596916ad390abcbdba99fe9",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -36,7 +80,7 @@
       "path": "Models/Laundromat.glb",
       "type": "Model",
       "name": "Laundromat",
-      "hash": "d8fca7cdcd5cdcd74d1354ee265728ef0e8a936884380ceebeaa5dade41d6034",
+      "hash": "b07e210dfe8cb2a24e01d2feda1b3e43fb2aeb17b047f09cbebdd97a6ea2e662",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -47,6 +91,16 @@
       "type": "Model",
       "name": "room",
       "hash": "9b79c3a5f4f280752b90fcacb038005fb652c96e4cbef5aebee82d9204c8baba",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "3872fd9c-43ff-4393-97f1-766238544c89",
+      "source": "Game",
+      "path": "Models/Weather.glb",
+      "type": "Model",
+      "name": "Weather",
+      "hash": "33ee97fa3c6deabfdbbef5e38eba748f3b0ad0134641a975f53729e07d17a527",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -67,6 +121,26 @@
       "type": "Text",
       "name": "Vignette",
       "hash": "728e64665b4003d603e87f89cad7f56b81fca8df2e14d51bdf8bc279eddf93e0",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "6d449907-3439-4bf2-8302-964e90680604",
+      "source": "Game",
+      "path": "Shaders/Rain.glsl",
+      "type": "Shader",
+      "name": "Rain",
+      "hash": "7b2c7983cb16e2c9fdcebe31e5422b8b72c0c30949f6026e3c5300f6ef2b32fb",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "4ec8190e-c0ac-47a1-8d77-fef983ee1902",
+      "source": "Game",
+      "path": "Shaders/WetGlass.glsl",
+      "type": "Shader",
+      "name": "WetGlass",
+      "hash": "58935751aadfb06b21709fcabfc0c0fc426c85a6ce6f715c2a2c06e9b1b968c9",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },

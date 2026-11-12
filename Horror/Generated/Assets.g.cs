@@ -7,6 +7,12 @@ using Vecxy.Assets;
 
 public static partial class Assets
 {
+    public static class Audio
+    {
+        [AssetReference("116e80ce-e721-4150-ba18-9fa1bd6b8479")]
+        public static SoundHandle Rain => new(new Guid("116e80ce-e721-4150-ba18-9fa1bd6b8479"));
+    }
+
     public static class Configs
     {
         [AssetReference("c7a38960-635a-4dd2-929c-856c9b58c7e5")]
@@ -21,12 +27,24 @@ public static partial class Assets
         public static InputHandle Controls => new(new Guid("ab5789d9-aa8d-4d0a-b622-9679bafcb116"));
     }
 
+    public static class Materials
+    {
+        [AssetReference("94890db2-b021-44c7-a5af-72146c9c7f3a")]
+        public static MaterialHandle Rain => new(new Guid("94890db2-b021-44c7-a5af-72146c9c7f3a"));
+        [AssetReference("69ce6ec5-ae56-4ea4-aa5e-4a0e067ecc37")]
+        public static MaterialHandle WetGlass => new(new Guid("69ce6ec5-ae56-4ea4-aa5e-4a0e067ecc37"));
+    }
+
     public static class Models
     {
+        [AssetReference("233afec7-1143-4981-b903-18913fff0128")]
+        public static ModelHandle EntranceDoor => new(new Guid("233afec7-1143-4981-b903-18913fff0128"));
         [AssetReference("c0f1abea-a8c7-401c-8b86-226a41f2a2bd")]
         public static ModelHandle Laundromat => new(new Guid("c0f1abea-a8c7-401c-8b86-226a41f2a2bd"));
         [AssetReference("16353ce0-05ff-4ab2-be14-df8ccebac7d2")]
         public static ModelHandle Room => new(new Guid("16353ce0-05ff-4ab2-be14-df8ccebac7d2"));
+        [AssetReference("3872fd9c-43ff-4393-97f1-766238544c89")]
+        public static ModelHandle Weather => new(new Guid("3872fd9c-43ff-4393-97f1-766238544c89"));
     }
 
     public static class PostProcessing
@@ -35,6 +53,14 @@ public static partial class Assets
         public static TextHandle Retro => new(new Guid("74930d94-c612-460a-86d9-3d1b62206fdb"));
         [AssetReference("c885b107-25f7-4f3f-b55a-359070c822ee")]
         public static TextHandle Vignette => new(new Guid("c885b107-25f7-4f3f-b55a-359070c822ee"));
+    }
+
+    public static class Shaders
+    {
+        [AssetReference("6d449907-3439-4bf2-8302-964e90680604")]
+        public static ShaderHandle Rain => new(new Guid("6d449907-3439-4bf2-8302-964e90680604"));
+        [AssetReference("4ec8190e-c0ac-47a1-8d77-fef983ee1902")]
+        public static ShaderHandle WetGlass => new(new Guid("4ec8190e-c0ac-47a1-8d77-fef983ee1902"));
     }
 
     public static class Engine

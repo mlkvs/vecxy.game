@@ -21,6 +21,11 @@ maps:
         bindings:
           - type: Composite
             composite: WASD
+      - name: Interact
+        type: Button
+        bindings:
+          - type: Keyboard
+            key: E
       - name: Jump
         type: Button
         bindings:
