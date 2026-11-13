@@ -5,6 +5,7 @@ using Vecxy.Physics;
 using Vecxy.Prototypes;
 using Vecxy.Rendering;
 using Vecxy.Scene;
+using Vecxy.UI;
 
 namespace Horror;
 
@@ -13,7 +14,8 @@ public sealed class Player : AComponent
     public sealed class Prototype(
         IWindow window,
         IInputManager inputManager,
-        IInputCaptureState inputCapture) : APrototype<Player, Prototype.Options>
+        IInputCaptureState inputCapture,
+        IUiManager ui) : APrototype<Player, Prototype.Options>
     {
         public sealed class Options
         {
@@ -54,6 +56,7 @@ public sealed class Player : AComponent
             player.Window = window;
             player.InputManager = inputManager;
             player.InputCapture = inputCapture;
+            player.Ui = ui;
             player.Physics = options.Physics ?? throw new ArgumentNullException(nameof(options.Physics));
             player.WalkSpeed = options.WalkSpeed;
             player.SprintMultiplier = options.SprintMultiplier;
@@ -90,6 +93,7 @@ public sealed class Player : AComponent
     private IWindow Window { get; set; } = null!;
     private IInputManager InputManager { get; set; } = null!;
     private IInputCaptureState InputCapture { get; set; } = null!;
+    private IUiManager Ui { get; set; } = null!;
     private IPhysicsSystem Physics { get; set; } = null!;
     private InputAction? _releaseCursorAction;
     private InputAction? _captureCursorAction;
@@ -132,7 +136,7 @@ public sealed class Player : AComponent
 
     public override void Update(float deltaTime)
     {
-        UpdateLook();
+        UpdateLook(deltaTime);
         var jumpPressed = Window.IsCursorCaptured && Input.GetAction("Jump").IsPressed;
         _jumpRequested |= jumpPressed && !_jumpWasPressed;
         _jumpWasPressed = jumpPressed;
@@ -171,10 +175,31 @@ public sealed class Player : AComponent
     private void OnReleaseCursor(InputActionContext context) => Window.SetCursorCaptured(false);
     private void OnCaptureCursor(InputActionContext context) => Window.SetCursorCaptured(true);
 
-    private void UpdateLook()
+    private void UpdateLook(float deltaTime)
     {
-        if (!Window.IsCursorCaptured || InputCapture.SuppressMouse || InputCapture.SuppressMouseMotion)
+        if (!Window.IsCursorCaptured)
             return;
+
+        if (InputCapture.SuppressMouseMotion)
+        {
+            foreach (var document in Ui.Documents)
+                if (document.Canvas?.CursorWorldPosition is { } target)
+                {
+                    var direction = target - Camera.Transform.WorldPosition;
+                    if (direction.LengthSquared() < 1e-8f) return;
+                    direction = Vector3.Normalize(direction);
+                    var yaw = MathF.Atan2(-direction.X,-direction.Z);
+                    var pitch = Math.Clamp(MathF.Asin(Math.Clamp(direction.Y,-1,1)),-MaximumPitch,MaximumPitch);
+                    var yawDelta = MathF.Atan2(MathF.Sin(yaw-_yaw),MathF.Cos(yaw-_yaw));
+                    var blend = 1-MathF.Exp(-2.5f*deltaTime);
+                    var maxStep = .65f*deltaTime;
+                    _yaw += Math.Clamp(yawDelta*blend,-maxStep,maxStep);
+                    _pitch += Math.Clamp((pitch-_pitch)*blend,-maxStep,maxStep);
+                    return;
+                }
+            return;
+        }
+        if (InputCapture.SuppressMouse) return;
 
         var mouseDelta = InputManager.MouseDelta;
         if (mouseDelta.LengthSquared() <= float.Epsilon)
