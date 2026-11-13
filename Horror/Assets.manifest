@@ -110,7 +110,7 @@
       "path": "PostProcessing/Retro.postfx",
       "type": "Text",
       "name": "Retro",
-      "hash": "993f6a119b122653dcb271a6c045ba19e4f336ba93812a0982f34f3c9137ed41",
+      "hash": "4f8cec0499fa8b5f60538a1473a3afc0cc7afc2c9beeb76bc680f949ffb00955",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -120,7 +120,7 @@
       "path": "PostProcessing/Vignette.postfx",
       "type": "Text",
       "name": "Vignette",
-      "hash": "728e64665b4003d603e87f89cad7f56b81fca8df2e14d51bdf8bc279eddf93e0",
+      "hash": "e4ee2ac0c623c1a6d2242c8f61b1886d954850c1b741b8116aa3629490867753",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },

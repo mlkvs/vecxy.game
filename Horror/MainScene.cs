@@ -38,7 +38,7 @@ public sealed class MainScene(
         scene.Lighting.Exposure = 1.0f;
         scene.Lighting.AmbientSkyColor = new Vector3(0.12f, 0.15f, 0.2f);
         scene.Lighting.AmbientGroundColor = new Vector3(0.035f, 0.04f, 0.045f);
-        scene.Lighting.AmbientIntensity = 0.7f;
+        scene.Lighting.AmbientIntensity = 0.95f;
         scene.Lighting.SpecularStrength = 0.16f;
         scene.Lighting.Fog.Color = new Vector3(0.015f, 0.02f, 0.03f);
         scene.Lighting.Fog.StartDistance = 14.0f;

@@ -4,9 +4,9 @@ order: 200
 roundEnabled: true
 sideMasksEnabled: false
 color: [0.0, 0.0, 0.0, 1.0]
-intensity: 0.8
-roundRadius: 0.5
-roundSoftness: 0.9
+intensity: 0.12
+roundRadius: 0.85
+roundSoftness: 0.35
 top: 0.0
 right: 0.0
 bottom: 0.0
