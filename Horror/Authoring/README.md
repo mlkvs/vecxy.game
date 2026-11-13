@@ -70,19 +70,21 @@ Sandbox
 ## Добавить свой компонент из C#
 
 Пример целиком — [LaundryMachine.cs](../LaundryMachine.cs).
-На типе компонента ставится `EditorComponent`, на свойствах вложенного
-`Prototype.Options` — `EditorField`:
+Один универсальный атрибут `Authoring` ставится и на класс компонента, и на
+свойства вложенного `Prototype.Options`:
 
 ```csharp
-[EditorComponent("Мой компонент", Category = "Gameplay", Key = "myComponent")]
+[Authoring("Мой компонент", Category = "Gameplay", Key = "myComponent")]
 // public sealed class MyComponent : AComponent ...
 
 // В Prototype.Options:
-[EditorField("Скорость", Min = 0, Unit = "m/s")]
+[Authoring("Скорость", Min = 0, Unit = "m/s")]
 public float Speed { get; set; } = 2;
 ```
 
-Выполни сборку C#, затем **Reload project components** в Blender. Каталог
+Выполни `vecxy -p Horror generate` или обычную сборку C#. Открытый Blender
+автоматически перечитает изменившийся каталог; кнопка **Reload project components**
+позволяет обновить его вручную. Каталог
 `Authoring/vecxy.components.json` создаётся автоматически из проекта и его
 зависимостей: стандартные компоненты движка и игровые типы находятся в одном списке.
 Аддон читает его при открытии `.blend`. Поля имеют названия, типы и defaults из C#;

@@ -47,6 +47,5 @@
     <Project Path="Engine/Vecxy/tools/Vecxy.AssetAnalyzer/Vecxy.AssetAnalyzer.csproj" />
     <Project Path="Engine/Vecxy/tools/Vecxy.AssetPipeline/Vecxy.AssetPipeline.csproj" />
     <Project Path="Engine/Vecxy/tools/Vecxy.Cli/Vecxy.Cli.csproj" />
-    <Project Path="Engine/Vecxy/tools/Vecxy.ComponentCatalog/Vecxy.ComponentCatalog.csproj" />
   </Folder>
 </Solution>

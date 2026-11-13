@@ -631,3 +631,20 @@ audio.Play(Assets.Sounds.UiClick);
 Например, отключение `Skybox` вместе с `DefaultSkybox` удаляет shader, конфиг и
 встроенный cubemap только из билда этой игры. Формат и сценарий собственного
 skybox описаны в [VPack.md](VPack.md).
+
+## Каталог Authoring и единая генерация проекта
+
+`vecxy -p Horror generate` (также `assets generate`) запускает весь цикл:
+сканирование ассетов со стабильными GUID → `Generated/Assets.g.cs` → компиляция →
+`Authoring/vecxy.components.json`. Обычный `dotnet build` выполняет те же этапы.
+Каталог создаёт общий `Vecxy.AssetPipeline`, отдельного инструмента для USD нет.
+`assets scan` остаётся быстрой операцией над манифестом, `assets prepare` — этапом
+подготовки до компиляции. Каталог завершается по свежей сборке, включая зависимости
+движка, а не по устаревшей DLL. При ошибке компиляции генерация завершается с ошибкой.
+
+Универсальный `[Authoring]` применяется и к классу компонента, и к свойствам его
+`Prototype.Options`. Подпись можно опустить; доступны Category, Description, Key,
+Min, Max, Unit, Order и Default. Пример — `Horror/LaundryMachine.cs`. В Blender
+изменившийся каталог перечитывается автоматически; доступна и кнопка Reload project components. Путь каталога можно изменить
+свойством `VecxyAuthoringCatalog`; это данные инструментов вне Assets, они не
+получают runtime AssetId и не попадают в VPack.

@@ -211,6 +211,62 @@
       ]
     },
     {
+      "type": "Vecxy.Physics.RigidBody",
+      "label": "Rigid Body",
+      "category": "Physics",
+      "description": "",
+      "key": "rigidBody",
+      "fields": [
+        {
+          "key": "motionType",
+          "label": "Motion",
+          "description": "",
+          "kind": "ENUM",
+          "default": "Dynamic",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "Dynamic",
+            "Kinematic"
+          ]
+        },
+        {
+          "key": "mass",
+          "label": "Mass",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 1,
+          "min": 0.001,
+          "max": null,
+          "unit": "kg",
+          "choices": []
+        },
+        {
+          "key": "affectedByGravity",
+          "label": "Gravity",
+          "description": "",
+          "kind": "BOOL",
+          "default": true,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "linearDamping",
+          "label": "Linear damping",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0,
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        }
+      ]
+    },
+    {
       "type": "Vecxy.Physics.SphereCollider",
       "label": "Sphere Collider",
       "category": "Physics",
@@ -273,62 +329,6 @@
           "default": false,
           "min": null,
           "max": null,
-          "unit": "",
-          "choices": []
-        }
-      ]
-    },
-    {
-      "type": "Vecxy.Physics.RigidBody",
-      "label": "Rigid Body",
-      "category": "Physics",
-      "description": "",
-      "key": "rigidBody",
-      "fields": [
-        {
-          "key": "motionType",
-          "label": "Motion",
-          "description": "",
-          "kind": "ENUM",
-          "default": "Dynamic",
-          "min": null,
-          "max": null,
-          "unit": "",
-          "choices": [
-            "Dynamic",
-            "Kinematic"
-          ]
-        },
-        {
-          "key": "mass",
-          "label": "Mass",
-          "description": "",
-          "kind": "FLOAT",
-          "default": 1,
-          "min": 0.001,
-          "max": null,
-          "unit": "kg",
-          "choices": []
-        },
-        {
-          "key": "affectedByGravity",
-          "label": "Gravity",
-          "description": "",
-          "kind": "BOOL",
-          "default": true,
-          "min": null,
-          "max": null,
-          "unit": "",
-          "choices": []
-        },
-        {
-          "key": "linearDamping",
-          "label": "Linear damping",
-          "description": "",
-          "kind": "FLOAT",
-          "default": 0,
-          "min": 0,
-          "max": 1,
           "unit": "",
           "choices": []
         }

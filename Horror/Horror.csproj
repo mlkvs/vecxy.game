@@ -26,7 +26,4 @@
     <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Input/Vecxy.Input.csproj" />
   </ItemGroup>
   <Import Project="../Engine/Vecxy/Code/Vecxy.Usd/build/Vecxy.Usd.targets" />
-  <PropertyGroup>
-    <VecxyGenerateComponentCatalog>true</VecxyGenerateComponentCatalog>
-  </PropertyGroup>
 </Project>

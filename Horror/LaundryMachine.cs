@@ -4,7 +4,7 @@ using Vecxy.Scene;
 namespace Horror;
 
 /// <summary>Authorable per-machine settings; visual geometry remains a shared USD asset.</summary>
-[EditorComponent("Стиральная машина", Category = "Gameplay", Key = "machine", Description = "Номер, питание и длительность цикла общей модели машинки.")]
+[Authoring("Стиральная машина", Category = "Gameplay", Key = "machine", Description = "Номер, питание и длительность цикла общей модели машинки.")]
 public sealed class LaundryMachine : AComponent
 {
     public int Number { get; private set; }
@@ -15,11 +15,11 @@ public sealed class LaundryMachine : AComponent
     {
         public sealed class Options
         {
-            [EditorField("Номер машинки", Min = 0, Order = 0)]
+            [Authoring("Номер машинки", Min = 0, Order = 0)]
             public int Number { get; set; }
-            [EditorField("Питание включено", Order = 1)]
+            [Authoring("Питание включено", Order = 1)]
             public bool Powered { get; set; } = true;
-            [EditorField("Время стирки", Min = 0.1, Unit = "s", Order = 2, Description = "Длительность цикла в секундах.")]
+            [Authoring("Время стирки", Min = 0.1, Unit = "s", Order = 2, Description = "Длительность цикла в секундах.")]
             public float CycleSeconds { get; set; } = 1320;
         }
 
