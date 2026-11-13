@@ -2,6 +2,7 @@ using Vecxy.Assets;
 using Vecxy.Engine;
 using Vecxy.Kernel;
 using Vecxy.Platforms;
+using Vecxy.Usd;
 
 namespace Horror;
 
@@ -20,7 +21,7 @@ public sealed class Application : IVEntry
         layers.Add(new EngineLayer.Definition(new AssetsModule.Options
         {
             AssetsDirectory = context.AssetsDirectory
-        }));
+        }, additionalModules: [new UsdModule.Definition()]));
         layers.Add(new HorrorLayer.Definition());
     }
 }

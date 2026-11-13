@@ -1,0 +1,338 @@
+{
+  "format": 1,
+  "assembly": "Horror.dll",
+  "components": [
+    {
+      "type": "Horror.LaundryMachine",
+      "label": "\u0421\u0442\u0438\u0440\u0430\u043B\u044C\u043D\u0430\u044F \u043C\u0430\u0448\u0438\u043D\u0430",
+      "category": "Gameplay",
+      "description": "\u041D\u043E\u043C\u0435\u0440, \u043F\u0438\u0442\u0430\u043D\u0438\u0435 \u0438 \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0446\u0438\u043A\u043B\u0430 \u043E\u0431\u0449\u0435\u0439 \u043C\u043E\u0434\u0435\u043B\u0438 \u043C\u0430\u0448\u0438\u043D\u043A\u0438.",
+      "key": "machine",
+      "fields": [
+        {
+          "key": "number",
+          "label": "\u041D\u043E\u043C\u0435\u0440 \u043C\u0430\u0448\u0438\u043D\u043A\u0438",
+          "description": "",
+          "kind": "INT",
+          "default": 0,
+          "min": 0,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "powered",
+          "label": "\u041F\u0438\u0442\u0430\u043D\u0438\u0435 \u0432\u043A\u043B\u044E\u0447\u0435\u043D\u043E",
+          "description": "",
+          "kind": "BOOL",
+          "default": true,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "cycleSeconds",
+          "label": "\u0412\u0440\u0435\u043C\u044F \u0441\u0442\u0438\u0440\u043A\u0438",
+          "description": "\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0446\u0438\u043A\u043B\u0430 \u0432 \u0441\u0435\u043A\u0443\u043D\u0434\u0430\u0445.",
+          "kind": "FLOAT",
+          "default": 1320,
+          "min": 0.1,
+          "max": null,
+          "unit": "s",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "Vecxy.Physics.BoxCollider",
+      "label": "Box Collider",
+      "category": "Physics",
+      "description": "",
+      "key": "collider",
+      "fields": [
+        {
+          "key": "size",
+          "label": "Size",
+          "description": "Full dimensions in local coordinates.",
+          "kind": "VECTOR3",
+          "default": [
+            1,
+            1,
+            1
+          ],
+          "min": 0.001,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "center",
+          "label": "Center",
+          "description": "Offset in the object\u0027s local coordinates.",
+          "kind": "VECTOR3",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "friction",
+          "label": "Friction",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.5,
+          "min": 0,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "restitution",
+          "label": "Restitution",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0,
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "isTrigger",
+          "label": "Trigger",
+          "description": "",
+          "kind": "BOOL",
+          "default": false,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "Vecxy.Physics.CapsuleCollider",
+      "label": "Capsule Collider",
+      "category": "Physics",
+      "description": "",
+      "key": "collider",
+      "fields": [
+        {
+          "key": "radius",
+          "label": "Radius",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.35,
+          "min": 0.001,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "center",
+          "label": "Center",
+          "description": "Offset in the object\u0027s local coordinates.",
+          "kind": "VECTOR3",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "height",
+          "label": "Cylinder height",
+          "description": "Height between hemisphere centers.",
+          "kind": "FLOAT",
+          "default": 1.1,
+          "min": 0,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "axis",
+          "label": "Axis",
+          "description": "",
+          "kind": "ENUM",
+          "default": "Z",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "X",
+            "Y",
+            "Z"
+          ]
+        },
+        {
+          "key": "friction",
+          "label": "Friction",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.5,
+          "min": 0,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "restitution",
+          "label": "Restitution",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0,
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "isTrigger",
+          "label": "Trigger",
+          "description": "",
+          "kind": "BOOL",
+          "default": false,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "Vecxy.Physics.SphereCollider",
+      "label": "Sphere Collider",
+      "category": "Physics",
+      "description": "",
+      "key": "collider",
+      "fields": [
+        {
+          "key": "radius",
+          "label": "Radius",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.5,
+          "min": 0.001,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "center",
+          "label": "Center",
+          "description": "Offset in the object\u0027s local coordinates.",
+          "kind": "VECTOR3",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "friction",
+          "label": "Friction",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.5,
+          "min": 0,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "restitution",
+          "label": "Restitution",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0,
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "isTrigger",
+          "label": "Trigger",
+          "description": "",
+          "kind": "BOOL",
+          "default": false,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "Vecxy.Physics.RigidBody",
+      "label": "Rigid Body",
+      "category": "Physics",
+      "description": "",
+      "key": "rigidBody",
+      "fields": [
+        {
+          "key": "motionType",
+          "label": "Motion",
+          "description": "",
+          "kind": "ENUM",
+          "default": "Dynamic",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "Dynamic",
+            "Kinematic"
+          ]
+        },
+        {
+          "key": "mass",
+          "label": "Mass",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 1,
+          "min": 0.001,
+          "max": null,
+          "unit": "kg",
+          "choices": []
+        },
+        {
+          "key": "affectedByGravity",
+          "label": "Gravity",
+          "description": "",
+          "kind": "BOOL",
+          "default": true,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "linearDamping",
+          "label": "Linear damping",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0,
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        }
+      ]
+    }
+  ]
+}

@@ -9,7 +9,13 @@
 
   <Import Project="../Engine/Vecxy/Code/Vecxy.Platforms/build/Vecxy.Platforms.props" />
 
+  <PropertyGroup>
+    <VecxyUsdPython Condition="'$(VecxyUsdPython)' == '' and Exists('$(MSBuildProjectDirectory)/../.agents/local/usd-env/bin/python')">$(MSBuildProjectDirectory)/../.agents/local/usd-env/bin/python</VecxyUsdPython>
+    <VecxyUsdStage>$(MSBuildProjectDirectory)/Assets/Scenes/Sandbox.usda</VecxyUsdStage>
+  </PropertyGroup>
+
   <ItemGroup>
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Usd/Vecxy.Usd.csproj" />
     <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Engine/Vecxy.Engine.csproj" />
     <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Rendering/Vecxy.Rendering.csproj" />
     <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Scene/Vecxy.Scene.csproj" />
@@ -19,4 +25,8 @@
     <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Physics/Vecxy.Physics.csproj" />
     <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Input/Vecxy.Input.csproj" />
   </ItemGroup>
+  <Import Project="../Engine/Vecxy/Code/Vecxy.Usd/build/Vecxy.Usd.targets" />
+  <PropertyGroup>
+    <VecxyGenerateComponentCatalog>true</VecxyGenerateComponentCatalog>
+  </PropertyGroup>
 </Project>

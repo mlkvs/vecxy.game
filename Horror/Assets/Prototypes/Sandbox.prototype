@@ -1,0 +1,5 @@
+format: 1
+type: Vecxy.Usd.UsdScene
+data:
+  name: Sandbox
+  source: Scenes/Sandbox.usda

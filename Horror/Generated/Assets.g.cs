@@ -15,8 +15,6 @@ public static partial class Assets
 
     public static class Configs
     {
-        [AssetReference("c7a38960-635a-4dd2-929c-856c9b58c7e5")]
-        public static ConfigHandle Laundromat => new(new Guid("c7a38960-635a-4dd2-929c-856c9b58c7e5"));
         [AssetReference("7ce3da38-5b1e-439c-b5d3-0156002c14af")]
         public static ConfigHandle Physics => new(new Guid("7ce3da38-5b1e-439c-b5d3-0156002c14af"));
     }
@@ -31,36 +29,44 @@ public static partial class Assets
     {
         [AssetReference("94890db2-b021-44c7-a5af-72146c9c7f3a")]
         public static MaterialHandle Rain => new(new Guid("94890db2-b021-44c7-a5af-72146c9c7f3a"));
-        [AssetReference("69ce6ec5-ae56-4ea4-aa5e-4a0e067ecc37")]
-        public static MaterialHandle WetGlass => new(new Guid("69ce6ec5-ae56-4ea4-aa5e-4a0e067ecc37"));
     }
 
     public static class Models
     {
-        [AssetReference("233afec7-1143-4981-b903-18913fff0128")]
-        public static ModelHandle EntranceDoor => new(new Guid("233afec7-1143-4981-b903-18913fff0128"));
-        [AssetReference("c0f1abea-a8c7-401c-8b86-226a41f2a2bd")]
-        public static ModelHandle Laundromat => new(new Guid("c0f1abea-a8c7-401c-8b86-226a41f2a2bd"));
-        [AssetReference("16353ce0-05ff-4ab2-be14-df8ccebac7d2")]
-        public static ModelHandle Room => new(new Guid("16353ce0-05ff-4ab2-be14-df8ccebac7d2"));
         [AssetReference("3872fd9c-43ff-4393-97f1-766238544c89")]
         public static ModelHandle Weather => new(new Guid("3872fd9c-43ff-4393-97f1-766238544c89"));
     }
 
-    public static class PostProcessing
+    public static class Prototypes
     {
-        [AssetReference("74930d94-c612-460a-86d9-3d1b62206fdb")]
-        public static TextHandle Retro => new(new Guid("74930d94-c612-460a-86d9-3d1b62206fdb"));
-        [AssetReference("c885b107-25f7-4f3f-b55a-359070c822ee")]
-        public static TextHandle Vignette => new(new Guid("c885b107-25f7-4f3f-b55a-359070c822ee"));
+        [AssetReference("67e5cb1e-1e4c-435d-a1f2-99b57f8777dc")]
+        public static PrototypeHandle Sandbox => new(new Guid("67e5cb1e-1e4c-435d-a1f2-99b57f8777dc"));
+    }
+
+    public static class Scenes
+    {
+        public static class Compiled
+        {
+            [AssetReference("7c226650-24d8-49d6-8f39-dae0e980f22c")]
+            public static ModelHandle Sandbox => new(new Guid("7c226650-24d8-49d6-8f39-dae0e980f22c"));
+        }
+
+        public static class Prototypes
+        {
+            [AssetReference("92575ed5-ffc1-4589-9f7e-17ce6e352d06")]
+            public static AssetHandle Washer => new(new Guid("92575ed5-ffc1-4589-9f7e-17ce6e352d06"));
+        }
+
+        [AssetReference("cb5e822a-b86c-4483-96a4-8d923723b864")]
+        public static AssetHandle Sandbox => new(new Guid("cb5e822a-b86c-4483-96a4-8d923723b864"));
+        [AssetReference("7e5c63d7-e8ce-490f-bbb0-de0e28bca82e")]
+        public static AssetHandle SandboxUsda => new(new Guid("7e5c63d7-e8ce-490f-bbb0-de0e28bca82e"));
     }
 
     public static class Shaders
     {
         [AssetReference("6d449907-3439-4bf2-8302-964e90680604")]
         public static ShaderHandle Rain => new(new Guid("6d449907-3439-4bf2-8302-964e90680604"));
-        [AssetReference("4ec8190e-c0ac-47a1-8d77-fef983ee1902")]
-        public static ShaderHandle WetGlass => new(new Guid("4ec8190e-c0ac-47a1-8d77-fef983ee1902"));
     }
 
     public static class Engine
@@ -79,12 +85,12 @@ public static partial class Assets
 
         public static class Configs
         {
-            [AssetReference("db172f4d-a8be-41bd-9f44-9f84d0b2cc11")]
-            public static ConfigHandle EditorLayout => new(new Guid("db172f4d-a8be-41bd-9f44-9f84d0b2cc11"));
+            [AssetReference("6a1f1336-ff53-4f95-a36c-ffd6c78344ef")]
+            public static ConfigHandle EditorLayout => new(new Guid("6a1f1336-ff53-4f95-a36c-ffd6c78344ef"));
             [AssetReference("015d35d6-1b06-46bb-b980-53716de26413")]
             public static ConfigHandle Physics => new(new Guid("015d35d6-1b06-46bb-b980-53716de26413"));
-            [AssetReference("40093e8d-ebeb-4cf0-a44c-892e76eef87d")]
-            public static ConfigHandle UI => new(new Guid("40093e8d-ebeb-4cf0-a44c-892e76eef87d"));
+            [AssetReference("4031fea3-4439-40a2-b60b-c4424316f9d4")]
+            public static ConfigHandle UI => new(new Guid("4031fea3-4439-40a2-b60b-c4424316f9d4"));
         }
 
         public static class Inputs
@@ -95,60 +101,60 @@ public static partial class Assets
 
         public static class Materials
         {
-            [AssetReference("7a9fbda6-8ff3-4f29-bc7a-4dcb414c60ca")]
-            public static MaterialHandle Default => new(new Guid("7a9fbda6-8ff3-4f29-bc7a-4dcb414c60ca"));
+            [AssetReference("ababc096-9f65-402e-860c-bed145c7c57b")]
+            public static MaterialHandle Default => new(new Guid("ababc096-9f65-402e-860c-bed145c7c57b"));
         }
 
         public static class Shaders
         {
             public static class PostProcessing
             {
-                [AssetReference("e42d1f27-aa70-4edc-8cdd-c2a8d6b2582c")]
-                public static ShaderHandle Copy => new(new Guid("e42d1f27-aa70-4edc-8cdd-c2a8d6b2582c"));
-                [AssetReference("5c330986-1f76-41bf-b1f6-4c2281ec360b")]
-                public static ShaderHandle Retro => new(new Guid("5c330986-1f76-41bf-b1f6-4c2281ec360b"));
-                [AssetReference("1c25126b-77a7-475b-8236-982d2d408d82")]
-                public static ShaderHandle Vignette => new(new Guid("1c25126b-77a7-475b-8236-982d2d408d82"));
+                [AssetReference("2dfbfee8-a86d-45de-ae54-8c28bd6f1871")]
+                public static ShaderHandle Copy => new(new Guid("2dfbfee8-a86d-45de-ae54-8c28bd6f1871"));
+                [AssetReference("27ab919f-49c3-4c80-a539-35d8c036a4c9")]
+                public static ShaderHandle Retro => new(new Guid("27ab919f-49c3-4c80-a539-35d8c036a4c9"));
+                [AssetReference("c3e302e9-c455-49ea-a577-1a967564ff0a")]
+                public static ShaderHandle Vignette => new(new Guid("c3e302e9-c455-49ea-a577-1a967564ff0a"));
             }
 
-            [AssetReference("00e6b4e2-2685-4eb9-9b84-44c3516d8298")]
-            public static ShaderHandle Lit => new(new Guid("00e6b4e2-2685-4eb9-9b84-44c3516d8298"));
-            [AssetReference("f943eff6-b915-46f5-b737-f26a251b3341")]
-            public static ShaderHandle Skybox => new(new Guid("f943eff6-b915-46f5-b737-f26a251b3341"));
-            [AssetReference("605e2825-21f6-44c3-9239-1653dd43a371")]
-            public static ShaderHandle Sprite => new(new Guid("605e2825-21f6-44c3-9239-1653dd43a371"));
+            [AssetReference("df5cd777-22f2-42fd-9b4c-cfa431756ae8")]
+            public static ShaderHandle Lit => new(new Guid("df5cd777-22f2-42fd-9b4c-cfa431756ae8"));
+            [AssetReference("b6dd6436-3698-431e-ac46-35011bb7c95f")]
+            public static ShaderHandle Skybox => new(new Guid("b6dd6436-3698-431e-ac46-35011bb7c95f"));
+            [AssetReference("5622fc1e-37db-4b17-a8d0-ad25ecaa16f8")]
+            public static ShaderHandle Sprite => new(new Guid("5622fc1e-37db-4b17-a8d0-ad25ecaa16f8"));
         }
 
         public static class SkyBox
         {
             public static class Cubemap
             {
-                [AssetReference("0468bf91-a8e7-46ae-9632-1102d07085d3")]
-                public static TextureHandle Nx => new(new Guid("0468bf91-a8e7-46ae-9632-1102d07085d3"));
-                [AssetReference("c65bc448-1960-4705-af8e-03c453796dab")]
-                public static TextureHandle Ny => new(new Guid("c65bc448-1960-4705-af8e-03c453796dab"));
-                [AssetReference("4d0eadab-2d53-4e3d-bc6a-04576a898fe2")]
-                public static TextureHandle Nz => new(new Guid("4d0eadab-2d53-4e3d-bc6a-04576a898fe2"));
-                [AssetReference("1e529403-a900-4c0a-8e3f-393bb32ed8c9")]
-                public static TextureHandle Px => new(new Guid("1e529403-a900-4c0a-8e3f-393bb32ed8c9"));
-                [AssetReference("a52b552d-3b2e-4e86-aff2-c17e167bd094")]
-                public static TextureHandle Py => new(new Guid("a52b552d-3b2e-4e86-aff2-c17e167bd094"));
-                [AssetReference("2bbdb84e-a178-49cf-8749-7ff58fd9234a")]
-                public static TextureHandle Pz => new(new Guid("2bbdb84e-a178-49cf-8749-7ff58fd9234a"));
+                [AssetReference("f2268889-efff-459d-b722-1e8fe91c1ef1")]
+                public static TextureHandle Nx => new(new Guid("f2268889-efff-459d-b722-1e8fe91c1ef1"));
+                [AssetReference("e1978a6c-e62c-4046-8986-321a158d4b1b")]
+                public static TextureHandle Ny => new(new Guid("e1978a6c-e62c-4046-8986-321a158d4b1b"));
+                [AssetReference("a0547cfa-79fb-480f-acff-95789b1231d9")]
+                public static TextureHandle Nz => new(new Guid("a0547cfa-79fb-480f-acff-95789b1231d9"));
+                [AssetReference("f694f73e-4247-4f5f-97f9-43438519e8eb")]
+                public static TextureHandle Px => new(new Guid("f694f73e-4247-4f5f-97f9-43438519e8eb"));
+                [AssetReference("b4236889-b3bc-4b4f-b9cb-c1d3ed91cf13")]
+                public static TextureHandle Py => new(new Guid("b4236889-b3bc-4b4f-b9cb-c1d3ed91cf13"));
+                [AssetReference("db627ba7-9024-4e58-a791-3407b599ae38")]
+                public static TextureHandle Pz => new(new Guid("db627ba7-9024-4e58-a791-3407b599ae38"));
             }
 
-            [AssetReference("1dd9bf23-6e6d-437b-bcec-d5ba123f81b3")]
-            public static ConfigHandle Skybox => new(new Guid("1dd9bf23-6e6d-437b-bcec-d5ba123f81b3"));
+            [AssetReference("68f6c606-233a-4ce0-86b2-80c1d1523597")]
+            public static ConfigHandle Skybox => new(new Guid("68f6c606-233a-4ce0-86b2-80c1d1523597"));
         }
 
         public static class Textures
         {
-            [AssetReference("c86cae40-db8f-4899-9566-e2254c93286f")]
-            public static TextureHandle FmodLogo => new(new Guid("c86cae40-db8f-4899-9566-e2254c93286f"));
-            [AssetReference("ea848ca7-863a-4d15-acbf-ba42cabc5ee8")]
-            public static TextureHandle Logo => new(new Guid("ea848ca7-863a-4d15-acbf-ba42cabc5ee8"));
-            [AssetReference("25b077fa-a345-4758-96f6-e24bdafc0b1f")]
-            public static TextureHandle TQuadWhite64 => new(new Guid("25b077fa-a345-4758-96f6-e24bdafc0b1f"));
+            [AssetReference("353a2b5c-92e9-48bc-b0ac-023d44efc2e1")]
+            public static TextureHandle FmodLogo => new(new Guid("353a2b5c-92e9-48bc-b0ac-023d44efc2e1"));
+            [AssetReference("7c2e51bb-e81b-4dcf-8058-191c2b5e0694")]
+            public static TextureHandle Logo => new(new Guid("7c2e51bb-e81b-4dcf-8058-191c2b5e0694"));
+            [AssetReference("14980c0a-845e-41c7-8f90-2aca00717cfe")]
+            public static TextureHandle TQuadWhite64 => new(new Guid("14980c0a-845e-41c7-8f90-2aca00717cfe"));
         }
 
     }

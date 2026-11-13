@@ -1,0 +1,958 @@
+{
+  "format": 1,
+  "upAxis": "Z",
+  "source": "Scenes/Sandbox.usda",
+  "model": "Scenes/Compiled/Sandbox.glb",
+  "prims": [
+    {
+      "path": "/Scene",
+      "node": 1,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01",
+      "node": 2,
+      "role": "washer",
+      "prototype": "/__Prototype_1",
+      "components": [
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 0.6200000047683716,
+              "y": 0.699999988079071,
+              "z": 0.8799999952316284
+            },
+            "center": {
+              "x": 0.0,
+              "y": -0.014999999664723873,
+              "z": 0.4399999976158142
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        },
+        {
+          "key": "machine",
+          "type": "Horror.LaundryMachine",
+          "enabled": true,
+          "data": {
+            "number": 1,
+            "powered": true,
+            "cycleSeconds": 1320.0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model",
+      "node": 3,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_01_Cabinet",
+      "node": 4,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_01_Cabinet/Enamel_cabinet",
+      "node": 5,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_01_Cabinet/Enamel_cabinet/Cube_001",
+      "node": 6,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_01_Cabinet/Lower_service_strip",
+      "node": 7,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_01_Cabinet/Lower_service_strip/Cube_003",
+      "node": 8,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_01_Cabinet/Top_cover",
+      "node": 9,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_01_Cabinet/Top_cover/Cube_002",
+      "node": 10,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_04_Feet",
+      "node": 11,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_04_Feet/Leveling_foot_1",
+      "node": 12,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_04_Feet/Leveling_foot_1/Cylinder_006",
+      "node": 13,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_04_Feet/Leveling_foot_4",
+      "node": 14,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_04_Feet/Leveling_foot_4/Cylinder_009",
+      "node": 15,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_04_Feet/Leveling_foot_2",
+      "node": 16,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_04_Feet/Leveling_foot_2/Cylinder_007",
+      "node": 17,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_04_Feet/Leveling_foot_3",
+      "node": 18,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_04_Feet/Leveling_foot_3/Cylinder_008",
+      "node": 19,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls",
+      "node": 20,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Upper_controls_fascia",
+      "node": 21,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Upper_controls_fascia/Cube_008",
+      "node": 22,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Display_1_20",
+      "node": 23,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Display_1_20/Text",
+      "node": 24,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Dial_marker",
+      "node": 25,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Dial_marker/Cube_011",
+      "node": 26,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Detergent_drawer",
+      "node": 27,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Detergent_drawer/Cube_009",
+      "node": 28,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Drawer_finger_groove",
+      "node": 29,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Drawer_finger_groove/Cube_010",
+      "node": 30,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Program_dial",
+      "node": 31,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Program_dial/Cylinder_004",
+      "node": 32,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Start_button",
+      "node": 33,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Start_button/Cylinder_005",
+      "node": 34,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Display",
+      "node": 35,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_03_Controls/Display/Cube_012",
+      "node": 36,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum",
+      "node": 37,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Inner_door_gasket",
+      "node": 38,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Inner_door_gasket/Torus_001",
+      "node": 39,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_perforations",
+      "node": 40,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_perforations/Drum_perforations",
+      "node": 41,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_lifter_2",
+      "node": 42,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_lifter_2/Cube_005",
+      "node": 43,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Outer_aluminum_door_rim",
+      "node": 44,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Outer_aluminum_door_rim/Torus",
+      "node": 45,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Door_glass_disc",
+      "node": 46,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Door_glass_disc/Cylinder_003",
+      "node": 47,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_lifter_1",
+      "node": 48,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_lifter_1/Cube_004",
+      "node": 49,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_back_plate",
+      "node": 50,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_back_plate/Cylinder_002",
+      "node": 51,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Door_grip",
+      "node": 52,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Door_grip/Cube_007",
+      "node": 53,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_rolled_lip",
+      "node": 54,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_rolled_lip/Torus_002",
+      "node": 55,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Dark_recessed_tub",
+      "node": 56,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Dark_recessed_tub/Cylinder_001",
+      "node": 57,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_lifter_3",
+      "node": 58,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_01/Washer_Model/_02_Door_and_drum/Drum_lifter_3/Cube_006",
+      "node": 59,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_01/_materials",
+      "node": 60,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/_materials",
+      "node": 61,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/KeyLight",
+      "node": 62,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/KeyLight/Overcast_daylight",
+      "node": 63,
+      "role": "",
+      "prototype": "",
+      "light": "directional",
+      "color": [
+        0.8299999833106995,
+        0.8999999761581421,
+        1.0
+      ],
+      "intensity": 0.32499998807907104,
+      "range": 0.0
+    },
+    {
+      "path": "/Scene/FillLight",
+      "node": 64,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/FillLight/Soft_front_fill",
+      "node": 65,
+      "role": "",
+      "prototype": "",
+      "light": "point",
+      "color": [
+        1.0,
+        0.9399999976158142,
+        0.8600000143051147
+      ],
+      "intensity": 5.729578018188477,
+      "range": 0.0
+    },
+    {
+      "path": "/Scene/Floor",
+      "node": 66,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 16.0,
+              "y": 16.0,
+              "z": 0.23999999463558197
+            },
+            "center": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": -0.11999999731779099
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/Floor/Plane",
+      "node": 67,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02",
+      "node": 68,
+      "role": "washer",
+      "prototype": "/__Prototype_1",
+      "components": [
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 0.6200000047683716,
+              "y": 0.699999988079071,
+              "z": 0.8799999952316284
+            },
+            "center": {
+              "x": 0.0,
+              "y": -0.014999999664723873,
+              "z": 0.4399999976158142
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        },
+        {
+          "key": "machine",
+          "type": "Horror.LaundryMachine",
+          "enabled": true,
+          "data": {
+            "number": 2,
+            "powered": true,
+            "cycleSeconds": 1320.0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model",
+      "node": 69,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_01_Cabinet",
+      "node": 70,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_01_Cabinet/Enamel_cabinet",
+      "node": 71,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_01_Cabinet/Enamel_cabinet/Cube_001",
+      "node": 72,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_01_Cabinet/Lower_service_strip",
+      "node": 73,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_01_Cabinet/Lower_service_strip/Cube_003",
+      "node": 74,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_01_Cabinet/Top_cover",
+      "node": 75,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_01_Cabinet/Top_cover/Cube_002",
+      "node": 76,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_04_Feet",
+      "node": 77,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_04_Feet/Leveling_foot_1",
+      "node": 78,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_04_Feet/Leveling_foot_1/Cylinder_006",
+      "node": 79,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_04_Feet/Leveling_foot_4",
+      "node": 80,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_04_Feet/Leveling_foot_4/Cylinder_009",
+      "node": 81,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_04_Feet/Leveling_foot_2",
+      "node": 82,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_04_Feet/Leveling_foot_2/Cylinder_007",
+      "node": 83,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_04_Feet/Leveling_foot_3",
+      "node": 84,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_04_Feet/Leveling_foot_3/Cylinder_008",
+      "node": 85,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls",
+      "node": 86,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Upper_controls_fascia",
+      "node": 87,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Upper_controls_fascia/Cube_008",
+      "node": 88,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Display_1_20",
+      "node": 89,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Display_1_20/Text",
+      "node": 90,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Dial_marker",
+      "node": 91,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Dial_marker/Cube_011",
+      "node": 92,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Detergent_drawer",
+      "node": 93,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Detergent_drawer/Cube_009",
+      "node": 94,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Drawer_finger_groove",
+      "node": 95,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Drawer_finger_groove/Cube_010",
+      "node": 96,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Program_dial",
+      "node": 97,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Program_dial/Cylinder_004",
+      "node": 98,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Start_button",
+      "node": 99,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Start_button/Cylinder_005",
+      "node": 100,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Display",
+      "node": 101,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_03_Controls/Display/Cube_012",
+      "node": 102,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum",
+      "node": 103,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Inner_door_gasket",
+      "node": 104,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Inner_door_gasket/Torus_001",
+      "node": 105,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_perforations",
+      "node": 106,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_perforations/Drum_perforations",
+      "node": 107,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_lifter_2",
+      "node": 108,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_lifter_2/Cube_005",
+      "node": 109,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Outer_aluminum_door_rim",
+      "node": 110,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Outer_aluminum_door_rim/Torus",
+      "node": 111,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Door_glass_disc",
+      "node": 112,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Door_glass_disc/Cylinder_003",
+      "node": 113,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_lifter_1",
+      "node": 114,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_lifter_1/Cube_004",
+      "node": 115,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_back_plate",
+      "node": 116,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_back_plate/Cylinder_002",
+      "node": 117,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Door_grip",
+      "node": 118,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Door_grip/Cube_007",
+      "node": 119,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_rolled_lip",
+      "node": 120,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_rolled_lip/Torus_002",
+      "node": 121,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Dark_recessed_tub",
+      "node": 122,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Dark_recessed_tub/Cylinder_001",
+      "node": 123,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_lifter_3",
+      "node": 124,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Washer_02/Washer_Model/_02_Door_and_drum/Drum_lifter_3/Cube_006",
+      "node": 125,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Washer_02/_materials",
+      "node": 126,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/PlayerSpawn",
+      "node": 127,
+      "role": "spawn",
+      "prototype": "",
+      "components": []
+    }
+  ],
+  "compiler": "07591e4083e5a0d0cec011abe98046c6cb806912b1dff5aef8e5aa40a6c89f30",
+  "inputs": [
+    {
+      "path": "../../../Engine/Vecxy/Code/Vecxy.Usd/Tools/cook_usd.py",
+      "hash": "07591e4083e5a0d0cec011abe98046c6cb806912b1dff5aef8e5aa40a6c89f30"
+    },
+    {
+      "path": "Prototypes/Washer.usda",
+      "hash": "0ca37b8a35ac69735d58845a3090831caba5fc7c5866fc6e4652ee4ceaeb0dbc"
+    },
+    {
+      "path": "Sandbox.usda",
+      "hash": "29ed2cf2d0ec5419851d13e7cac723aea34319cf5b2e380d3ff549424be2e9e0"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "Compiled/Sandbox.glb",
+      "hash": "ed6383211deb84c3a5cc0f0a344660b4aa8f882e4cd22797520de9566c17f4c7"
+    }
+  ]
+}

@@ -5,13 +5,11 @@ using Vecxy.Scene;
 
 namespace Horror;
 
-/// <summary>World-space precipitation, ground impacts and animated clear window glass.</summary>
+/// <summary>World-space rain and ground impacts, independent of scene geometry.</summary>
 public sealed class RainWeather(
     IAssetsManager assets,
     ISceneInstantiator sceneInstantiator,
-    IAudioManager audio,
-    SceneObject location,
-    SceneObject entrance) : AComponent
+    IAudioManager audio) : AComponent
 {
     private readonly List<Material> _animatedMaterials = [];
     private AssetRef<ModelAsset>? _weatherAsset;
@@ -21,7 +19,6 @@ public sealed class RainWeather(
     public override void Start()
     {
         using var rainAsset = assets.Load<MaterialAsset>("Materials/Rain.material");
-        using var glassAsset = assets.Load<MaterialAsset>("Materials/WetGlass.material");
         _weatherAsset = assets.Load<ModelAsset>("Models/Weather.glb");
         _weather = new Model(_weatherAsset);
         var weatherRoot = sceneInstantiator.InstantiateModel(SceneInstance, _weather, "Outside rain and splashes");
@@ -34,20 +31,6 @@ public sealed class RainWeather(
             material.SetFloat("uSplash", item.Name.Contains("Splashes", StringComparison.Ordinal) ? 1.0f : 0.0f);
             renderer.SetMaterial(material);
             _animatedMaterials.Add(material);
-        }
-
-        foreach (var root in new[] { location, entrance })
-        {
-            foreach (var item in root.EnumerateHierarchy())
-            {
-                if (!item.Name.Equals("Clear shopfront glass", StringComparison.Ordinal) ||
-                    item.GetComponent<MeshRenderer>() is not { } renderer)
-                    continue;
-
-                var material = new Material(glassAsset);
-                renderer.SetMaterial(material);
-                _animatedMaterials.Add(material);
-            }
         }
 
         audio.Play("Audio/Rain.wav", loop: true, volume: 0.22f);

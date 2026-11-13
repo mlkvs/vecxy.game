@@ -19,6 +19,7 @@
     <Project Path="Engine/Vecxy/Code/Vecxy.Scene/Vecxy.Scene.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.Scripting/Vecxy.Scripting.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.UI/Vecxy.UI.csproj" />
+    <Project Path="Engine/Vecxy/Code/Vecxy.Usd/Vecxy.Usd.csproj" />
   </Folder>
   <Folder Name="/Editor/">
     <Project Path="Engine/Vecxy/Code/Vecxy.Editor/Vecxy.Editor.csproj" />
@@ -31,6 +32,7 @@
     <Project Path="TicTacToe/TicTacToe.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="Engine/Vecxy/Code/Vecxy.Usd.Tests/Vecxy.Usd.Tests.csproj" />
     <Project Path="Engine/Vecxy/Code/Vecxy.UI.Tests/Vecxy.UI.Tests.csproj" />
     <Project Path="Engine/Vecxy/tools/Vecxy.AssetPipeline.Tests/Vecxy.AssetPipeline.Tests.csproj" />
     <Project Path="HardCore.Cultivation.Tests/HardCore.Cultivation.Tests.csproj" />
@@ -45,5 +47,6 @@
     <Project Path="Engine/Vecxy/tools/Vecxy.AssetAnalyzer/Vecxy.AssetAnalyzer.csproj" />
     <Project Path="Engine/Vecxy/tools/Vecxy.AssetPipeline/Vecxy.AssetPipeline.csproj" />
     <Project Path="Engine/Vecxy/tools/Vecxy.Cli/Vecxy.Cli.csproj" />
+    <Project Path="Engine/Vecxy/tools/Vecxy.ComponentCatalog/Vecxy.ComponentCatalog.csproj" />
   </Folder>
 </Solution>
