@@ -7,6 +7,8 @@ namespace Horror;
 [Authoring("Стиральная машина", Category = "Gameplay", Key = "machine", Description = "Номер, питание и длительность цикла общей модели машинки.")]
 public sealed class LaundryMachine : AComponent
 {
+    public void TogglePower() => Powered = !Powered;
+
     public int Number { get; private set; }
     public bool Powered { get; private set; }
     public float CycleSeconds { get; private set; }

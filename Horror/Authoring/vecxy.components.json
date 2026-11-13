@@ -333,6 +333,301 @@
           "choices": []
         }
       ]
+    },
+    {
+      "type": "Vecxy.UI.UiCanvas",
+      "label": "UI Canvas",
+      "category": "UI",
+      "description": "The plane supplies the UI area; its source mesh is hidden at runtime.",
+      "key": "uiCanvas",
+      "fields": [
+        {
+          "key": "document",
+          "label": "Document",
+          "description": "UI XML asset path. The same XML/CSS works in both render modes.",
+          "kind": "STRING",
+          "default": "",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [],
+          "assetType": "UiDocument",
+          "assets": [
+            {
+              "id": "5e632e8b-bffa-4b6b-9066-995b9ad191d9",
+              "path": "UI/Crosshair.xml"
+            },
+            {
+              "id": "376446a0-1ea1-4c8f-9e6c-bdee088a2cdb",
+              "path": "UI/WasherConsole.xml"
+            },
+            {
+              "id": "8bb2fae3-2069-4375-8c20-9a961f90e72f",
+              "path": "UI/WasherStatus.xml"
+            }
+          ]
+        },
+        {
+          "key": "renderMode",
+          "label": "Render mode",
+          "description": "",
+          "kind": "ENUM",
+          "default": "WorldSpace",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "ScreenOverlay",
+            "WorldSpace"
+          ]
+        },
+        {
+          "key": "pixelsPerMeter",
+          "label": "Pixels per metre",
+          "description": "Canvas layout density. Physical size comes from the plane, including its transform.",
+          "kind": "FLOAT",
+          "default": 800,
+          "min": 16,
+          "max": 4096,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "interactive",
+          "label": "Interactive",
+          "description": "",
+          "kind": "BOOL",
+          "default": true,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "doubleSided",
+          "label": "Double sided",
+          "description": "",
+          "kind": "BOOL",
+          "default": false,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "inputMode",
+          "label": "Pointer mode",
+          "description": "",
+          "kind": "ENUM",
+          "default": "Mouse",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "Mouse",
+            "ViewRay",
+            "SurfaceCursor"
+          ]
+        },
+        {
+          "key": "activationKey",
+          "label": "Activation key",
+          "description": "Press this key or the primary mouse button to activate the pointed UI element.",
+          "kind": "ENUM",
+          "default": "E",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "Undefined",
+            "Space",
+            "Apostrophe",
+            "Comma",
+            "Minus",
+            "Period",
+            "Slash",
+            "Number0",
+            "Number1",
+            "Number2",
+            "Number3",
+            "Number4",
+            "Number5",
+            "Number6",
+            "Number7",
+            "Number8",
+            "Number9",
+            "Semicolon",
+            "Equal",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "LeftBracket",
+            "BackSlash",
+            "RightBracket",
+            "GraveAccent",
+            "World1",
+            "World2",
+            "Escape",
+            "Enter",
+            "Tab",
+            "Backspace",
+            "Insert",
+            "Delete",
+            "Right",
+            "Left",
+            "Down",
+            "Up",
+            "PageUp",
+            "PageDown",
+            "Home",
+            "End",
+            "CapsLock",
+            "ScrollLock",
+            "NumLock",
+            "PrintScreen",
+            "Pause",
+            "F1",
+            "F2",
+            "F3",
+            "F4",
+            "F5",
+            "F6",
+            "F7",
+            "F8",
+            "F9",
+            "F10",
+            "F11",
+            "F12",
+            "F13",
+            "F14",
+            "F15",
+            "F16",
+            "F17",
+            "F18",
+            "F19",
+            "F20",
+            "F21",
+            "F22",
+            "F23",
+            "F24",
+            "F25",
+            "Keypad0",
+            "Keypad1",
+            "Keypad2",
+            "Keypad3",
+            "Keypad4",
+            "Keypad5",
+            "Keypad6",
+            "Keypad7",
+            "Keypad8",
+            "Keypad9",
+            "KeypadDecimal",
+            "KeypadDivide",
+            "KeypadMultiply",
+            "KeypadSubtract",
+            "KeypadAdd",
+            "KeypadEnter",
+            "KeypadEqual",
+            "LeftShift",
+            "LeftControl",
+            "LeftAlt",
+            "LeftSuper",
+            "RightShift",
+            "RightControl",
+            "RightAlt",
+            "RightSuper",
+            "Menu"
+          ]
+        },
+        {
+          "key": "cursorImage",
+          "label": "Cursor image",
+          "description": "Optional custom icon for SurfaceCursor. The hotspot is its top-left corner.",
+          "kind": "STRING",
+          "default": "",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [],
+          "assetType": "Texture2D",
+          "assets": [
+            {
+              "id": "f2268889-efff-459d-b722-1e8fe91c1ef1",
+              "path": "SkyBox/cubemap/nx.png"
+            },
+            {
+              "id": "e1978a6c-e62c-4046-8986-321a158d4b1b",
+              "path": "SkyBox/cubemap/ny.png"
+            },
+            {
+              "id": "a0547cfa-79fb-480f-acff-95789b1231d9",
+              "path": "SkyBox/cubemap/nz.png"
+            },
+            {
+              "id": "f694f73e-4247-4f5f-97f9-43438519e8eb",
+              "path": "SkyBox/cubemap/px.png"
+            },
+            {
+              "id": "b4236889-b3bc-4b4f-b9cb-c1d3ed91cf13",
+              "path": "SkyBox/cubemap/py.png"
+            },
+            {
+              "id": "db627ba7-9024-4e58-a791-3407b599ae38",
+              "path": "SkyBox/cubemap/pz.png"
+            },
+            {
+              "id": "353a2b5c-92e9-48bc-b0ac-023d44efc2e1",
+              "path": "Textures/FmodLogo.png"
+            },
+            {
+              "id": "7c2e51bb-e81b-4dcf-8058-191c2b5e0694",
+              "path": "Textures/Logo.png"
+            },
+            {
+              "id": "14980c0a-845e-41c7-8f90-2aca00717cfe",
+              "path": "Textures/T_Quad_White_64.png"
+            },
+            {
+              "id": "ba7b9cd4-18ad-47dc-847f-cdcbff0b6acc",
+              "path": "UI/Cursors/WorldPointer.png"
+            }
+          ]
+        },
+        {
+          "key": "cursorSize",
+          "label": "Cursor size",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 44,
+          "min": 4,
+          "max": 256,
+          "unit": "px",
+          "choices": []
+        }
+      ]
     }
   ]
 }

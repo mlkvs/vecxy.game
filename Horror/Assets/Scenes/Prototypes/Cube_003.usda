@@ -1,0 +1,88 @@
+#usda 1.0
+(
+    defaultPrim = "Scene"
+    doc = "Blender v5.2.1 LTS"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Scene" (
+    prepend apiSchemas = ["ColorSpaceAPI"]
+    customData = {
+        dictionary Blender = {
+            bool generated = 1
+        }
+    }
+)
+{
+    uniform token colorSpace:name = "lin_rec709_scene"
+    custom string vecxy:components = "[]"
+    custom string vecxy:role = ""
+
+    def Xform "Cube_Pivot"
+    {
+        custom string userProperties:blender:object_name = "Cube_Pivot"
+        custom string vecxy:components = "[]"
+        custom string vecxy:role = ""
+
+        def Xform "Cube"
+        {
+            custom string userProperties:blender:object_name = "Cube"
+            custom string vecxy:components = "[]"
+            custom string vecxy:role = ""
+            float3 xformOp:rotateXYZ = (0, -0, 0)
+            float3 xformOp:scale = (3.0755868, 3.0755868, 3.0755868)
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+            def Mesh "Cube_014" (
+                active = true
+            )
+            {
+                float3[] extent = [(-1, -1, -1.1920929e-7), (0.99999994, 1, 1.9999999)]
+                int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+                int[] faceVertexIndices = [1, 2, 0, 3, 6, 2, 7, 4, 6, 5, 0, 4, 6, 0, 2, 3, 5, 7, 1, 3, 2, 3, 7, 6, 7, 5, 4, 5, 1, 0, 6, 4, 0, 3, 1, 5]
+                normal3f[] normals = [(-1, 0, 0), (-1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (0, -1, 0), (0, -1, 0), (0, -1, 0), (0, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (-1, 0, 0), (-1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (0, -1, 0), (0, -1, 0), (0, -1, 0), (0, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, 1), (0, 0, 1), (0, 0, 1)] (
+                    interpolation = "faceVarying"
+                )
+                point3f[] points = [(-1, -1, -1.1920929e-7), (-1, -1, 1.9999999), (-1, 1, -1.1920929e-7), (-1, 1, 1.9999999), (0.99999994, -1, -1.1920929e-7), (0.99999994, -1, 1.9999999), (0.99999994, 1, -1.1920929e-7), (0.99999994, 1, 1.9999999)]
+                texCoord2f[] primvars:st = [(0.375, 0), (0.375, 1), (0.125, 0.75), (0.625, 0), (0.625, 1), (0.875, 0.75), (0.125, 0.5), (0.375, 0.25), (0.625, 0.25), (0.875, 0.5), (0.375, 0.75), (0.625, 0.75), (0.375, 0.5), (0.625, 0.5)] (
+                    interpolation = "faceVarying"
+                )
+                int[] primvars:st:indices = [3, 7, 0, 8, 12, 7, 13, 10, 12, 11, 1, 10, 12, 2, 6, 9, 11, 13, 3, 8, 7, 8, 13, 12, 13, 11, 10, 11, 4, 1, 12, 10, 2, 9, 5, 11]
+                uniform token subdivisionScheme = "none"
+                custom string userProperties:blender:data_name = "Cube.014"
+            }
+        }
+
+        def Xform "Cube_003"
+        {
+            custom string userProperties:blender:object_name = "Cube.003"
+            custom string vecxy:components = "[]"
+            custom string vecxy:role = ""
+            float3 xformOp:rotateXYZ = (0, -0, 0)
+            float3 xformOp:scale = (0.99999994, 0.99999994, 0.99999994)
+            double3 xformOp:translate = (1.7932720184326172, 0, 6.912195682525635)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+            def Mesh "Cube_015" (
+                active = true
+            )
+            {
+                float3[] extent = [(-1, -1, -1), (1, 1, 1)]
+                int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+                int[] faceVertexIndices = [1, 2, 0, 3, 6, 2, 7, 4, 6, 5, 0, 4, 6, 0, 2, 3, 5, 7, 1, 3, 2, 3, 7, 6, 7, 5, 4, 5, 1, 0, 6, 4, 0, 3, 1, 5]
+                normal3f[] normals = [(-1, 0, 0), (-1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (0, -1, 0), (0, -1, 0), (0, -1, 0), (0, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, 1), (0, 0, 1), (0, 0, 1), (-1, 0, 0), (-1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), (1, 0, 0), (1, 0, 0), (1, 0, 0), (0, -1, 0), (0, -1, 0), (0, -1, 0), (0, 0, -1), (0, 0, -1), (0, 0, -1), (0, 0, 1), (0, 0, 1), (0, 0, 1)] (
+                    interpolation = "faceVarying"
+                )
+                point3f[] points = [(-1, -1, -1), (-1, -1, 1), (-1, 1, -1), (-1, 1, 1), (1, -1, -1), (1, -1, 1), (1, 1, -1), (1, 1, 1)]
+                texCoord2f[] primvars:st = [(0.375, 0), (0.375, 1), (0.125, 0.75), (0.625, 0), (0.625, 1), (0.875, 0.75), (0.125, 0.5), (0.375, 0.25), (0.625, 0.25), (0.875, 0.5), (0.375, 0.75), (0.625, 0.75), (0.375, 0.5), (0.625, 0.5)] (
+                    interpolation = "faceVarying"
+                )
+                int[] primvars:st:indices = [3, 7, 0, 8, 12, 7, 13, 10, 12, 11, 1, 10, 12, 2, 6, 9, 11, 13, 3, 8, 7, 8, 13, 12, 13, 11, 10, 11, 4, 1, 12, 10, 2, 9, 5, 11]
+                uniform token subdivisionScheme = "none"
+                custom string userProperties:blender:data_name = "Cube.015"
+            }
+        }
+    }
+}

@@ -19,6 +19,14 @@ public static partial class Assets
         public static ConfigHandle Physics => new(new Guid("7ce3da38-5b1e-439c-b5d3-0156002c14af"));
     }
 
+    public static class Fonts
+    {
+        [AssetReference("7dfd3e32-d17f-438e-bd96-4e43caab3c19")]
+        public static AssetHandle NotoSans => new(new Guid("7dfd3e32-d17f-438e-bd96-4e43caab3c19"));
+        [AssetReference("bc2d5bf9-cd30-41a5-b83c-2d82e50a0afa")]
+        public static TextHandle NotoSansOFL => new(new Guid("bc2d5bf9-cd30-41a5-b83c-2d82e50a0afa"));
+    }
+
     public static class Inputs
     {
         [AssetReference("ab5789d9-aa8d-4d0a-b622-9679bafcb116")]
@@ -53,6 +61,8 @@ public static partial class Assets
 
         public static class Prototypes
         {
+            [AssetReference("0fcd5f3a-e3b4-4d2a-8960-601412ea7347")]
+            public static AssetHandle Cube003 => new(new Guid("0fcd5f3a-e3b4-4d2a-8960-601412ea7347"));
             [AssetReference("92575ed5-ffc1-4589-9f7e-17ce6e352d06")]
             public static AssetHandle Washer => new(new Guid("92575ed5-ffc1-4589-9f7e-17ce6e352d06"));
         }
@@ -67,6 +77,28 @@ public static partial class Assets
     {
         [AssetReference("6d449907-3439-4bf2-8302-964e90680604")]
         public static ShaderHandle Rain => new(new Guid("6d449907-3439-4bf2-8302-964e90680604"));
+    }
+
+    public static class UI
+    {
+        public static class Cursors
+        {
+            [AssetReference("ba7b9cd4-18ad-47dc-847f-cdcbff0b6acc")]
+            public static TextureHandle WorldPointer => new(new Guid("ba7b9cd4-18ad-47dc-847f-cdcbff0b6acc"));
+        }
+
+        [AssetReference("7ddf39b6-cb82-46da-8a03-1ba2ba5bb6d9")]
+        public static AssetHandle Crosshair => new(new Guid("7ddf39b6-cb82-46da-8a03-1ba2ba5bb6d9"));
+        [AssetReference("5e632e8b-bffa-4b6b-9066-995b9ad191d9")]
+        public static AssetHandle Crosshair2 => new(new Guid("5e632e8b-bffa-4b6b-9066-995b9ad191d9"));
+        [AssetReference("7e557b55-074e-457b-9503-42bfb2feac76")]
+        public static AssetHandle WasherConsole => new(new Guid("7e557b55-074e-457b-9503-42bfb2feac76"));
+        [AssetReference("376446a0-1ea1-4c8f-9e6c-bdee088a2cdb")]
+        public static AssetHandle WasherConsole2 => new(new Guid("376446a0-1ea1-4c8f-9e6c-bdee088a2cdb"));
+        [AssetReference("bada1f70-8914-46e8-9ebc-545d02a1604f")]
+        public static AssetHandle WasherStatus => new(new Guid("bada1f70-8914-46e8-9ebc-545d02a1604f"));
+        [AssetReference("8bb2fae3-2069-4375-8c20-9a961f90e72f")]
+        public static AssetHandle WasherStatus2 => new(new Guid("8bb2fae3-2069-4375-8c20-9a961f90e72f"));
     }
 
     public static class Engine

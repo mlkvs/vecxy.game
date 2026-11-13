@@ -183,6 +183,8 @@ for screen in bpy.data.screens:
    area.spaces.active.region_3d.view_rotation=Quaternion((.87,.47,.07,.13)).normalized()
    area.spaces.active.shading.type='MATERIAL'
 scene.world.color=(.25,.25,.25)
+import runpy
+runpy.run_path(str(ROOT/'Tools/add_world_ui.py'),run_name='vecxy_authoring_helper')['add_ui_area'](bpy.context)
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'Authoring/Sandbox.blend'))
 assert bpy.ops.vecxy.export_scene()=={'FINISHED'}
 print('CLEAN_SANDBOX_CREATED')

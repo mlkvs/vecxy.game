@@ -7,6 +7,7 @@ using Vecxy.Prototypes;
 using Vecxy.Rendering;
 using Vecxy.Scene;
 using Vecxy.Usd;
+using Vecxy.UI;
 
 namespace Horror;
 
@@ -16,6 +17,7 @@ public sealed class MainScene(
     ISceneInstantiator sceneInstantiator,
     IPhysicsSystem physics,
     IAudioManager audio,
+    IUiManager ui,
     IPrototypes prototypes) : IScene
 {
     private AssetRef<InputAsset>? _controlsAsset;
@@ -66,6 +68,8 @@ public sealed class MainScene(
                 Camera = camera,
                 Physics = physics
             });
+
+        scene.CreateObject("World UI example").AddComponent(new WorldUiDemo(ui,physics));
 
         scene.CreateObject("Rain weather").AddComponent(
             new RainWeather(assets, sceneInstantiator, audio));

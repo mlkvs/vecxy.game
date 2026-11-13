@@ -31,6 +31,26 @@
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
     {
+      "id": "bc2d5bf9-cd30-41a5-b83c-2d82e50a0afa",
+      "source": "Game",
+      "path": "Fonts/NotoSans.OFL.txt",
+      "type": "Text",
+      "name": "NotoSans.OFL",
+      "hash": "cee9892f9f0cc8fe882c9e9537ee6a89621d86ee7ceaf70b02e2b2b1c25c061a",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "7dfd3e32-d17f-438e-bd96-4e43caab3c19",
+      "source": "Game",
+      "path": "Fonts/NotoSans.ttf",
+      "type": "Asset",
+      "name": "NotoSans",
+      "hash": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
       "id": "94890db2-b021-44c7-a5af-72146c9c7f3a",
       "source": "Game",
       "path": "Materials/Rain.material",
@@ -70,7 +90,17 @@
       "path": "Scenes/Compiled/Sandbox.glb",
       "type": "Model",
       "name": "Sandbox",
-      "hash": "ed6383211deb84c3a5cc0f0a344660b4aa8f882e4cd22797520de9566c17f4c7",
+      "hash": "99a6419d97085ef697ae048e20014c19e860582f6660cd86a5fb994b1802ec8a",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "0fcd5f3a-e3b4-4d2a-8960-601412ea7347",
+      "source": "Game",
+      "path": "Scenes/Prototypes/Cube_003.usda",
+      "type": "Asset",
+      "name": "Cube_003",
+      "hash": "bc9dec49c86ba62fb6b2a451914c5e7c36faf7815741d7911055d9d8115aa530",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -80,7 +110,7 @@
       "path": "Scenes/Prototypes/Washer.usda",
       "type": "Asset",
       "name": "Washer",
-      "hash": "0ca37b8a35ac69735d58845a3090831caba5fc7c5866fc6e4652ee4ceaeb0dbc",
+      "hash": "0afbd566dbd116fc0eec4a9470b40e4b7908d881afb0b967680f3fb6110cd1b7",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -90,7 +120,7 @@
       "path": "Scenes/Sandbox.usda",
       "type": "Asset",
       "name": "Sandbox",
-      "hash": "29ed2cf2d0ec5419851d13e7cac723aea34319cf5b2e380d3ff549424be2e9e0",
+      "hash": "38b1b3bb8e0f173048171da27fc4eee448334d4b44cb5dd975b43a24ece38cc1",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -100,7 +130,7 @@
       "path": "Scenes/Sandbox.usda.usdscene",
       "type": "Asset",
       "name": "Sandbox.usda",
-      "hash": "5c98ec762204f0be9ddb8c24890edbcad5ac1e8d37fd3f89bd439c0bf15ef35a",
+      "hash": "f64bc4914414fd4aaedb262dbd9e895d76c4aa830e41945e07bc5873755e5b80",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },
@@ -111,6 +141,78 @@
       "type": "Shader",
       "name": "Rain",
       "hash": "d9d8ba30645c1635a171b69bb1819439df9a94ea351e72e2cde770492c877069",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "7ddf39b6-cb82-46da-8a03-1ba2ba5bb6d9",
+      "source": "Game",
+      "path": "UI/Crosshair.css",
+      "type": "Asset",
+      "name": "Crosshair",
+      "hash": "e47645a680530cd4a191b7a50b1d308ac8534562fbf6a03d5b69173eb1755e58",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "5e632e8b-bffa-4b6b-9066-995b9ad191d9",
+      "source": "Game",
+      "path": "UI/Crosshair.xml",
+      "type": "Asset",
+      "name": "Crosshair",
+      "hash": "5a65c5e8d89aa2c61c0cc24919b1b1a46f3914518c75298952bcd63041534b86",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "ba7b9cd4-18ad-47dc-847f-cdcbff0b6acc",
+      "source": "Game",
+      "path": "UI/Cursors/WorldPointer.png",
+      "type": "Texture2D",
+      "name": "WorldPointer",
+      "hash": "517387d402d244aac5d3b712e9ffc4ee7b30a9c1f781d0c1b3248966d4a123bb",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "7e557b55-074e-457b-9503-42bfb2feac76",
+      "source": "Game",
+      "path": "UI/WasherConsole.css",
+      "type": "Asset",
+      "name": "WasherConsole",
+      "hash": "e60759c1d906146d663c4f86b49c08f2f0cf912bc162e172a24556bcf469ed7e",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "376446a0-1ea1-4c8f-9e6c-bdee088a2cdb",
+      "source": "Game",
+      "path": "UI/WasherConsole.xml",
+      "type": "Asset",
+      "name": "WasherConsole",
+      "hash": "b0672d6d7e39820cacc46b9ce36a6fc6fb13d9957575907a9a1f7291e178be3a",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "bada1f70-8914-46e8-9ebc-545d02a1604f",
+      "source": "Game",
+      "path": "UI/WasherStatus.css",
+      "type": "Asset",
+      "name": "WasherStatus",
+      "hash": "182cb5af4a5f87104d3680884546c3a6325b3283b87c01fd2143627ea2308eac",
+      "dependencies": [
+        "7dfd3e32-d17f-438e-bd96-4e43caab3c19"
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "8bb2fae3-2069-4375-8c20-9a961f90e72f",
+      "source": "Game",
+      "path": "UI/WasherStatus.xml",
+      "type": "Asset",
+      "name": "WasherStatus",
+      "hash": "f132269bd6325f1e25c7d71179697cc063c388b4f174d1f4f0eb41f02fb0a16a",
       "dependencies": [],
       "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
     },

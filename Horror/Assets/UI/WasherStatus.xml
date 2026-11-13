@@ -1,0 +1,14 @@
+<ui class="canvas" styles="WasherStatus.css" scale-mode="none">
+    <panel class="card">
+        <panel class="heading">
+            <text class="eyebrow">СТИРАЛЬНАЯ МАШИНА</text>
+            <text class="number">01</text>
+        </panel>
+        <text id="title" class="title">Чистый старт</text>
+        <panel class="status">
+            <panel class="status-dot" />
+            <text id="status" class="status-text">Готова к стирке</text>
+        </panel>
+        <button id="power" class="action">ВЫКЛЮЧИТЬ</button>
+    </panel>
+</ui>

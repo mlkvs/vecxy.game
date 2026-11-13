@@ -1,0 +1,9 @@
+.console .card { background-color: #172237; border-color: #64799c; }
+.console .action { background-color: #93b5ff; color: #12213a; }
+.console .action:hover { background-color: #c3d5ff; }
+.console .action:active { background-color: #6f94de; }
+.console.alternate .card { background-color: #2a1d3a; border-color: #b391ca; }
+.console.alternate .action { background-color: #d8aff4; }
+
+.console.alternate .action:hover { background-color: #efd3ff; }
+.console.alternate .action:active { background-color: #b48ace; }

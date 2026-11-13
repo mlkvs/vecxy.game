@@ -12,7 +12,8 @@ public sealed class Player : AComponent
 {
     public sealed class Prototype(
         IWindow window,
-        IInputManager inputManager) : APrototype<Player, Prototype.Options>
+        IInputManager inputManager,
+        IInputCaptureState inputCapture) : APrototype<Player, Prototype.Options>
     {
         public sealed class Options
         {
@@ -52,6 +53,7 @@ public sealed class Player : AComponent
             player.Camera = options.Camera ?? throw new ArgumentNullException(nameof(options.Camera));
             player.Window = window;
             player.InputManager = inputManager;
+            player.InputCapture = inputCapture;
             player.Physics = options.Physics ?? throw new ArgumentNullException(nameof(options.Physics));
             player.WalkSpeed = options.WalkSpeed;
             player.SprintMultiplier = options.SprintMultiplier;
@@ -87,6 +89,7 @@ public sealed class Player : AComponent
     public RigidBody Body { get; private set; } = null!;
     private IWindow Window { get; set; } = null!;
     private IInputManager InputManager { get; set; } = null!;
+    private IInputCaptureState InputCapture { get; set; } = null!;
     private IPhysicsSystem Physics { get; set; } = null!;
     private InputAction? _releaseCursorAction;
     private InputAction? _captureCursorAction;
@@ -170,7 +173,7 @@ public sealed class Player : AComponent
 
     private void UpdateLook()
     {
-        if (!Window.IsCursorCaptured)
+        if (!Window.IsCursorCaptured || InputCapture.SuppressMouse || InputCapture.SuppressMouseMotion)
             return;
 
         var mouseDelta = InputManager.MouseDelta;

@@ -1,0 +1,8 @@
+<ui class="canvas console" styles="WasherStatus.css, WasherConsole.css" scale-mode="none">
+    <panel class="card">
+        <panel class="heading"><text class="eyebrow">КУРСОР НА ПОВЕРХНОСТИ</text><text class="number">02</text></panel>
+        <text class="title">Мышь в мире</text>
+        <text id="clicks" class="status-text">Нажатий: 0</text>
+        <button id="console-action" class="action">НАЖМИ МЕНЯ</button>
+    </panel>
+</ui>

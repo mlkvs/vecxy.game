@@ -1,0 +1,3 @@
+<ui class="crosshair-screen" styles="Crosshair.css" scale-mode="none">
+    <panel class="dot" />
+</ui>
