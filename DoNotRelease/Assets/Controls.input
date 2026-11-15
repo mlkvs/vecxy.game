@@ -1,0 +1,27 @@
+namespace: DoNotRelease
+className: GameInput
+maps:
+  - name: Engine
+    actions:
+      - name: ToggleFullscreen
+        type: Button
+        bindings:
+          - type: Keyboard
+            key: F11
+  - name: Player
+    actions:
+      - name: Move
+        type: Vector2
+        bindings:
+          - type: Composite
+            composite: WASD
+      - name: Interact
+        type: Button
+        bindings:
+          - type: Keyboard
+            key: E
+      - name: Pause
+        type: Button
+        bindings:
+          - type: Keyboard
+            key: Escape

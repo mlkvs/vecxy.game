@@ -1,0 +1,3 @@
+@font-face { font-family: Cell; src: url('../Fonts/NotoSans.ttf'); }
+.indicator { width: 100%; height: 100%; justify-content: center; align-items: center; background-color: #080a08; }
+#indicator { color: #b4503c; font-size: 38px; font-family: Cell; }

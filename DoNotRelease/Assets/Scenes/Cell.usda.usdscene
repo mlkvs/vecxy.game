@@ -1,0 +1,2890 @@
+{
+  "format": 1,
+  "upAxis": "Z",
+  "source": "Scenes/Cell.usda",
+  "model": "Scenes/Compiled/Cell.glb",
+  "prims": [
+    {
+      "path": "/Scene",
+      "node": 1,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_019",
+      "node": 2,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_019/Cube_021",
+      "node": 3,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/_materials",
+      "node": 4,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_018",
+      "node": 5,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_018/Cube_020",
+      "node": 6,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_001",
+      "node": 7,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_001/Cube_003",
+      "node": 8,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_008",
+      "node": 9,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_008/Cube_010",
+      "node": 10,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Terminal_sealed_key_002",
+      "node": 11,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Terminal_sealed_key_002/Cylinder_015",
+      "node": 12,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Conduit_clip_004",
+      "node": 13,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Conduit_clip_004/Cube_051",
+      "node": 14,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Concrete_end_001",
+      "node": 15,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 4.099999904632568,
+              "y": 0.15999984741210938,
+              "z": 3.0
+            },
+            "center": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/Concrete_end_001/Cube_031",
+      "node": 16,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Terminal_plate",
+      "node": 17,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Terminal_plate/Text_002",
+      "node": 18,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Conduit_clip_003",
+      "node": 19,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Conduit_clip_003/Cube_050",
+      "node": 20,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Speaker_slots_004",
+      "node": 21,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Speaker_slots_004/Cube_076",
+      "node": 22,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Steel_skirting",
+      "node": 23,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Steel_skirting/Cube_024",
+      "node": 24,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_007",
+      "node": 25,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_007/Cube_009",
+      "node": 26,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_005",
+      "node": 27,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_005/Cube_007",
+      "node": 28,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041f\u043e\u044f\u0432\u043b\u0435\u043d\u0438\u0435_\u0438\u0433\u0440\u043e\u043a\u0430",
+      "node": 29,
+      "role": "spawn",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Terminal_sealed_key_001",
+      "node": 30,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Terminal_sealed_key_001/Cylinder_014",
+      "node": 31,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/IndicatorSurface",
+      "node": 32,
+      "role": "indicator-ui",
+      "prototype": "",
+      "components": [
+        {
+          "key": "uiCanvas",
+          "type": "Vecxy.UI.UiCanvas",
+          "enabled": true,
+          "data": {
+            "document": "d5abbc8f-e9e7-4dc3-8cbe-3ee5603e48c8",
+            "renderMode": "WorldSpace",
+            "pixelsPerMeter": 1000.0,
+            "interactive": false,
+            "doubleSided": true,
+            "inputMode": "Mouse",
+            "activationKey": "E",
+            "cursorImage": "",
+            "cursorSize": 44.0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/IndicatorSurface/Plane",
+      "node": 33,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Steel_end_skirting",
+      "node": 34,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Steel_end_skirting/Cube_030",
+      "node": 35,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Speaker_slots",
+      "node": 36,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Speaker_slots/Cube_072",
+      "node": 37,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/End_panel_joint_001",
+      "node": 38,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/End_panel_joint_001/Cube_042",
+      "node": 39,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Archive_frame",
+      "node": 40,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Archive_frame/Cube_067",
+      "node": 41,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Conduit_clip_005",
+      "node": 42,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Conduit_clip_005/Cube_052",
+      "node": 43,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Panel_joint_005",
+      "node": 44,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Panel_joint_005/Cube_040",
+      "node": 45,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_006",
+      "node": 46,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_006/Cube_008",
+      "node": 47,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/End_panel_joint_003",
+      "node": 48,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/End_panel_joint_003/Cube_044",
+      "node": 49,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Speaker_slots_001",
+      "node": 50,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Speaker_slots_001/Cube_073",
+      "node": 51,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Speaker_slots_003",
+      "node": 52,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Speaker_slots_003/Cube_075",
+      "node": 53,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Sage_lower_end",
+      "node": 54,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Sage_lower_end/Cube_029",
+      "node": 55,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Indicator_frame",
+      "node": 56,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Indicator_frame/Cube_066",
+      "node": 57,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Speaker_slots_005",
+      "node": 58,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Speaker_slots_005/Cube_077",
+      "node": 59,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0412\u0438\u0434_\u0433\u043b\u0430\u0432\u043d\u043e\u0433\u043e_\u043c\u0435\u043d\u044e",
+      "node": 60,
+      "role": "menu-view",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Conduit_clip_001",
+      "node": 61,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Conduit_clip_001/Cube_048",
+      "node": 62,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0430\u043c\u0435\u0440\u0430_\u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u044f",
+      "node": 63,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Camera",
+            "prompt": "\u041e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u043a\u0430\u043c\u0435\u0440\u0443",
+            "padding": 0.03500000014901161
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u041a\u0430\u043c\u0435\u0440\u0430_\u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u044f/Camera_mount",
+      "node": 64,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0430\u043c\u0435\u0440\u0430_\u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u044f/Camera_mount/Cube_119",
+      "node": 65,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0430\u043c\u0435\u0440\u0430_\u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u044f/CameraHousing",
+      "node": 66,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0430\u043c\u0435\u0440\u0430_\u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u044f/CameraHousing/Cube_120",
+      "node": 67,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0430\u043c\u0435\u0440\u0430_\u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u044f/Camera_lens",
+      "node": 68,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0430\u043c\u0435\u0440\u0430_\u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u044f/Camera_lens/Cylinder_027",
+      "node": 69,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0430\u043c\u0435\u0440\u0430_\u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u044f/Camera_LED",
+      "node": 70,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0430\u043c\u0435\u0440\u0430_\u043d\u0430\u0431\u043b\u044e\u0434\u0435\u043d\u0438\u044f/Camera_LED/Cylinder_028",
+      "node": 71,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_011",
+      "node": 72,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_011/Cube_013",
+      "node": 73,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/End_panel_joint_004",
+      "node": 74,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/End_panel_joint_004/Cube_045",
+      "node": 75,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Room_number",
+      "node": 76,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Room_number/Text_001",
+      "node": 77,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Concrete_end",
+      "node": 78,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 4.099999904632568,
+              "y": 0.15999984741210938,
+              "z": 3.0
+            },
+            "center": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/Concrete_end/Cube_028",
+      "node": 79,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Light_diffuser",
+      "node": 80,
+      "role": "light-diffuser",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Light_diffuser/Cube_115",
+      "node": 81,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_013",
+      "node": 82,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_013/Cube_015",
+      "node": 83,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Conduit_clip_002",
+      "node": 84,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Conduit_clip_002/Cube_049",
+      "node": 85,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041f\u043e\u043b\u043a\u0430_\u0440\u0430\u0437\u0434\u0430\u0447\u0438",
+      "node": 86,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 0.8942380547523499,
+              "y": 0.6096761226654053,
+              "z": 0.3226780593395233
+            },
+            "center": {
+              "x": -2.9802322387695312e-08,
+              "y": -1.1920928955078125e-07,
+              "z": 1.4901161193847656e-08
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u041f\u043e\u043b\u043a\u0430_\u0440\u0430\u0437\u0434\u0430\u0447\u0438/Serving_shelf",
+      "node": 87,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041f\u043e\u043b\u043a\u0430_\u0440\u0430\u0437\u0434\u0430\u0447\u0438/Serving_shelf/Cube_064",
+      "node": 88,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041f\u043e\u043b\u043a\u0430_\u0440\u0430\u0437\u0434\u0430\u0447\u0438/Shelf_brace_001",
+      "node": 89,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041f\u043e\u043b\u043a\u0430_\u0440\u0430\u0437\u0434\u0430\u0447\u0438/Shelf_brace_001/Cylinder_003",
+      "node": 90,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041f\u043e\u043b\u043a\u0430_\u0440\u0430\u0437\u0434\u0430\u0447\u0438/Shelf_brace",
+      "node": 91,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041f\u043e\u043b\u043a\u0430_\u0440\u0430\u0437\u0434\u0430\u0447\u0438/Shelf_brace/Cylinder_002",
+      "node": 92,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Lock_recess",
+      "node": 93,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Lock_recess/Cube_065",
+      "node": 94,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Ceiling",
+      "node": 95,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 4.199999809265137,
+              "y": 5.199999809265137,
+              "z": 0.17999982833862305
+            },
+            "center": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/Ceiling/Cube_034",
+      "node": 96,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_015",
+      "node": 97,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_015/Cube_017",
+      "node": 98,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Steel_skirting_001",
+      "node": 99,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Steel_skirting_001/Cube_027",
+      "node": 100,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Ceiling_conduit",
+      "node": 101,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Ceiling_conduit/Cylinder",
+      "node": 102,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_017",
+      "node": 103,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_017/Cube_019",
+      "node": 104,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Light_cage_rib",
+      "node": 105,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Light_cage_rib/Cube_116",
+      "node": 106,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_003",
+      "node": 107,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_003/Cube_005",
+      "node": 108,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Speaker_housing",
+      "node": 109,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Speaker_housing/Cube_070",
+      "node": 110,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile",
+      "node": 111,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile/Cube_002",
+      "node": 112,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Sage_lower_wall_001",
+      "node": 113,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Sage_lower_wall_001/Cube_026",
+      "node": 114,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b_\u043f\u043e\u043c\u0435\u0449\u0435\u043d\u0438\u044f",
+      "node": 115,
+      "role": "room-settings",
+      "prototype": "",
+      "components": [
+        {
+          "key": "roomSettings",
+          "type": "DoNotRelease.CellRoomSettings",
+          "enabled": true,
+          "data": {
+            "nightLightMultiplier": 0.125,
+            "ambientDay": 0.5799999833106995,
+            "ambientNight": 0.18000000715255737,
+            "ambientSky": {
+              "x": 0.4000000059604645,
+              "y": 0.44999998807907104,
+              "z": 0.4099999964237213
+            },
+            "ambientGround": {
+              "x": 0.1599999964237213,
+              "y": 0.18000000715255737,
+              "z": 0.17000000178813934
+            },
+            "hatchSeconds": 1.25,
+            "waterSeconds": 14.0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/Light_cage_rib_002",
+      "node": 116,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Light_cage_rib_002/Cube_118",
+      "node": 117,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Ceiling_conduit_001",
+      "node": 118,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Ceiling_conduit_001/Cylinder_001",
+      "node": 119,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0432\u0435\u0442_\u044d\u043a\u0440\u0430\u043d\u0430",
+      "node": 120,
+      "role": "screen-light",
+      "prototype": "",
+      "components": [
+        {
+          "key": "lightRange",
+          "type": "DoNotRelease.CellLightRange",
+          "enabled": true,
+          "data": {
+            "range": 2.799999952316284
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u0421\u0432\u0435\u0442_\u044d\u043a\u0440\u0430\u043d\u0430/\u0421\u0432\u0435\u0442_\u044d\u043a\u0440\u0430\u043d\u0430",
+      "node": 121,
+      "role": "",
+      "prototype": "",
+      "light": "point",
+      "color": [
+        0.27000001072883606,
+        0.5099999904632568,
+        0.3799999952316284
+      ],
+      "intensity": 0.25,
+      "range": 0.0
+    },
+    {
+      "path": "/Scene/Conduit_clip",
+      "node": 122,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Conduit_clip/Cube_047",
+      "node": 123,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_002",
+      "node": 124,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_002/Cube_004",
+      "node": 125,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430",
+      "node": 126,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Sink",
+            "prompt": "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u043a\u0440\u0430\u043d",
+            "padding": 0.03500000014901161
+          }
+        },
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 0.5949999094009399,
+              "y": 0.5499999523162842,
+              "z": 0.8429999351501465
+            },
+            "center": {
+              "x": -5.960464477539063e-08,
+              "y": 0.0,
+              "z": -1.4901161193847656e-08
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Basin_inset",
+      "node": 127,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Basin_inset/Cube_108",
+      "node": 128,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Tap_stem",
+      "node": 129,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Tap_stem/Cylinder_022",
+      "node": 130,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Sink_bracket",
+      "node": 131,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Sink_bracket/Cube_106",
+      "node": 132,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Basin_bottom",
+      "node": 133,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Basin_bottom/Cube_109",
+      "node": 134,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Basin_rim",
+      "node": 135,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Basin_rim/Cube_107",
+      "node": 136,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/WaterStream",
+      "node": 137,
+      "role": "water",
+      "prototype": "",
+      "components": [
+        {
+          "key": "initialState",
+          "type": "DoNotRelease.CellInitialState",
+          "enabled": true,
+          "data": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/WaterStream/Cube_110",
+      "node": 138,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Tap_spout",
+      "node": 139,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Tap_spout/Cylinder_023",
+      "node": 140,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Drain_pipe",
+      "node": 141,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Drain_pipe/Cylinder_020",
+      "node": 142,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Drain_bend",
+      "node": 143,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Drain_bend/Cylinder_021",
+      "node": 144,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Sink_drain",
+      "node": 145,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Sink_drain/Cylinder_019",
+      "node": 146,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Tap_handle",
+      "node": 147,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0420\u0430\u043a\u043e\u0432\u0438\u043d\u0430/Tap_handle/Cylinder_024",
+      "node": 148,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_004",
+      "node": 149,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_004/Cube_006",
+      "node": 150,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Concrete_side_001",
+      "node": 151,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 0.15999996662139893,
+              "y": 5.199999809265137,
+              "z": 3.0
+            },
+            "center": {
+              "x": -5.960464477539063e-08,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/Concrete_side_001/Cube_025",
+      "node": 152,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/StatusPaper",
+      "node": 153,
+      "role": "document",
+      "prototype": "",
+      "components": [
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Document",
+            "prompt": "\u041f\u0440\u043e\u0447\u0438\u0442\u0430\u0442\u044c \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442",
+            "padding": 0.04500000178813934
+          }
+        },
+        {
+          "key": "initialState",
+          "type": "DoNotRelease.CellInitialState",
+          "enabled": true,
+          "data": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/StatusPaper/Cube_127",
+      "node": 154,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Panel_joint_001",
+      "node": 155,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Panel_joint_001/Cube_036",
+      "node": 156,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b",
+      "node": 157,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Table",
+            "prompt": "\u041e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c",
+            "padding": 0.03500000014901161
+          }
+        },
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 0.940000057220459,
+              "y": 0.6499999761581421,
+              "z": 0.8024999499320984
+            },
+            "center": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/Table_leg_002",
+      "node": 158,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/Table_leg_002/Cube_098",
+      "node": 159,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/Table_leg",
+      "node": 160,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/Table_leg/Cube_096",
+      "node": 161,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/Table_top",
+      "node": 162,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/Table_top/Cube_095",
+      "node": 163,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/Table_leg_003",
+      "node": 164,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/Table_leg_003/Cube_099",
+      "node": 165,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/Table_leg_001",
+      "node": 166,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/Table_leg_001/Cube_097",
+      "node": 167,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u043e\u043b/\u041f\u043e\u0434\u043d\u043e\u0441_\u043d\u0430_\u0441\u0442\u043e\u043b\u0435",
+      "node": 168,
+      "role": "meal-on-table",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Panel_joint_002",
+      "node": 169,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Panel_joint_002/Cube_037",
+      "node": 170,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Light_frame",
+      "node": 171,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Light_frame/Cube_114",
+      "node": 172,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Conduit_clip_007",
+      "node": 173,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Conduit_clip_007/Cube_054",
+      "node": 174,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Terminal_sealed_key",
+      "node": 175,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Terminal_sealed_key/Cylinder_013",
+      "node": 176,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/End_panel_joint_005",
+      "node": 177,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/End_panel_joint_005/Cube_046",
+      "node": 178,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041f\u043e\u0442\u043e\u043b\u043e\u0447\u043d\u044b\u0439_\u0441\u0432\u0435\u0442",
+      "node": 179,
+      "role": "main-light",
+      "prototype": "",
+      "components": [
+        {
+          "key": "lightRange",
+          "type": "DoNotRelease.CellLightRange",
+          "enabled": true,
+          "data": {
+            "range": 7.0
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u041f\u043e\u0442\u043e\u043b\u043e\u0447\u043d\u044b\u0439_\u0441\u0432\u0435\u0442/\u041f\u043e\u0442\u043e\u043b\u043e\u0447\u043d\u044b\u0439_\u0441\u0432\u0435\u0442",
+      "node": 180,
+      "role": "",
+      "prototype": "",
+      "light": "point",
+      "color": [
+        0.75,
+        0.8500000238418579,
+        0.7900000214576721
+      ],
+      "intensity": 2.799999952316284,
+      "range": 0.0
+    },
+    {
+      "path": "/Scene/TrayGroup",
+      "node": 181,
+      "role": "meal",
+      "prototype": "",
+      "components": [
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Tray",
+            "prompt": "\u0417\u0430\u0431\u0440\u0430\u0442\u044c \u043f\u043e\u0434\u043d\u043e\u0441",
+            "padding": 0.03500000014901161
+          }
+        },
+        {
+          "key": "initialState",
+          "type": "DoNotRelease.CellInitialState",
+          "enabled": true,
+          "data": {
+            "visible": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/TrayGroup/Meal_dish",
+      "node": 182,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/TrayGroup/Meal_dish/Cylinder_029",
+      "node": 183,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/TrayGroup/Tray_edge_002",
+      "node": 184,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/TrayGroup/Tray_edge_002/Cube_124",
+      "node": 185,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/TrayGroup/Food_tray",
+      "node": 186,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/TrayGroup/Food_tray/Cube_121",
+      "node": 187,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/TrayGroup/Served_food",
+      "node": 188,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/TrayGroup/Served_food/Cylinder_030",
+      "node": 189,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/TrayGroup/Tray_edge_003",
+      "node": 190,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/TrayGroup/Tray_edge_003/Cube_125",
+      "node": 191,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/TrayGroup/Bread_portion",
+      "node": 192,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/TrayGroup/Bread_portion/Cube_126",
+      "node": 193,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/TrayGroup/Water_cup",
+      "node": 194,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/TrayGroup/Water_cup/Cylinder_031",
+      "node": 195,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/TrayGroup/Tray_edge",
+      "node": 196,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/TrayGroup/Tray_edge/Cube_122",
+      "node": 197,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/TrayGroup/Tray_edge_001",
+      "node": 198,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/TrayGroup/Tray_edge_001/Cube_123",
+      "node": 199,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/TrayGroup/Cup_water",
+      "node": 200,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/TrayGroup/Cup_water/Cylinder_032",
+      "node": 201,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Archive_dark_glass",
+      "node": 202,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Archive_dark_glass/Cube_069",
+      "node": 203,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Panel_joint",
+      "node": 204,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Panel_joint/Cube_035",
+      "node": 205,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c",
+      "node": 206,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Bed",
+            "prompt": "\u0421\u0435\u0441\u0442\u044c",
+            "padding": 0.03500000014901161
+          }
+        },
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 0.9600000381469727,
+              "y": 2.0602169036865234,
+              "z": 0.8460000157356262
+            },
+            "center": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_foot",
+      "node": 207,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_foot/Cube_085",
+      "node": 208,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_frame",
+      "node": 209,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_frame/Cube_089",
+      "node": 210,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/\u0421\u0438\u0434\u044f_\u043d\u0430_\u043a\u0440\u043e\u0432\u0430\u0442\u0438",
+      "node": 211,
+      "role": "bed-seat",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_end_rail_001",
+      "node": 212,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_end_rail_001/Cube_094",
+      "node": 213,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Pillow",
+      "node": 214,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Pillow/Cube_091",
+      "node": 215,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_foot_001",
+      "node": 216,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_foot_001/Cube_086",
+      "node": 217,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Folded_cover",
+      "node": 218,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Folded_cover/Cube_092",
+      "node": 219,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_foot_002",
+      "node": 220,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_foot_002/Cube_087",
+      "node": 221,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/\u041b\u0451\u0436\u0430_\u043d\u0430_\u043a\u0440\u043e\u0432\u0430\u0442\u0438",
+      "node": 222,
+      "role": "bed-view",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Mattress",
+      "node": 223,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Mattress/Cube_090",
+      "node": 224,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_end_rail",
+      "node": 225,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_end_rail/Cube_093",
+      "node": 226,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_foot_003",
+      "node": 227,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Bed_foot_003/Cube_088",
+      "node": 228,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Head_rail",
+      "node": 229,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u041a\u0440\u043e\u0432\u0430\u0442\u044c/Head_rail/Cylinder_016",
+      "node": 230,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Conduit_clip_006",
+      "node": 231,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Conduit_clip_006/Cube_053",
+      "node": 232,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b",
+      "node": 233,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Chair",
+            "prompt": "\u0421\u0435\u0441\u0442\u044c",
+            "padding": 0.03500000014901161
+          }
+        },
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 0.4299999475479126,
+              "y": 0.43000003695487976,
+              "z": 0.9100000262260437
+            },
+            "center": {
+              "x": 0.0,
+              "y": -1.4901161193847656e-08,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_back",
+      "node": 234,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_back/Cube_105",
+      "node": 235,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_upright_001",
+      "node": 236,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_upright_001/Cylinder_018",
+      "node": 237,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/\u0421\u0438\u0434\u044f_\u043d\u0430_\u0441\u0442\u0443\u043b\u0435",
+      "node": 238,
+      "role": "chair-seat",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_seat",
+      "node": 239,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_seat/Cube_100",
+      "node": 240,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_foot_002",
+      "node": 241,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_foot_002/Cube_103",
+      "node": 242,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_upright",
+      "node": 243,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_upright/Cylinder_017",
+      "node": 244,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_foot_003",
+      "node": 245,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_foot_003/Cube_104",
+      "node": 246,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_foot",
+      "node": 247,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_foot/Cube_101",
+      "node": 248,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_foot_001",
+      "node": 249,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0421\u0442\u0443\u043b/Chair_foot_001/Cube_102",
+      "node": 250,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_010",
+      "node": 251,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_010/Cube_012",
+      "node": 252,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Floor",
+      "node": 253,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 4.25,
+              "y": 5.25,
+              "z": 0.20000000298023224
+            },
+            "center": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/Floor/Cube_001",
+      "node": 254,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/ArchiveSurface",
+      "node": 255,
+      "role": "archive-ui",
+      "prototype": "",
+      "components": [
+        {
+          "key": "uiCanvas",
+          "type": "Vecxy.UI.UiCanvas",
+          "enabled": true,
+          "data": {
+            "document": "4f98540f-a13d-4775-a68f-0ba11930599f",
+            "renderMode": "WorldSpace",
+            "pixelsPerMeter": 800.0,
+            "interactive": false,
+            "doubleSided": true,
+            "inputMode": "Mouse",
+            "activationKey": "E",
+            "cursorImage": "",
+            "cursorSize": 44.0
+          }
+        },
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Screen",
+            "prompt": "\u041e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u044d\u043a\u0440\u0430\u043d",
+            "padding": 0.03500000014901161
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/ArchiveSurface/Plane_001",
+      "node": 256,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Archive_bevel",
+      "node": 257,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Archive_bevel/Cube_068",
+      "node": 258,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c",
+      "node": 259,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Door",
+            "prompt": "\u041e\u0442\u043a\u0440\u044b\u0442\u044c / \u043f\u043e\u0441\u0442\u0443\u0447\u0430\u0442\u044c",
+            "padding": 0.03500000014901161
+          }
+        },
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 1.3500001430511475,
+              "y": 0.21249985694885254,
+              "z": 2.3949999809265137
+            },
+            "center": {
+              "x": 2.9802322387695312e-08,
+              "y": -1.1920928955078125e-07,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_002",
+      "node": 260,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_002/Cylinder_006",
+      "node": 261,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_lower",
+      "node": 262,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_lower/Cube_059",
+      "node": 263,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_005",
+      "node": 264,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_005/Cylinder_009",
+      "node": 265,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Hatch",
+      "node": 266,
+      "role": "hatch",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Hatch/Cube_063",
+      "node": 267,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_007",
+      "node": 268,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_007/Cylinder_011",
+      "node": 269,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/\u041b\u044e\u043a_\u043e\u0442\u043a\u0440\u044b\u0442",
+      "node": 270,
+      "role": "hatch-open",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_stencil",
+      "node": 271,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_stencil/Text",
+      "node": 272,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_004",
+      "node": 273,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_004/Cylinder_008",
+      "node": 274,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_lintel",
+      "node": 275,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_lintel/Cube_058",
+      "node": 276,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_jamb_001",
+      "node": 277,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_jamb_001/Cube_057",
+      "node": 278,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_upper",
+      "node": 279,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_upper/Cube_060",
+      "node": 280,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_hatch_side",
+      "node": 281,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_hatch_side/Cube_061",
+      "node": 282,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_jamb",
+      "node": 283,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_jamb/Cube_056",
+      "node": 284,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_shadow",
+      "node": 285,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_shadow/Cube_055",
+      "node": 286,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_003",
+      "node": 287,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_003/Cylinder_007",
+      "node": 288,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_006",
+      "node": 289,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_006/Cylinder_010",
+      "node": 290,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_hatch_side_001",
+      "node": 291,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_hatch_side_001/Cube_062",
+      "node": 292,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt",
+      "node": 293,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt/Cylinder_004",
+      "node": 294,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_001",
+      "node": 295,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0414\u0432\u0435\u0440\u044c/Door_security_bolt_001/Cylinder_005",
+      "node": 296,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f",
+      "node": 297,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Vent",
+            "prompt": "\u041e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c \u0432\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044e",
+            "padding": 0.03500000014901161
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_frame",
+      "node": 298,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_frame/Cube_078",
+      "node": 299,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_darkness",
+      "node": 300,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_darkness/Cube_079",
+      "node": 301,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_blade",
+      "node": 302,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_blade/Cube_080",
+      "node": 303,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_blade_001",
+      "node": 304,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_blade_001/Cube_081",
+      "node": 305,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_blade_003",
+      "node": 306,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_blade_003/Cube_083",
+      "node": 307,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_blade_002",
+      "node": 308,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_blade_002/Cube_082",
+      "node": 309,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_blade_004",
+      "node": 310,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0412\u0435\u043d\u0442\u0438\u043b\u044f\u0446\u0438\u044f/Vent_blade_004/Cube_084",
+      "node": 311,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Sage_lower_wall",
+      "node": 312,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Sage_lower_wall/Cube_023",
+      "node": 313,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Light_cage_rib_001",
+      "node": 314,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Light_cage_rib_001/Cube_117",
+      "node": 315,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_012",
+      "node": 316,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_012/Cube_014",
+      "node": 317,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/End_panel_joint_002",
+      "node": 318,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/End_panel_joint_002/Cube_043",
+      "node": 319,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Speaker_grille",
+      "node": 320,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Speaker_grille/Cube_071",
+      "node": 321,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Panel_joint_004",
+      "node": 322,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Panel_joint_004/Cube_039",
+      "node": 323,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Sage_lower_end_001",
+      "node": 324,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Sage_lower_end_001/Cube_032",
+      "node": 325,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_014",
+      "node": 326,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_014/Cube_016",
+      "node": 327,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Status_LED",
+      "node": 328,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Status_LED/Cylinder_012",
+      "node": 329,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Speaker_slots_002",
+      "node": 330,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Speaker_slots_002/Cube_074",
+      "node": 331,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_009",
+      "node": 332,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_009/Cube_011",
+      "node": 333,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/End_panel_joint",
+      "node": 334,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/End_panel_joint/Cube_041",
+      "node": 335,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Rubber_tile_016",
+      "node": 336,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Rubber_tile_016/Cube_018",
+      "node": 337,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442",
+      "node": 338,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "interaction",
+          "type": "DoNotRelease.CellInteractable",
+          "enabled": true,
+          "data": {
+            "action": "Toilet",
+            "prompt": "\u041e\u0441\u043c\u043e\u0442\u0440\u0435\u0442\u044c",
+            "padding": 0.03500000014901161
+          }
+        },
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 0.4899001121520996,
+              "y": 0.9111063480377197,
+              "z": 0.9750000238418579
+            },
+            "center": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Toilet_seat",
+      "node": 339,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Toilet_seat/Torus",
+      "node": 340,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Toilet_cistern",
+      "node": 341,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Toilet_cistern/Cube_112",
+      "node": 342,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Toilet_dark_bowl",
+      "node": 343,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Toilet_dark_bowl/Cylinder_026",
+      "node": 344,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Flush_plate",
+      "node": 345,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Flush_plate/Cube_113",
+      "node": 346,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Toilet_base",
+      "node": 347,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Toilet_base/Cube_111",
+      "node": 348,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Toilet_bowl",
+      "node": 349,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/\u0422\u0443\u0430\u043b\u0435\u0442/Toilet_bowl/Cylinder_025",
+      "node": 350,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Steel_end_skirting_001",
+      "node": 351,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Steel_end_skirting_001/Cube_033",
+      "node": 352,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Concrete_side",
+      "node": 353,
+      "role": "",
+      "prototype": "",
+      "components": [
+        {
+          "key": "collider",
+          "type": "Vecxy.Physics.BoxCollider",
+          "enabled": true,
+          "data": {
+            "size": {
+              "x": 0.15999996662139893,
+              "y": 5.199999809265137,
+              "z": 3.0
+            },
+            "center": {
+              "x": 5.960464477539063e-08,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "friction": 0.5,
+            "restitution": 0.0,
+            "isTrigger": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Scene/Concrete_side/Cube_022",
+      "node": 354,
+      "role": "",
+      "prototype": ""
+    },
+    {
+      "path": "/Scene/Panel_joint_003",
+      "node": 355,
+      "role": "",
+      "prototype": "",
+      "components": []
+    },
+    {
+      "path": "/Scene/Panel_joint_003/Cube_038",
+      "node": 356,
+      "role": "",
+      "prototype": ""
+    }
+  ],
+  "compiler": "6995f630dc63a260ca853d1f45ebfd172b64fcfbac6d26ba2a905c9fc3c04d75",
+  "inputs": [
+    {
+      "path": "Cell.usda",
+      "hash": "a014b3f43b8ef30211d1241aa6d70e1bc008c7ae146c9e09886ff524f2f7adbe"
+    },
+    {
+      "path": "Textures/00dd458a6e7b_Cast concrete \u2022 64px.png",
+      "hash": "00dd458a6e7b3e9f59d601202d39ee3eb9dc484e1acb029f86b216e8de3bfbf3"
+    },
+    {
+      "path": "Textures/4ff27e5d776c_Off white ceramic \u2022 64px.png",
+      "hash": "4ff27e5d776cbdc4a7e78a19f4356f448a10b4697266c74ceb3665424d06fc2c"
+    },
+    {
+      "path": "Textures/5b9d7bea0f34_Rubber floor \u2022 64px.png",
+      "hash": "5b9d7bea0f3460cce810ff833e6aed5e0b58d23ae60980fa31cbc11754fc35a7"
+    },
+    {
+      "path": "Textures/5e049da533a9_Meal \u2022 64px.png",
+      "hash": "5e049da533a9afd3d25f15e14bf6910e038355e59f2a120b5fb6be9801fe50a0"
+    },
+    {
+      "path": "Textures/7f3343d3a659_Blackened steel \u2022 64px.png",
+      "hash": "7f3343d3a659aab7ad0f44994e4a314ac9ffb04b6c7be73b60f2bffb7ff7ef40"
+    },
+    {
+      "path": "Textures/93b9d1cafd76_Bread \u2022 64px.png",
+      "hash": "93b9d1cafd768212402f252cf1b4bb6ce6199dc51fed0cefac656a8ec4e01ff3"
+    },
+    {
+      "path": "Textures/c8632d801aa8_Brushed stainless \u2022 64px.png",
+      "hash": "c8632d801aa8ae2986a2a94dbe9bb79ff4998f09e90028813c84267040b43d4b"
+    },
+    {
+      "path": "Textures/efcee403315d_Service enamel \u2014 faded sage \u2022 64px.png",
+      "hash": "efcee403315d32856172a8f873cd799e0514a33c4efe0df9878576bae514a20f"
+    },
+    {
+      "path": "Textures/f181ec2c0702_Institutional cotton \u2022 64px.png",
+      "hash": "f181ec2c070285a0021e70fd58ab460c97bac5f9d2a8c9ece04d8882a34a43f1"
+    },
+    {
+      "path": "Textures/fec3b30583ca_Document stock \u2022 64px.png",
+      "hash": "fec3b30583ca44b155b375a9a770fcdbec7391e0388b5153a0b44dbf4a803fe5"
+    },
+    {
+      "path": "../../../Engine/Vecxy/Code/Vecxy.Usd/Tools/cook_usd.py",
+      "hash": "6995f630dc63a260ca853d1f45ebfd172b64fcfbac6d26ba2a905c9fc3c04d75"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "Compiled/Cell.glb",
+      "hash": "10cfc2d0861e439acea94fc9cbccef7dc194a664eff6665488233425b0e5ddc6"
+    }
+  ]
+}

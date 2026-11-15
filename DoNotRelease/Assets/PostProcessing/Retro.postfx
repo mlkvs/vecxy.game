@@ -1,0 +1,6 @@
+enabled: false
+order: 100
+pixelWidth: 426
+jitterStrength: 0.0001
+warpStrength: 0
+driftStrength: 0

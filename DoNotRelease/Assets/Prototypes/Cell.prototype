@@ -1,0 +1,5 @@
+format: 1
+type: Vecxy.Usd.UsdScene
+data:
+  source: Scenes/Cell.usda
+  name: Камера резидента

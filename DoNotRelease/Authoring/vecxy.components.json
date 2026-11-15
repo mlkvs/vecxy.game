@@ -1,0 +1,815 @@
+{
+  "format": 1,
+  "assembly": "DoNotRelease.dll",
+  "components": [
+    {
+      "type": "DoNotRelease.CellInitialState",
+      "label": "\u0418\u0441\u0445\u043E\u0434\u043D\u0430\u044F \u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u044C",
+      "category": "\u041A\u0430\u043C\u0435\u0440\u0430",
+      "description": "\u0412\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u044C \u043F\u0440\u0438 \u043D\u0430\u0447\u0430\u043B\u0435 \u0438 \u043F\u0435\u0440\u0435\u0437\u0430\u043F\u0443\u0441\u043A\u0435 \u0438\u0433\u0440\u044B; \u0441\u044E\u0436\u0435\u0442 \u043C\u043E\u0436\u0435\u0442 \u043C\u0435\u043D\u044F\u0442\u044C \u0435\u0451 \u043F\u043E\u0437\u0436\u0435.",
+      "key": "initialState",
+      "fields": [
+        {
+          "key": "visible",
+          "label": "\u0412\u0438\u0434\u0438\u043C \u0432 \u043D\u0430\u0447\u0430\u043B\u0435",
+          "description": "",
+          "kind": "BOOL",
+          "default": false,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "DoNotRelease.CellInteractable",
+      "label": "\u0412\u0437\u0430\u0438\u043C\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435",
+      "category": "\u041A\u0430\u043C\u0435\u0440\u0430",
+      "description": "\u0414\u0435\u0439\u0441\u0442\u0432\u0438\u0435 \u043F\u043E E. \u041E\u0431\u043B\u0430\u0441\u0442\u044C \u0432\u044B\u0447\u0438\u0441\u043B\u044F\u0435\u0442\u0441\u044F \u043F\u043E \u0433\u0435\u043E\u043C\u0435\u0442\u0440\u0438\u0438 \u043E\u0431\u044A\u0435\u043A\u0442\u0430 \u0438 \u0435\u0433\u043E \u0434\u043E\u0447\u0435\u0440\u043D\u0438\u0445 \u043E\u0431\u044A\u0435\u043A\u0442\u043E\u0432.",
+      "key": "interaction",
+      "fields": [
+        {
+          "key": "action",
+          "label": "\u0414\u0435\u0439\u0441\u0442\u0432\u0438\u0435",
+          "description": "",
+          "kind": "ENUM",
+          "default": "Door",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "Door",
+            "Bed",
+            "Chair",
+            "Sink",
+            "Vent",
+            "Camera",
+            "Toilet",
+            "Table",
+            "Tray",
+            "Document",
+            "Screen"
+          ]
+        },
+        {
+          "key": "prompt",
+          "label": "\u041F\u043E\u0434\u0441\u043A\u0430\u0437\u043A\u0430",
+          "description": "",
+          "kind": "STRING",
+          "default": "\u041E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "padding",
+          "label": "\u0417\u0430\u043F\u0430\u0441 \u043E\u0431\u043B\u0430\u0441\u0442\u0438",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.035,
+          "min": 0.001,
+          "max": 0.5,
+          "unit": "m",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "DoNotRelease.CellLightRange",
+      "label": "\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0438\u0441\u0442\u043E\u0447\u043D\u0438\u043A\u0430",
+      "category": "\u041A\u0430\u043C\u0435\u0440\u0430",
+      "description": "\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0438\u0433\u0440\u043E\u0432\u043E\u0433\u043E \u0441\u0432\u0435\u0442\u0430; \u0446\u0432\u0435\u0442 \u0438 \u043C\u043E\u0449\u043D\u043E\u0441\u0442\u044C \u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u0443\u044E\u0442\u0441\u044F \u0443 \u043E\u0431\u044B\u0447\u043D\u043E\u0433\u043E \u0438\u0441\u0442\u043E\u0447\u043D\u0438\u043A\u0430 Blender.",
+      "key": "lightRange",
+      "fields": [
+        {
+          "key": "range",
+          "label": "\u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 7,
+          "min": 0.1,
+          "max": 100,
+          "unit": "m",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "DoNotRelease.CellRoomSettings",
+      "label": "\u041F\u0430\u0440\u0430\u043C\u0435\u0442\u0440\u044B \u043F\u043E\u043C\u0435\u0449\u0435\u043D\u0438\u044F",
+      "category": "\u041A\u0430\u043C\u0435\u0440\u0430",
+      "description": "\u0420\u0435\u0436\u0438\u043C \u0441\u0432\u0435\u0442\u0430 \u0438 \u043C\u0435\u0445\u0430\u043D\u0438\u043A\u0430 \u043F\u043E\u043C\u0435\u0449\u0435\u043D\u0438\u044F. \u0420\u0430\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043A\u0430, \u0438\u0441\u0442\u043E\u0447\u043D\u0438\u043A\u0438 \u0441\u0432\u0435\u0442\u0430 \u0438 \u043C\u0430\u0440\u043A\u0435\u0440\u044B \u043D\u0430\u0445\u043E\u0434\u044F\u0442\u0441\u044F \u0432 Blender.",
+      "key": "roomSettings",
+      "fields": [
+        {
+          "key": "nightLightMultiplier",
+          "label": "\u0421\u0432\u0435\u0442 \u043D\u043E\u0447\u044C\u044E, \u0434\u043E\u043B\u044F",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.125,
+          "min": 0.02,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "ambientDay",
+          "label": "\u0424\u043E\u043D\u043E\u0432\u044B\u0439 \u0441\u0432\u0435\u0442 \u0434\u043D\u0451\u043C",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.58,
+          "min": 0.01,
+          "max": 3,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "ambientNight",
+          "label": "\u0424\u043E\u043D\u043E\u0432\u044B\u0439 \u0441\u0432\u0435\u0442 \u043D\u043E\u0447\u044C\u044E",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.18,
+          "min": 0.01,
+          "max": 3,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "ambientSky",
+          "label": "\u0424\u043E\u043D \u0441\u0432\u0435\u0440\u0445\u0443, RGB",
+          "description": "",
+          "kind": "VECTOR3",
+          "default": [
+            0.4,
+            0.45,
+            0.41
+          ],
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "ambientGround",
+          "label": "\u0424\u043E\u043D \u0441\u043D\u0438\u0437\u0443, RGB",
+          "description": "",
+          "kind": "VECTOR3",
+          "default": [
+            0.16,
+            0.18,
+            0.17
+          ],
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "hatchSeconds",
+          "label": "\u041E\u0442\u043A\u0440\u044B\u0442\u0438\u0435 \u043B\u044E\u043A\u0430",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 1.25,
+          "min": 0.1,
+          "max": 10,
+          "unit": "s",
+          "choices": []
+        },
+        {
+          "key": "waterSeconds",
+          "label": "\u0410\u0432\u0442\u043E\u0432\u044B\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u0435 \u0432\u043E\u0434\u044B",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 14,
+          "min": 1,
+          "max": 120,
+          "unit": "s",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "Vecxy.Physics.BoxCollider",
+      "label": "Box Collider",
+      "category": "Physics",
+      "description": "",
+      "key": "collider",
+      "fields": [
+        {
+          "key": "size",
+          "label": "Size",
+          "description": "Full dimensions in local coordinates.",
+          "kind": "VECTOR3",
+          "default": [
+            1,
+            1,
+            1
+          ],
+          "min": 0.001,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "center",
+          "label": "Center",
+          "description": "Offset in the object\u0027s local coordinates.",
+          "kind": "VECTOR3",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "friction",
+          "label": "Friction",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.5,
+          "min": 0,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "restitution",
+          "label": "Restitution",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0,
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "isTrigger",
+          "label": "Trigger",
+          "description": "",
+          "kind": "BOOL",
+          "default": false,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "Vecxy.Physics.CapsuleCollider",
+      "label": "Capsule Collider",
+      "category": "Physics",
+      "description": "",
+      "key": "collider",
+      "fields": [
+        {
+          "key": "radius",
+          "label": "Radius",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.35,
+          "min": 0.001,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "center",
+          "label": "Center",
+          "description": "Offset in the object\u0027s local coordinates.",
+          "kind": "VECTOR3",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "height",
+          "label": "Cylinder height",
+          "description": "Height between hemisphere centers.",
+          "kind": "FLOAT",
+          "default": 1.1,
+          "min": 0,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "axis",
+          "label": "Axis",
+          "description": "",
+          "kind": "ENUM",
+          "default": "Z",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "X",
+            "Y",
+            "Z"
+          ]
+        },
+        {
+          "key": "friction",
+          "label": "Friction",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.5,
+          "min": 0,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "restitution",
+          "label": "Restitution",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0,
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "isTrigger",
+          "label": "Trigger",
+          "description": "",
+          "kind": "BOOL",
+          "default": false,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "Vecxy.Physics.RigidBody",
+      "label": "Rigid Body",
+      "category": "Physics",
+      "description": "",
+      "key": "rigidBody",
+      "fields": [
+        {
+          "key": "motionType",
+          "label": "Motion",
+          "description": "",
+          "kind": "ENUM",
+          "default": "Dynamic",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "Dynamic",
+            "Kinematic"
+          ]
+        },
+        {
+          "key": "mass",
+          "label": "Mass",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 1,
+          "min": 0.001,
+          "max": null,
+          "unit": "kg",
+          "choices": []
+        },
+        {
+          "key": "affectedByGravity",
+          "label": "Gravity",
+          "description": "",
+          "kind": "BOOL",
+          "default": true,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "linearDamping",
+          "label": "Linear damping",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0,
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "Vecxy.Physics.SphereCollider",
+      "label": "Sphere Collider",
+      "category": "Physics",
+      "description": "",
+      "key": "collider",
+      "fields": [
+        {
+          "key": "radius",
+          "label": "Radius",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.5,
+          "min": 0.001,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "center",
+          "label": "Center",
+          "description": "Offset in the object\u0027s local coordinates.",
+          "kind": "VECTOR3",
+          "default": [
+            0,
+            0,
+            0
+          ],
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "friction",
+          "label": "Friction",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0.5,
+          "min": 0,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "restitution",
+          "label": "Restitution",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 0,
+          "min": 0,
+          "max": 1,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "isTrigger",
+          "label": "Trigger",
+          "description": "",
+          "kind": "BOOL",
+          "default": false,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        }
+      ]
+    },
+    {
+      "type": "Vecxy.UI.UiCanvas",
+      "label": "UI Canvas",
+      "category": "UI",
+      "description": "The plane supplies the UI area; its source mesh is hidden at runtime.",
+      "key": "uiCanvas",
+      "fields": [
+        {
+          "key": "document",
+          "label": "Document",
+          "description": "UI XML asset path. The same XML/CSS works in both render modes.",
+          "kind": "STRING",
+          "default": "",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [],
+          "assetType": "UiDocument",
+          "assets": [
+            {
+              "id": "4f98540f-a13d-4775-a68f-0ba11930599f",
+              "path": "UI/Archive.xml"
+            },
+            {
+              "id": "27c61d2d-2922-4e6b-ba3e-066e0e672a9e",
+              "path": "UI/Game.xml"
+            },
+            {
+              "id": "d5abbc8f-e9e7-4dc3-8cbe-3ee5603e48c8",
+              "path": "UI/Indicator.xml"
+            }
+          ]
+        },
+        {
+          "key": "renderMode",
+          "label": "Render mode",
+          "description": "",
+          "kind": "ENUM",
+          "default": "WorldSpace",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "ScreenOverlay",
+            "WorldSpace"
+          ]
+        },
+        {
+          "key": "pixelsPerMeter",
+          "label": "Pixels per metre",
+          "description": "Canvas layout density. Physical size comes from the plane, including its transform.",
+          "kind": "FLOAT",
+          "default": 800,
+          "min": 16,
+          "max": 4096,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "interactive",
+          "label": "Interactive",
+          "description": "",
+          "kind": "BOOL",
+          "default": true,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "doubleSided",
+          "label": "Double sided",
+          "description": "",
+          "kind": "BOOL",
+          "default": false,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": []
+        },
+        {
+          "key": "inputMode",
+          "label": "Pointer mode",
+          "description": "",
+          "kind": "ENUM",
+          "default": "Mouse",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "Mouse",
+            "ViewRay",
+            "SurfaceCursor"
+          ]
+        },
+        {
+          "key": "activationKey",
+          "label": "Activation key",
+          "description": "Press this key or the primary mouse button to activate the pointed UI element.",
+          "kind": "ENUM",
+          "default": "E",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [
+            "Undefined",
+            "Space",
+            "Apostrophe",
+            "Comma",
+            "Minus",
+            "Period",
+            "Slash",
+            "Number0",
+            "Number1",
+            "Number2",
+            "Number3",
+            "Number4",
+            "Number5",
+            "Number6",
+            "Number7",
+            "Number8",
+            "Number9",
+            "Semicolon",
+            "Equal",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "LeftBracket",
+            "BackSlash",
+            "RightBracket",
+            "GraveAccent",
+            "World1",
+            "World2",
+            "Escape",
+            "Enter",
+            "Tab",
+            "Backspace",
+            "Insert",
+            "Delete",
+            "Right",
+            "Left",
+            "Down",
+            "Up",
+            "PageUp",
+            "PageDown",
+            "Home",
+            "End",
+            "CapsLock",
+            "ScrollLock",
+            "NumLock",
+            "PrintScreen",
+            "Pause",
+            "F1",
+            "F2",
+            "F3",
+            "F4",
+            "F5",
+            "F6",
+            "F7",
+            "F8",
+            "F9",
+            "F10",
+            "F11",
+            "F12",
+            "F13",
+            "F14",
+            "F15",
+            "F16",
+            "F17",
+            "F18",
+            "F19",
+            "F20",
+            "F21",
+            "F22",
+            "F23",
+            "F24",
+            "F25",
+            "Keypad0",
+            "Keypad1",
+            "Keypad2",
+            "Keypad3",
+            "Keypad4",
+            "Keypad5",
+            "Keypad6",
+            "Keypad7",
+            "Keypad8",
+            "Keypad9",
+            "KeypadDecimal",
+            "KeypadDivide",
+            "KeypadMultiply",
+            "KeypadSubtract",
+            "KeypadAdd",
+            "KeypadEnter",
+            "KeypadEqual",
+            "LeftShift",
+            "LeftControl",
+            "LeftAlt",
+            "LeftSuper",
+            "RightShift",
+            "RightControl",
+            "RightAlt",
+            "RightSuper",
+            "Menu"
+          ]
+        },
+        {
+          "key": "cursorImage",
+          "label": "Cursor image",
+          "description": "Optional custom icon for SurfaceCursor. The hotspot is its top-left corner.",
+          "kind": "STRING",
+          "default": "",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "choices": [],
+          "assetType": "Texture2D",
+          "assets": [
+            {
+              "id": "507555b6-18c9-4748-ad28-7c15dead0cec",
+              "path": "Scenes/Textures/00dd458a6e7b_Cast concrete \u2022 64px.png"
+            },
+            {
+              "id": "03d94d19-715b-4732-96d8-6c7c9ba84c96",
+              "path": "Scenes/Textures/4ff27e5d776c_Off white ceramic \u2022 64px.png"
+            },
+            {
+              "id": "e615e154-7f87-4b16-b5e4-9adbf3868e2d",
+              "path": "Scenes/Textures/5b9d7bea0f34_Rubber floor \u2022 64px.png"
+            },
+            {
+              "id": "6c4c01dd-81cf-4f14-90fb-ab591fd00310",
+              "path": "Scenes/Textures/5e049da533a9_Meal \u2022 64px.png"
+            },
+            {
+              "id": "395df9e6-5770-4e84-82f7-ea8eebf73245",
+              "path": "Scenes/Textures/7f3343d3a659_Blackened steel \u2022 64px.png"
+            },
+            {
+              "id": "41f1b4ee-0539-40d1-9552-fe2cb7d7510b",
+              "path": "Scenes/Textures/93b9d1cafd76_Bread \u2022 64px.png"
+            },
+            {
+              "id": "e2f9221d-a7e2-4bc1-b608-793d14830058",
+              "path": "Scenes/Textures/c8632d801aa8_Brushed stainless \u2022 64px.png"
+            },
+            {
+              "id": "1a69fafa-19f3-4e0c-a4c9-d8030ded1105",
+              "path": "Scenes/Textures/efcee403315d_Service enamel \u2014 faded sage \u2022 64px.png"
+            },
+            {
+              "id": "10e91a8f-ec4c-4b75-b684-bb728bb47bfc",
+              "path": "Scenes/Textures/f181ec2c0702_Institutional cotton \u2022 64px.png"
+            },
+            {
+              "id": "d31becdd-f46c-4b98-afaa-9cad4c635e86",
+              "path": "Scenes/Textures/fec3b30583ca_Document stock \u2022 64px.png"
+            },
+            {
+              "id": "9bd12e31-e5a0-454d-a82c-b6cf3598ebbe",
+              "path": "SkyBox/cubemap/nx.png"
+            },
+            {
+              "id": "ad631f2d-481b-4ad2-acf0-426771cd5322",
+              "path": "SkyBox/cubemap/ny.png"
+            },
+            {
+              "id": "a169ee19-cda2-4b84-be36-28c74580ce79",
+              "path": "SkyBox/cubemap/nz.png"
+            },
+            {
+              "id": "8f14496c-29b8-4365-9ed7-b1f127a0d1be",
+              "path": "SkyBox/cubemap/px.png"
+            },
+            {
+              "id": "def93eda-c3b2-4f87-b191-3ab140bc20ea",
+              "path": "SkyBox/cubemap/py.png"
+            },
+            {
+              "id": "294c7018-4f8c-462c-a3c4-22ac9bf49327",
+              "path": "SkyBox/cubemap/pz.png"
+            },
+            {
+              "id": "ff9c936f-ea7b-4ee3-9a6c-662939eaf63c",
+              "path": "Textures/FmodLogo.png"
+            },
+            {
+              "id": "f2836517-bc52-4f1d-961b-c6605dee8332",
+              "path": "Textures/Logo.png"
+            },
+            {
+              "id": "56fe644f-3d06-4c81-b8a6-a14dc028a83a",
+              "path": "Textures/T_Quad_White_64.png"
+            }
+          ]
+        },
+        {
+          "key": "cursorSize",
+          "label": "Cursor size",
+          "description": "",
+          "kind": "FLOAT",
+          "default": 44,
+          "min": 4,
+          "max": 256,
+          "unit": "px",
+          "choices": []
+        }
+      ]
+    }
+  ]
+}

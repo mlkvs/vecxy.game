@@ -1,0 +1,103 @@
+<ui styles="Game.css" class="screen">
+  <panel id="hud" class="full">
+    <text id="crosshair" class="crosshair">·</text>
+    <text id="prompt" class="prompt" />
+    <text id="notice" class="notice" />
+    <panel id="subtitles" class="subtitles">
+      <text id="speaker" class="speaker" />
+      <text id="subtitle" class="subtitle" />
+    </panel>
+  </panel>
+  <panel id="fade" class="full fade" />
+  <panel id="document" class="full shade">
+    <panel class="paper">
+      <text class="paper-stamp">КОПИЯ ДЛЯ РЕЗИДЕНТА / ВНУТРЕННИЙ ДОКУМЕНТ</text>
+      <text id="document-text" class="document-text" />
+      <text class="paper-bottom">[E / ESC] ОТЛОЖИТЬ</text>
+    </panel>
+  </panel>
+  <panel id="main-menu" class="full menu">
+    <text class="eyebrow">КОНТРОЛЬ СОСТОЯНИЯ / КАМЕРА 014</text>
+    <panel class="title-rule" />
+    <text class="game-title">НЕ</text>
+    <text class="game-title red">ВЫПУСКАТЬ</text>
+    <text class="menu-caption">КОРОТКИЙ ПСИХОЛОГИЧЕСКИЙ ХОРРОР</text>
+    <panel class="menu-buttons">
+      <button id="start">НАЧАТЬ</button>
+      <button id="main-settings">НАСТРОЙКИ</button>
+      <button id="exit">ВЫЙТИ</button>
+    </panel>
+    <text class="menu-bottom">WASD  ХОДЬБА     МЫШЬ  ОСМОТР     E  ДЕЙСТВИЕ     ESC  ПАУЗА</text>
+  </panel>
+  <panel id="pause-menu" class="full shade">
+    <panel class="pause-card">
+      <text class="eyebrow">СЕАНС ПРИОСТАНОВЛЕН</text>
+      <text class="pause-title">ПАУЗА</text>
+      <button id="resume">ПРОДОЛЖИТЬ</button>
+      <button id="pause-settings">НАСТРОЙКИ</button>
+      <button id="restart">ЗАНОВО</button>
+      <button id="main">ГЛАВНОЕ МЕНЮ</button>
+    </panel>
+  </panel>
+  <panel id="settings" class="full shade">
+    <panel class="settings-card">
+      <text class="eyebrow">ЛИЧНЫЕ НАСТРОЙКИ</text>
+      <text class="pause-title">НАСТРОЙКИ</text>
+      <panel class="setting">
+        <text>ОБЩАЯ ГРОМКОСТЬ</text>
+        <button id="master-minus">-</button>
+        <text id="master-value" class="value" />
+        <button id="master-plus">+</button>
+      </panel>
+      <panel class="setting">
+        <text>ЗВУКОВЫЕ ЭФФЕКТЫ</text>
+        <button id="effects-minus">-</button>
+        <text id="effects-value" class="value" />
+        <button id="effects-plus">+</button>
+      </panel>
+      <panel class="setting">
+        <text>ГРОМКОСТЬ ГОЛОСА</text>
+        <button id="voice-minus">-</button>
+        <text id="voice-value" class="value" />
+        <button id="voice-plus">+</button>
+      </panel>
+      <panel class="setting">
+        <text>ЧУВСТВИТЕЛЬНОСТЬ МЫШИ</text>
+        <button id="sensitivity-minus">-</button>
+        <text id="sensitivity-value" class="value" />
+        <button id="sensitivity-plus">+</button>
+      </panel>
+      <panel class="setting">
+        <text>УГОЛ ОБЗОРА</text>
+        <button id="fov-minus">-</button>
+        <text id="fov-value" class="value" />
+        <button id="fov-plus">+</button>
+      </panel>
+      <panel class="setting">
+        <text>ЯРКОСТЬ</text>
+        <button id="brightness-minus">-</button>
+        <text id="brightness-value" class="value" />
+        <button id="brightness-plus">+</button>
+      </panel>
+      <panel class="toggles">
+        <button id="subtitles-toggle">СУБТИТРЫ: ВКЛ.</button>
+        <button id="bob-toggle">ПОКАЧИВАНИЕ: ВЫКЛ.</button>
+        <button id="fullscreen-toggle">ПОЛНЫЙ ЭКРАН: ВЫКЛ.</button>
+      </panel>
+      <button id="settings-back">НАЗАД</button>
+    </panel>
+  </panel>
+  <panel id="credits" class="full credits">
+    <text class="eyebrow">КОНЕЦ ЛИЧНОГО ОБРАЩЕНИЯ</text>
+    <text class="game-title">НЕ ВЫПУСКАТЬ</text>
+    <panel class="title-rule" />
+    <text class="credits-text">Жить с моим решением придётся тебе.</text>
+    <text class="credits-small">СОЗДАНО НА ДВИЖКЕ VECXY
+
+ОКРУЖЕНИЕ И ЗВУК - ОРИГИНАЛЬНЫЕ ПРОЦЕДУРНЫЕ МАТЕРИАЛЫ
+СИНТЕТИЧЕСКИЕ ГОЛОСА - PIPER / ДЕНИС И ДМИТРИЙ
+
+СПАСИБО ЗА ИГРУ</text>
+    <text class="credits-small">[E] В ГЛАВНОЕ МЕНЮ</text>
+  </panel>
+</ui>

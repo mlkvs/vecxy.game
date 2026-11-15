@@ -1,0 +1,1025 @@
+{
+  "assets": [
+    {
+      "id": "1289c37e-068d-45f1-9fd3-3778fe61e0ab",
+      "source": "Game",
+      "path": "Audio/Breathing.wav",
+      "type": "Sound",
+      "name": "Breathing",
+      "hash": "b924cafb8af7aa7fb2c8e6028d9c41c761552c2221736705ad861938e7a2d68f",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "66a7e11c-a2e8-4b7d-8bd0-b9bebf5823e4",
+      "source": "Game",
+      "path": "Audio/Cloth.wav",
+      "type": "Sound",
+      "name": "Cloth",
+      "hash": "064be51afb71ad2c5bbbc2da0c81f7428395fd4289ab08953a4674614636df37",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "d11381df-7859-4261-a20b-34efd8bed95e",
+      "source": "Game",
+      "path": "Audio/Distant.wav",
+      "type": "Sound",
+      "name": "Distant",
+      "hash": "f49abb98db249dc7b42e3bab5c2f76941d2d223fc5c8c6cab2cda291ac091489",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "ac4e7464-7a91-41c6-aa13-a87bb7cafad6",
+      "source": "Game",
+      "path": "Audio/Ending.wav",
+      "type": "Sound",
+      "name": "Ending",
+      "hash": "ba8aac696b85c3e9bc3849c9d2ce7bf9c573f5a4319da96374c18e3fc2ca80d6",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "9d04f60b-283e-4791-8e4a-1d99adffc9e3",
+      "source": "Game",
+      "path": "Audio/Equipment.wav",
+      "type": "Sound",
+      "name": "Equipment",
+      "hash": "963bcee241d1623bb0af12ec722eca1b8229a418004b75bfee6319ff210d9a9c",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "a782570f-ec05-45da-bfff-05c5f2ca19b8",
+      "source": "Game",
+      "path": "Audio/Hatch.wav",
+      "type": "Sound",
+      "name": "Hatch",
+      "hash": "aad7e6756771f7de84ff9743d1fe3dafeb4928fd18abd3cb156319ed8ddd1c10",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "32eac67d-6466-49f5-ba93-165756929353",
+      "source": "Game",
+      "path": "Audio/Knock.wav",
+      "type": "Sound",
+      "name": "Knock",
+      "hash": "93c978ccc9dccdea6d154162fe3e1ca1245a0f9fd6d15b299d6abe0fdc8a52de",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "91222134-84c0-447f-95e8-09e44994199e",
+      "source": "Game",
+      "path": "Audio/Light.wav",
+      "type": "Sound",
+      "name": "Light",
+      "hash": "d3e14d6f68b621d5fbfbd503bac759ad012b7241bc53fdf35dc0ba7fca751f00",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "e924a14a-ada7-4387-ad7d-8d5e8ad4f791",
+      "source": "Game",
+      "path": "Audio/Lock.wav",
+      "type": "Sound",
+      "name": "Lock",
+      "hash": "2491e97bc54860d1f3c704dcf2e209609e92944f734fae320d7975d51d38d44d",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "7ecbd9fc-1da3-464b-929e-164eef8b369e",
+      "source": "Game",
+      "path": "Audio/Room.wav",
+      "type": "Sound",
+      "name": "Room",
+      "hash": "3f70e35c97b6d5a727f8407cd137bff6d11a57fa7694ca664f3c7a3522b080da",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "cb549174-4225-4aed-971d-cdc451a7683f",
+      "source": "Game",
+      "path": "Audio/Speaker.wav",
+      "type": "Sound",
+      "name": "Speaker",
+      "hash": "1a72fca0615e00fb253e1ef8fc0114ac9838dd4ed89530c5e35e90eaa7005dab",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "ddc5bd17-446f-4f18-9489-345236465a04",
+      "source": "Game",
+      "path": "Audio/Step0.wav",
+      "type": "Sound",
+      "name": "Step0",
+      "hash": "3da3ab630281425fab6963d6354bf727e9a3b794c128a818de4528e761bf1cc0",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "b17aeca6-5f73-41fb-a628-edad275cb82a",
+      "source": "Game",
+      "path": "Audio/Step1.wav",
+      "type": "Sound",
+      "name": "Step1",
+      "hash": "12a2d3eabc01c0f5ae460d87b2e5bf36f50eb13de68b3cc95331aa0b28b39f46",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "ea38c341-05e5-4ecd-81c6-60357583f2eb",
+      "source": "Game",
+      "path": "Audio/Step2.wav",
+      "type": "Sound",
+      "name": "Step2",
+      "hash": "5da98ca32d82f83edf8e3d8659ad5ca82f8efd5ec434af8c9295488426c2eee8",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "fe2dc09d-ba96-4eb0-9334-3cb7d50504cf",
+      "source": "Game",
+      "path": "Audio/Step3.wav",
+      "type": "Sound",
+      "name": "Step3",
+      "hash": "494d9ce1ed0bed87b671834ef4826e9468eedfcdd171ddf97439608c2f2d0908",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "25f6705a-e9e7-47ce-a425-6d0294594d23",
+      "source": "Game",
+      "path": "Audio/Tap.wav",
+      "type": "Sound",
+      "name": "Tap",
+      "hash": "fabdc5ded716e4a955154dc27ef17f11fadb8acfa2db8b9c3838dd2cba1d446a",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "c79bf8ac-cca3-4a80-97a6-3bb605190a1d",
+      "source": "Game",
+      "path": "Audio/Tray.wav",
+      "type": "Sound",
+      "name": "Tray",
+      "hash": "339b34f8381c423057d2ac52f9b901646b1c1fc2c36c75473cf7964b58df3b3b",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "2449e36e-19a2-4048-8dae-2cc733fcb8f9",
+      "source": "Game",
+      "path": "Audio/Voice/ack.wav",
+      "type": "Sound",
+      "name": "ack",
+      "hash": "e9bb347bcb76a3569c2e7e7b5878b908ace28c6b180fdc2ba203538868e54bb4",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "fcf7f682-01c4-46df-a623-80e54dd1dd68",
+      "source": "Game",
+      "path": "Audio/Voice/agreement.wav",
+      "type": "Sound",
+      "name": "agreement",
+      "hash": "e3eed667d6e280bcbb7078ac89cd58b834df4b653b39274cdba343c427830897",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "14f582ca-7134-415f-8274-afc17ee49256",
+      "source": "Game",
+      "path": "Audio/Voice/autoplay.wav",
+      "type": "Sound",
+      "name": "autoplay",
+      "hash": "f7460c9fd0b9ff10b9141830fa13a973a27824d1e4d333dad0d0bdc9e449fad7",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "19959194-8fb5-4e73-85a8-a62d7c1fa475",
+      "source": "Game",
+      "path": "Audio/Voice/available.wav",
+      "type": "Sound",
+      "name": "available",
+      "hash": "c0ef8805929cfb33983b498b4ffb2a4719fe343f9d3f770893cf29b0f5fbb7b4",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "69448da1-ff74-488d-951d-56211e3b7225",
+      "source": "Game",
+      "path": "Audio/Voice/calm.wav",
+      "type": "Sound",
+      "name": "calm",
+      "hash": "fb86ba180f6d95058dbea16708b926599b19003df5b9f779655395d4bbcdd57f",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "900cbe10-30ec-4fc1-8f48-628e5ff5c8c7",
+      "source": "Game",
+      "path": "Audio/Voice/conflict.wav",
+      "type": "Sound",
+      "name": "conflict",
+      "hash": "841434a8651022d4621207d2a4424f87618471abfa4edcb56ec0ed2c3b338969",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "d5a87fea-4a99-4756-9a1b-c9d6b430cc35",
+      "source": "Game",
+      "path": "Audio/Voice/denied.wav",
+      "type": "Sound",
+      "name": "denied",
+      "hash": "723a4a407aa198c933a1b311da1e025b251f671a8f76c9acce5214da24372c42",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "67f4e19e-0fba-4af0-bb1d-fe09427ae68a",
+      "source": "Game",
+      "path": "Audio/Voice/denis.MODEL_CARD.txt",
+      "type": "Text",
+      "name": "denis.MODEL_CARD",
+      "hash": "917110d5056810771fd3daea2644bbadf1341816b7631f2043b33be245903432",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "9bf1150a-4821-4a17-9d06-07c1fea1668d",
+      "source": "Game",
+      "path": "Audio/Voice/dmitri.MODEL_CARD.txt",
+      "type": "Text",
+      "name": "dmitri.MODEL_CARD",
+      "hash": "4da875aca6642bd96f0327705e874cbbcc44bc1790ee1d08b3fc0eb266523e5d",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "8f7cd033-d27e-4fe1-bf73-2d57587c8339",
+      "source": "Game",
+      "path": "Audio/Voice/night.wav",
+      "type": "Sound",
+      "name": "night",
+      "hash": "00c8fb2cb0c4694507d7aa57c2d523e304c61534395699b07a0c07d37a85c871",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "bcfef899-a4ac-4829-bfcf-5305363fbb11",
+      "source": "Game",
+      "path": "Audio/Voice/respect.wav",
+      "type": "Sound",
+      "name": "respect",
+      "hash": "fd5d4764cca0b0d4ae039a4527d74be94c5eda503aad505c19ba32f8a68f0978",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "b689f35c-bb37-40bf-b5c3-689257ffbc9e",
+      "source": "Game",
+      "path": "Audio/Voice/routine.wav",
+      "type": "Sound",
+      "name": "routine",
+      "hash": "1d743344cceabec6ea9d4066fc851bbff9b8ede88c7c16eadac4bd4733f23739",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "a9ed3f16-b46a-4ca2-adb4-cb3b37d73a0a",
+      "source": "Game",
+      "path": "Audio/Voice/statement01.wav",
+      "type": "Sound",
+      "name": "statement01",
+      "hash": "0caf0a6bb6eeaf398abb81f8ad69d93205e268867086e160dd27a3dfa69eac34",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "4fbebd5a-fbfb-4075-a324-b80f9cc1155a",
+      "source": "Game",
+      "path": "Audio/Voice/statement02.wav",
+      "type": "Sound",
+      "name": "statement02",
+      "hash": "ed387bf48de40a586e877cb4923eef428e407cff18dace652021fbf3549aaae2",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "d5d6a93d-eba2-4c5f-a149-48a7e9b5d848",
+      "source": "Game",
+      "path": "Audio/Voice/statement03.wav",
+      "type": "Sound",
+      "name": "statement03",
+      "hash": "79cbe639cdb29a8c69a72d50727daae552db5511ef697973c91ed5620c2ab075",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "0a3aed6b-daa0-4c37-8d32-8005edef997b",
+      "source": "Game",
+      "path": "Audio/Voice/statement04.wav",
+      "type": "Sound",
+      "name": "statement04",
+      "hash": "d0866e93e925c37a3fff4b2034ec67b9f02a740c7f1ceae5e059e420588b1b47",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "4f72799b-8a05-49cd-80df-4009aac0a48a",
+      "source": "Game",
+      "path": "Audio/Voice/statement05.wav",
+      "type": "Sound",
+      "name": "statement05",
+      "hash": "3c9764a1e68392909fb9a00fd5acf1c3c00ab7c33f5b29d3ef5dc228e241f019",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "d9f72bd7-b00d-4923-9210-f9ac611dfd01",
+      "source": "Game",
+      "path": "Audio/Voice/statement06.wav",
+      "type": "Sound",
+      "name": "statement06",
+      "hash": "b2f407390589680cc4f5155dcfb9a69da821a5a58c47313eaf9a4a6d9921075d",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "1bac94b8-acff-491d-a98a-a8b237ee03fb",
+      "source": "Game",
+      "path": "Audio/Voice/statement07.wav",
+      "type": "Sound",
+      "name": "statement07",
+      "hash": "3780beb37a820d0c19a7ea4f64168b7ab049865a6de78096d0315fedcd83e102",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "0110a321-52f1-4fc8-ab62-0e5c55d18b62",
+      "source": "Game",
+      "path": "Audio/Voice/statement08.wav",
+      "type": "Sound",
+      "name": "statement08",
+      "hash": "c38475f45af6aee2b90b6a9924df30b553fb01ccf4b4aa6fd3801966ebdae9b5",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "e3a22bfa-73e5-434f-aa4d-603fb72ba93e",
+      "source": "Game",
+      "path": "Audio/Voice/statement09.wav",
+      "type": "Sound",
+      "name": "statement09",
+      "hash": "1a7dc6fd7484404273df7f10f556b7296dfcab1258fccfa6e04a5e70e168ae3f",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "0a9b60d9-511a-4d75-b025-d627ee741105",
+      "source": "Game",
+      "path": "Audio/Voice/statement10.wav",
+      "type": "Sound",
+      "name": "statement10",
+      "hash": "ea3cf7e7568f2798f4c9b414b9d77ba40c04549e62291a45a39efe333121522f",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "7c1a1397-0be7-4d44-9f76-a55a2619c462",
+      "source": "Game",
+      "path": "Audio/Voice/statement11.wav",
+      "type": "Sound",
+      "name": "statement11",
+      "hash": "4175d57621d3943ee700927a2da485e6cd2e621e00880c03f5f7e1ba7da59e59",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "98b38ec5-945f-4ce0-9995-1d224eeadfea",
+      "source": "Game",
+      "path": "Audio/Voice/statement12.wav",
+      "type": "Sound",
+      "name": "statement12",
+      "hash": "a92888efe3383ce433693d0bf28e72602c4cae60f7fe648f5988a39cef51e557",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "5f5cf4ee-865b-469b-a2ed-81f03c030fae",
+      "source": "Game",
+      "path": "Audio/Voice/statement13.wav",
+      "type": "Sound",
+      "name": "statement13",
+      "hash": "2e1a7c3497508a23309b9d17e71070f492695a7d5fefb5beb16bc7a34c93577b",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "2214f977-a0d7-427c-a873-ca910514524d",
+      "source": "Game",
+      "path": "Audio/Voice/statement14.wav",
+      "type": "Sound",
+      "name": "statement14",
+      "hash": "fd9c4bdc84d877f82a43a79112afc792ebcf084ad6544b0fa457333fe1b3f05e",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "9bdccbb1-7d62-4bb3-b384-b621ba78be00",
+      "source": "Game",
+      "path": "Audio/Voice/statement15.wav",
+      "type": "Sound",
+      "name": "statement15",
+      "hash": "3fdfaa2cce88f60ab454e85c29f8917ee5619de4d1969ef3d90c3b6c114713ce",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "5e5f307b-1ba8-4ff1-aa07-9d9bc7c3e19a",
+      "source": "Game",
+      "path": "Audio/Voice/statement16.wav",
+      "type": "Sound",
+      "name": "statement16",
+      "hash": "81ae5b3c94ac1114ca50e5c284a67f9a714db9b0480723b841bbe3fdb45e3bf0",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "88889213-220b-4bf1-b6bb-3f04d82b0b97",
+      "source": "Game",
+      "path": "Audio/Voice/statement17.wav",
+      "type": "Sound",
+      "name": "statement17",
+      "hash": "8492f1be6e9ab6618462d29c2c63485abe32cd5ba0e76cba0f8cd62c9bd91a7a",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "0c283478-5b95-47d3-902f-e8ee633cc8bb",
+      "source": "Game",
+      "path": "Audio/Voice/statement18.wav",
+      "type": "Sound",
+      "name": "statement18",
+      "hash": "a9978b4e8a79e649a3a152e386cc0098a6205f3c3f213e3fba12216055d906bb",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "cad0eee1-20ae-452e-b61d-7f7f70c852f0",
+      "source": "Game",
+      "path": "Audio/Water.wav",
+      "type": "Sound",
+      "name": "Water",
+      "hash": "154084b7c88f0e462b2c955b39e93615ad585d14486a97668cecec6afda716c6",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "9a7f2593-e621-4ccb-ab65-042902fe6e52",
+      "source": "Game",
+      "path": "Configs/Physics.yaml",
+      "type": "Config",
+      "name": "Physics",
+      "hash": "15becb9c22de156890f5172b94e13288608e2628513ee587a3bc53a4f3ae2e8f",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "3c426827-88f5-4012-8f24-31e6b938ae3e",
+      "source": "Game",
+      "path": "Configs/Story.yaml",
+      "type": "Config",
+      "name": "Story",
+      "hash": "ed2a3c6017a12ddd18fe1d5f019484f20dfebe9d5346d4ebbd6544ef029a49f7",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "40befa6e-c4ca-42f3-921d-6305d66689f7",
+      "source": "Game",
+      "path": "Configs/UI.yaml",
+      "type": "Config",
+      "name": "UI",
+      "hash": "cf2f7d4d39e84a411e8ffffa9e7806511ff487a0ffab5ba12deb3ae9d50e22a4",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "41a66ab2-e637-4354-bc61-c3d7c7dee20c",
+      "source": "Game",
+      "path": "Configs/Voices.yaml",
+      "type": "Config",
+      "name": "Voices",
+      "hash": "6dddb8316de00bba6a0335098e60e7d0b78db1734f61d5140cf1f697f37839d8",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "ad08f544-70c6-493d-a939-64db58dd4ccf",
+      "source": "Game",
+      "path": "Controls.input",
+      "type": "Input",
+      "name": "Controls",
+      "hash": "c85c509b65981599c86d60a328d992ec1710441f9ee968b30877807932efe8b4",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "fbe38996-afc4-4a21-95af-f255c1b4e4f6",
+      "source": "Game",
+      "path": "Fonts/NotoSans.OFL.txt",
+      "type": "Text",
+      "name": "NotoSans.OFL",
+      "hash": "e2e177a32561584d4fc13aaa3cd8e53758a12910f013fe9ca125419111722029",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "a9156050-a829-4c47-ba82-303196428ed2",
+      "source": "Game",
+      "path": "Fonts/NotoSans.ttf",
+      "type": "Asset",
+      "name": "NotoSans",
+      "hash": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "bc47ab90-4fab-4e81-af4c-927d45245a37",
+      "source": "Game",
+      "path": "PostProcessing/Retro.postfx",
+      "type": "Text",
+      "name": "Retro",
+      "hash": "e9619b7065e850925c35e3077ccf0dc1dffa083db2c8cae07cf72c1e227e12f8",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "d829ef79-0456-4408-bf4e-da849493e944",
+      "source": "Game",
+      "path": "PostProcessing/Vignette.postfx",
+      "type": "Text",
+      "name": "Vignette",
+      "hash": "1e514f207a55071f776919954a404aa19d346ab030835f51fbdf59a82d629bb6",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "87f779a9-2d4d-4ddb-af8b-7913ae8e4ba4",
+      "source": "Game",
+      "path": "Prototypes/Cell.prototype",
+      "type": "Prototype",
+      "name": "Cell",
+      "hash": "a73656d08e078d37ea7fab15551f1f4d994067f80060fdf9b3f6cb7d011dec10",
+      "dependencies": [
+        "40cfbd48-83a8-419d-a7cf-c980ec0d31ac"
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "40cfbd48-83a8-419d-a7cf-c980ec0d31ac",
+      "source": "Game",
+      "path": "Scenes/Cell.usda",
+      "type": "Asset",
+      "name": "Cell",
+      "hash": "a014b3f43b8ef30211d1241aa6d70e1bc008c7ae146c9e09886ff524f2f7adbe",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "c1f05bd6-182c-4ce4-91bd-a46d7fb068c7",
+      "source": "Game",
+      "path": "Scenes/Cell.usda.usdscene",
+      "type": "Asset",
+      "name": "Cell.usda",
+      "hash": "048d643344ccfcb7a60370c54eafbdfd172f9aedb6529edfa506e53e6cc231fb",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "0d8e501c-533b-4c05-8932-3c9e86bd1f95",
+      "source": "Game",
+      "path": "Scenes/Compiled/Cell.glb",
+      "type": "Model",
+      "name": "Cell",
+      "hash": "10cfc2d0861e439acea94fc9cbccef7dc194a664eff6665488233425b0e5ddc6",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "507555b6-18c9-4748-ad28-7c15dead0cec",
+      "source": "Game",
+      "path": "Scenes/Textures/00dd458a6e7b_Cast concrete \u2022 64px.png",
+      "type": "Texture2D",
+      "name": "00dd458a6e7b_Cast concrete \u2022 64px",
+      "hash": "00dd458a6e7b3e9f59d601202d39ee3eb9dc484e1acb029f86b216e8de3bfbf3",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "03d94d19-715b-4732-96d8-6c7c9ba84c96",
+      "source": "Game",
+      "path": "Scenes/Textures/4ff27e5d776c_Off white ceramic \u2022 64px.png",
+      "type": "Texture2D",
+      "name": "4ff27e5d776c_Off white ceramic \u2022 64px",
+      "hash": "4ff27e5d776cbdc4a7e78a19f4356f448a10b4697266c74ceb3665424d06fc2c",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "e615e154-7f87-4b16-b5e4-9adbf3868e2d",
+      "source": "Game",
+      "path": "Scenes/Textures/5b9d7bea0f34_Rubber floor \u2022 64px.png",
+      "type": "Texture2D",
+      "name": "5b9d7bea0f34_Rubber floor \u2022 64px",
+      "hash": "5b9d7bea0f3460cce810ff833e6aed5e0b58d23ae60980fa31cbc11754fc35a7",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "6c4c01dd-81cf-4f14-90fb-ab591fd00310",
+      "source": "Game",
+      "path": "Scenes/Textures/5e049da533a9_Meal \u2022 64px.png",
+      "type": "Texture2D",
+      "name": "5e049da533a9_Meal \u2022 64px",
+      "hash": "5e049da533a9afd3d25f15e14bf6910e038355e59f2a120b5fb6be9801fe50a0",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "395df9e6-5770-4e84-82f7-ea8eebf73245",
+      "source": "Game",
+      "path": "Scenes/Textures/7f3343d3a659_Blackened steel \u2022 64px.png",
+      "type": "Texture2D",
+      "name": "7f3343d3a659_Blackened steel \u2022 64px",
+      "hash": "7f3343d3a659aab7ad0f44994e4a314ac9ffb04b6c7be73b60f2bffb7ff7ef40",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "41f1b4ee-0539-40d1-9552-fe2cb7d7510b",
+      "source": "Game",
+      "path": "Scenes/Textures/93b9d1cafd76_Bread \u2022 64px.png",
+      "type": "Texture2D",
+      "name": "93b9d1cafd76_Bread \u2022 64px",
+      "hash": "93b9d1cafd768212402f252cf1b4bb6ce6199dc51fed0cefac656a8ec4e01ff3",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "e2f9221d-a7e2-4bc1-b608-793d14830058",
+      "source": "Game",
+      "path": "Scenes/Textures/c8632d801aa8_Brushed stainless \u2022 64px.png",
+      "type": "Texture2D",
+      "name": "c8632d801aa8_Brushed stainless \u2022 64px",
+      "hash": "c8632d801aa8ae2986a2a94dbe9bb79ff4998f09e90028813c84267040b43d4b",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "1a69fafa-19f3-4e0c-a4c9-d8030ded1105",
+      "source": "Game",
+      "path": "Scenes/Textures/efcee403315d_Service enamel \u2014 faded sage \u2022 64px.png",
+      "type": "Texture2D",
+      "name": "efcee403315d_Service enamel \u2014 faded sage \u2022 64px",
+      "hash": "efcee403315d32856172a8f873cd799e0514a33c4efe0df9878576bae514a20f",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "10e91a8f-ec4c-4b75-b684-bb728bb47bfc",
+      "source": "Game",
+      "path": "Scenes/Textures/f181ec2c0702_Institutional cotton \u2022 64px.png",
+      "type": "Texture2D",
+      "name": "f181ec2c0702_Institutional cotton \u2022 64px",
+      "hash": "f181ec2c070285a0021e70fd58ab460c97bac5f9d2a8c9ece04d8882a34a43f1",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "d31becdd-f46c-4b98-afaa-9cad4c635e86",
+      "source": "Game",
+      "path": "Scenes/Textures/fec3b30583ca_Document stock \u2022 64px.png",
+      "type": "Texture2D",
+      "name": "fec3b30583ca_Document stock \u2022 64px",
+      "hash": "fec3b30583ca44b155b375a9a770fcdbec7391e0388b5153a0b44dbf4a803fe5",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "8807fab2-cf50-49c9-87e7-e054ae07f946",
+      "source": "Game",
+      "path": "Shaders/PostProcessing/Retro.glsl",
+      "type": "Shader",
+      "name": "Retro",
+      "hash": "58781444ae09de7a5f78a7f2f8548e541601d4aa1a8833b6d294a5347af94080",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "496becdc-976b-42e0-b86e-a02de5e77832",
+      "source": "Game",
+      "path": "UI/Archive.css",
+      "type": "Asset",
+      "name": "Archive",
+      "hash": "3198039976c05132f05596c2f79e12ef55c4c155b86d823a56012fe4e273934d",
+      "dependencies": [
+        "a9156050-a829-4c47-ba82-303196428ed2"
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "4f98540f-a13d-4775-a68f-0ba11930599f",
+      "source": "Game",
+      "path": "UI/Archive.xml",
+      "type": "Asset",
+      "name": "Archive",
+      "hash": "178a7c8b296878be89928052c3ab5e58096aa1006c505d22ef59af33f26cb97d",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "39bc4c0c-f56a-4407-a225-72bf48f4dc33",
+      "source": "Game",
+      "path": "UI/Game.css",
+      "type": "Asset",
+      "name": "Game",
+      "hash": "283b3df6d0b1d0acdd24150bfa6077c583ef014c79779cec3784924c31a82cc9",
+      "dependencies": [
+        "a9156050-a829-4c47-ba82-303196428ed2"
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "27c61d2d-2922-4e6b-ba3e-066e0e672a9e",
+      "source": "Game",
+      "path": "UI/Game.xml",
+      "type": "Asset",
+      "name": "Game",
+      "hash": "1b23219025dc11072bc2320f6b35e982cc612848c1a5f3fab3d74541b2b17b1b",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "7ffad0c4-ffa9-4a21-a1ac-a0634c3921cc",
+      "source": "Game",
+      "path": "UI/Indicator.css",
+      "type": "Asset",
+      "name": "Indicator",
+      "hash": "f3212f1b8a109fcbac7e0976f8323f792f1aa857692945228f0a74e3489fae26",
+      "dependencies": [
+        "a9156050-a829-4c47-ba82-303196428ed2"
+      ],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "d5abbc8f-e9e7-4dc3-8cbe-3ee5603e48c8",
+      "source": "Game",
+      "path": "UI/Indicator.xml",
+      "type": "Asset",
+      "name": "Indicator",
+      "hash": "e96a3273bd0fce3a77e8227983f2d1b4fa81ea7e89fa7962138bb35b6908886e",
+      "dependencies": [],
+      "package": "98cbb7d7-e042-d142-6ea7-cbd84cd256be"
+    },
+    {
+      "id": "b06777e6-c781-48b6-ac08-a5f9def2d161",
+      "source": "Engine",
+      "path": "Configs/EditorLayout.yaml",
+      "type": "Config",
+      "name": "EditorLayout",
+      "hash": "23a0a8cece1738037ed76a20b0edc7fea1d6c022d6dd2f965f4134da78df2a61",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "0135cedc-36e0-4b5b-b78e-f0b9423697da",
+      "source": "Engine",
+      "path": "Configs/Physics.yaml",
+      "type": "Config",
+      "name": "Physics",
+      "hash": "1dcefcbb2b380b8618b3b648334adafe419754fe6a419c543fb9e3dc09fbfce8",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "8bb57b21-9a5a-4035-87d2-04006ca5ebd1",
+      "source": "Engine",
+      "path": "Configs/UI.yaml",
+      "type": "Config",
+      "name": "UI",
+      "hash": "25da310ae81a4d2f891d91957623e6f59d2938975a902a09a57d62308413088e",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "1dc2d173-20dc-43f7-894f-bf5d1e1a50f5",
+      "source": "Engine",
+      "path": "Controls.input",
+      "type": "Input",
+      "name": "Controls",
+      "hash": "d8d87938145b936990678c303fe0ab0b553a8f22ae4b9d6bd4c90743c712440a",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "a629b493-f2ff-47e8-b5a9-2702a18a3b5f",
+      "source": "Engine",
+      "path": "Materials/Default.material",
+      "type": "Material",
+      "name": "Default",
+      "hash": "08873b2b246c92fb657d20c1929b0ce230e71d8fc201c47c3cf522118f6415ed",
+      "dependencies": [
+        "cfe28e03-0631-42f2-bf83-47ecdad67265",
+        "56fe644f-3d06-4c81-b8a6-a14dc028a83a"
+      ],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "cfe28e03-0631-42f2-bf83-47ecdad67265",
+      "source": "Engine",
+      "path": "Shaders/Lit.glsl",
+      "type": "Shader",
+      "name": "Lit",
+      "hash": "723c40dd239d671188e81451bc03cb24da9e85a251438909701804d3f6cc6c87",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "0c6b1b42-acb0-4d7e-9192-30fdbeac8457",
+      "source": "Engine",
+      "path": "Shaders/PostProcessing/Copy.glsl",
+      "type": "Shader",
+      "name": "Copy",
+      "hash": "be670c2699aa67d636f8dd688656884c1c3312a37201b8d48aff053426debba7",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "40dd6830-60c8-4865-b7fa-a40265a6806d",
+      "source": "Engine",
+      "path": "Shaders/PostProcessing/Retro.glsl",
+      "type": "Shader",
+      "name": "Retro",
+      "hash": "c234b4c2fcb18779e58ac56bedd22aac325579911a9c68022bae87e0bd8846a0",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "3a3ac8d3-13c3-4527-9aef-c06eb1af3403",
+      "source": "Engine",
+      "path": "Shaders/PostProcessing/Vignette.glsl",
+      "type": "Shader",
+      "name": "Vignette",
+      "hash": "496f8e513d7ea27a8f58841963ca99139bc7cd35880efb68243cb844bf4514e7",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "7268832e-eaa6-41de-9e2d-cc3b41fe83a4",
+      "source": "Engine",
+      "path": "Shaders/Skybox.glsl",
+      "type": "Shader",
+      "name": "Skybox",
+      "hash": "626b4d9675248f583a9eb6ae5c5972800d81d6c937a81652ad77afca6cd970bd",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "41c8ba79-e018-408c-8d93-0e9e84be9af9",
+      "source": "Engine",
+      "path": "Shaders/Sprite.glsl",
+      "type": "Shader",
+      "name": "Sprite",
+      "hash": "fbe0ca0aa69bcf01f583ed5c929e454a44790e36579234f415a80fd3c67dfc1c",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "9bd12e31-e5a0-454d-a82c-b6cf3598ebbe",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/nx.png",
+      "type": "Texture2D",
+      "name": "nx",
+      "hash": "2bcedf3e72574aacb058409d6fe60b708f631c2b367fcb68f6a0c9000b8bb071",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "ad631f2d-481b-4ad2-acf0-426771cd5322",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/ny.png",
+      "type": "Texture2D",
+      "name": "ny",
+      "hash": "b6770fdad43a81cab686955836d76d293fc4d373a592eeaac969ff9961ba77e9",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "a169ee19-cda2-4b84-be36-28c74580ce79",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/nz.png",
+      "type": "Texture2D",
+      "name": "nz",
+      "hash": "82207f0c6896552228e4c1f00eef4a6a050f72b7df4a37bf60b4d469657c52c2",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "8f14496c-29b8-4365-9ed7-b1f127a0d1be",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/px.png",
+      "type": "Texture2D",
+      "name": "px",
+      "hash": "f70cf4be9a042f577eead72d6d25f72e73aadd0e8dd857b176fc720cf8c8b979",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "def93eda-c3b2-4f87-b191-3ab140bc20ea",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/py.png",
+      "type": "Texture2D",
+      "name": "py",
+      "hash": "27ed89c184fb1fbab0d795930d3965cbd3feff135c335f3d124661b4d1a42a7e",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "294c7018-4f8c-462c-a3c4-22ac9bf49327",
+      "source": "Engine",
+      "path": "SkyBox/cubemap/pz.png",
+      "type": "Texture2D",
+      "name": "pz",
+      "hash": "489d87d72470a4fe3ab74350f32ffe472a62f8addc98c11e18e05d01fab6fa79",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "11538ab6-f866-43f0-90e2-88dd0d7c19b6",
+      "source": "Engine",
+      "path": "SkyBox/Skybox.yaml",
+      "type": "Config",
+      "name": "Skybox",
+      "hash": "343a1d248801a904ead0c2aa4f5aea14951ab0a01d1a49409f9d19fb4966bffd",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "ff9c936f-ea7b-4ee3-9a6c-662939eaf63c",
+      "source": "Engine",
+      "path": "Textures/FmodLogo.png",
+      "type": "Texture2D",
+      "name": "FmodLogo",
+      "hash": "637a25a67d92d210c744f008ff3f19833d18f3945717ba7d8755565f588a7043",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "f2836517-bc52-4f1d-961b-c6605dee8332",
+      "source": "Engine",
+      "path": "Textures/Logo.png",
+      "type": "Texture2D",
+      "name": "Logo",
+      "hash": "31e72c3db4b39dc48847cbbc1c7f0dc6ba3bca5c11390f429c74167ffaa2a91f",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    },
+    {
+      "id": "56fe644f-3d06-4c81-b8a6-a14dc028a83a",
+      "source": "Engine",
+      "path": "Textures/T_Quad_White_64.png",
+      "type": "Texture2D",
+      "name": "T_Quad_White_64",
+      "hash": "7329544873bd6ddf000d93361d7084fbc76063ad92a667721d8c1c9bb732363b",
+      "dependencies": [],
+      "package": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e"
+    }
+  ],
+  "packages": [
+    {
+      "id": "98cbb7d7-e042-d142-6ea7-cbd84cd256be",
+      "name": "Game",
+      "descriptor": null,
+      "load": 0,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": null
+    },
+    {
+      "id": "79e6ac0f-5f3f-e20a-2227-c63732e7dd1e",
+      "name": "Engine",
+      "descriptor": "engine.vpack",
+      "load": 0,
+      "dependencies": [],
+      "version": "1.0.0",
+      "remote": null
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <VecxyApplicationId>game.vecxy.donotrelease</VecxyApplicationId>
+    <VecxyApplicationTitle>НЕ ВЫПУСКАТЬ</VecxyApplicationTitle>
+    <Version>1.0.0</Version>
+    <VecxyGenerateAuthoring>true</VecxyGenerateAuthoring>
+  </PropertyGroup>
+  <Import Project="../Engine/Vecxy/Code/Vecxy.Platforms/build/Vecxy.Platforms.props" />
+  <PropertyGroup>
+    <VecxyUsdPython Condition="'$(VecxyUsdPython)' == '' and Exists('$(MSBuildProjectDirectory)/../.agents/local/usd-env/bin/python')">$(MSBuildProjectDirectory)/../.agents/local/usd-env/bin/python</VecxyUsdPython>
+    <VecxyUsdStage>$(MSBuildProjectDirectory)/Assets/Scenes/Cell.usda</VecxyUsdStage>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Usd/Vecxy.Usd.csproj" />
+    <Compile Remove="Tests/**/*.cs" />
+    <None Update="Assets.manifest" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Engine/Vecxy.Engine.csproj" />
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.Physics/Vecxy.Physics.csproj" />
+    <ProjectReference Include="../Engine/Vecxy/Code/Vecxy.UI/Vecxy.UI.csproj" />
+  </ItemGroup>
+  <Import Project="../Engine/Vecxy/Code/Vecxy.Usd/build/Vecxy.Usd.targets" />
+</Project>

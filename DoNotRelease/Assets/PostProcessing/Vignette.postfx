@@ -1,0 +1,6 @@
+enabled: false
+order: 200
+roundEnabled: true
+roundRadius: 0.82
+roundSoftness: 0.28
+intensity: 0.38

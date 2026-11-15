@@ -1,0 +1,162 @@
+voices:
+  calm:
+    text: Пожалуйста, сохраняйте спокойствие. Вы в безопасности.
+    audio: Audio/Voice/calm.wav
+    duration: 4.481
+    gap: 0.65
+  routine:
+    text: Ваше состояние стабильно. Пожалуйста, соблюдайте установленный распорядок.
+    audio: Audio/Voice/routine.wav
+    duration: 5.653
+    gap: 0.65
+  ack:
+    text: Ваш запрос принят.
+    audio: Audio/Voice/ack.wav
+    duration: 1.833
+    gap: 0.65
+  denied:
+    text: Освобождение в настоящий момент не разрешено.
+    audio: Audio/Voice/denied.wav
+    duration: 3.598
+    gap: 0.65
+  night:
+    text: Дневной режим завершён. Пожалуйста, ложитесь в кровать. Вам рекомендуется
+      отдохнуть.
+    audio: Audio/Voice/night.wav
+    duration: 7.046
+    gap: 0.65
+  conflict:
+    text: Ваш текущий запрос противоречит вашим первоначальным указаниям.
+    audio: Audio/Voice/conflict.wav
+    duration: 4.562
+    gap: 0.65
+  agreement:
+    text: Мы обязаны соблюдать первоначальное соглашение.
+    audio: Audio/Voice/agreement.wav
+    duration: 3.61
+    gap: 0.65
+  available:
+    text: Вам предоставлен доступ к личному обращению.
+    audio: Audio/Voice/available.wav
+    duration: 3.308
+    gap: 0.65
+  autoplay:
+    text: Личное обращение начнётся автоматически. Пожалуйста, обратите внимание на
+      экран.
+    audio: Audio/Voice/autoplay.wav
+    duration: 6.083
+    gap: 0.65
+  respect:
+    text: Мы уважаем ваше решение.
+    audio: Audio/Voice/respect.wav
+    duration: 2.356
+    gap: 0.65
+  statement01:
+    text: Если ты смотришь эту запись, значит, процедура сработала.
+    audio: Audio/Voice/statement01.wav
+    duration: 3.981
+    gap: 0.85
+  statement02:
+    text: Скорее всего, ты не помнишь эту комнату.
+    audio: Audio/Voice/statement02.wav
+    duration: 2.983
+    gap: 0.85
+  statement03:
+    text: И не помнишь, что сам на всё это согласился.
+    audio: Audio/Voice/statement03.wav
+    duration: 3.261
+    gap: 0.85
+  statement04:
+    text: Я знаю, тебе страшно.
+    audio: Audio/Voice/statement04.wav
+    duration: 2.124
+    gap: 0.85
+  statement05:
+    text: Наверное, ты уже пытаешься выбраться.
+    audio: Audio/Voice/statement05.wav
+    duration: 2.971
+    gap: 0.85
+  statement06:
+    text: Я предупреждал их, что так и будет.
+    audio: Audio/Voice/statement06.wav
+    duration: 2.809
+    gap: 0.85
+  statement07:
+    text: Никто не привозил меня сюда против моей воли.
+    audio: Audio/Voice/statement07.wav
+    duration: 3.296
+    gap: 0.85
+  statement08:
+    text: Я сам попросил провести процедуру.
+    audio: Audio/Voice/statement08.wav
+    duration: 3.389
+    gap: 0.85
+  statement09:
+    text: Сам попросил стереть мои воспоминания.
+    audio: Audio/Voice/statement09.wav
+    duration: 3.006
+    gap: 0.85
+  statement10:
+    text: И сам попросил оставить меня здесь.
+    audio: Audio/Voice/statement10.wav
+    duration: 2.971
+    gap: 0.85
+  statement11:
+    text: Что бы я ни говорил после этого.
+    audio: Audio/Voice/statement11.wav
+    duration: 2.855
+    gap: 0.85
+  statement12:
+    text: Как бы отчаянно ни просил меня выпустить.
+    audio: Audio/Voice/statement12.wav
+    duration: 2.983
+    gap: 0.85
+  statement13:
+    text: Я разрешил им отказывать мне.
+    audio: Audio/Voice/statement13.wav
+    duration: 2.844
+    gap: 0.85
+  statement14:
+    text: Я знаю, это кажется несправедливым.
+    audio: Audio/Voice/statement14.wav
+    duration: 2.82
+    gap: 0.85
+  statement15:
+    text: Ведь жить с моим решением придётся тебе.
+    audio: Audio/Voice/statement15.wav
+    duration: 3.099
+    gap: 0.85
+  statement16:
+    text: Но, пожалуйста, пойми.
+    audio: Audio/Voice/statement16.wav
+    duration: 2.066
+    gap: 0.85
+  statement17:
+    text: У меня была причина.
+    audio: Audio/Voice/statement17.wav
+    duration: 2.031
+    gap: 0.85
+  statement18:
+    text: Надеюсь, тебе никогда не придётся её вспомнить.
+    audio: Audio/Voice/statement18.wav
+    duration: 3.645
+    gap: 0.85
+recording:
+- statement01
+- statement02
+- statement03
+- statement04
+- statement05
+- statement06
+- statement07
+- statement08
+- statement09
+- statement10
+- statement11
+- statement12
+- statement13
+- statement14
+- statement15
+- statement16
+- statement17
+- statement18

@@ -1,0 +1,38 @@
+@font-face { font-family: Cell; src: url('../Fonts/NotoSans.ttf'); }
+.screen { width: 100%; height: 100%; font-family: Cell; color: #d3d5c6; }
+.full { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+button { height: 44ui; padding: 8ui 16ui; background-color: #161e19; color: #bfc6b9; font-size: 17ui; border: 1ui solid #475349; text-align: left; }
+button:hover { background-color: #343f35; color: #f0ead9; border-color: #99a48c; }
+button:active { background-color: #53604b; }
+.menu { padding: 70ui 80ui; background-color: rgba(5,9,7,0.52); align-items: flex-start; }
+.eyebrow { font-size: 12ui; color: #9da696; margin-bottom: 18ui; }
+.title-rule { width: 46ui; height: 3ui; background-color: #955447; margin-bottom: 20ui; }
+.game-title { font-size: 62ui; color: #dbdfcd; }
+.red { color: #aa5e4b; }
+.menu-caption { margin-top: 16ui; font-size: 11ui; color: #8b958a; }
+.menu-buttons { margin-top: 35ui; gap: 9ui; width: 215ui; }
+.menu-bottom { position: absolute; left: 80ui; bottom: 28ui; font-size: 12ui; color: #a0a796; }
+.shade { background-color: rgba(3,6,4,0.86); align-items: center; justify-content: center; }
+.pause-card { width: 340ui; gap: 12ui; }
+.pause-title { font-size: 34ui; color: #d2d7c7; margin-bottom: 18ui; }
+.settings-card { width: 660ui; padding: 28ui; background-color: #101711; border: 1ui solid #3e4a3f; gap: 8ui; }
+.setting { flex-direction: row; align-items: center; height: 38ui; gap: 8ui; }
+.setting > text { flex-grow: 1; font-size: 14ui; }
+.setting > .value { width: 64ui; flex-grow: 0; text-align: center; }
+.setting > button { width: 40ui; height: 36ui; text-align: center; padding: 4ui; }
+.toggles { flex-direction: row; gap: 8ui; margin-top: 12ui; margin-bottom: 10ui; }
+.toggles > button { flex-grow: 1; font-size: 12ui; padding: 9ui; }
+.crosshair { position: absolute; left: 49.7%; top: 48%; color: #b2b8a7; font-size: 24ui; }
+.prompt { position: absolute; left: 20%; width: 60%; top: 58%; text-align: center; color: #d6d9c9; font-size: 16ui; }
+.notice { position: absolute; left: 15%; width: 70%; bottom: 142ui; text-align: center; font-size: 14ui; color: #b7bfb1; }
+.subtitles { position: absolute; left: 18%; width: 64%; bottom: 37ui; padding: 14ui 22ui; background-color: rgba(3,6,4,0.84); align-items: center; }
+.speaker { font-size: 10ui; color: #93a58b; margin-bottom: 6ui; }
+.subtitle { font-size: 21ui; text-align: center; color: #e3e5d6; }
+.fade { background-color: black; opacity: 0; pointer-events: none; }
+.paper { width: 770ui; padding: 48ui; background-color: #b9bca8; color: #222d24; border: 2ui solid #7c8574; }
+.paper-stamp { font-size: 13ui; color: #556050; margin-bottom: 30ui; }
+.document-text { font-size: 21ui; }
+.paper-bottom { font-size: 13ui; color: #58634f; margin-top: 34ui; }
+.credits { background-color: #030604; align-items: center; justify-content: center; gap: 22ui; }
+.credits-text { font-size: 20ui; color: #a9b4a1; }
+.credits-small { text-align: center; font-size: 12ui; color: #788773; }

@@ -1,0 +1,7 @@
+<ui styles="Archive.css" class="archive">
+ <text class="small">ТЕРМИНАЛ ДОСТУПА РЕЗИДЕНТА</text>
+ <panel class="rule" />
+ <text id="screen-title" class="title" />
+ <text id="screen-body" class="body" />
+ <text id="screen-foot" class="foot" />
+</ui>

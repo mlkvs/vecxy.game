@@ -1,0 +1,7 @@
+@font-face { font-family: Cell; src: url('../Fonts/NotoSans.ttf'); }
+.archive { width: 100%; height: 100%; background-color: #020604; color: #86ad90; padding: 26px; font-family: Cell; flex-direction: column; }
+.small { font-size: 13px; color: #547660; }
+.rule { height: 1px; width: 100%; background-color: #344b39; margin-top: 10px; margin-bottom: 20px; }
+.title { font-size: 24px; color: #b7d4b2; margin-bottom: 14px; }
+.body { font-size: 20px; flex-grow: 1; color: #8ead92; }
+.foot { font-size: 14px; color: #577f62; }
